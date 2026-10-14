@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tool-generated codegraph/gitnexus indexes are not ours to lint.
+    ".codegraph/**",
+    ".gitnexus/**",
+    "lib/catalogue.json",
   ]),
 ]);
 

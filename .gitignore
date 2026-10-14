@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# tool-generated indexes — these hold live database files, and Tailwind's
+# automatic content detection must not walk into them (see app/globals.css)
+/.codegraph
+/.gitnexus
+/.playwright-mcp

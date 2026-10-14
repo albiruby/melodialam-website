@@ -1,0 +1,5759 @@
+{
+  "meta": {
+    "channelId": "UCv7pHhArYIFvrnGfnELSfQA",
+    "channelName": "Melodi Alam",
+    "handle": "melodialam",
+    "handleUrl": "https://www.youtube.com/@melodialam",
+    "subscribers": "20.9K",
+    "totalViews": "1.998.173",
+    "declaredVideos": 635,
+    "joined": "16 Maret 2017",
+    "country": "Indonesia",
+    "instagramFollowers": "221K (220K saat render)",
+    "instagramPosts": "5.872",
+    "scrapedAt": "14 Oktober 2026"
+  },
+  "profile": {
+    "youtube_nama_channel": {
+      "platform": "YouTube",
+      "metric": "Nama channel",
+      "value": "Melodi Alam",
+      "href": null
+    },
+    "youtube_handle": {
+      "platform": "YouTube",
+      "metric": "Handle",
+      "value": "@melodialam",
+      "href": "https://www.youtube.com/@melodialam"
+    },
+    "youtube_channel_id": {
+      "platform": "YouTube",
+      "metric": "Channel ID",
+      "value": "UCv7pHhArYIFvrnGfnELSfQA",
+      "href": null
+    },
+    "youtube_subscriber": {
+      "platform": "YouTube",
+      "metric": "Subscriber",
+      "value": "20.9K",
+      "href": null
+    },
+    "youtube_total_views_channel": {
+      "platform": "YouTube",
+      "metric": "Total views channel",
+      "value": "1.998.173",
+      "href": null
+    },
+    "youtube_total_video_milik_channel": {
+      "platform": "YouTube",
+      "metric": "Total video (milik channel)",
+      "value": "635",
+      "href": null
+    },
+    "youtube_video_panjang_scrape": {
+      "platform": "YouTube",
+      "metric": "Video panjang (scrape)",
+      "value": "292",
+      "href": null
+    },
+    "youtube_shorts_scrape": {
+      "platform": "YouTube",
+      "metric": "Shorts (scrape)",
+      "value": "342",
+      "href": null
+    },
+    "youtube_playlist_publik": {
+      "platform": "YouTube",
+      "metric": "Playlist publik",
+      "value": "5",
+      "href": null
+    },
+    "youtube_tanggal_join": {
+      "platform": "YouTube",
+      "metric": "Tanggal join",
+      "value": "16 Maret 2017",
+      "href": null
+    },
+    "youtube_negara": {
+      "platform": "YouTube",
+      "metric": "Negara",
+      "value": "Indonesia",
+      "href": null
+    },
+    "instagram_handle": {
+      "platform": "Instagram",
+      "metric": "Handle",
+      "value": "@melodi.alam",
+      "href": "https://www.instagram.com/melodi.alam/"
+    },
+    "instagram_followers": {
+      "platform": "Instagram",
+      "metric": "Followers",
+      "value": "221K (220K saat render)",
+      "href": null
+    },
+    "instagram_following": {
+      "platform": "Instagram",
+      "metric": "Following",
+      "value": "390 (385 saat render)",
+      "href": null
+    },
+    "instagram_jumlah_post": {
+      "platform": "Instagram",
+      "metric": "Jumlah post",
+      "value": "5.872",
+      "href": null
+    },
+    "instagram_post_terbaca_limit_tanpa_login": {
+      "platform": "Instagram",
+      "metric": "Post terbaca (limit tanpa login)",
+      "value": "12",
+      "href": null
+    },
+    "instagram_story_highlight": {
+      "platform": "Instagram",
+      "metric": "Story highlight",
+      "value": "3",
+      "href": null
+    },
+    "linktree_bergabung_sejak": {
+      "platform": "Linktree",
+      "metric": "Bergabung sejak",
+      "value": "Oktober 2022",
+      "href": null
+    }
+  },
+  "counts": {
+    "videos": 292,
+    "shorts": 342,
+    "playlists": 5,
+    "byVenue": {
+      "Melodi Samsara": 101,
+      "Arsip & Lainnya": 34,
+      "Interview": 118,
+      "Melodi Taman": 39
+    }
+  },
+  "videos": [
+    {
+      "id": "irtr9SnyTxM",
+      "title": "Endah N Rhesa - Baby It's You, When You Love Someone, Indie Vacation Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "13:36",
+      "seconds": 816,
+      "views": "1.8K",
+      "uploaded": "3d ago",
+      "ageBucket": "0-30d",
+      "featuring": [
+        "ENDAH N RHESA"
+      ],
+      "url": "https://www.youtube.com/watch?v=irtr9SnyTxM"
+    },
+    {
+      "id": "WN-Go-1hA68",
+      "title": "Endah & Rhesa - Speaking of Melody 1",
+      "venue": "Arsip & Lainnya",
+      "duration": "1:05:34",
+      "seconds": 3934,
+      "views": "166",
+      "uploaded": "4d ago",
+      "ageBucket": "0-30d",
+      "featuring": [
+        "ENDAH N RHESA"
+      ],
+      "url": "https://www.youtube.com/watch?v=WN-Go-1hA68"
+    },
+    {
+      "id": "qkgoThF5hno",
+      "title": "Hanin Dhiya - This Love is Killing Me, Let Me Keep It to Myself Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:11",
+      "seconds": 611,
+      "views": "993",
+      "uploaded": "10d ago",
+      "ageBucket": "0-30d",
+      "featuring": [
+        "Hanin Dhiya"
+      ],
+      "url": "https://www.youtube.com/watch?v=qkgoThF5hno"
+    },
+    {
+      "id": "IyxSDhOO2NY",
+      "title": "Melody Talk: Hanin Dhiya",
+      "venue": "Interview",
+      "duration": "48:21",
+      "seconds": 2901,
+      "views": "690",
+      "uploaded": "11d ago",
+      "ageBucket": "0-30d",
+      "featuring": [
+        "Hanin Dhiya"
+      ],
+      "url": "https://www.youtube.com/watch?v=IyxSDhOO2NY"
+    },
+    {
+      "id": "iwd6Plg8i0Y",
+      "title": "Dua Empat - My Funny Guy, Piccadilly Ft. Natania Karin Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:20",
+      "seconds": 500,
+      "views": "181",
+      "uploaded": "2w ago",
+      "ageBucket": "1-3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=iwd6Plg8i0Y"
+    },
+    {
+      "id": "UpwyNoYa5Io",
+      "title": "Dua Empat's Journey: From Emo Kids to Husband and Wife on the Jazz Stage | Bicara Melodi S3 | EP28",
+      "venue": "Interview",
+      "duration": "52:08",
+      "seconds": 3128,
+      "views": "275",
+      "uploaded": "2w ago",
+      "ageBucket": "1-3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=UpwyNoYa5Io"
+    },
+    {
+      "id": "_uqU8Q4Vwl8",
+      "title": "Bilal Indrajaya on Fatherhood, Britpop Rivalries & Diving into The Beatles | Bicara Melodi S3 | EP27",
+      "venue": "Interview",
+      "duration": "54:38",
+      "seconds": 3278,
+      "views": "1.9K",
+      "uploaded": "3w ago",
+      "ageBucket": "1-3mo",
+      "featuring": [
+        "Bilal Indrajaya"
+      ],
+      "url": "https://www.youtube.com/watch?v=_uqU8Q4Vwl8"
+    },
+    {
+      "id": "3X0mSq4UbDE",
+      "title": "Topi Jerami - Lihat, Dengar, Ulangi, Pagi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:03",
+      "seconds": 423,
+      "views": "5.5K",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=3X0mSq4UbDE"
+    },
+    {
+      "id": "RW6ZyFY2Xmo",
+      "title": "20 Tahun Topi Jerami Euforianya Masih Sama & Nostalgia Era Kejayaan Pop Punk| Bicara Melodi S3 |EP26",
+      "venue": "Interview",
+      "duration": "53:16",
+      "seconds": 3196,
+      "views": "2.9K",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Topi Jerami Official"
+      ],
+      "url": "https://www.youtube.com/watch?v=RW6ZyFY2Xmo"
+    },
+    {
+      "id": "5F9L2CF-wxQ",
+      "title": "Khifnu - The Beginning, No Need to Worry Excessively (Live at Melodi Samsara)",
+      "venue": "Melodi Samsara",
+      "duration": "7:39",
+      "seconds": 459,
+      "views": "330",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Khifnu"
+      ],
+      "url": "https://www.youtube.com/watch?v=5F9L2CF-wxQ"
+    },
+    {
+      "id": "Iq7qAvACZNc",
+      "title": "Khifnu ~ Melodic Conversations",
+      "venue": "Arsip & Lainnya",
+      "duration": "51:34",
+      "seconds": 3094,
+      "views": "212",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Khifnu"
+      ],
+      "url": "https://www.youtube.com/watch?v=Iq7qAvACZNc"
+    },
+    {
+      "id": "iWU_Qqx3L0o",
+      "title": "Hifdzi Khoir - Wife, For Me For You Too Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:32",
+      "seconds": 392,
+      "views": "12K",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Hifdzi Khoir"
+      ],
+      "url": "https://www.youtube.com/watch?v=iWU_Qqx3L0o"
+    },
+    {
+      "id": "KXtMZhIQD1E",
+      "title": "Hifdzi Khoir, the Music Executioner Who Unsettles Musicians | Talking Melodies S3 | EP24",
+      "venue": "Interview",
+      "duration": "53:47",
+      "seconds": 3227,
+      "views": "6.8K",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Hifdzi Khoir"
+      ],
+      "url": "https://www.youtube.com/watch?v=KXtMZhIQD1E"
+    },
+    {
+      "id": "FYz715hjBFo",
+      "title": "BABON - Mirage, Pesan Dari Gurun Ft.Tanya Ditaputri Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "12:53",
+      "seconds": 773,
+      "views": "299",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=FYz715hjBFo"
+    },
+    {
+      "id": "hNiaDlPqQCM",
+      "title": "Tropical Desert Rhythmic Experiment: From Babon to the Birth of Tropical Desert | Bicara Melodi S...",
+      "venue": "Interview",
+      "duration": "45:04",
+      "seconds": 2704,
+      "views": "142",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=hNiaDlPqQCM"
+    },
+    {
+      "id": "W0BW3tPBmxw",
+      "title": "Nuh - Sunday Breakfast, Even If Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:19",
+      "seconds": 439,
+      "views": "375",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=W0BW3tPBmxw"
+    },
+    {
+      "id": "oPe85-xm-mY",
+      "title": "Teruntuk Mia Niat Jadi Rilisan Terakhir Nuh, Skena Medan Hingga Album Baru | Bicara Melodi S3 | EP22",
+      "venue": "Interview",
+      "duration": "35:56",
+      "seconds": 2156,
+      "views": "336",
+      "uploaded": "1mo ago",
+      "ageBucket": "1mo",
+      "featuring": [
+        "Nuh…"
+      ],
+      "url": "https://www.youtube.com/watch?v=oPe85-xm-mY"
+    },
+    {
+      "id": "w6BuhZL3f0w",
+      "title": "Sore Ze Band - Karolina, Surya Jelang Menepi, Half Past Five Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "14:01",
+      "seconds": 841,
+      "views": "7.8K",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [
+        "Sore Ze Band"
+      ],
+      "url": "https://www.youtube.com/watch?v=w6BuhZL3f0w"
+    },
+    {
+      "id": "j5DjXbSSLoU",
+      "title": "Sore Ze Band Keeps Ade Paloh's Legacy Alive, New Lineup and the Myth of Paloh Pop | Bicara Melodi...",
+      "venue": "Interview",
+      "duration": "50:46",
+      "seconds": 3046,
+      "views": "932",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [
+        "Sore Ze Band"
+      ],
+      "url": "https://www.youtube.com/watch?v=j5DjXbSSLoU"
+    },
+    {
+      "id": "9sBx-kRg1BY",
+      "title": "Dee Lestari - (Don't) Fall in Love, Even Angels Know (Live at Melodi Samsara)",
+      "venue": "Melodi Samsara",
+      "duration": "8:20",
+      "seconds": 500,
+      "views": "1.1K",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [
+        "Dee Lestari"
+      ],
+      "url": "https://www.youtube.com/watch?v=9sBx-kRg1BY"
+    },
+    {
+      "id": "QuAXyuGrNHI",
+      "title": "Diving Into the Soul of Storyteller Dee Lestari on Her New Album & Malaikat Juga Tahu | Bicara Me...",
+      "venue": "Arsip & Lainnya",
+      "duration": "42:50",
+      "seconds": 2570,
+      "views": "158",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [
+        "Dee Lestari"
+      ],
+      "url": "https://www.youtube.com/watch?v=QuAXyuGrNHI"
+    },
+    {
+      "id": "L4ktvacYRdg",
+      "title": "Partikel Penyusun Atom - The Way, Jebakan Betmen Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:23",
+      "seconds": 503,
+      "views": "440",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=L4ktvacYRdg"
+    },
+    {
+      "id": "nhzf1--7OXg",
+      "title": "Kemuakan Partikel Penyusun Atom Pada Situasi Negara & Jebakan Betmen | Bicara Melodi S3 | EP19",
+      "venue": "Interview",
+      "duration": "56:16",
+      "seconds": 3376,
+      "views": "150",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=nhzf1--7OXg"
+    },
+    {
+      "id": "i_ac4U0B5AQ",
+      "title": "Bringing 120+ Musicians to The Sounds Project Vol. 9 Celebrating an 11-Year Journey | Bicara Melo...",
+      "venue": "Arsip & Lainnya",
+      "duration": "40:57",
+      "seconds": 2457,
+      "views": "152",
+      "uploaded": "2mo ago",
+      "ageBucket": "2mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=i_ac4U0B5AQ"
+    },
+    {
+      "id": "FLHNRZTkTig",
+      "title": "Successful and Prosperous - Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:21",
+      "seconds": 621,
+      "views": "9.5K",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=FLHNRZTkTig"
+    },
+    {
+      "id": "w_cP2Zj7Agw",
+      "title": "The Punk Band's Success and Smooth Fortune After School & The Thief Deterrent | Melody Talk S3 | ...",
+      "venue": "Interview",
+      "duration": "49:24",
+      "seconds": 2964,
+      "views": "791",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=w_cP2Zj7Agw"
+    },
+    {
+      "id": "NjPxn3wAJF0",
+      "title": "TheOvertunes on the Plagiarism Allegations Regarding Sayap Pelindungmu & Sampai Kapan? | Bicara M...",
+      "venue": "Arsip & Lainnya",
+      "duration": "52:11",
+      "seconds": 3131,
+      "views": "553",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=NjPxn3wAJF0"
+    },
+    {
+      "id": "3a4F-b0MAJA",
+      "title": "TheOvertunes - Can't Believe It, How Long? Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:31",
+      "seconds": 631,
+      "views": "912",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=3a4F-b0MAJA"
+    },
+    {
+      "id": "pLRouaF6-Dk",
+      "title": "Abbydzar - Still Here, Raindrops in Jakarta Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:22",
+      "seconds": 382,
+      "views": "354",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=pLRouaF6-Dk"
+    },
+    {
+      "id": "-ooI5vCNvZk",
+      "title": "Abbydzar on Leaving Svmmerdose & Maturing in His Solo Project | Bicara Melodi S3 | EP15",
+      "venue": "Interview",
+      "duration": "39:35",
+      "seconds": 2375,
+      "views": "260",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-ooI5vCNvZk"
+    },
+    {
+      "id": "l7iIRg_WKIE",
+      "title": "Parade Hujan - Light, For the Woman in My Arms Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "11:16",
+      "seconds": 676,
+      "views": "1.7K",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=l7iIRg_WKIE"
+    },
+    {
+      "id": "VmvEHbO8SN4",
+      "title": "The Transition from Payung Teduh to Parade Hujan, Starting a New Era Through Cahaya & Laju | Bica...",
+      "venue": "Arsip & Lainnya",
+      "duration": "41:17",
+      "seconds": 2477,
+      "views": "2.6K",
+      "uploaded": "3mo ago",
+      "ageBucket": "3mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VmvEHbO8SN4"
+    },
+    {
+      "id": "9-enl3GMoio",
+      "title": "The Brandals - Di Pinggir Marjin, Langit Biru Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:36",
+      "seconds": 516,
+      "views": "534",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=9-enl3GMoio"
+    },
+    {
+      "id": "qvb57SgAEe0",
+      "title": "Kegelisahan The Brandals Soal Situasi Negara Terkini & Eksploitasi Alam | Bicara Melodi S3 | EP 13",
+      "venue": "Interview",
+      "duration": "1:05:07",
+      "seconds": 3907,
+      "views": "433",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=qvb57SgAEe0"
+    },
+    {
+      "id": "9ySdIdAfsfg",
+      "title": "Adikara - Can I Tell The World I Love You?, Primadona Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:04",
+      "seconds": 544,
+      "views": "415",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=9ySdIdAfsfg"
+    },
+    {
+      "id": "I0m4Pajq8ig",
+      "title": "Adikara's Regret Behind Primadona & Preparing Spotless Dove for His Child | Bicara Melodi S3 | EP12",
+      "venue": "Interview",
+      "duration": "51:42",
+      "seconds": 3102,
+      "views": "148",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=I0m4Pajq8ig"
+    },
+    {
+      "id": "kD98oCh7Fms",
+      "title": "Still Virgin - Luinika, Dear Ndut Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "11:23",
+      "seconds": 683,
+      "views": "8.2K",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=kD98oCh7Fms"
+    },
+    {
+      "id": "Gu6UWlO5xxI",
+      "title": "Still Virgin: 2 Decades of Work, Deat Ndut, and Success in the Internet Cafe Era | Bicara Melodi ...",
+      "venue": "Interview",
+      "duration": "51:02",
+      "seconds": 3062,
+      "views": "456",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Gu6UWlO5xxI"
+    },
+    {
+      "id": "IvZHQCtX0ck",
+      "title": "Patras - How Strange, She Wants Me (Still) Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:47",
+      "seconds": 527,
+      "views": "574",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=IvZHQCtX0ck"
+    },
+    {
+      "id": "g_S9hcLxR3k",
+      "title": "Patras on Exes Haunting Him, Beatles Influences, and the 'Cha Cha Boo' Album | Bicara Melodi S3 |...",
+      "venue": "Interview",
+      "duration": "41:54",
+      "seconds": 2514,
+      "views": "381",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=g_S9hcLxR3k"
+    },
+    {
+      "id": "jO-6FtCmHO0",
+      "title": "Pendarra - Tentang Mimpi Berupa Pelangi, Sepenuh Hati Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:46",
+      "seconds": 466,
+      "views": "239",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=jO-6FtCmHO0"
+    },
+    {
+      "id": "4FMVmIFedAo",
+      "title": "Pendarra Menutup Chapter Lama & Titik Balik Penerimaan Diri Di Semburat | Bicara Melodi S3 | EP 09",
+      "venue": "Interview",
+      "duration": "48:05",
+      "seconds": 2885,
+      "views": "174",
+      "uploaded": "4mo ago",
+      "ageBucket": "4mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4FMVmIFedAo"
+    },
+    {
+      "id": "N-X4lCUNr_s",
+      "title": "Canti Tachril - Imagine I Exist, Jingga Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:28",
+      "seconds": 448,
+      "views": "503",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=N-X4lCUNr_s"
+    },
+    {
+      "id": "_dd3zVwsi6M",
+      "title": "Canti Tachril on Surviving Difficult Times & Maturing on the Citrus Album | Bicara Melodi S3 | EP 08",
+      "venue": "Interview",
+      "duration": "46:40",
+      "seconds": 2800,
+      "views": "286",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=_dd3zVwsi6M"
+    },
+    {
+      "id": "po5A1s80CYk",
+      "title": "Prince Husein - Even Though It's a Mess, the Internet Says I Have ADHD Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:15",
+      "seconds": 495,
+      "views": "1K",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=po5A1s80CYk"
+    },
+    {
+      "id": "aOuDOrYgIMw",
+      "title": "Prince Husein on Unresolved Anger and Life Trauma | Melody Talk S3 | EP 07",
+      "venue": "Interview",
+      "duration": "44:58",
+      "seconds": 2698,
+      "views": "121",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=aOuDOrYgIMw"
+    },
+    {
+      "id": "Iem5CdDT0Cw",
+      "title": "Rafi Sudirman - Monday to Friday, That Somebody Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "11:53",
+      "seconds": 713,
+      "views": "247",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Iem5CdDT0Cw"
+    },
+    {
+      "id": "6KFU-JDjThk",
+      "title": "Rafi Sudirman Thought About Becoming a Civil Servant & Manifested Prayers on New Album | Bicara M...",
+      "venue": "Arsip & Lainnya",
+      "duration": "54:36",
+      "seconds": 3276,
+      "views": "134",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6KFU-JDjThk"
+    },
+    {
+      "id": "o_0alNp89j8",
+      "title": "Sheryl Sheinafia - Alone Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "3:57",
+      "seconds": 237,
+      "views": "2K",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=o_0alNp89j8"
+    },
+    {
+      "id": "1BEJeO3O3DA",
+      "title": "Is the Magic Contest More Fun Than .Feast? 3 Baskara Putra Entities Revealed | Resonance Ep 03",
+      "venue": "Interview",
+      "duration": "28:17",
+      "seconds": 1697,
+      "views": "353",
+      "uploaded": "5mo ago",
+      "ageBucket": "5mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=1BEJeO3O3DA"
+    },
+    {
+      "id": "NSUSwHVsqkc",
+      "title": "The Adams Terlalu Rapih Di Agterplaas? Era Janji Joni vs Mahakarya 13 Tahun | Resonansi Ep 02",
+      "venue": "Arsip & Lainnya",
+      "duration": "27:42",
+      "seconds": 1662,
+      "views": "253",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=NSUSwHVsqkc"
+    },
+    {
+      "id": "tOknMHWaZuo",
+      "title": "Sounds Mainstream Because of Afternoon Movies? Typhoon Era vs Sadrah Strait | Resonance Ep 01",
+      "venue": "Interview",
+      "duration": "23:55",
+      "seconds": 1435,
+      "views": "244",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tOknMHWaZuo"
+    },
+    {
+      "id": "fs0HPGgJEdY",
+      "title": "Assia Keva - Looking For Love In Wrong Places, Baby July Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:15",
+      "seconds": 495,
+      "views": "503",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=fs0HPGgJEdY"
+    },
+    {
+      "id": "Qq4FmvZlscE",
+      "title": "Assia Keva on Trauma, Collaboration with Slank, and the EP \"Forevermore\" | Bicara Melodi S3 | EP05",
+      "venue": "Interview",
+      "duration": "58:02",
+      "seconds": 3482,
+      "views": "316",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Qq4FmvZlscE"
+    },
+    {
+      "id": "wAzr4Ep7F4g",
+      "title": "Clever Moose - The Hammer, Batavian Troops Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:07",
+      "seconds": 427,
+      "views": "804",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=wAzr4Ep7F4g"
+    },
+    {
+      "id": "iWAOhAapVBQ",
+      "title": "Clever Moose on the Mediterranean Fuzz Album That Conquered the Asian Stage | Melody Talk S3 | EP 04",
+      "venue": "Interview",
+      "duration": "42:56",
+      "seconds": 2576,
+      "views": "267",
+      "uploaded": "6mo ago",
+      "ageBucket": "6mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=iWAOhAapVBQ"
+    },
+    {
+      "id": "3lZLc2rRhSY",
+      "title": "New Blue - Let's Find Another Time, Lose Again Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:53",
+      "seconds": 653,
+      "views": "107K",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=3lZLc2rRhSY"
+    },
+    {
+      "id": "Wo4CoSs43BE",
+      "title": "Biru Baru Soal 17 Track Album Baru Hingga Cerita Menyelamatkan Hidup Fans | Bicara Melodi S3 | EP03",
+      "venue": "Interview",
+      "duration": "43:05",
+      "seconds": 2585,
+      "views": "973",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Wo4CoSs43BE"
+    },
+    {
+      "id": "Lci1GEbvsmw",
+      "title": "Sheryl Sheinafia - Out of Control, Who Told You to Fall in Love? Live at Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:47",
+      "seconds": 467,
+      "views": "643",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Lci1GEbvsmw"
+    },
+    {
+      "id": "jajx-IZOCHM",
+      "title": "Sheryl Sheinafia on Losing Control & Her Lovey-Dovey Side | Who Told You to Fall in Love? | Talk ...",
+      "venue": "Arsip & Lainnya",
+      "duration": "39:16",
+      "seconds": 2356,
+      "views": "1.3K",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=jajx-IZOCHM"
+    },
+    {
+      "id": "kl5jUCBhG7c",
+      "title": "Nita & Gail - One Human Being, To Do This Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:31",
+      "seconds": 451,
+      "views": "226",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=kl5jUCBhG7c"
+    },
+    {
+      "id": "VMQhKBRmKDQ",
+      "title": "Nita & Gail: From the Adventures of Sherina, Yovie & Nuno to One Human Being | Talking Melodies S...",
+      "venue": "Interview",
+      "duration": "58:34",
+      "seconds": 3514,
+      "views": "243",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VMQhKBRmKDQ"
+    },
+    {
+      "id": "DRFOljyeYo8",
+      "title": "Rampak Naong - Tergoda, Cuma Cuma Ft. Gugun Blues Shelter, Tommy Exentrix Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:30",
+      "seconds": 570,
+      "views": "1.3K",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=DRFOljyeYo8"
+    },
+    {
+      "id": "IbrEtBP6ABk",
+      "title": "Rampak Naong Returns After a Long Hiatus and Reveals Tape Recordings | Bicara Melodi S2 | EP 69",
+      "venue": "Interview",
+      "duration": "52:38",
+      "seconds": 3158,
+      "views": "666",
+      "uploaded": "7mo ago",
+      "ageBucket": "7mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=IbrEtBP6ABk"
+    },
+    {
+      "id": "KomwMliKUWU",
+      "title": "Tripov - Elevator Music, MIA Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:21",
+      "seconds": 381,
+      "views": "265",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=KomwMliKUWU"
+    },
+    {
+      "id": "Uc3nxEfSjl0",
+      "title": "Tripov Makes Demos From Zoom to Sugar Coat Inc's Experimental Album | Bicara Melodi S2 | EP 68",
+      "venue": "Interview",
+      "duration": "40:43",
+      "seconds": 2443,
+      "views": "93",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Uc3nxEfSjl0"
+    },
+    {
+      "id": "Fs2u9ywoh58",
+      "title": "Arda Hatna – Learning to Be a Father, Growing Together Ft. Tantri Syalindri Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:22",
+      "seconds": 562,
+      "views": "304",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Fs2u9ywoh58"
+    },
+    {
+      "id": "SJRzB-hX-AE",
+      "title": "Arda Hatna Experiences a Mystical Moment Performing with Naff & Learning to Be a Father | Talking...",
+      "venue": "Arsip & Lainnya",
+      "duration": "51:10",
+      "seconds": 3070,
+      "views": "125",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=SJRzB-hX-AE"
+    },
+    {
+      "id": "00UzvxjkTY0",
+      "title": "Moneva - Runner Up, One Way Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:00",
+      "seconds": 600,
+      "views": "337",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=00UzvxjkTY0"
+    },
+    {
+      "id": "zygHAVEbOOQ",
+      "title": "Moneva Survives in Music From Pamungkas Backing Vocals & Salon R&B | Bicara Melodi S2 | EP66",
+      "venue": "Interview",
+      "duration": "44:33",
+      "seconds": 2673,
+      "views": "218",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=zygHAVEbOOQ"
+    },
+    {
+      "id": "LqitfV3pIRo",
+      "title": "Gabriella Fernaldi – Blue, My Fingers Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:39",
+      "seconds": 519,
+      "views": "553",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LqitfV3pIRo"
+    },
+    {
+      "id": "FsFTVxvHGKw",
+      "title": "Gabriella Fernaldi Traumatized by Insults While Performing with Ardhito Pramono | Bicara Melodi S...",
+      "venue": "Interview",
+      "duration": "39:54",
+      "seconds": 2394,
+      "views": "248",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=FsFTVxvHGKw"
+    },
+    {
+      "id": "09ge-d5RfFU",
+      "title": "Julian Alka - Siasat, Lapur Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:51",
+      "seconds": 591,
+      "views": "285",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=09ge-d5RfFU"
+    },
+    {
+      "id": "ZU2art5bsV0",
+      "title": "Julian Alka on the Musician's Curse, the Aceh Scene, and Sal Priadi's Major Influence | Bicara Me...",
+      "venue": "Arsip & Lainnya",
+      "duration": "40:19",
+      "seconds": 2419,
+      "views": "304",
+      "uploaded": "8mo ago",
+      "ageBucket": "8mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ZU2art5bsV0"
+    },
+    {
+      "id": "MQffmvJ3xHU",
+      "title": "Black Horses - Sweet Little Sugar, Martyr Live Acoustic At Melodi Samsara",
+      "venue": "Arsip & Lainnya",
+      "duration": "10:13",
+      "seconds": 613,
+      "views": "1.1K",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=MQffmvJ3xHU"
+    },
+    {
+      "id": "fe8e-0E2HgM",
+      "title": "Black Horses: The Spirit of Rebellion & Rock 'n' Roll Attitude | Melody Talk S2 | EP 63",
+      "venue": "Interview",
+      "duration": "53:33",
+      "seconds": 3213,
+      "views": "1.7K",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=fe8e-0E2HgM"
+    },
+    {
+      "id": "IqUgTPaknDY",
+      "title": "KIM - Impossible, Shadow of Past Love Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:17",
+      "seconds": 557,
+      "views": "775",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=IqUgTPaknDY"
+    },
+    {
+      "id": "-hwFEwFxMiM",
+      "title": "KIM Was Formed for Confidants Who Can't Move On | Bicara Melodi S2 | EP 62",
+      "venue": "Interview",
+      "duration": "42:01",
+      "seconds": 2521,
+      "views": "230",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-hwFEwFxMiM"
+    },
+    {
+      "id": "XS4H5VLy0yI",
+      "title": "Mario Ginanjar - Really Missing, From Afar Ft. Andity Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:41",
+      "seconds": 521,
+      "views": "6.3K",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=XS4H5VLy0yI"
+    },
+    {
+      "id": "TJk7-v27bFE",
+      "title": "Mario Ginanjar Reveals the Bittersweet Journey of 25 Years with Kahitna | Talk Melody S2 | EP61",
+      "venue": "Arsip & Lainnya",
+      "duration": "45:47",
+      "seconds": 2747,
+      "views": "10K",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=TJk7-v27bFE"
+    },
+    {
+      "id": "BiK2XXTztqE",
+      "title": "Dendi Nata - Forever, Eternal Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:31",
+      "seconds": 571,
+      "views": "364",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=BiK2XXTztqE"
+    },
+    {
+      "id": "wjRMaHl7x0c",
+      "title": "Dendi Nata Saved by Eternal Song from Divorce and Infidelity | Talk Melody S2 | EP60",
+      "venue": "Arsip & Lainnya",
+      "duration": "38:39",
+      "seconds": 2319,
+      "views": "169",
+      "uploaded": "9mo ago",
+      "ageBucket": "9mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=wjRMaHl7x0c"
+    },
+    {
+      "id": "bX18hNJMiQQ",
+      "title": "Armada - Thank You, Leave Early, Come Home Early Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:34",
+      "seconds": 574,
+      "views": "1K",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=bX18hNJMiQQ"
+    },
+    {
+      "id": "VOg_B_0yigw",
+      "title": "Armada Soal Isu Plagiat, Tulang Punggung Keluarga & Mengagumi Hindia | Bicara Melodi S2 | EP59",
+      "venue": "Interview",
+      "duration": "1:02:06",
+      "seconds": 3726,
+      "views": "705",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VOg_B_0yigw"
+    },
+    {
+      "id": "HSdgQHuxaU0",
+      "title": "Devano - Menyimpan Rasa, Surat Hati Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:32",
+      "seconds": 512,
+      "views": "5.1K",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=HSdgQHuxaU0"
+    },
+    {
+      "id": "MEQh-miYe3s",
+      "title": "Devano Bullied for Dangdut, Idolizes Raisa & Avoids Podcasts | Talk Melody S2 | EP58",
+      "venue": "Arsip & Lainnya",
+      "duration": "45:51",
+      "seconds": 2751,
+      "views": "1K",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=MEQh-miYe3s"
+    },
+    {
+      "id": "QDs60pNkYvo",
+      "title": "Monita Tahalea - Laila, Merona Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:55",
+      "seconds": 535,
+      "views": "867",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=QDs60pNkYvo"
+    },
+    {
+      "id": "ZTlBFX_Mou4",
+      "title": "Monita Tahalea: 20 Years of Dark Work in Dandelion, Blooming Through Blush | Melody Talk S2 | EP57",
+      "venue": "Interview",
+      "duration": "44:54",
+      "seconds": 2694,
+      "views": "230",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ZTlBFX_Mou4"
+    },
+    {
+      "id": "J7K9cKma3jE",
+      "title": "OKAAY - Find Happiness, Forget the Name, Remember the Feeling Live at Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:12",
+      "seconds": 432,
+      "views": "1.5K",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=J7K9cKma3jE"
+    },
+    {
+      "id": "drlc2MSz6pM",
+      "title": "OKAAY Finds Happiness by Letting Go of a Toxic Relationship | Melody Talk S2 | EP56",
+      "venue": "Interview",
+      "duration": "41:55",
+      "seconds": 2515,
+      "views": "352",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=drlc2MSz6pM"
+    },
+    {
+      "id": "eWCRfmz16xE",
+      "title": "Dnanda - Bola Mata Sayu, Benar Salah Hanyalah Salah Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:29",
+      "seconds": 449,
+      "views": "14K",
+      "uploaded": "10mo ago",
+      "ageBucket": "10mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=eWCRfmz16xE"
+    },
+    {
+      "id": "3J7JkvCpS1s",
+      "title": "Dnanda Can Play Keyboard Because of Dreams & Oldies' Droopy Eyes | Talking Melodies S2 | EP55",
+      "venue": "Interview",
+      "duration": "44:48",
+      "seconds": 2688,
+      "views": "363",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=3J7JkvCpS1s"
+    },
+    {
+      "id": "6bf1Sa9i_TA",
+      "title": "Maisha Kanna - Upside Down, Want to Lose Memory Live at Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:07",
+      "seconds": 487,
+      "views": "174",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6bf1Sa9i_TA"
+    },
+    {
+      "id": "JLaYUXo9Pmg",
+      "title": "Maisha Kanna on Turning Upside Down and the Magic of Bernadya's Songs | Bicara Melodi S2 | EP54",
+      "venue": "Interview",
+      "duration": "38:21",
+      "seconds": 2301,
+      "views": "114",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=JLaYUXo9Pmg"
+    },
+    {
+      "id": "MrHF8c7WYKs",
+      "title": "Madmax - Glitté, Reverse Psychology Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:22",
+      "seconds": 382,
+      "views": "1.5K",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=MrHF8c7WYKs"
+    },
+    {
+      "id": "LZ68ztEU7XE",
+      "title": "Madmax About a Band Filled with Girls on PMS & Inspired by Alvvays | Melody Talk S2 | EP53",
+      "venue": "Interview",
+      "duration": "35:12",
+      "seconds": 2112,
+      "views": "677",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LZ68ztEU7XE"
+    },
+    {
+      "id": "6SJMhICnALw",
+      "title": "Rrag - Chain, Sky Becomes Sea Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "5:45",
+      "seconds": 345,
+      "views": "1.4K",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6SJMhICnALw"
+    },
+    {
+      "id": "k3TyIh1J8KU",
+      "title": "Rrag Creates \"Langit\" Album From Absurd Things, From Tooth Fillings to People with Mental Illness...",
+      "venue": "Arsip & Lainnya",
+      "duration": "38:34",
+      "seconds": 2314,
+      "views": "2.2K",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=k3TyIh1J8KU"
+    },
+    {
+      "id": "HkNQ0SB1fjo",
+      "title": "I'm Jeje - Look at My Garden (Flower Garden), Dansaria Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:53",
+      "seconds": 413,
+      "views": "5.3K",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=HkNQ0SB1fjo"
+    },
+    {
+      "id": "0E2M1dijHiI",
+      "title": "I Jeje About Seeing My Garden Addressed to My Mother & My Lover's Death | Melody Talk S2 | EP51",
+      "venue": "Interview",
+      "duration": "50:32",
+      "seconds": 3032,
+      "views": "8.3K",
+      "uploaded": "11mo ago",
+      "ageBucket": "11mo",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=0E2M1dijHiI"
+    },
+    {
+      "id": "i9J4JnRC44o",
+      "title": "Societeit de Harmonie – Tutukan, Sembilan Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:31",
+      "seconds": 451,
+      "views": "452",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=i9J4JnRC44o"
+    },
+    {
+      "id": "S0ToURMyDhs",
+      "title": "Society of Harmonies: The Originator of Face-to-Face Jazz & the Curse of Toxic Relationships | Ta...",
+      "venue": "Arsip & Lainnya",
+      "duration": "39:56",
+      "seconds": 2396,
+      "views": "340",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=S0ToURMyDhs"
+    },
+    {
+      "id": "cFaDla99eas",
+      "title": "Rick Karnadi – Note To God, Queen of Hearts Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:03",
+      "seconds": 483,
+      "views": "165",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=cFaDla99eas"
+    },
+    {
+      "id": "onMXLHgBJMA",
+      "title": "Rick Karnadi Reveals a Love Story Full of Strategy | Talk Melody S2 | EP49",
+      "venue": "Arsip & Lainnya",
+      "duration": "29:23",
+      "seconds": 1763,
+      "views": "45",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=onMXLHgBJMA"
+    },
+    {
+      "id": "G7VwMDEge50",
+      "title": "GME – Reminder, Special Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:53",
+      "seconds": 533,
+      "views": "347",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=G7VwMDEge50"
+    },
+    {
+      "id": "2HQmP0Rwls8",
+      "title": "GME is said to resemble Sheila On 7, and the hardships of being a father | Bicara Melodi S2 | EP48",
+      "venue": "Interview",
+      "duration": "39:30",
+      "seconds": 2370,
+      "views": "883",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=2HQmP0Rwls8"
+    },
+    {
+      "id": "b2GpuXmSdk4",
+      "title": "Indra Sinaga – Ga Romantis, Magic Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:24",
+      "seconds": 504,
+      "views": "929",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=b2GpuXmSdk4"
+    },
+    {
+      "id": "uwwXnI0IuzU",
+      "title": "Indra Sinaga Wants to Sing as Sincerely as Chrisye, Go Solo, Lyla Heads to Ada Band | Talk Melody...",
+      "venue": "Arsip & Lainnya",
+      "duration": "30:57",
+      "seconds": 1857,
+      "views": "336",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=uwwXnI0IuzU"
+    },
+    {
+      "id": "C1JqnKvh_Hc",
+      "title": "Gabriella Ekaputri - Burning Room, Little By Little Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:44",
+      "seconds": 404,
+      "views": "195",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=C1JqnKvh_Hc"
+    },
+    {
+      "id": "NqJ_qWWrdjg",
+      "title": "Gabriella Ekaputri, From K-pop Trainee to Betrayal in Relationships | Melody Talk S2 | EP46",
+      "venue": "Interview",
+      "duration": "36:29",
+      "seconds": 2189,
+      "views": "282",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=NqJ_qWWrdjg"
+    },
+    {
+      "id": "4pMMXkSu2VU",
+      "title": "Lyla - Ga Romantis, Dan Lagi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:21",
+      "seconds": 501,
+      "views": "715",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4pMMXkSu2VU"
+    },
+    {
+      "id": "fXyjksP-fw8",
+      "title": "Lyla, the Musician of FTV Songs, From \"Ga Romantik\" to \"Magic,\" Which Turns Out to Be a Bonus Tra...",
+      "venue": "Arsip & Lainnya",
+      "duration": "45:18",
+      "seconds": 2718,
+      "views": "161",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=fXyjksP-fw8"
+    },
+    {
+      "id": "QtXhTkrecVw",
+      "title": "Starrducc - Bianglala, 15,000 Steps Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:30",
+      "seconds": 510,
+      "views": "18K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=QtXhTkrecVw"
+    },
+    {
+      "id": "lPuVNbpF1cY",
+      "title": "Starrducc: Long-Distance Recording, From Weird Song Titles to the Bogor Scene | Bicara Melodi S2 ...",
+      "venue": "Interview",
+      "duration": "36:48",
+      "seconds": 2208,
+      "views": "3.1K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=lPuVNbpF1cY"
+    },
+    {
+      "id": "tX9wyKc68Fw",
+      "title": "Oslo Ibrahim – I'm Not Your Home Anymore, All My Friends Are Fallin' In Love Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:02",
+      "seconds": 482,
+      "views": "522",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tX9wyKc68Fw"
+    },
+    {
+      "id": "R20pJWtW3No",
+      "title": "Oslo Ibrahim Lord TOP 5, Musisi Viral & Menemukan Identitas Ikonik | Bicara Melodi S2 | EP43",
+      "venue": "Interview",
+      "duration": "38:32",
+      "seconds": 2312,
+      "views": "130",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=R20pJWtW3No"
+    },
+    {
+      "id": "yt37MaXCvPY",
+      "title": "Clara Riva - Bunga Hati, Waktunya Pas Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:23",
+      "seconds": 503,
+      "views": "507",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=yt37MaXCvPY"
+    },
+    {
+      "id": "QTSFm42FpYs",
+      "title": "Clara Riva Sosok Dibalik Bunga Hati Salma Salsabil & Waktunya Pas | Bicara Melodi S2 | EP42",
+      "venue": "Interview",
+      "duration": "28:06",
+      "seconds": 1686,
+      "views": "486",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=QTSFm42FpYs"
+    },
+    {
+      "id": "K4jjmoZyLk4",
+      "title": "Harra. - Jurus Jitu, Jelajahi Rasa Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:00",
+      "seconds": 540,
+      "views": "1.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=K4jjmoZyLk4"
+    },
+    {
+      "id": "7YlAR-I7-do",
+      "title": "Karya Harra. Lahir Dari Gosip Antar Personil | Bicara Melodi S2 | EP41",
+      "venue": "Interview",
+      "duration": "36:04",
+      "seconds": 2164,
+      "views": "322",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=7YlAR-I7-do"
+    },
+    {
+      "id": "HnjB1RweEhI",
+      "title": "Chintya Gabriella - Nikmati Perjalanannya, Cerita Besar Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:33",
+      "seconds": 453,
+      "views": "343",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=HnjB1RweEhI"
+    },
+    {
+      "id": "uWJmG6cBesY",
+      "title": "Sisi Chintya Gabriella Yang Overthinking & Si Ambisius Pekerja Keras | Bicara Melodi S2 | EP40",
+      "venue": "Interview",
+      "duration": "27:51",
+      "seconds": 1671,
+      "views": "111",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=uWJmG6cBesY"
+    },
+    {
+      "id": "Z0bl6z0c_bM",
+      "title": "DivingBirds - I Won’t Be Long, Why Won’t You Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:38",
+      "seconds": 398,
+      "views": "405",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Z0bl6z0c_bM"
+    },
+    {
+      "id": "VjHfnV_WNMU",
+      "title": "Perjalanan Divingbirds Membentuk Band Keluarga & Cemas Akan Perpisahan | Bicara Melodi S2 | EP39",
+      "venue": "Interview",
+      "duration": "34:43",
+      "seconds": 2083,
+      "views": "224",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VjHfnV_WNMU"
+    },
+    {
+      "id": "5mlZujzuojU",
+      "title": "Meiska - Keras Kepala, Hilang Tanpa Bilang Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:18",
+      "seconds": 618,
+      "views": "10K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=5mlZujzuojU"
+    },
+    {
+      "id": "lso6lVmkZDs",
+      "title": "Meiska: Behind the Pain of Disappearing Without a Word & Being Stubborn | Melody Talk S2 | EP38",
+      "venue": "Interview",
+      "duration": "30:44",
+      "seconds": 1844,
+      "views": "256",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=lso6lVmkZDs"
+    },
+    {
+      "id": "bphqYAeg6Eo",
+      "title": "Basboi - Bismillah, Sendiri Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:18",
+      "seconds": 438,
+      "views": "272",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=bphqYAeg6Eo"
+    },
+    {
+      "id": "oll7QJBocLk",
+      "title": "Basboi Starts With Bismillah Until He's Alone, Young Lex & the Hip-Hop Scene | Talking Melodies S...",
+      "venue": "Interview",
+      "duration": "44:01",
+      "seconds": 2641,
+      "views": "996",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=oll7QJBocLk"
+    },
+    {
+      "id": "mUxDQgvXzNU",
+      "title": "Swara Samsara Vol. 4:  Live Spinning by DeMajors DICK TAMIMI",
+      "venue": "Arsip & Lainnya",
+      "duration": "48:42",
+      "seconds": 2922,
+      "views": "92",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=mUxDQgvXzNU"
+    },
+    {
+      "id": "MWByrpvx0yA",
+      "title": "Aruma - Muak, Berbunga-bunga Sendiri Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:57",
+      "seconds": 477,
+      "views": "603",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=MWByrpvx0yA"
+    },
+    {
+      "id": "BV58YjEYnYk",
+      "title": "Aruma Soal Muak, Kolaborasi Dengan Raim Laode & Berbunga-bunga Sendiri | Bicara Melodi S2 | EP36",
+      "venue": "Interview",
+      "duration": "30:48",
+      "seconds": 1848,
+      "views": "266",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=BV58YjEYnYk"
+    },
+    {
+      "id": "zlhCkuwMlp4",
+      "title": "D'Masiv - Bahagia Sejak Pertama, Merindukanmu Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:41",
+      "seconds": 581,
+      "views": "4.6K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=zlhCkuwMlp4"
+    },
+    {
+      "id": "OYeOf-jqLC0",
+      "title": "Perjalanan D'Masiv Dari Ciledug Ke Eropa & Meluncurkan Agregator Baru | Bicara Melodi S2 | EP35",
+      "venue": "Interview",
+      "duration": "1:09:12",
+      "seconds": 4152,
+      "views": "277",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=OYeOf-jqLC0"
+    },
+    {
+      "id": "_xPB8ydY0_g",
+      "title": "Shakira Jasmine - Meant 2 Be, Selalu Kalah Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:44",
+      "seconds": 524,
+      "views": "476",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=_xPB8ydY0_g"
+    },
+    {
+      "id": "1_SRsClAAPs",
+      "title": "Shakira Jasmine Once Worked as a Vocal Director for a Legendary Musician & Always Loses | Bicara ...",
+      "venue": "Arsip & Lainnya",
+      "duration": "36:22",
+      "seconds": 2182,
+      "views": "350",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=1_SRsClAAPs"
+    },
+    {
+      "id": "Y5GMTCbdIYs",
+      "title": "Aldy Amis - Selamat Hari Raya Social Media, Local Wisdumb Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:21",
+      "seconds": 441,
+      "views": "465",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Y5GMTCbdIYs"
+    },
+    {
+      "id": "Eww1W12mGeo",
+      "title": "Amis Resah Dengan Isu Isu Sosial & Lirik Local Wisdumb Yang Progresif | Bicara Melodi S2 | EP33",
+      "venue": "Interview",
+      "duration": "33:23",
+      "seconds": 2003,
+      "views": "211",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Eww1W12mGeo"
+    },
+    {
+      "id": "LpfBr_iGtSg",
+      "title": "Arash Buana - Something About You, If U Could See Me Cryin' In My Room Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "12:54",
+      "seconds": 774,
+      "views": "3.5K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LpfBr_iGtSg"
+    },
+    {
+      "id": "ZVNwNO-2jQM",
+      "title": "Arash Buana Cerita Kenyamanan Dalam Cinta Sampai Rasanya Nulis 3000 Lagu | Bicara Melodi S2| EP32",
+      "venue": "Interview",
+      "duration": "44:55",
+      "seconds": 2695,
+      "views": "675",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ZVNwNO-2jQM"
+    },
+    {
+      "id": "WbIKA_GkhNo",
+      "title": "Raissa Anggiani - Satu Langkah, Kau Rumahku Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:22",
+      "seconds": 502,
+      "views": "2.3K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=WbIKA_GkhNo"
+    },
+    {
+      "id": "GEzDOY_uL58",
+      "title": "Raissa Anggiani Influenced by Billie Eilish, Kau Rumahku & Satu Langkah | Bicara Melodi S2 | EP31",
+      "venue": "Interview",
+      "duration": "31:50",
+      "seconds": 1910,
+      "views": "408",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=GEzDOY_uL58"
+    },
+    {
+      "id": "beOAFrLXoA4",
+      "title": "Tsaqib - Mau Tak Mau, Panah Asmara Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:28",
+      "seconds": 508,
+      "views": "427",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=beOAFrLXoA4"
+    },
+    {
+      "id": "vpDXAfXeZ-A",
+      "title": "Tsaqib Inevitably Gives in & Surrenders in a Romantic Relationship | Talk Melody S2 | EP30",
+      "venue": "Arsip & Lainnya",
+      "duration": "27:28",
+      "seconds": 1648,
+      "views": "695",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=vpDXAfXeZ-A"
+    },
+    {
+      "id": "iv949qD1q3M",
+      "title": "Enau - Bersamaku Akan Sedikit Susah, Negara Lucu Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "11:56",
+      "seconds": 716,
+      "views": "6K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=iv949qD1q3M"
+    },
+    {
+      "id": "imkmImPMlpw",
+      "title": "Dengan Enau Akan Sedikit Lebih Susah & Kedalaman Emosi Di Album Lingkaran | Bicara Melodi S2 | EP29",
+      "venue": "Interview",
+      "duration": "31:34",
+      "seconds": 1894,
+      "views": "528",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=imkmImPMlpw"
+    },
+    {
+      "id": "aSfwqERy0dQ",
+      "title": "Citra Scholastika - Tilik Jogja Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "4:55",
+      "seconds": 295,
+      "views": "1.1K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=aSfwqERy0dQ"
+    },
+    {
+      "id": "RWGOsONFrcE",
+      "title": "Citra Scholastika Behind 'Everybody Knew' & Finding Her Identity in 'Tilik Jogja' | Bicara Melodi...",
+      "venue": "Interview",
+      "duration": "34:23",
+      "seconds": 2063,
+      "views": "387",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=RWGOsONFrcE"
+    },
+    {
+      "id": "fQXm-XfqEek",
+      "title": "Rio Clappy - Denyut, Bunga Abadi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:18",
+      "seconds": 558,
+      "views": "9.6K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=fQXm-XfqEek"
+    },
+    {
+      "id": "k3y8cYyuY1M",
+      "title": "Rio Clappy Explores the Meaning of the Eternal Flower and Embraces the Beatles | Melody Talk S2 |...",
+      "venue": "Interview",
+      "duration": "42:52",
+      "seconds": 2572,
+      "views": "545",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=k3y8cYyuY1M"
+    },
+    {
+      "id": "tiRbZ-RbLOc",
+      "title": "Prinsa Mandagie - Coba Jadi Aku, Bertahan Sendiri Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:26",
+      "seconds": 446,
+      "views": "443",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tiRbZ-RbLOc"
+    },
+    {
+      "id": "vfIe53b6BSI",
+      "title": "Prinsa Mandagie: The Story of a Child's Maturity from a Broken Home | Bicara Melodi S2 | EP26",
+      "venue": "Interview",
+      "duration": "51:42",
+      "seconds": 3102,
+      "views": "563",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=vfIe53b6BSI"
+    },
+    {
+      "id": "3uu_2x0h9Bw",
+      "title": "Daun Jatuh - Untuk Selalu Senang, Resah Jadi Luka Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:40",
+      "seconds": 580,
+      "views": "666",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=3uu_2x0h9Bw"
+    },
+    {
+      "id": "gRA8Ii18Z6U",
+      "title": "Daun Jatuh Soal Kolaborasi Bareng Prilly Latuconsina & Resah Jadi Luka | Bicara Melodi S2 | EP25",
+      "venue": "Interview",
+      "duration": "31:11",
+      "seconds": 1871,
+      "views": "321",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=gRA8Ii18Z6U"
+    },
+    {
+      "id": "KTC23u835VU",
+      "title": "Chintana Jo - Mungkin, Lagi-Lagi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:23",
+      "seconds": 503,
+      "views": "368",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=KTC23u835VU"
+    },
+    {
+      "id": "l-NVrCDOxRo",
+      "title": "Sal Priadi Jadi Pijakan Awal Chintana Jo Buat Berkarya Solo | Bicara Melodi S2 | EP24",
+      "venue": "Interview",
+      "duration": "22:54",
+      "seconds": 1374,
+      "views": "368",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=l-NVrCDOxRo"
+    },
+    {
+      "id": "8jmnoq9mDSE",
+      "title": "TADI - Rembulan, Pesona Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:33",
+      "seconds": 453,
+      "views": "607",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=8jmnoq9mDSE"
+    },
+    {
+      "id": "Tg951QgEqS8",
+      "title": "TADI Ingin Menghidupkan Kembali Musik 80an Indonesia | Bicara Melodi S2 | EP23",
+      "venue": "Interview",
+      "duration": "24:50",
+      "seconds": 1490,
+      "views": "121",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Tg951QgEqS8"
+    },
+    {
+      "id": "8whCgwZUyD8",
+      "title": "Jebung - Sesungguhnya, Hepeng Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:16",
+      "seconds": 436,
+      "views": "6.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=8whCgwZUyD8"
+    },
+    {
+      "id": "P3TpTXV7Gnw",
+      "title": "Jebung Perlihatkan Sisi Kerapuhan Di Karya Terbarunya | Bicara Melodi S2 | EP22",
+      "venue": "Interview",
+      "duration": "46:04",
+      "seconds": 2764,
+      "views": "189",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=P3TpTXV7Gnw"
+    },
+    {
+      "id": "pa69mBp5xWA",
+      "title": "Jo Soegono - Mambo Chacha, Hujan Deras Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:56",
+      "seconds": 476,
+      "views": "5.3K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=pa69mBp5xWA"
+    },
+    {
+      "id": "I93R4mZy_ds",
+      "title": "Jo Soegono Musisi Berdarah Jawa Ambon Penulis Lagu Latin Jazz | Bicara Melodi S2 | EP21",
+      "venue": "Interview",
+      "duration": "30:01",
+      "seconds": 1801,
+      "views": "3.1K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=I93R4mZy_ds"
+    },
+    {
+      "id": "oq1NvpVDrg0",
+      "title": "Tarrarin - Tanya, Bukit Bintang Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:48",
+      "seconds": 468,
+      "views": "4.3K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=oq1NvpVDrg0"
+    },
+    {
+      "id": "VO3QJ6w4Y94",
+      "title": "Tarrarin Ngasih Pesan Ke Mantan Di Bukit Bintang | Bicara Melodi S2 | EP20",
+      "venue": "Interview",
+      "duration": "39:21",
+      "seconds": 2361,
+      "views": "1.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VO3QJ6w4Y94"
+    },
+    {
+      "id": "mcTHCyvhBno",
+      "title": "Nadhif Basalamah - Bergema Sampai Selamanya, Jatuh Cinta Lagi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:44",
+      "seconds": 524,
+      "views": "27K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=mcTHCyvhBno"
+    },
+    {
+      "id": "kNVsFT9phAw",
+      "title": "Nadhif Basalamah Finds the Guardian of His Heart, Echoing Forever | Talk Melody S2 | EP19",
+      "venue": "Arsip & Lainnya",
+      "duration": "33:36",
+      "seconds": 2016,
+      "views": "1.5K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=kNVsFT9phAw"
+    },
+    {
+      "id": "vJpczMHQ2lg",
+      "title": "Dul Jaelani - Ingin Kau Tau, Tak Mau Gila Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:47",
+      "seconds": 527,
+      "views": "3.8K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=vJpczMHQ2lg"
+    },
+    {
+      "id": "U0RUMakt_GM",
+      "title": "Dul Jaelani Soal Pengaruh Kurt Cobain, Ahmad Dhani & Dewa 19 | Bicara Melodi S2 | EP18",
+      "venue": "Interview",
+      "duration": "57:21",
+      "seconds": 3441,
+      "views": "4.4K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=U0RUMakt_GM"
+    },
+    {
+      "id": "VPLl5Q2nMw8",
+      "title": "Mike Ethan - Dia Harus Tahu Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "4:33",
+      "seconds": 273,
+      "views": "516",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VPLl5Q2nMw8"
+    },
+    {
+      "id": "LzM54e0GsKw",
+      "title": "Mike Ethan on His Musical Journey with Mario Kahitna | Melody Talk S2 | EP18",
+      "venue": "Interview",
+      "duration": "27:39",
+      "seconds": 1659,
+      "views": "395",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LzM54e0GsKw"
+    },
+    {
+      "id": "rtO1GAG5cW0",
+      "title": "Dere - Kota, Biru Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:17",
+      "seconds": 497,
+      "views": "3.3K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=rtO1GAG5cW0"
+    },
+    {
+      "id": "sI9265rM2J4",
+      "title": "Dere Is More Direct in Expressing Her Doubts About Falling in Love | Bicara Melodi S2 | EP17",
+      "venue": "Interview",
+      "duration": "25:26",
+      "seconds": 1526,
+      "views": "1.2K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=sI9265rM2J4"
+    },
+    {
+      "id": "4j5TVyQEMNc",
+      "title": "Danar - Manusia Istimewa, Dulu Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:34",
+      "seconds": 574,
+      "views": "1.1K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4j5TVyQEMNc"
+    },
+    {
+      "id": "-PTZ05SbaqE",
+      "title": "Danar Dulu Dibully & Makna Manusia Istimewa | Bicara Melodi S2 | EP16",
+      "venue": "Interview",
+      "duration": "29:05",
+      "seconds": 1745,
+      "views": "285",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-PTZ05SbaqE"
+    },
+    {
+      "id": "m6rCd1Jaf8w",
+      "title": "The Lantis - Bunga Maaf, Lampu Merah Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:14",
+      "seconds": 554,
+      "views": "59K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=m6rCd1Jaf8w"
+    },
+    {
+      "id": "j7jx5cqgULw",
+      "title": "The Lantis: From Red Lights to Phenomenal Apology Flowers | Bicara Melodi S2 | EP15",
+      "venue": "Interview",
+      "duration": "35:19",
+      "seconds": 2119,
+      "views": "1.6K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=j7jx5cqgULw"
+    },
+    {
+      "id": "RKRnD2H0VLI",
+      "title": "Paul Partohap - THANK YOU 4 LOVIN' ME, VITAMIN U Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:06",
+      "seconds": 606,
+      "views": "13K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=RKRnD2H0VLI"
+    },
+    {
+      "id": "0cyuM99soig",
+      "title": "Paul Partohap Berbagi Cerita Soal Kisah Percintaan Gen Z | Bicara Melodi S2 | EP14",
+      "venue": "Interview",
+      "duration": "51:36",
+      "seconds": 3096,
+      "views": "2.1K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=0cyuM99soig"
+    },
+    {
+      "id": "b40plc4nycU",
+      "title": "Sisca Saras - Terbawa Suasana, Cinta Setara Live At Melodi Alam",
+      "venue": "Arsip & Lainnya",
+      "duration": "8:05",
+      "seconds": 485,
+      "views": "507",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=b40plc4nycU"
+    },
+    {
+      "id": "LHKPq0EapCg",
+      "title": "Sisca Saras on Relationship Equality, 'Cegil' (Crazy Girls), and Life After JKT48 | Bicara Melodi...",
+      "venue": "Interview",
+      "duration": "39:23",
+      "seconds": 2363,
+      "views": "945",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LHKPq0EapCg"
+    },
+    {
+      "id": "BPLyezxyIz4",
+      "title": "Alsa - 247, NA NA NA Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:54",
+      "seconds": 474,
+      "views": "411",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=BPLyezxyIz4"
+    },
+    {
+      "id": "4MoXgdSRA1k",
+      "title": "Alsa Soal Patah Hati Bikin Makin Kreatif, Kpop, Sampai Bucin | Bicara Melodi S2 | EP12",
+      "venue": "Interview",
+      "duration": "29:36",
+      "seconds": 1776,
+      "views": "137",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4MoXgdSRA1k"
+    },
+    {
+      "id": "K13aZ0iq4xc",
+      "title": "Mezzaluna - No Turning Back, In Situ Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:58",
+      "seconds": 538,
+      "views": "338",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=K13aZ0iq4xc"
+    },
+    {
+      "id": "So4H9rLi718",
+      "title": "Mezzaluna on Opening Up, The Beatles, and Her Perspective on Bimbim Slank | Bicara Melodi S2 | EP11",
+      "venue": "Interview",
+      "duration": "26:20",
+      "seconds": 1580,
+      "views": "1.2K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=So4H9rLi718"
+    },
+    {
+      "id": "IMnpPg_n8z4",
+      "title": "Farrel Hilal - Take It Slow, I'm Just A Man Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:28",
+      "seconds": 448,
+      "views": "2.2K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=IMnpPg_n8z4"
+    },
+    {
+      "id": "4V0oRPmskS8",
+      "title": "Farrel Hilal on Romanticizing South Jakarta and Surrendering to God | Bicara Melodi S2 | EP10",
+      "venue": "Interview",
+      "duration": "38:34",
+      "seconds": 2314,
+      "views": "1.8K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4V0oRPmskS8"
+    },
+    {
+      "id": "mO2HsJT7JZM",
+      "title": "Ahmad Abdul - Sia - Sia, Bukan Cintaku Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:48",
+      "seconds": 588,
+      "views": "2.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=mO2HsJT7JZM"
+    },
+    {
+      "id": "tgAayLfupL0",
+      "title": "Ahmad Abdul Sempat Mau Berenti Bermusik Dan Berdamai Dengan Ekspektasi | Bicara Melodi S2 | EP9",
+      "venue": "Interview",
+      "duration": "26:53",
+      "seconds": 1613,
+      "views": "1.7K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tgAayLfupL0"
+    },
+    {
+      "id": "jdj0bChTQ1I",
+      "title": "Awdella - Tak Bisa Bilang, Tertawan Hati Live at Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:52",
+      "seconds": 532,
+      "views": "4.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=jdj0bChTQ1I"
+    },
+    {
+      "id": "1JoPBTsrXDQ",
+      "title": "Awdella Lepas Dari Hubungan Toxic Dan Sampai Mau Berhenti Nyanyi | Bicara Melodi S2 | EP8",
+      "venue": "Interview",
+      "duration": "34:39",
+      "seconds": 2079,
+      "views": "2.3K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=1JoPBTsrXDQ"
+    },
+    {
+      "id": "Rs_IC3cHR7A",
+      "title": "Aziz Hedra - Somebody's Pleasure, Issa Goodbye Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "7:29",
+      "seconds": 449,
+      "views": "3.7K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Rs_IC3cHR7A"
+    },
+    {
+      "id": "-NoExVHnlPk",
+      "title": "Aziz Hedra: From Somebody's Pleasure to Normalizing Pain | Bicara Melodi S2 | EP7",
+      "venue": "Interview",
+      "duration": "33:27",
+      "seconds": 2007,
+      "views": "2.7K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-NoExVHnlPk"
+    },
+    {
+      "id": "dd-Y84ugp9w",
+      "title": "JoRaffi - Farewell, July Live at Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:09",
+      "seconds": 549,
+      "views": "1.5K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=dd-Y84ugp9w"
+    },
+    {
+      "id": "aO0l_ZhkLQg",
+      "title": "JoRaffi on Loss of Family and Partners Due to Death | Bicara Melodi S2 | EP6",
+      "venue": "Interview",
+      "duration": "25:26",
+      "seconds": 1526,
+      "views": "1.9K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=aO0l_ZhkLQg"
+    },
+    {
+      "id": "uPgVUyfvuTE",
+      "title": "Teddy Adhitya - Just You, Langit Favoritku Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "9:53",
+      "seconds": 593,
+      "views": "8.4K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=uPgVUyfvuTE"
+    },
+    {
+      "id": "Tj90MOZ4QWA",
+      "title": "Teddy Adhitya's Childhood Trauma Leads to Writing a Song at Glenn Fredly's Grave | Bicara Melodi ...",
+      "venue": "Interview",
+      "duration": "41:27",
+      "seconds": 2487,
+      "views": "492",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Tj90MOZ4QWA"
+    },
+    {
+      "id": "mXMMQuG1oP0",
+      "title": "Fanny Soegi - Dharma, Asmalibrasi Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:42",
+      "seconds": 522,
+      "views": "13K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=mXMMQuG1oP0"
+    },
+    {
+      "id": "F3Sjk634ofc",
+      "title": "Fanny Soegi : Kebaikan Sesama Manusia & Ketulusan Cinta Yang Gak Kesampaian | Bicara Melodi S2 | EP4",
+      "venue": "Interview",
+      "duration": "25:40",
+      "seconds": 1540,
+      "views": "4.8K",
+      "uploaded": "1y ago",
+      "ageBucket": "1y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=F3Sjk634ofc"
+    },
+    {
+      "id": "kI79drnBx20",
+      "title": "dbatlayar - Badut Baru, Mawar Merah Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "12:39",
+      "seconds": 759,
+      "views": "5.9K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=kI79drnBx20"
+    },
+    {
+      "id": "wjd1Jpspvv8",
+      "title": "Dbatlayar About Unrequited Love and Disappointed Expectations | Bicara Melodi S2 | EP3",
+      "venue": "Interview",
+      "duration": "22:45",
+      "seconds": 1365,
+      "views": "2K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=wjd1Jpspvv8"
+    },
+    {
+      "id": "qiGahWz-bEE",
+      "title": "Rufi - Dialog Hujan, Teman Bicara Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "10:18",
+      "seconds": 618,
+      "views": "4.7K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=qiGahWz-bEE"
+    },
+    {
+      "id": "5gxMJI6XZXg",
+      "title": "Ruffy Finds Similarities With Bernadya in Experiencing the Bitterness of Life | Bicara Melodi S2 ...",
+      "venue": "Interview",
+      "duration": "24:27",
+      "seconds": 1467,
+      "views": "1.8K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=5gxMJI6XZXg"
+    },
+    {
+      "id": "4c-Osh2zkqY",
+      "title": "Lalahuta - Status Palsu, Kamu Yang Sakit Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "8:20",
+      "seconds": 500,
+      "views": "4K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4c-Osh2zkqY"
+    },
+    {
+      "id": "0Phjvhk___s",
+      "title": "Lalahuta Makes a Breakthrough by Writing a Song for Homewreckers | Bicara Melodi S2 | EP1",
+      "venue": "Interview",
+      "duration": "30:40",
+      "seconds": 1840,
+      "views": "2.4K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=0Phjvhk___s"
+    },
+    {
+      "id": "ORinmwKGM2E",
+      "title": "Swara Samsara Vol. 03: Live Spinning by RAW - Mulham",
+      "venue": "Arsip & Lainnya",
+      "duration": "1:08:46",
+      "seconds": 4126,
+      "views": "288",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ORinmwKGM2E"
+    },
+    {
+      "id": "rIFd77vOqnw",
+      "title": "Swara Samsara Vol. 02: Live Spinning by RAW - Emon",
+      "venue": "Arsip & Lainnya",
+      "duration": "50:35",
+      "seconds": 3035,
+      "views": "340",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=rIFd77vOqnw"
+    },
+    {
+      "id": "U0fLxpBzssY",
+      "title": "Swara Samsara Vol. 01: Live Spinning by RAW - Bonnie",
+      "venue": "Arsip & Lainnya",
+      "duration": "59:36",
+      "seconds": 3576,
+      "views": "572",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=U0fLxpBzssY"
+    },
+    {
+      "id": "eih17LLbWKE",
+      "title": "Nonaria - Juwita Malam Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "4:54",
+      "seconds": 294,
+      "views": "20K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=eih17LLbWKE"
+    },
+    {
+      "id": "OAd5V7BZBBM",
+      "title": "Mocca - Teman Sejati Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "4:39",
+      "seconds": 279,
+      "views": "9K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=OAd5V7BZBBM"
+    },
+    {
+      "id": "5QBzdhScNb8",
+      "title": "Mocca - I Love You Anyway Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "6:09",
+      "seconds": 369,
+      "views": "9.7K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=5QBzdhScNb8"
+    },
+    {
+      "id": "euD021UcCpc",
+      "title": "Nonaria - Santai Live At Melodi Samsara",
+      "venue": "Melodi Samsara",
+      "duration": "3:25",
+      "seconds": 205,
+      "views": "12K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=euD021UcCpc"
+    },
+    {
+      "id": "ijgXkGyRAcg",
+      "title": "Raissa Ramadhani - Berpisah Lebih Indah, Seribu Pelukan Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:59",
+      "seconds": 479,
+      "views": "18K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ijgXkGyRAcg"
+    },
+    {
+      "id": "09x4D_wSPqY",
+      "title": "Raissa Ramadhani : Seribu Pelukan Untuk Yang Sedang Berduka | Bicara Melodi EP40",
+      "venue": "Interview",
+      "duration": "18:39",
+      "seconds": 1119,
+      "views": "4.6K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=09x4D_wSPqY"
+    },
+    {
+      "id": "OyAeEBgzvI0",
+      "title": "Sheryl Sheinafia - Dear Mr. Petty Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "5:15",
+      "seconds": 315,
+      "views": "13K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=OyAeEBgzvI0"
+    },
+    {
+      "id": "0_9xdfekL5M",
+      "title": "Sheryl Sheinafia: On the realities of today's romantic relationships | Bicara Melodi EP39",
+      "venue": "Interview",
+      "duration": "42:48",
+      "seconds": 2568,
+      "views": "4.9K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=0_9xdfekL5M"
+    },
+    {
+      "id": "ROEDdIIX4jM",
+      "title": "Ify Alyssa - Semesta Menari, Tak Istimewa Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:53",
+      "seconds": 473,
+      "views": "16K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ROEDdIIX4jM"
+    },
+    {
+      "id": "MqKG28W5yto",
+      "title": "Ify Alyssa: A Mature Separation Through Nothing Special | Talk Melody EP38",
+      "venue": "Arsip & Lainnya",
+      "duration": "23:39",
+      "seconds": 1419,
+      "views": "6.8K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=MqKG28W5yto"
+    },
+    {
+      "id": "8Fj7MsLVWsQ",
+      "title": "Enau - Putih Abu Abu, Rakyat Biasa Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:21",
+      "seconds": 441,
+      "views": "8.8K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=8Fj7MsLVWsQ"
+    },
+    {
+      "id": "tDjN4DCvQ1s",
+      "title": "Enau: Ari Lesmana Became His Inspiration to Choose a Life in Music | Bicara Melodi EP37",
+      "venue": "Interview",
+      "duration": "21:18",
+      "seconds": 1278,
+      "views": "6.6K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tDjN4DCvQ1s"
+    },
+    {
+      "id": "TtashOV2ALk",
+      "title": "Neida - Amuleto, Menunggu Tenang Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "8:24",
+      "seconds": 504,
+      "views": "9.3K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=TtashOV2ALk"
+    },
+    {
+      "id": "6_ERHG8WqtU",
+      "title": "Neida : Menuangkan Alter Ego & Proses Pendewasaan Lewat Project Solonya | Bicara Melodi EP36",
+      "venue": "Interview",
+      "duration": "15:50",
+      "seconds": 950,
+      "views": "2.5K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6_ERHG8WqtU"
+    },
+    {
+      "id": "_O_hZt9JtrU",
+      "title": "Satine Zaneta - Salah Waktu, Jam Satu Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "6:53",
+      "seconds": 413,
+      "views": "12K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=_O_hZt9JtrU"
+    },
+    {
+      "id": "QSY08rdjx40",
+      "title": "Satine Zaneta : Mengagumi Dari Jarak Jauh Lewat Jam Satu | Bicara Melodi EP35",
+      "venue": "Interview",
+      "duration": "24:49",
+      "seconds": 1489,
+      "views": "3.8K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=QSY08rdjx40"
+    },
+    {
+      "id": "78arp1TPeKM",
+      "title": "Rahmania Astrini - Whenever, Someday Somewhere Someplace Somehow Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:27",
+      "seconds": 447,
+      "views": "11K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=78arp1TPeKM"
+    },
+    {
+      "id": "KeVP2T8VHgE",
+      "title": "Rahmania Astrini: The Person Who Opened the Coldplay Concert in Jakarta | Bicara Melodi EP34",
+      "venue": "Interview",
+      "duration": "25:01",
+      "seconds": 1501,
+      "views": "4.7K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=KeVP2T8VHgE"
+    },
+    {
+      "id": "WG-6dHVMe9A",
+      "title": "Und Bodevan - Jatukrama Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:35",
+      "seconds": 275,
+      "views": "10K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=WG-6dHVMe9A"
+    },
+    {
+      "id": "siB82marItU",
+      "title": "Und Bodevan Recaps the Story Behind the 1931 Apartment | Talk Melody EP33",
+      "venue": "Arsip & Lainnya",
+      "duration": "36:22",
+      "seconds": 2182,
+      "views": "3.2K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=siB82marItU"
+    },
+    {
+      "id": "1Fby466bJJU",
+      "title": "Gavendri - Empathy Is A Bitch, A Lil Longer Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:41",
+      "seconds": 461,
+      "views": "11K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=1Fby466bJJU"
+    },
+    {
+      "id": "vfc-r10MXAQ",
+      "title": "Gavendri : Empati Berlebih Bisa Merugikan Diri Sendiri | Bicara Melodi EP32",
+      "venue": "Interview",
+      "duration": "28:42",
+      "seconds": 1722,
+      "views": "3.1K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=vfc-r10MXAQ"
+    },
+    {
+      "id": "QewXS8auZ0I",
+      "title": "Chintya Gabriella - Siap Terluka Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:22",
+      "seconds": 262,
+      "views": "4.3K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=QewXS8auZ0I"
+    },
+    {
+      "id": "q1qpsSx-Pso",
+      "title": "Chintya Gabriella Cerita Perjalanannya Menyembuhkan Luka | Bicara Melodi EP31",
+      "venue": "Interview",
+      "duration": "31:25",
+      "seconds": 1885,
+      "views": "2.2K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=q1qpsSx-Pso"
+    },
+    {
+      "id": "EJUacsZdlLY",
+      "title": "Maizura - Aku Tanpamu, Denganmu Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "8:32",
+      "seconds": 512,
+      "views": "7.9K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=EJUacsZdlLY"
+    },
+    {
+      "id": "Oa2S0n2Awo8",
+      "title": "Maizura Was At Her Lowest Phase Until She Didn't Want to Play Music Anymore?? | Bicara Melodi EP30",
+      "venue": "Interview",
+      "duration": "41:17",
+      "seconds": 2477,
+      "views": "3.8K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Oa2S0n2Awo8"
+    },
+    {
+      "id": "JV6j6C0u35o",
+      "title": "Biru Baru - Hari Ini Terasa Berat Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:52",
+      "seconds": 232,
+      "views": "10K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=JV6j6C0u35o"
+    },
+    {
+      "id": "d_dZ1cHkVCc",
+      "title": "Biru Baru Discuss Rising From Their Lowest Point in Life | Bicara Melodi EP29",
+      "venue": "Interview",
+      "duration": "52:14",
+      "seconds": 3134,
+      "views": "6.2K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=d_dZ1cHkVCc"
+    },
+    {
+      "id": "kFSrmQH5wdY",
+      "title": "Elisa Jacquline - Lantas Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:29",
+      "seconds": 269,
+      "views": "12K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=kFSrmQH5wdY"
+    },
+    {
+      "id": "29uTp95XJBg",
+      "title": "Elisa Jacquline Ngungkapin Rasanya Duet Sama David Foster !! | Bicara Melodi EP28",
+      "venue": "Interview",
+      "duration": "34:45",
+      "seconds": 2085,
+      "views": "5K",
+      "uploaded": "2y ago",
+      "ageBucket": "2y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=29uTp95XJBg"
+    },
+    {
+      "id": "LDp3su2y4ys",
+      "title": "Dere - Berisik, Tumbang Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "8:06",
+      "seconds": 486,
+      "views": "132K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LDp3su2y4ys"
+    },
+    {
+      "id": "pSc6ln_keN8",
+      "title": "Does Dere Feel Like Her Life Is a Rubik's Cube? And Her Sincere Role in Her Music | Talk Melody EP27",
+      "venue": "Arsip & Lainnya",
+      "duration": "41:10",
+      "seconds": 2470,
+      "views": "5.8K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=pSc6ln_keN8"
+    },
+    {
+      "id": "6OxtI7iq6ZI",
+      "title": "Jubilee Marisa - Twentysixteen, Good Guys Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:02",
+      "seconds": 422,
+      "views": "8.4K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6OxtI7iq6ZI"
+    },
+    {
+      "id": "UKsCurhiJQA",
+      "title": "Jubilee Marisa Ngerasa Trauma Dengan Cinta? | Bicara Melodi  EP26",
+      "venue": "Interview",
+      "duration": "33:45",
+      "seconds": 2025,
+      "views": "5.1K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=UKsCurhiJQA"
+    },
+    {
+      "id": "ynbnicUBt10",
+      "title": "Agatha Pricilla - It's Coming Your Way Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:43",
+      "seconds": 223,
+      "views": "7.6K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ynbnicUBt10"
+    },
+    {
+      "id": "1QOYwtAkAzs",
+      "title": "Agatha Pricilla Uses Her Mother's Advice as a Guide for Life's Challenges | Bicara Melodi EP25",
+      "venue": "Interview",
+      "duration": "38:15",
+      "seconds": 2295,
+      "views": "385",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=1QOYwtAkAzs"
+    },
+    {
+      "id": "6mlNOUkog1w",
+      "title": "Nonaria - Santai, Sebusur Pelangi Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:22",
+      "seconds": 442,
+      "views": "12K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6mlNOUkog1w"
+    },
+    {
+      "id": "WY51L7JCv60",
+      "title": "Nonaria Menyuarakan Lingkungan Hidup Lewat Musik Jazz | Bicara Melodi EP24",
+      "venue": "Interview",
+      "duration": "41:58",
+      "seconds": 2518,
+      "views": "380",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=WY51L7JCv60"
+    },
+    {
+      "id": "LawVhtF4Ieg",
+      "title": "Donne Maula - Bercinta Lewat Kata Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:01",
+      "seconds": 181,
+      "views": "131K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LawVhtF4Ieg"
+    },
+    {
+      "id": "eWKla6XnHC8",
+      "title": "Bicara Melodi EP23 | Donne Maula Bongkar Kisah Percubuatan Nya Dengan Yura Yunita",
+      "venue": "Interview",
+      "duration": "41:10",
+      "seconds": 2470,
+      "views": "3.1K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=eWKla6XnHC8"
+    },
+    {
+      "id": "au7ux13ELqs",
+      "title": "Bernadya - Terlintas, Satu Bulan Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "7:56",
+      "seconds": 476,
+      "views": "94K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=au7ux13ELqs"
+    },
+    {
+      "id": "oI3gAq6iOgs",
+      "title": "Bicara Melodi EP22 | Bernadya menuangkan overthinking nya lewat E.P \"Terlintas\"",
+      "venue": "Interview",
+      "duration": "38:08",
+      "seconds": 2288,
+      "views": "9.8K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=oI3gAq6iOgs"
+    },
+    {
+      "id": "fbAuxkFWXEI",
+      "title": "Kalya Islamadina - 23 (Too Deep, Too Much) Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:49",
+      "seconds": 289,
+      "views": "578",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=fbAuxkFWXEI"
+    },
+    {
+      "id": "Re4y582Swj4",
+      "title": "Bicara Melodi EP21 | Kalya Islamadina Ngobrolin Kisah Cinta Remaja Sampai Persoalan Zodiak",
+      "venue": "Interview",
+      "duration": "44:35",
+      "seconds": 2675,
+      "views": "356",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Re4y582Swj4"
+    },
+    {
+      "id": "tdUTJ_GhNy4",
+      "title": "Jordan Susanto - Cherry Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:43",
+      "seconds": 283,
+      "views": "4.6K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tdUTJ_GhNy4"
+    },
+    {
+      "id": "HLELcT2_ljE",
+      "title": "Bicara Melodi EP20 | Did Jordan Susanto Ever Have a Bad Experience on Stage??!",
+      "venue": "Interview",
+      "duration": "33:51",
+      "seconds": 2031,
+      "views": "1.3K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=HLELcT2_ljE"
+    },
+    {
+      "id": "-vtS0hsBFcI",
+      "title": "Prince Husein - Ke Tempat Kau Ingin Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:12",
+      "seconds": 192,
+      "views": "1.7K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-vtS0hsBFcI"
+    },
+    {
+      "id": "_Ayvviu1l3o",
+      "title": "Bicara Melodi EP19 | PRINCE HUSEIN CERITAIN DILEMA MENJADI PEOPLE PLEASER",
+      "venue": "Interview",
+      "duration": "36:28",
+      "seconds": 2188,
+      "views": "142",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=_Ayvviu1l3o"
+    },
+    {
+      "id": "TxShPj9i0k8",
+      "title": "Bicara Melodi EP18 | THE SOUNDS PROJECT VOL.6 SIAP MENGHADIRKAN BANYAK KEJUTAN!!",
+      "venue": "Interview",
+      "duration": "27:43",
+      "seconds": 1663,
+      "views": "218",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=TxShPj9i0k8"
+    },
+    {
+      "id": "jQg9UsfEpmw",
+      "title": "Manutized - Nativity Trip Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:28",
+      "seconds": 268,
+      "views": "665",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=jQg9UsfEpmw"
+    },
+    {
+      "id": "sr-GTFJKs9M",
+      "title": "Bicara Melodi EP17 | MANUTIZED SHARES HIS CHILDHOOD BULLYING EXPERIENCE THROUGH THE SONG \"NATIVIT...",
+      "venue": "Interview",
+      "duration": "43:10",
+      "seconds": 2590,
+      "views": "160",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=sr-GTFJKs9M"
+    },
+    {
+      "id": "6BQMPA4Qa-E",
+      "title": "Rayhan Noor - Seumur Hidupku Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:04",
+      "seconds": 184,
+      "views": "1.1K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=6BQMPA4Qa-E"
+    },
+    {
+      "id": "gs6i4ADDZXI",
+      "title": "Bicara Melodi EP16 | RAYHAN NOOR MENUANGKAN KERESAHANNYA LEWAT ALBUM \"MENJELANG TIGA PULUH\"",
+      "venue": "Interview",
+      "duration": "30:23",
+      "seconds": 1823,
+      "views": "373",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=gs6i4ADDZXI"
+    },
+    {
+      "id": "gvJBlTkplS8",
+      "title": "Nadhif Basalamah - Penjaga Hati Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:58",
+      "seconds": 238,
+      "views": "275K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=gvJBlTkplS8"
+    },
+    {
+      "id": "iqfqKFS2sQc",
+      "title": "Bicara Melodi EP15 | NADHIF BASALAMAH AKAN NGELAKUIN APAPUN ITU!! UNTUK SIAPA YA??",
+      "venue": "Interview",
+      "duration": "42:35",
+      "seconds": 2555,
+      "views": "2.4K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=iqfqKFS2sQc"
+    },
+    {
+      "id": "tQBNsLcbQ_g",
+      "title": "Bilal Indrajaya - Nelangsa Pasar Turi Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:41",
+      "seconds": 221,
+      "views": "16K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=tQBNsLcbQ_g"
+    },
+    {
+      "id": "e6C3rXfa1mI",
+      "title": "Bicara Melodi EP14 | BILAL INDRAJAYA UNGKAP FAKTA DIBALIK NELANGSA PASAR TURI",
+      "venue": "Interview",
+      "duration": "23:54",
+      "seconds": 1434,
+      "views": "1.2K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=e6C3rXfa1mI"
+    },
+    {
+      "id": "4TFlWqTKuyc",
+      "title": "Uap Widya - Crush Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:45",
+      "seconds": 225,
+      "views": "341",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=4TFlWqTKuyc"
+    },
+    {
+      "id": "coxF36ojApA",
+      "title": "Bicara Melodi EP13 | UAP WIDYA BERBAGI CERITA BANGKIT DARI KETERPURUKAN",
+      "venue": "Interview",
+      "duration": "40:11",
+      "seconds": 2411,
+      "views": "225",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=coxF36ojApA"
+    },
+    {
+      "id": "oqNedMmI338",
+      "title": "Yefta James - Pelahir Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:31",
+      "seconds": 271,
+      "views": "885",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=oqNedMmI338"
+    },
+    {
+      "id": "Eh2KAbeycR0",
+      "title": "Bicara Melodi EP12 | YEFTA JAMES NGINGETIN KITA PENTINGNYA PERAN SEORANG IBU BAGI KEHIDUPAN",
+      "venue": "Interview",
+      "duration": "31:48",
+      "seconds": 1908,
+      "views": "270",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Eh2KAbeycR0"
+    },
+    {
+      "id": "TeryqdVFCJ4",
+      "title": "Sade Susanto - I Love You No Matter Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:24",
+      "seconds": 264,
+      "views": "1.2K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=TeryqdVFCJ4"
+    },
+    {
+      "id": "-rw6CaBEsuI",
+      "title": "Bicara Melodi EP11 | SADE SUSANTO CERITA PERJALANAN KARIR NYA SAMPAI KE AMI AWARDS!!",
+      "venue": "Interview",
+      "duration": "36:23",
+      "seconds": 2183,
+      "views": "113",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=-rw6CaBEsuI"
+    },
+    {
+      "id": "Z2XJY22YBZs",
+      "title": "Della Firdatia - Belum Sembuh Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:27",
+      "seconds": 207,
+      "views": "380",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=Z2XJY22YBZs"
+    },
+    {
+      "id": "wgq_JEHC-Q8",
+      "title": "Bicara Melodi EP10 | DELLA FIRDATIA CURHAT GAGAL MOVE ON LEWAT LAGU \"BELUM SEMBUH\" ???",
+      "venue": "Interview",
+      "duration": "29:16",
+      "seconds": 1756,
+      "views": "125",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=wgq_JEHC-Q8"
+    },
+    {
+      "id": "OQEgAhQsa5E",
+      "title": "Sharen Fernandez - Sembuh Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "4:38",
+      "seconds": 278,
+      "views": "441",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=OQEgAhQsa5E"
+    },
+    {
+      "id": "eVbcJPkBv_A",
+      "title": "Bicara Melodi EP09 | SHAREN FERNANDEZ HAMPIR GAK MAU BERMUSIK LAGI GARA-GARA INI??!",
+      "venue": "Interview",
+      "duration": "24:40",
+      "seconds": 1480,
+      "views": "174",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=eVbcJPkBv_A"
+    },
+    {
+      "id": "uJpgovoD6q0",
+      "title": "Adrian Setiawan - Semesta, Feeling Live At Melodi Taman",
+      "venue": "Melodi Taman",
+      "duration": "3:53",
+      "seconds": 233,
+      "views": "373",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=uJpgovoD6q0"
+    },
+    {
+      "id": "ieE7rPyoSoE",
+      "title": "Bicara Melodi EP08 | ADRIAN SETIAWAN SUKA MUSIK KARENA NONTON TOM & JERRY??!",
+      "venue": "Interview",
+      "duration": "29:14",
+      "seconds": 1754,
+      "views": "50",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ieE7rPyoSoE"
+    },
+    {
+      "id": "V6PGAFDMtyE",
+      "title": "TANJUNG - Making Memories Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "4:04",
+      "seconds": 244,
+      "views": "692",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=V6PGAFDMtyE"
+    },
+    {
+      "id": "WdBrA3EUlEo",
+      "title": "Bicara Melodi EP07 | PSYCHEDELIC BIKIN TANJUNG BERADA DI DIMENSI LAIN??",
+      "venue": "Interview",
+      "duration": "28:18",
+      "seconds": 1698,
+      "views": "118",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=WdBrA3EUlEo"
+    },
+    {
+      "id": "ZwOHqAi5T-k",
+      "title": "Alif Toeanradjo - Nothing Comes Easy Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "5:04",
+      "seconds": 304,
+      "views": "300",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ZwOHqAi5T-k"
+    },
+    {
+      "id": "vG-cBFE5tiE",
+      "title": "Bicara Melodi EP06 | ALIF TOEANRADJO TRAUMA NGEBAND? AKHIRNYA UNGKAPIN SEMUA KERESAHANNYA DISINI...",
+      "venue": "Interview",
+      "duration": "37:49",
+      "seconds": 2269,
+      "views": "116",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=vG-cBFE5tiE"
+    },
+    {
+      "id": "LOJHeRGVhto",
+      "title": "Ivan Heri - Dawai Asa Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "4:30",
+      "seconds": 270,
+      "views": "383",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LOJHeRGVhto"
+    },
+    {
+      "id": "PtasoO68Phc",
+      "title": "Bicara Melodi EP05 | LAGU DAWAI ASA HAMPIR TIDAK MASUK DI MINI ALBUM IVAN HERI ???",
+      "venue": "Interview",
+      "duration": "31:31",
+      "seconds": 1891,
+      "views": "140",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=PtasoO68Phc"
+    },
+    {
+      "id": "WLNJApHYp0g",
+      "title": "Sekaranggi - Kiss Me Slowly Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "4:00",
+      "seconds": 240,
+      "views": "502",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=WLNJApHYp0g"
+    },
+    {
+      "id": "en0zqbCRrLE",
+      "title": "Bicara Melodi EP04 | Sekaranggi Bongkar Lagu Kiss Me Slowly Buat Siapa???",
+      "venue": "Interview",
+      "duration": "38:18",
+      "seconds": 2298,
+      "views": "224",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=en0zqbCRrLE"
+    },
+    {
+      "id": "oqcMnnYAr00",
+      "title": "Natasya Elvira - Aku Takut Mencintaimu Selamanya Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "2:59",
+      "seconds": 179,
+      "views": "1.5K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=oqcMnnYAr00"
+    },
+    {
+      "id": "r_jZirW5NRU",
+      "title": "Bicara Melodi EP03 | BULLIED BY NETIZENS for Her Type of Guy!",
+      "venue": "Interview",
+      "duration": "25:42",
+      "seconds": 1542,
+      "views": "357",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=r_jZirW5NRU"
+    },
+    {
+      "id": "nbKJUTaOJsc",
+      "title": "Swain Mahisa - Jantung Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "3:43",
+      "seconds": 223,
+      "views": "1.7K",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=nbKJUTaOJsc"
+    },
+    {
+      "id": "b23T4zZDjeM",
+      "title": "Bicara Melodi EP02 | Quarter Life Crisis dari Umur 18???",
+      "venue": "Interview",
+      "duration": "20:09",
+      "seconds": 1209,
+      "views": "132",
+      "uploaded": "3y ago",
+      "ageBucket": "3y",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=b23T4zZDjeM"
+    },
+    {
+      "id": "LxMyMlqSQYk",
+      "title": "Yahya - keepyousafe Live at MELODI TAMAN",
+      "venue": "Melodi Taman",
+      "duration": "4:59",
+      "seconds": 299,
+      "views": "1.7K",
+      "uploaded": "4y ago",
+      "ageBucket": "4y+",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=LxMyMlqSQYk"
+    },
+    {
+      "id": "84JAXP8mFcc",
+      "title": "Bicara Melodi EP01 | keepyousafe hampir 50JUTA Stream! Yahya Fadhilah mau bilang makasih sama.....",
+      "venue": "Interview",
+      "duration": "17:40",
+      "seconds": 1060,
+      "views": "610",
+      "uploaded": "4y ago",
+      "ageBucket": "4y+",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=84JAXP8mFcc"
+    },
+    {
+      "id": "ZYeqBLWpKoQ",
+      "title": "The Uncommon Journey Vol.1 2019 - #TUJVOL1 - Official Aftermovie",
+      "venue": "Arsip & Lainnya",
+      "duration": "2:45",
+      "seconds": 165,
+      "views": "3.1K",
+      "uploaded": "6y ago",
+      "ageBucket": "4y+",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=ZYeqBLWpKoQ"
+    },
+    {
+      "id": "meVwuqQtErU",
+      "title": "Festival Musik Melodi Alam 2017 - Hutan Pinus Gunung Pancar - Bogor [Aftermovie]",
+      "venue": "Arsip & Lainnya",
+      "duration": "1:01",
+      "seconds": 61,
+      "views": "10K",
+      "uploaded": "9y ago",
+      "ageBucket": "4y+",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=meVwuqQtErU"
+    },
+    {
+      "id": "VDbxDrQb2Fs",
+      "title": "Teaser Festival Musik Melodi Alam 2017",
+      "venue": "Arsip & Lainnya",
+      "duration": "1:01",
+      "seconds": 61,
+      "views": "7.8K",
+      "uploaded": "9y ago",
+      "ageBucket": "4y+",
+      "featuring": [],
+      "url": "https://www.youtube.com/watch?v=VDbxDrQb2Fs"
+    }
+  ],
+  "shorts": [
+    {
+      "id": "-0MyT_NpjMM",
+      "title": "@endahnrhesa Baby It's You, When You Love Someone, Liburan Indie LIVE! #shorts #clips #livesession",
+      "views": "716 views",
+      "url": "https://www.youtube.com/shorts/-0MyT_NpjMM"
+    },
+    {
+      "id": "jKgC0EO63Fg",
+      "title": "@endahnrhesa's Journey: Nurturing the Spirit of Two Decades of Creation #shorts #clip #endahnrhesa",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/jKgC0EO63Fg"
+    },
+    {
+      "id": "QK5PGzVlPI4",
+      "title": "Melody of Samsara Hanin Dhiya   Reels",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/QK5PGzVlPI4"
+    },
+    {
+      "id": "pThevmOqyiQ",
+      "title": "@Hanindhiyatys21's message for those of you currently in denial #podcastclips #shorts #hanindhiya...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/pThevmOqyiQ"
+    },
+    {
+      "id": "A5t0GdEo3R0",
+      "title": "@Dua Empat MY FUNNY GUY & PICCADILLY LIVE!!! #shorts #livesession #jazz",
+      "views": "909 views",
+      "url": "https://www.youtube.com/shorts/A5t0GdEo3R0"
+    },
+    {
+      "id": "83_UEH6VD-s",
+      "title": "@DuaEmpatMusic Used to be emo screamo kids, now they're jazz musicians!! #shorts #podcast #duaempat",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/83_UEH6VD-s"
+    },
+    {
+      "id": "OhYvmXdkilo",
+      "title": "Bilal Indrajaya Talks Melodies ~ Reels",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/OhYvmXdkilo"
+    },
+    {
+      "id": "Fj0xNgCNb_I",
+      "title": "@TopiJeramiOfficial Watch, Listen, Repeat & Morning LIVE!!! #topijerami #livesession #clips #poppunk",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/Fj0xNgCNb_I"
+    },
+    {
+      "id": "bWaJyjc_cfM",
+      "title": "REELS TALKING MELODY 8",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/bWaJyjc_cfM"
+    },
+    {
+      "id": "Rs6QrR-10V0",
+      "title": "@Khifnunu AWAL & TAK PERLU KHAWATIR BERLEBIHAN LIVE!!! #livesession #clips #khifnu",
+      "views": "319 views",
+      "url": "https://www.youtube.com/shorts/Rs6QrR-10V0"
+    },
+    {
+      "id": "L7K4ti5XJYw",
+      "title": "KHIFNU WAS BULLIED FOR SINGING POP SO HE SWITCHED TO NASYID? #khifnu #katakansaja #pop #clips #po...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/L7K4ti5XJYw"
+    },
+    {
+      "id": "tKLpEjgQqkQ",
+      "title": "KLARIFIKASI ALGOJO MUSIK YANG BIKIN RESAH MUSISI @hifdzikhoir  #barasuara #kuntoaji #clip #podcast",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/tKLpEjgQqkQ"
+    },
+    {
+      "id": "RokVm7rpNIk",
+      "title": "REELS MELODI SAMSARA 6",
+      "views": "898 views",
+      "url": "https://www.youtube.com/shorts/RokVm7rpNIk"
+    },
+    {
+      "id": "plcxE2rJN10",
+      "title": "KUNTO AJI IS BETTER THAN BARASUARA... DO YOU AGREE WITH HIFDZI KHOIR?! #clips #podcast #gjls",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/plcxE2rJN10"
+    },
+    {
+      "id": "az7HeM71jDQ",
+      "title": "@babonband Mirage & Message From the Desert Ft. Tanya Ditaputri LIVE!!! #shorts #livesession #clip",
+      "views": "269 views",
+      "url": "https://www.youtube.com/shorts/az7HeM71jDQ"
+    },
+    {
+      "id": "MWg-3s9iK7E",
+      "title": "THE SECRET BEHIND AWAN GARNIDA KEEPING SORE TOGETHER FOR OVER 30 YEARS IN THE MUSIC SCENE",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/MWg-3s9iK7E"
+    },
+    {
+      "id": "O0_ksXMGmGs",
+      "title": "NOSTALGIA \"KAROLINA\" BY SORE, THE SOUNDTRACK FOR THOSE WHO HAVE ADMIRED SOMEONE SO DEEPLY",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/O0_ksXMGmGs"
+    },
+    {
+      "id": "uW2gYkEHvgQ",
+      "title": "SORE ZE BAND’S “MATI SURI DI TAMAN” LYRICS CAME FROM A MYSTERIOUS WHISPER ?!",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/uW2gYkEHvgQ"
+    },
+    {
+      "id": "bFMsfciKvuA",
+      "title": "CHAOSNYA SUKSES LANCAR REJEKI MANGGUNG, DARI KACA PECAH SAMPAI ADA MALING #shorts #podcast",
+      "views": "2.4K views",
+      "url": "https://www.youtube.com/shorts/bFMsfciKvuA"
+    },
+    {
+      "id": "Sg8PGDP4ERM",
+      "title": "Does @TheOvertunes' \"Sayap Pelindungmu\" Sound Like Boyzone's \"Center of Gravity\"?? #podcast",
+      "views": "1.9K views",
+      "url": "https://www.youtube.com/shorts/Sg8PGDP4ERM"
+    },
+    {
+      "id": "icwDI0B3p30",
+      "title": "@babonband A Blend of Tropical Desert Rhythms & The Tropical Desert Album! #shorts #podcast #midd...",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/icwDI0B3p30"
+    },
+    {
+      "id": "cK0ldG4Lsdw",
+      "title": "Samsara Melody Reels ~ Nuh",
+      "views": "282 views",
+      "url": "https://www.youtube.com/shorts/cK0ldG4Lsdw"
+    },
+    {
+      "id": "sDD6DPIam5U",
+      "title": "Talking Melodies Reels ~ Nuh",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/sDD6DPIam5U"
+    },
+    {
+      "id": "Me1b55xaZeI",
+      "title": "WAS THE SONG AKAD REJECTED BY SOME LISTENERS?!",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/Me1b55xaZeI"
+    },
+    {
+      "id": "FdcYVKGKHIY",
+      "title": "THE REAL REASON PARADE HUJAN DECIDED TO DROP THE NAME PAYUNG TEDUH",
+      "views": "1.9K views",
+      "url": "https://www.youtube.com/shorts/FdcYVKGKHIY"
+    },
+    {
+      "id": "sBH-OJEkjrg",
+      "title": "THIS IS WHAT EKA ANNASH HAS TO SAY ABOUT THE LOCAL MUSIC INDUSTRY TODAY!",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/sBH-OJEkjrg"
+    },
+    {
+      "id": "AhaesOVSPwI",
+      "title": "THE BRANDALS WILL CONTINUE TO CALL OUT THE MANY FAILURES OF THOSE IN POWER",
+      "views": "333 views",
+      "url": "https://www.youtube.com/shorts/AhaesOVSPwI"
+    },
+    {
+      "id": "hMUAtXdV0k4",
+      "title": "STILL VIRGIN REVEALS THE SECRET BEHIND THE DEAR NDUT PERSONA!",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/hMUAtXdV0k4"
+    },
+    {
+      "id": "uGTJi7SKrkE",
+      "title": "REELS MELODY OF SAMSARA 4",
+      "views": "783 views",
+      "url": "https://www.youtube.com/shorts/uGTJi7SKrkE"
+    },
+    {
+      "id": "x-dE9vlBDjU",
+      "title": "@sorezeband4760 Preserving Ade Paloh's Legacy Through a New Lineup & Surya’s Impending Departure ...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/x-dE9vlBDjU"
+    },
+    {
+      "id": "fDKu52hp_KU",
+      "title": "@deelest (Don't) Fall in Love & Angels Also Know LIVE! #shorts #livesession #glennfredly #music",
+      "views": "1.9K views",
+      "url": "https://www.youtube.com/shorts/fDKu52hp_KU"
+    },
+    {
+      "id": "2NLbtMnj5ms",
+      "title": "@deelest Has Been Creating for 30 Years and Starting Over Through (Don't) Fall in Love #shorts #clip",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/2NLbtMnj5ms"
+    },
+    {
+      "id": "UEWwOkOyaNg",
+      "title": "@Partikel Penyusun Atom The way & Jebakan Betmen LIVE!! #shorts #livesession #clip #newwave #jebakan",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/UEWwOkOyaNg"
+    },
+    {
+      "id": "YFr9Kq-S1ZI",
+      "title": "Fed Up With the System, @partikelpenyusun Speaks Out on the State of the Nation & Corrupt Politic...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/YFr9Kq-S1ZI"
+    },
+    {
+      "id": "5yryVSwJPpk",
+      "title": "@TheSoundsProject Brings 3 Exclusive International Lineups Only At The Sounds Project! #shorts #c...",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/5yryVSwJPpk"
+    },
+    {
+      "id": "5zfufB42zOg",
+      "title": "@SuksesLancarRejekiSLR Album Can Explode & Elephant Sarong War Moshing LIVE! #shorts #livesession",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/5zfufB42zOg"
+    },
+    {
+      "id": "POra6VxDe54",
+      "title": "@SuksesLancarRejekiSLR The Punk Band That Wards Off Thieves! #shorts #clips #podcast #ntrl #thieves",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/POra6VxDe54"
+    },
+    {
+      "id": "a3jPjLhFGDY",
+      "title": "@TheOvertunes Plagiarism Allegations in the songs Sayap Pelindungmu & Sampai Kapan? #shorts #clip...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/a3jPjLhFGDY"
+    },
+    {
+      "id": "IXds5riwnCA",
+      "title": "@TheOvertunes Tak Bisa Kupercaya & Sampai Kapan? LIVE!! #shorts #music #theovertunes #livesession",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/IXds5riwnCA"
+    },
+    {
+      "id": "uRQsK90j8-E",
+      "title": "@abbydzar Still Here & Rain in Jakarta LIVE!! #music #shorts #livesession #clips",
+      "views": "275 views",
+      "url": "https://www.youtube.com/shorts/uRQsK90j8-E"
+    },
+    {
+      "id": "aVr1XYPxv0Q",
+      "title": "@abbydzar Leaving Svmmerdose & Starting Her Solo Project?! #shorts #podcast #clips",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/aVr1XYPxv0Q"
+    },
+    {
+      "id": "tmJ9BDXM__w",
+      "title": "@ParadeHujan-ID Cahaya & For the Woman Currently in Your Embrace LIVE!! #music #shorts #payungteduh",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/tmJ9BDXM__w"
+    },
+    {
+      "id": "NknPtQWtqTQ",
+      "title": "@ParadeHujan-ID Starting a New Era Through Cahaya & Laju and the Transition from Payung Teduh #sh...",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/NknPtQWtqTQ"
+    },
+    {
+      "id": "7wXKHyVvs0Y",
+      "title": "@thebrandals Di Pinggir Marjin & Langit Biru LIVE!! #music #shorts #livesession #thebrandals",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/7wXKHyVvs0Y"
+    },
+    {
+      "id": "Gww13J8VmVk",
+      "title": "Still Refusing to Bow Down, The Brandals Break Down the Current State of the Nation & Environment...",
+      "views": "801 views",
+      "url": "https://www.youtube.com/shorts/Gww13J8VmVk"
+    },
+    {
+      "id": "53Ob5RtMjxA",
+      "title": "@GMEOFFICIAL Highlights Inner Beauty in Women Through \"Istimewa\" #shorts #music #livesession",
+      "views": "967 views",
+      "url": "https://www.youtube.com/shorts/53Ob5RtMjxA"
+    },
+    {
+      "id": "TdSfgyTPmV0",
+      "title": "@SocieteitdeHarmonie Rayakan Perpisahan Dengan Senyuman Lewat \"Sembilan\" #shorts #music #jazz",
+      "views": "979 views",
+      "url": "https://www.youtube.com/shorts/TdSfgyTPmV0"
+    },
+    {
+      "id": "-rPOnS_G7q8",
+      "title": "Learning to Forgive Loss Through \"Look at My Garden\" (Flower Garden) @akujeje #shorts #music",
+      "views": "658 views",
+      "url": "https://www.youtube.com/shorts/-rPOnS_G7q8"
+    },
+    {
+      "id": "qHMvh38zjVQ",
+      "title": "@TANTRIARDA Rayakan Cinta Yang Tak Pernah Padam Lewat \"Tumbuh Bersama\" #shorts #music #tantrikotak",
+      "views": "35 views",
+      "url": "https://www.youtube.com/shorts/qHMvh38zjVQ"
+    },
+    {
+      "id": "W4H8AaagmZ8",
+      "title": "@monitatahalea Learning to Surrender to God's Plan Through \"Laila\" #shorts #music #livesession",
+      "views": "803 views",
+      "url": "https://www.youtube.com/shorts/W4H8AaagmZ8"
+    },
+    {
+      "id": "AlDFw9hq9CA",
+      "title": "@Sheinafia Potret Manisnya Transisi Teman Jadi Cinta Di \"Siapa Suruh Jatuh Cinta\" #music #shorts",
+      "views": "933 views",
+      "url": "https://www.youtube.com/shorts/AlDFw9hq9CA"
+    },
+    {
+      "id": "rEmjLB6TTjY",
+      "title": "Anthem Buat Kamu Yang Merasa Stuck & Tertinggal \"Kalah Lagi\" @officialbirubaru #shorts #music",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/rEmjLB6TTjY"
+    },
+    {
+      "id": "7RmndcLMycg",
+      "title": "@Clever Moose  Dobrak Basa Basi Dalam Percintaan Lewat “The Hammer” #music #shorts #rock",
+      "views": "806 views",
+      "url": "https://www.youtube.com/shorts/7RmndcLMycg"
+    },
+    {
+      "id": "j9-fzHldqNo",
+      "title": "@RampakNaong-p1m Hidupkan \"Cuma Cuma\" Lewat Sentuhan Blues Bareng Gugun GBS #music #shorts",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/j9-fzHldqNo"
+    },
+    {
+      "id": "TxgTU8EVqE0",
+      "title": "@blackhorses70s  Bawakan \"Martyr\" Versi Akustik #shorts #music #livesession #blackhorses #rock",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/TxgTU8EVqE0"
+    },
+    {
+      "id": "lzVDoPQRJpA",
+      "title": "@Adikara Can I Tell The World I Love You? & Primadona LIVE!!! #shorts #livesession #music #clip",
+      "views": "336 views",
+      "url": "https://www.youtube.com/shorts/lzVDoPQRJpA"
+    },
+    {
+      "id": "O4xc4tq0tkU",
+      "title": "@adikaraf on Primadona and a Message of Love for His Child Through Spotless Dove #shorts #podcast",
+      "views": "617 views",
+      "url": "https://www.youtube.com/shorts/O4xc4tq0tkU"
+    },
+    {
+      "id": "j6eTVe_V_4M",
+      "title": "@stillvirgin_tv Luinika & Dear Ndut LIVE!!! #shorts #music #livesession #stillvirgin #live",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/j6eTVe_V_4M"
+    },
+    {
+      "id": "m8CrlUrDM-w",
+      "title": "@stillvirgin_tv Celebrating 2 Decades of Music & Proving They're Still Here #podcast #shorts #music",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/m8CrlUrDM-w"
+    },
+    {
+      "id": "dqg77PC_KWI",
+      "title": "@Patras How Strange & She Wants Me (Still) LIVE!! #shorts #music #livesession #patras #live",
+      "views": "815 views",
+      "url": "https://www.youtube.com/shorts/dqg77PC_KWI"
+    },
+    {
+      "id": "ySUI06wDt2I",
+      "title": "@patrasmusic Cha-Cha Boo! Album & The Beatles' Influence!! #shorts #podcast #patras #thebeatles",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/ySUI06wDt2I"
+    },
+    {
+      "id": "y6b7ePY9wak",
+      "title": "@DanarWidiantoOfficial's Mother's Message When She Was Bullied! #shorts #clips #podcast #bully #d...",
+      "views": "35 views",
+      "url": "https://www.youtube.com/shorts/y6b7ePY9wak"
+    },
+    {
+      "id": "XP1vBXLbx1o",
+      "title": "How @TentangDere Eliminates Doubt When Falling in Love!! #shorts #clips #podcast #dere #tulus",
+      "views": "87 views",
+      "url": "https://www.youtube.com/shorts/XP1vBXLbx1o"
+    },
+    {
+      "id": "sc9ijFUmnr4",
+      "title": "@duljaelaniofficial's Concerns About Fake Relationships! #shorts #duljaelani #clip #podcast #dewa19",
+      "views": "29 views",
+      "url": "https://www.youtube.com/shorts/sc9ijFUmnr4"
+    },
+    {
+      "id": "oDETdkC4Snk",
+      "title": "Does Imitating John Lennon's Style Make @duljaelaniofficial More Confident? #shorts #johnlennon #...",
+      "views": "42 views",
+      "url": "https://www.youtube.com/shorts/oDETdkC4Snk"
+    },
+    {
+      "id": "R_iKhOhhgjs",
+      "title": "Glenn Fredly's Last Message to Teddy Adhitya!! #shorts #podcast #clippers #glennfredly",
+      "views": "48 views",
+      "url": "https://www.youtube.com/shorts/R_iKhOhhgjs"
+    },
+    {
+      "id": "Ekaa94SYfls",
+      "title": "@pendarra__ About Dreams in the Form of Rainbows & Full Hearts LIVE!! #shorts #livesession #pendarra",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/Ekaa94SYfls"
+    },
+    {
+      "id": "B67B2mkUTxU",
+      "title": "@pendarra__ Closing the Old Chapter, Loss & Self-Acceptance in Semburat #shorts #clip #podcast",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/B67B2mkUTxU"
+    },
+    {
+      "id": "mmY0zkgW-_I",
+      "title": "The Meaning of Life for Today From @akuenau #shorts #clippers #podcast #enau #photoshoot #arilesmana",
+      "views": "93 views",
+      "url": "https://www.youtube.com/shorts/mmY0zkgW-_I"
+    },
+    {
+      "id": "8ErhLKLSwxM",
+      "title": "@Indra_Sinaga From Lyla Chooses to Move to Ada Band?! #shorts #clippers #podcast #lyla #adaband",
+      "views": "16K views",
+      "url": "https://www.youtube.com/shorts/8ErhLKLSwxM"
+    },
+    {
+      "id": "ntEOk7P8Upk",
+      "title": "@GMEOFFICIAL Similar to Sheila On 7?!! #shorts #podcast #clippers #gme #sheilaon7 #secrets",
+      "views": "137 views",
+      "url": "https://www.youtube.com/shorts/ntEOk7P8Upk"
+    },
+    {
+      "id": "Y4O7ZYJLwVU",
+      "title": "@akujeje Found Out Her Boyfriend Died Two Days After Being Buried? #shorts #clippers #podcast #li...",
+      "views": "2.6K views",
+      "url": "https://www.youtube.com/shorts/Y4O7ZYJLwVU"
+    },
+    {
+      "id": "5t2Oigvd-ww",
+      "title": "According to @weareokaay, no wound heals completely?! #shorts #clippers #podcast #okaay",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/5t2Oigvd-ww"
+    },
+    {
+      "id": "rMAkIyXF1Q8",
+      "title": "@ArmadaBandOfficial's Thoughts on Today's Musicians! #shorts #podcast #armada #hindia #clippers",
+      "views": "2.1K views",
+      "url": "https://www.youtube.com/shorts/rMAkIyXF1Q8"
+    },
+    {
+      "id": "e5__ChQ0q-0",
+      "title": "As Long As You're Happy @ArmadaBandOfficial Isn't It Copying Meteor Garden OST?! #shorts #podcast...",
+      "views": "5.9K views",
+      "url": "https://www.youtube.com/shorts/e5__ChQ0q-0"
+    },
+    {
+      "id": "fPddSdGcHzE",
+      "title": "According to @theMARIOGINANJAR, the late Carlos Saba is irreplaceable in Kahitna #shorts #kahitna...",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/fPddSdGcHzE"
+    },
+    {
+      "id": "G81KALfGFqU",
+      "title": "Is This Band a Vendor Enemy? @blackhorses70s Reveals Their Chaos on Stage #podcast #shorts #clippers",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/G81KALfGFqU"
+    },
+    {
+      "id": "Ck5p0DPAe-Q",
+      "title": "@TANTRIARDA & Watch a Black Magic War While Performing?! #shorts #podcast #naffband #mystical #ho...",
+      "views": "2.8K views",
+      "url": "https://www.youtube.com/shorts/Ck5p0DPAe-Q"
+    },
+    {
+      "id": "j_yOsGasRSI",
+      "title": "@CantiOfficial Imagine I'm Here & Jingga LIVE!!! #music #shorts #livesession",
+      "views": "379 views",
+      "url": "https://www.youtube.com/shorts/j_yOsGasRSI"
+    },
+    {
+      "id": "ilFtQsCNTP0",
+      "title": "@CantiOfficial Surviving Hard Times & Maturing in the Citrus Album?! #shorts #podcast",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/ilFtQsCNTP0"
+    },
+    {
+      "id": "fLGdyTavB2A",
+      "title": "@PrinceHusein Even Though It's Messy & The Internet Says I Have ADHD LIVE!! #shorts #music #lives...",
+      "views": "2.3K views",
+      "url": "https://www.youtube.com/shorts/fLGdyTavB2A"
+    },
+    {
+      "id": "J_iAYS1x8ZE",
+      "title": "@PrinceHusein: Unresolved Anger & Life Trauma? #shorts #podcast #princehusein",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/J_iAYS1x8ZE"
+    },
+    {
+      "id": "rVxpgUCKNx8",
+      "title": "Iga Masssardi's Magic Competition Is Criticized Because His Song Is Similar to Barasuara?! #short...",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/rVxpgUCKNx8"
+    },
+    {
+      "id": "2d-T5fmzJxI",
+      "title": "The Adams' Album \"Agterplass\" Is Too Neat??! #shorts #podcast #music #theadams",
+      "views": "950 views",
+      "url": "https://www.youtube.com/shorts/2d-T5fmzJxI"
+    },
+    {
+      "id": "yY5saz8fU6U",
+      "title": "The Adams Lost Their Lives After Members Left? 👀 #shorts #podcast #theadams",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/yY5saz8fU6U"
+    },
+    {
+      "id": "IBzO8Jex7e4",
+      "title": "Barasuara Goes Mainstream Because of Afternoon Films?!! #shorts #podcast #barasuara",
+      "views": "986 views",
+      "url": "https://www.youtube.com/shorts/IBzO8Jex7e4"
+    },
+    {
+      "id": "nj_yOys_Xss",
+      "title": "@barasuara's \"Thoughts and Journeys\" Album Is Cursed by the Second Album?! #shorts #podcast #bara...",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/nj_yOys_Xss"
+    },
+    {
+      "id": "ugTohNwv1tI",
+      "title": "@rafisudirman Monday to Friday & That Somebody LIVE! #music #shorts #livesession #rafisudirman",
+      "views": "2.2K views",
+      "url": "https://www.youtube.com/shorts/ugTohNwv1tI"
+    },
+    {
+      "id": "GviOAbzsYFE",
+      "title": "@rafisudirman Collection of Prayers in the Album Today Tomorrow & Forever #shorts #podcast #podca...",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/GviOAbzsYFE"
+    },
+    {
+      "id": "BAokrtB_9cA",
+      "title": "Is the Magic Contest More Fun Than .Feast? #shorts #podcast #magiccontest #baskaraputra #india",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/BAokrtB_9cA"
+    },
+    {
+      "id": "VnoA7CsFS3Y",
+      "title": "The Adams Too Neat At Agterplaas? #shorts #podcasts #podcastclips #theadams",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/VnoA7CsFS3Y"
+    },
+    {
+      "id": "QTAIemfUoW4",
+      "title": "Barasuara Goes Mainstream Because of Afternoon Films? #shorts #podcasts #podcastclips #barasuara",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/QTAIemfUoW4"
+    },
+    {
+      "id": "l--TqocDVMo",
+      "title": "@Assia Keva Looking For Love In Wrong Places & Baby July LIVE!! #music #shorts #livesession",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/l--TqocDVMo"
+    },
+    {
+      "id": "wHBu_PXEwQ4",
+      "title": "@assiakeva On Singing Trauma & Understanding the Forevermore Ep!! #shorts #podcast #podcastclips",
+      "views": "813 views",
+      "url": "https://www.youtube.com/shorts/wHBu_PXEwQ4"
+    },
+    {
+      "id": "pZ0M8N0GouM",
+      "title": "@Clever Moose The Hammer & Batavian Troops LIVE!! #music #shorts #clevermoose #livesession",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/pZ0M8N0GouM"
+    },
+    {
+      "id": "0PQM6bcG_ks",
+      "title": "@clevermoose Mediterranean Fuzz Album & Conquer the Asian Stage!! #shorts #podcast #rockindonesia",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/0PQM6bcG_ks"
+    },
+    {
+      "id": "zEJ-yjJlf4M",
+      "title": "@officialbirubaru We Find Another Time & Lose Again LIVE!! #music #shorts #livesession #birubaru",
+      "views": "2.2K views",
+      "url": "https://www.youtube.com/shorts/zEJ-yjJlf4M"
+    },
+    {
+      "id": "U2sNMArPfHo",
+      "title": "@officialbirubaru The song \"Kalah Lagi\" almost didn't make the album?! #podcast #shorts #birubaru",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/U2sNMArPfHo"
+    },
+    {
+      "id": "3vaM5kjuJck",
+      "title": "@Sheinafia Out of Control & Who Told You to Fall in Love? LIVE!! #livesession #sherylsheinafia #s...",
+      "views": "544 views",
+      "url": "https://www.youtube.com/shorts/3vaM5kjuJck"
+    },
+    {
+      "id": "4FyyThCB830",
+      "title": "@Sheinafia Ungkap Sisi Bucin Di Siapa Suruh Jatuh Cinta? #podcastclips #shorts #sherylsheinafia",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/4FyyThCB830"
+    },
+    {
+      "id": "UDT_b3Gm--k",
+      "title": "@nitalesmana7799 & @GailSatiawaki1 One Human Being LIVE!! #music #shorts #livesession",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/UDT_b3Gm--k"
+    },
+    {
+      "id": "BNU4XWM-ZsE",
+      "title": "@nitalesmana7799 & @GailSatiawaki1 Understanding Love Through One Human #shorts #podcast",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/BNU4XWM-ZsE"
+    },
+    {
+      "id": "DV9wCOSjsbk",
+      "title": "@RampakNaong-p1m Tempted, Cuma Cuma Ft Gugun Blues Shelter, Tommy Exentrix LIVE!! #music #shorts",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/DV9wCOSjsbk"
+    },
+    {
+      "id": "B4h3HirLYJo",
+      "title": "@RampakNaong-p1m Comeback After a Long Hiatus!! #shorts #podcast #bandrockindonesia #rampaknaong",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/B4h3HirLYJo"
+    },
+    {
+      "id": "UZ9s39PPGkc",
+      "title": "@Tripov Elevator Music & MIA LIVE!!! #livesession #music #shorts #tripov",
+      "views": "695 views",
+      "url": "https://www.youtube.com/shorts/UZ9s39PPGkc"
+    },
+    {
+      "id": "OdskCUfp61o",
+      "title": "@Tripov Bikin demo lewat zoom & Album Sugar Coat Inc kayak pabrik gula?! #podcast #tripov #music",
+      "views": "624 views",
+      "url": "https://www.youtube.com/shorts/OdskCUfp61o"
+    },
+    {
+      "id": "L9TwpApWTK4",
+      "title": "@TANTRIARDA Learn to Be a Father & Grow Together Ft Tantri LIVE!!! #livesession #music #shorts",
+      "views": "199 views",
+      "url": "https://www.youtube.com/shorts/L9TwpApWTK4"
+    },
+    {
+      "id": "l_w0JUGbtE4",
+      "title": "@TANTRIARDA Stopped performing because of the black magic war?? #podcast #Ardahatna #naffband #sh...",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/l_w0JUGbtE4"
+    },
+    {
+      "id": "97AnjKjPtZ4",
+      "title": "@Moneva Runner Up & One Way LIVE!!! #livesession #music #shorts #livesession #rnb  #Moneva",
+      "views": "215 views",
+      "url": "https://www.youtube.com/shorts/97AnjKjPtZ4"
+    },
+    {
+      "id": "V5ENKerrbuo",
+      "title": "@Moneva hasn't heard the final song, but she's backing vocals for it?! #podcast #shorts #final",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/V5ENKerrbuo"
+    },
+    {
+      "id": "TGIn6N3BPgs",
+      "title": "@gabriellafernaldi Fingers finger LIVE!! #music #livesession #livemusic #bossanova #shorts",
+      "views": "460 views",
+      "url": "https://www.youtube.com/shorts/TGIn6N3BPgs"
+    },
+    {
+      "id": "KYkRF0fo3nI",
+      "title": "@gabriellafernaldi Turns out you used to be a civil servant? #podcast #shorts #interview #bossano...",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/KYkRF0fo3nI"
+    },
+    {
+      "id": "WkkOi8itqys",
+      "title": "@julianalka LAPUR & SIASAT LIVE!! #livesession #music #shorts #livemusic",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/WkkOi8itqys"
+    },
+    {
+      "id": "D8oj589jxsk",
+      "title": "The Struggle of an Acehnese Musician in Jakarta Isn't Easy!! #shorts #podcast #podcastclips #salp...",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/D8oj589jxsk"
+    },
+    {
+      "id": "ChxP6IwmWLs",
+      "title": "@Black Horses KALI INI DENGAN VERSI AKUSTIK!! #livesession #musik #shorts #blackhorses",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/ChxP6IwmWLs"
+    },
+    {
+      "id": "uCu6JPy8WKg",
+      "title": "This band is the enemy of vendors!! @blackhorses70s #shorts #podcast #bandrockindonesia #70smusic",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/uCu6JPy8WKg"
+    },
+    {
+      "id": "D1mSvZJC1ng",
+      "title": "KIM X NABILA TAQIYAH BAYANGAN CINTA YANG LALU LIVE!! #music #shorts #livesession #arsywidianto",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/D1mSvZJC1ng"
+    },
+    {
+      "id": "_0lM-H1nuxg",
+      "title": "@K_I_M_Official Arsy Widianto Group For Those Who Can't Move On!! #shorts #podcast #arsywidianto",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/_0lM-H1nuxg"
+    },
+    {
+      "id": "mZv6BjqhySY",
+      "title": "@theMARIOGINANJAR introduces solo projects outside of Kahitna! #livesession #kahitna #shorts #music",
+      "views": "452 views",
+      "url": "https://www.youtube.com/shorts/mZv6BjqhySY"
+    },
+    {
+      "id": "uF5_M4uf0uI",
+      "title": "Mario Ginanjar Reveals @KahitnaOfficial's Kitchen! #podcastclips #shorts #kahitna #music #podcast",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/uF5_M4uf0uI"
+    },
+    {
+      "id": "TnX32ddYhRk",
+      "title": "@dendinata ABADI NAN ALAMANYA LIVE SESSION #livesession #shorts #livemusic #music #dendinata",
+      "views": "714 views",
+      "url": "https://www.youtube.com/shorts/TnX32ddYhRk"
+    },
+    {
+      "id": "IUjCDPWvBhs",
+      "title": "@dendinata his life was saved from the slump thanks to ABADI!! #podcast #shorts #music",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/IUjCDPWvBhs"
+    },
+    {
+      "id": "FJWygGbPzmw",
+      "title": "Flashback @ArmadaBandOfficial performing their hits!! #livesession #armada #shorts",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/FJWygGbPzmw"
+    },
+    {
+      "id": "N4f_bQ_zpfk",
+      "title": "The twists and turns of @ArmadaBandOfficial's long journey are all summarized here! #podcast #sho...",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/N4f_bQ_zpfk"
+    },
+    {
+      "id": "3zaY2RTzfZM",
+      "title": "Phenomenal song @IAMDEVANO \"Surat Hati\" LIVE!! #shorts #livesession #music #devano #livemusic",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/3zaY2RTzfZM"
+    },
+    {
+      "id": "wtUJfG3ZTK4",
+      "title": "@IAMDEVANO I'm too lazy to do podcasts, except... #podcast #podcastclips #shorts #devano #devanod...",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/wtUJfG3ZTK4"
+    },
+    {
+      "id": "cLlLbzlgO9w",
+      "title": "@Monita Tahalea Merona & Laila LIVE!! #shorts #music #livesession #livemusic",
+      "views": "707 views",
+      "url": "https://www.youtube.com/shorts/cLlLbzlgO9w"
+    },
+    {
+      "id": "0rSZMdI3A6U",
+      "title": "@monitatahalea has been working for 20 years and is starting again through merona #podcast #short...",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/0rSZMdI3A6U"
+    },
+    {
+      "id": "ddWk86zYhRA",
+      "title": "@weareokaay Forgot the name, remember the taste & Find happiness LIVE #shorts #livesession #livem...",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/ddWk86zYhRA"
+    },
+    {
+      "id": "fpI5YUDRfUA",
+      "title": "@weareokaay on divorce, loss and finding happiness #podcast #podcastclips #shorts",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/fpI5YUDRfUA"
+    },
+    {
+      "id": "8RLEZLF-MAY",
+      "title": "@DNANDAMusic \"Bola Matu Sayu\" nuansa pop oldies, LIVE!! #shorts #livesession #livemusic #pop",
+      "views": "394 views",
+      "url": "https://www.youtube.com/shorts/8RLEZLF-MAY"
+    },
+    {
+      "id": "HNcun7o1iio",
+      "title": "@DNANDAMusic learning piano from a dream??? #shorts #podcast #podcastclips",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/HNcun7o1iio"
+    },
+    {
+      "id": "rhZG7BtaKng",
+      "title": "@maishakanna Turns Upside Down & Wants to Lose Her Memory LIVE!! #livesession #shorts #livemusic ...",
+      "views": "2.1K views",
+      "url": "https://www.youtube.com/shorts/rhZG7BtaKng"
+    },
+    {
+      "id": "XZcYQ0LGwg4",
+      "title": "The magic of the song Bernadya for @maishakanna #shorts #podcastclips #maisha #bernadya",
+      "views": "936 views",
+      "url": "https://www.youtube.com/shorts/XZcYQ0LGwg4"
+    },
+    {
+      "id": "PzcVBMPa_mQ",
+      "title": "Gliite & Reverse Psychology Live!! @MADMAX #shorts #livesession #music #livemusic",
+      "views": "436 views",
+      "url": "https://www.youtube.com/shorts/PzcVBMPa_mQ"
+    },
+    {
+      "id": "C887_n3u3dM",
+      "title": "What's it like being in an all-girl band? @wearemadmax #shorts #podcast #podcastclips #musicpodcast",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/C887_n3u3dM"
+    },
+    {
+      "id": "WeHyp-M2OhY",
+      "title": "Rrag Langit Menjadi Laut & Rantai Stripped Version #shorts #livesession #music #livemusic",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/WeHyp-M2OhY"
+    },
+    {
+      "id": "MxzaGPOy4PA",
+      "title": "Rrag Creates an Album Inspired by People with Mental Disorders and Tooth Fillings!! #shorts #podc...",
+      "views": "2.1K views",
+      "url": "https://www.youtube.com/shorts/MxzaGPOy4PA"
+    },
+    {
+      "id": "Nr2ju1nXx8Q",
+      "title": "See My Garden (Flower Garden) @akujejeLIVE!! #shorts #lihatkebunku #livesession #acoustic",
+      "views": "503 views",
+      "url": "https://www.youtube.com/shorts/Nr2ju1nXx8Q"
+    },
+    {
+      "id": "_kuwExcuB8Y",
+      "title": "@akujeje about looking at my phenomenal garden (flower garden)! #shorts #podcastclips #lookatmyga...",
+      "views": "12K views",
+      "url": "https://www.youtube.com/shorts/_kuwExcuB8Y"
+    },
+    {
+      "id": "rO0G17b6nRA",
+      "title": "The Harmonic Society brings Kutukan & Sembilan LIVE!! #livemusic #shorts #jazz #livesession",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/rO0G17b6nRA"
+    },
+    {
+      "id": "R9_Mpd7VRAk",
+      "title": "Societeit De Harmonie sang the originator of jazz mepet muka!! #shorts #podcast #jazzmepetmuka",
+      "views": "1.9K views",
+      "url": "https://www.youtube.com/shorts/R9_Mpd7VRAk"
+    },
+    {
+      "id": "z81Cx3VRan8",
+      "title": "@RickKarnadi Queen Of Hearts & Note To God Live! #shorts #livesession #musik #livemusic",
+      "views": "294 views",
+      "url": "https://www.youtube.com/shorts/z81Cx3VRan8"
+    },
+    {
+      "id": "0cmfvv5E6l0",
+      "title": "@RickKarnadi says falling in love is like playing cards? Full of strategy! #podcast #shorts #podc...",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/0cmfvv5E6l0"
+    },
+    {
+      "id": "RpaVLyOy2sI",
+      "title": "@GMEOFFICIAL Song Collaborating With Uan Juicy Luicy #livesession #shorts #gme #livemusic",
+      "views": "594 views",
+      "url": "https://www.youtube.com/shorts/RpaVLyOy2sI"
+    },
+    {
+      "id": "nJjFpLdy_Ck",
+      "title": "@GMEOFFICIAL compared to Sheila on 7 until recording with Eross Chandra! #podcast #shorts",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/nJjFpLdy_Ck"
+    },
+    {
+      "id": "Ouu0EmzLHiw",
+      "title": "@Indra_Sinaga Brings his favorite FTV soundtrack! Magic & Ga Romantis Live #shorts #livesession",
+      "views": "495 views",
+      "url": "https://www.youtube.com/shorts/Ouu0EmzLHiw"
+    },
+    {
+      "id": "b6tru3wRl9U",
+      "title": "@Indra_Sinaga Wants to be like Chrisye until the journey from Lyla to Ada Band #shorts #podcast",
+      "views": "1.6K views",
+      "url": "https://www.youtube.com/shorts/b6tru3wRl9U"
+    },
+    {
+      "id": "WZ-GknI93is",
+      "title": "@gabriellaekaputri burning room & little by little live!! #shorts #livesession #livemusic #gabi",
+      "views": "504 views",
+      "url": "https://www.youtube.com/shorts/WZ-GknI93is"
+    },
+    {
+      "id": "HiSaQws3TcA",
+      "title": "@gabriellaekaputri was a Kpop trainee in Korea!! #shorts #podcast #podcastclips",
+      "views": "513 views",
+      "url": "https://www.youtube.com/shorts/HiSaQws3TcA"
+    },
+    {
+      "id": "Dwvj42JVrnQ",
+      "title": "Lyla Nostalgia for Their Favorite FTV Songs!! #shorts #livesession #lyla #ftv #livemusic",
+      "views": "2.4K views",
+      "url": "https://www.youtube.com/shorts/Dwvj42JVrnQ"
+    },
+    {
+      "id": "z2y2vhu6XCY",
+      "title": "Lyla, the FTV Songwriter!! From Magic to Unromantic #shorts #podcastclips #lyla #podcastmusic",
+      "views": "3.3K views",
+      "url": "https://www.youtube.com/shorts/z2y2vhu6XCY"
+    },
+    {
+      "id": "cTSlJf2yxn4",
+      "title": "Starrducc brings Biang Lala & 15,000 Steps LIVE!! #shorts #livesession #indie #livemusic",
+      "views": "2.6K views",
+      "url": "https://www.youtube.com/shorts/cTSlJf2yxn4"
+    },
+    {
+      "id": "LIpjPHBi1_M",
+      "title": "Bogor scene & family band that LDR is Starrducc #podcast #shorts #podcastclips",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/LIpjPHBi1_M"
+    },
+    {
+      "id": "FVyj-k6oaeA",
+      "title": "@OsloIbrahim performs \"I'm Not Your Home Anymore\" from the Top 5 album!! #livesession #shorts #music",
+      "views": "698 views",
+      "url": "https://www.youtube.com/shorts/FVyj-k6oaeA"
+    },
+    {
+      "id": "wI_jCrae3aM",
+      "title": "@OsloIbrahim Top 5, Musisi Viral & Kedekatan dengan pamungkas dkk!! #shorts #podcast #music",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/wI_jCrae3aM"
+    },
+    {
+      "id": "AzQio_pOOQM",
+      "title": "Lagu Bunga Hati Salma Salsabil dibawain pencipta lagunya Clara Riva!! #shorts #livesession #music",
+      "views": "930 views",
+      "url": "https://www.youtube.com/shorts/AzQio_pOOQM"
+    },
+    {
+      "id": "K5bPxyYheWQ",
+      "title": "@clarariva bocorin proses nyiptain bunga hati dengan salma salsabil! #shorts #podcast #bungahati",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/K5bPxyYheWQ"
+    },
+    {
+      "id": "s96lM63pAyg",
+      "title": "@HARRAMUSIC Jelajahi Rasa & Jurus Jitu Live!! #livesession #shorts #livemusic #harra",
+      "views": "831 views",
+      "url": "https://www.youtube.com/shorts/s96lM63pAyg"
+    },
+    {
+      "id": "8uaZRH1ohdM",
+      "title": "@HARRAMUSIC the experts at writing songs from red flags to green flags! #shorts #podcast #podcast...",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/8uaZRH1ohdM"
+    },
+    {
+      "id": "uWeCpD5Auvg",
+      "title": "@chintyagabriellaofficial cerita besar live!! #shorts #livesession #chintyagabriella",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/uWeCpD5Auvg"
+    },
+    {
+      "id": "MHgdyxge6B8",
+      "title": "@chintyagabriellaofficial si takut kucing yang bikin konten sama kucing #shorts #chintyagabriella",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/MHgdyxge6B8"
+    },
+    {
+      "id": "8lLnfib_pPU",
+      "title": "@Divingbirds i won't be long & why won't you live session!! #shorts #livesession #livemusic",
+      "views": "251 views",
+      "url": "https://www.youtube.com/shorts/8lLnfib_pPU"
+    },
+    {
+      "id": "gjXDuQIzLJ0",
+      "title": "rasa sakit@meiskaadindap di lagu hilang tanpa bilang & keras kepala #livesession #shorts  #meiska",
+      "views": "787 views",
+      "url": "https://www.youtube.com/shorts/gjXDuQIzLJ0"
+    },
+    {
+      "id": "2Rnylomv_Wg",
+      "title": "@meiskaadindap sempat dilarang nyanyi orang tuanya!! #shorts #podcast #meiska #hilangtanpabilang",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/2Rnylomv_Wg"
+    },
+    {
+      "id": "jdy89RGI4-E",
+      "title": "@basboi4259 Bismillah & Sendirian Live Session!! #shorts #livesession #hiphop #basboi",
+      "views": "295 views",
+      "url": "https://www.youtube.com/shorts/jdy89RGI4-E"
+    },
+    {
+      "id": "-1omhZ25wPc",
+      "title": "@basboi4259 soal young lex hingga hindia!! dan memulai dengan bismillah #shorts #podcastclips",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/-1omhZ25wPc"
+    },
+    {
+      "id": "ubz__b40p4g",
+      "title": "@arumands Muak & Berbunga-bunga Sendiri Live!! #shorts #livesession #aruma #livemusic #folk",
+      "views": "670 views",
+      "url": "https://www.youtube.com/shorts/ubz__b40p4g"
+    },
+    {
+      "id": "wlCUCQ9NxCY",
+      "title": "Aruma Muak, Ekspektasi Raim Laode Sampai Berbunga-bunga sendiri!!! #shorts #podcastclips #aruma",
+      "views": "2.4K views",
+      "url": "https://www.youtube.com/shorts/wlCUCQ9NxCY"
+    },
+    {
+      "id": "NCNxo7aoKtQ",
+      "title": "@DMASIVBANDOFFICIAL merindukanmu & bahagia sejak pertama live #shorts #livesession #dmasiv",
+      "views": "1.5K views",
+      "url": "https://www.youtube.com/shorts/NCNxo7aoKtQ"
+    },
+    {
+      "id": "xynEmQHPzeU",
+      "title": "@DMASIVBANDOFFICIAL Dari Ciledug Ke Eropa!! #shorts #podcast #dmasiv #podcastclips",
+      "views": "963 views",
+      "url": "https://www.youtube.com/shorts/xynEmQHPzeU"
+    },
+    {
+      "id": "rVTXuuM-IQA",
+      "title": "@ShakiraJasmineOfficial meant 2 be & selalu kalah versi akustik #livesession #music #shorts",
+      "views": "426 views",
+      "url": "https://www.youtube.com/shorts/rVTXuuM-IQA"
+    },
+    {
+      "id": "R7xG758vwBI",
+      "title": "@ShakiraJasmineOfficial pernah jadi vocal director ariel noah?? #shorts #podcast #podcastclips",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/R7xG758vwBI"
+    },
+    {
+      "id": "RLytthNELqs",
+      "title": "@aldyamis local wisdumb & selamat hari raya social media live #music #livesession #shorts",
+      "views": "2.4K views",
+      "url": "https://www.youtube.com/shorts/RLytthNELqs"
+    },
+    {
+      "id": "ptLMfpEtARY",
+      "title": "@aldyamis jadikan screen capture chat bareng iga massardi jadi artwork lagunya #shorts #podcast",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/ptLMfpEtARY"
+    },
+    {
+      "id": "kizlcyzBKdY",
+      "title": "@arashbuana something about you & if u could see me cryin' in my room #music #shorts #livesession",
+      "views": "616 views",
+      "url": "https://www.youtube.com/shorts/kizlcyzBKdY"
+    },
+    {
+      "id": "oIQ2w64trts",
+      "title": "@arashbuana ungkapin rasanya nulis 3000 lagu lebih!! #shorts #arashbuana #podcast",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/oIQ2w64trts"
+    },
+    {
+      "id": "M6CBeLwNftQ",
+      "title": "Kau rumahku & satu langkah live session @Raissanggiani #shorts #raissaanggiani #livesession",
+      "views": "396 views",
+      "url": "https://www.youtube.com/shorts/M6CBeLwNftQ"
+    },
+    {
+      "id": "qMEeJ2ZnAFI",
+      "title": "@Raissanggiani terpengaruh billie elish & kau rumahku jadi tempat refleksi diri #podcast #shorts",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/qMEeJ2ZnAFI"
+    },
+    {
+      "id": "1k9dbCDBmkM",
+      "title": "@tsaqqib mau tak mau tentang seseorang yang terus berjuang demi yang tercinta #shorts #livesession",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/1k9dbCDBmkM"
+    },
+    {
+      "id": "zsnzy2h5E7Q",
+      "title": "@tsaqqib mau tak mau pasrah dalam hubungan percintaan #shorts #podcast #podcastclips #music",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/zsnzy2h5E7Q"
+    },
+    {
+      "id": "_85CPILY70U",
+      "title": "Bersama @akuenau akan sedikit susah & negara lucu live #shorts #livesession #folk #enau",
+      "views": "587 views",
+      "url": "https://www.youtube.com/shorts/_85CPILY70U"
+    },
+    {
+      "id": "E4xncNBt8Qg",
+      "title": "Ini legacy yang ingin ditinggalkan @akuenau kalo sudah tiada #podcast #enau #shorts",
+      "views": "3.1K views",
+      "url": "https://www.youtube.com/shorts/E4xncNBt8Qg"
+    },
+    {
+      "id": "06rnD8aQZ5g",
+      "title": "Curantean rindu @CitraScholastikaofficial buat kampung halaman #shorts #citrascholastika",
+      "views": "204 views",
+      "url": "https://www.youtube.com/shorts/06rnD8aQZ5g"
+    },
+    {
+      "id": "vEuONxndwSk",
+      "title": "@CitraScholastikaofficial kembali menemukan jati diri di musik? #shorts #podcastclips #podcast",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/vEuONxndwSk"
+    },
+    {
+      "id": "s8LCjjQZA6o",
+      "title": "Sang pemilik bunga abadi & pemuja the beatles @rio_clappy #shorts #livesession #bungaabadi",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/s8LCjjQZA6o"
+    },
+    {
+      "id": "eud98GAfKV8",
+      "title": "@rio_clappy penganut agama beatles? dan makna bunga abadi! #shorts #podcastclips #bungaabadi",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/eud98GAfKV8"
+    },
+    {
+      "id": "EGF8vR8DAeU",
+      "title": "@PrinsaMandagie  mencoba bertahan dihubungan yang mengecewakan #shorts #livesession #live",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/EGF8vR8DAeU"
+    },
+    {
+      "id": "kI81zGMqcYY",
+      "title": "@PrinsaMandagie mewakili perasaan anak yang ditinggal ayah sejak kecil #shorts #podcastclips",
+      "views": "932 views",
+      "url": "https://www.youtube.com/shorts/kI81zGMqcYY"
+    },
+    {
+      "id": "9wdrWvbNbC4",
+      "title": "@daunjatuhmusic resah jadi luka live session #shorts #music #folk #livemusic",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/9wdrWvbNbC4"
+    },
+    {
+      "id": "BWYtBl6iSrY",
+      "title": "Resah Jadi Luka Yang Sangat Fenomenal Dari @daunjatuhmusic #shorts #podcast #podcastclips #folk",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/BWYtBl6iSrY"
+    },
+    {
+      "id": "fb6rQQBdUuU",
+      "title": "Lagu yang menceritakan fase \"masih sayang tapi nggak tahu harus gimana” #shorts #livemusic",
+      "views": "628 views",
+      "url": "https://www.youtube.com/shorts/fb6rQQBdUuU"
+    },
+    {
+      "id": "wPRiNUGZYuk",
+      "title": "@chintanajo shares what it feels like to be Sal Priadi's backing vocalist #shorts #podcastclips #...",
+      "views": "3K views",
+      "url": "https://www.youtube.com/shorts/wPRiNUGZYuk"
+    },
+    {
+      "id": "BVIFaydanrM",
+      "title": "@T.A.D.I bawa spirit menghidupkan kembali musik 80an indonesia #podcastclips #jazz #shorts",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/BVIFaydanrM"
+    },
+    {
+      "id": "g-ZCAF1whjI",
+      "title": "ternyata @jebung punya lagu downbeat patah hati!! #shorts #jebung #livesession",
+      "views": "450 views",
+      "url": "https://www.youtube.com/shorts/g-ZCAF1whjI"
+    },
+    {
+      "id": "-9nS_Nj-4J8",
+      "title": "@jebung bilang zillenial itu nyebelin?!! #shorts #podcastclips #podcastmusic",
+      "views": "581 views",
+      "url": "https://www.youtube.com/shorts/-9nS_Nj-4J8"
+    },
+    {
+      "id": "otGhL9G-3gA",
+      "title": "Kasih hujan deras beta trah berhenti #livesession #livemusic #josoegono",
+      "views": "2K views",
+      "url": "https://www.youtube.com/shorts/otGhL9G-3gA"
+    },
+    {
+      "id": "-ihKj1TcWKs",
+      "title": "Javanese-Ambon blood writing Latin jazz songs? Meet Jo Soegono! #shorts #podcast #podcastclips",
+      "views": "1.7K views",
+      "url": "https://www.youtube.com/shorts/-ihKj1TcWKs"
+    },
+    {
+      "id": "eEcAp-x-8B0",
+      "title": "Antara @tarrarin dan bukit bintang #livemusic #tarrarin #shorts",
+      "views": "715 views",
+      "url": "https://www.youtube.com/shorts/eEcAp-x-8B0"
+    },
+    {
+      "id": "rUvWrhhBvzc",
+      "title": "Makna monster di MV @tarrarin bukit bintang? ada apa? #shorts #podcastclips #podcast",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/rUvWrhhBvzc"
+    },
+    {
+      "id": "x0Snr44sDto",
+      "title": "@nadhifbasalamah pernah teriak di danau dan berujung jadi lagu #shorts #livemusic #nadhifbasalamah",
+      "views": "56 views",
+      "url": "https://www.youtube.com/shorts/x0Snr44sDto"
+    },
+    {
+      "id": "aU9Aq6Es0gk",
+      "title": "@nadhifbasalamah finally found the keeper of her heart #shorts #podcast #heartkeeper #nadhifbasal...",
+      "views": "4.8K views",
+      "url": "https://www.youtube.com/shorts/aU9Aq6Es0gk"
+    },
+    {
+      "id": "73Aj39L7FQo",
+      "title": "Pengaruh Ahmad Dhani & Dewa 19 Bagi @duljaelaniofficial #shorts #podcastclips #dewa19",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/73Aj39L7FQo"
+    },
+    {
+      "id": "P_8ISeC_cIc",
+      "title": "@mikeethan1 debut single sebagai musisi! lagunya ditulis oleh mario kahitna #shorts #livemusic",
+      "views": "157 views",
+      "url": "https://www.youtube.com/shorts/P_8ISeC_cIc"
+    },
+    {
+      "id": "TlOTFMNLnWo",
+      "title": "@mikeethan1 soal perjalanan musiknya bareng mario kahitna #shorts #podcastclips #mikeethan #kahitna",
+      "views": "951 views",
+      "url": "https://www.youtube.com/shorts/TlOTFMNLnWo"
+    },
+    {
+      "id": "cmthbbk_f_g",
+      "title": "Pernah ngerasa ragu saat jatuh cinta? ini lagu \"biru\" dari @TentangDere #shorts #livemusic #dere",
+      "views": "904 views",
+      "url": "https://www.youtube.com/shorts/cmthbbk_f_g"
+    },
+    {
+      "id": "6uJLaZhcu2E",
+      "title": "@TentangDere lebih blak blakan tentang keraguannya saat jatuh cinta #shorts #podcastclips",
+      "views": "602 views",
+      "url": "https://www.youtube.com/shorts/6uJLaZhcu2E"
+    },
+    {
+      "id": "HQE5fg7CybY",
+      "title": "@DanarWidiantoOfficial Dulu di bully, kini menjadi manusia istimewa #Shorts #livemusic  #LiveSession",
+      "views": "605 views",
+      "url": "https://www.youtube.com/shorts/HQE5fg7CybY"
+    },
+    {
+      "id": "5ql5kbP1qsM",
+      "title": "Danar dibully dulu dan makna manusia istimewa #shorts #podcastclips #danarwidiyanto",
+      "views": "656 views",
+      "url": "https://www.youtube.com/shorts/5ql5kbP1qsM"
+    },
+    {
+      "id": "7hHpYkzd72c",
+      "title": "Bunga Maaf lagu penyesalan dari @thelantisofficial #bungamaaf #thelantis #Shorts",
+      "views": "798 views",
+      "url": "https://www.youtube.com/shorts/7hHpYkzd72c"
+    },
+    {
+      "id": "ypJXbqS7u-E",
+      "title": "@thelantisofficial cerita dibalik bunga maaf & lampu merah #thelantis #bungamaaf #podcastclips",
+      "views": "6.2K views",
+      "url": "https://www.youtube.com/shorts/ypJXbqS7u-E"
+    },
+    {
+      "id": "NXhP4hjUr9g",
+      "title": "THANK U FOR LOVIN’ ME & VITAMIN U #livemusic #paulpartohap",
+      "views": "2.1K views",
+      "url": "https://www.youtube.com/shorts/NXhP4hjUr9g"
+    },
+    {
+      "id": "uxehavco4ug",
+      "title": "Apa Sih Rahasia Paul Partohap Bikin Lagu Yang Relate Dengan Percintaan Gen Z??  #shorts #podcast",
+      "views": "932 views",
+      "url": "https://www.youtube.com/shorts/uxehavco4ug"
+    },
+    {
+      "id": "Y_58bEimidA",
+      "title": "@SiscaSaras Punya lagu buat cintanya yang gak sebanding sama doi a.k.a ZONKK #shorts #livemusic",
+      "views": "557 views",
+      "url": "https://www.youtube.com/shorts/Y_58bEimidA"
+    },
+    {
+      "id": "jrHgpdWcBk0",
+      "title": "@SiscaSaras Ternyata cegil!! dan kehidupan setelah lulus dari JKT 48 #shorts #podcastclips",
+      "views": "594 views",
+      "url": "https://www.youtube.com/shorts/jrHgpdWcBk0"
+    },
+    {
+      "id": "JJ5J_2LHL10",
+      "title": "Nih alsa bikin lagu buat kamu si paling bucin #Livesession #Livesesh #shorts",
+      "views": "99 views",
+      "url": "https://www.youtube.com/shorts/JJ5J_2LHL10"
+    },
+    {
+      "id": "Wc4L_V3vRBE",
+      "title": "@AlsaAqilah03 bicara soal Kpop, love language sampai bucin #podcastclips #podcast",
+      "views": "576 views",
+      "url": "https://www.youtube.com/shorts/Wc4L_V3vRBE"
+    },
+    {
+      "id": "LcJf2TwUM4g",
+      "title": "@mezzmerising soal sosok bimbim slank, membuka diri sampai the beatles #podcast #podcastclips",
+      "views": "661 views",
+      "url": "https://www.youtube.com/shorts/LcJf2TwUM4g"
+    },
+    {
+      "id": "rfDrobCpKXQ",
+      "title": "@farrelhilal lewat \"take it slow\" cerita tentang menikmati hidup #liveperform #livemusic",
+      "views": "202 views",
+      "url": "https://www.youtube.com/shorts/rfDrobCpKXQ"
+    },
+    {
+      "id": "JrYvDVbruwk",
+      "title": "Romantisasi di selatan jakarta @farrelhilal #podcast #podcastclips",
+      "views": "622 views",
+      "url": "https://www.youtube.com/shorts/JrYvDVbruwk"
+    },
+    {
+      "id": "lpc6q90Ndy4",
+      "title": "Lagu @AhmadAbdulMusic tentang cinta yang tak berbalas #livemusic #music",
+      "views": "439 views",
+      "url": "https://www.youtube.com/shorts/lpc6q90Ndy4"
+    },
+    {
+      "id": "1_EEboEJjXk",
+      "title": "@AhmadAbdulMusic soal berdamai dengan ekspektasi #podcast #podcastclips",
+      "views": "579 views",
+      "url": "https://www.youtube.com/shorts/1_EEboEJjXk"
+    },
+    {
+      "id": "5O2kD3YPHMU",
+      "title": "Tertawan hati tentang hubungan toxic #livemusic #livesession #tertawanhati #awdella",
+      "views": "176 views",
+      "url": "https://www.youtube.com/shorts/5O2kD3YPHMU"
+    },
+    {
+      "id": "pU3PnqBnxk4",
+      "title": "@AWDELLA tertawan hati, hubungan toxic sampe pengen berenti nyanyi #tertawanhati #podcastclips",
+      "views": "2.4K views",
+      "url": "https://www.youtube.com/shorts/pU3PnqBnxk4"
+    },
+    {
+      "id": "0FxxwZH99Dc",
+      "title": "@azizhedraa bawain somebody’s pleasure untuk kamu people pleaser #livemusic #somebodyspleasure",
+      "views": "240 views",
+      "url": "https://www.youtube.com/shorts/0FxxwZH99Dc"
+    },
+    {
+      "id": "u3ZcZkFo5e4",
+      "title": "@azizhedraa somebody’s pleasure sampai hubungan yang toxic #podcast #podcastclips",
+      "views": "810 views",
+      "url": "https://www.youtube.com/shorts/u3ZcZkFo5e4"
+    },
+    {
+      "id": "-WyVg07q14g",
+      "title": "Joraffi persembahkan lagu untuk broken home #livemusic #livesession",
+      "views": "130 views",
+      "url": "https://www.youtube.com/shorts/-WyVg07q14g"
+    },
+    {
+      "id": "p5dZ4lM7K4c",
+      "title": "Joraffi cerita perpisahan keluarga dan maut memisahkan dua insan yang saling mencintai",
+      "views": "580 views",
+      "url": "https://www.youtube.com/shorts/p5dZ4lM7K4c"
+    },
+    {
+      "id": "C4UMyOyYv84",
+      "title": "@TeddyAdhitya dengan langit favoritku #livemusic #livesession",
+      "views": "464 views",
+      "url": "https://www.youtube.com/shorts/C4UMyOyYv84"
+    },
+    {
+      "id": "Q2237SR1gSE",
+      "title": "@TeddyAdhitya pernah bikin lagu langsung di makamnya glenn fredly #podcast #podcastclips",
+      "views": "830 views",
+      "url": "https://www.youtube.com/shorts/Q2237SR1gSE"
+    },
+    {
+      "id": "GQ2vdW-mwZk",
+      "title": "Damainya hidup dilengkapi sama @fannysoegi #livesession #music",
+      "views": "557 views",
+      "url": "https://www.youtube.com/shorts/GQ2vdW-mwZk"
+    },
+    {
+      "id": "j76-V9zc06U",
+      "title": "@fannysoegi asmalibrasi sampai cinta yang gak berbalas #podcast #podcastclips",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/j76-V9zc06U"
+    },
+    {
+      "id": "Oa-YOw7CBkE",
+      "title": "@dbatlayar soal cinta tak berbalas sampai dikecewakan ekspektasi #shorts #podcast #music",
+      "views": "588 views",
+      "url": "https://www.youtube.com/shorts/Oa-YOw7CBkE"
+    },
+    {
+      "id": "13Nc24eNS2A",
+      "title": "Selalu ada momen untuk tetap berdansa di balik hati yang nelangsa #livemusic #folkmusic",
+      "views": "100 views",
+      "url": "https://www.youtube.com/shorts/13Nc24eNS2A"
+    },
+    {
+      "id": "H8lc0MUg3qU",
+      "title": "@febryrufi nemuin kesamaan cara merasakan pahitnya hidup dengan bernadya? #podcast #shorts",
+      "views": "830 views",
+      "url": "https://www.youtube.com/shorts/H8lc0MUg3qU"
+    },
+    {
+      "id": "0zZeKzTQP7k",
+      "title": "@Lalahuta remake lagu status palsu dan bawain lagu pelakornya nih #music #shorts #livemusic",
+      "views": "217 views",
+      "url": "https://www.youtube.com/shorts/0zZeKzTQP7k"
+    },
+    {
+      "id": "2BiFlZSkfiI",
+      "title": "@Lalahuta katanya bikin lagu buat pelakor?#shorts #podcast #interview # #music",
+      "views": "933 views",
+      "url": "https://www.youtube.com/shorts/2BiFlZSkfiI"
+    },
+    {
+      "id": "Mn6EnM3cPC8",
+      "title": "Juwita malam @NonaRia membius penonton di samsara",
+      "views": "466 views",
+      "url": "https://www.youtube.com/shorts/Mn6EnM3cPC8"
+    },
+    {
+      "id": "1I7PdvNcH9k",
+      "title": "Yuk aja teman sejati mu nonton melodi samsara bareng @Moccaofficial",
+      "views": "261 views",
+      "url": "https://www.youtube.com/shorts/1I7PdvNcH9k"
+    },
+    {
+      "id": "BUnTKoYOPCk",
+      "title": "@Moccaofficial  menutup grand opening samsara dengan sangat manis",
+      "views": "169 views",
+      "url": "https://www.youtube.com/shorts/BUnTKoYOPCk"
+    },
+    {
+      "id": "G42AdUw8vX0",
+      "title": "Santai bersama @NonaRia di melodi samsara, selamat menikmati",
+      "views": "1K views",
+      "url": "https://www.youtube.com/shorts/G42AdUw8vX0"
+    },
+    {
+      "id": "UAzNx9PHZoY",
+      "title": "@raissarmdhn nemenin sendu kita lewat alunan indahnya",
+      "views": "797 views",
+      "url": "https://www.youtube.com/shorts/UAzNx9PHZoY"
+    },
+    {
+      "id": "KUHBUyljOkk",
+      "title": "@raissarmdhn lewat seribu pelukan untuk yang sedang berduka",
+      "views": "373 views",
+      "url": "https://www.youtube.com/shorts/KUHBUyljOkk"
+    },
+    {
+      "id": "37sMTngG5Mc",
+      "title": "@Sheinafia dengan konsep looping bawain lagu tentang realita hubungan masa kini",
+      "views": "566 views",
+      "url": "https://www.youtube.com/shorts/37sMTngG5Mc"
+    },
+    {
+      "id": "43BkUTGgENk",
+      "title": "@Sheinafia bicara soal realita hubungan percintaan masa kini nih",
+      "views": "280 views",
+      "url": "https://www.youtube.com/shorts/43BkUTGgENk"
+    },
+    {
+      "id": "xsGmy7VbIo8",
+      "title": "@IfyAlyssaMusic bawain 2 lagu dengan tema jatuh hati & perpisahan nih",
+      "views": "801 views",
+      "url": "https://www.youtube.com/shorts/xsGmy7VbIo8"
+    },
+    {
+      "id": "0Ji_5yvqE-A",
+      "title": "Berpisah secara dewasa menurut @IfyAlyssaMusic selengkapnya di youtube melodi alam",
+      "views": "309 views",
+      "url": "https://www.youtube.com/shorts/0Ji_5yvqE-A"
+    },
+    {
+      "id": "AeDxL4POwXo",
+      "title": "Lirik lirik @akuenau bikin nostalgia ke masa masa indah walaupun itu sederhana",
+      "views": "298 views",
+      "url": "https://www.youtube.com/shorts/AeDxL4POwXo"
+    },
+    {
+      "id": "u_QxEehDaf8",
+      "title": "Pengaruh  @AriLesmana18 terhadap musiknya @akuenau",
+      "views": "129 views",
+      "url": "https://www.youtube.com/shorts/u_QxEehDaf8"
+    },
+    {
+      "id": "4IFb6DhCleQ",
+      "title": "Kali ini @neidaaleida tidak bersama hivi. Justru membawakan lagu di proyek solonya",
+      "views": "489 views",
+      "url": "https://www.youtube.com/shorts/4IFb6DhCleQ"
+    },
+    {
+      "id": "Qb60FCggBOU",
+      "title": "@neidaaleida menampilkan sisi berbeda melalui proyek solonya",
+      "views": "118 views",
+      "url": "https://www.youtube.com/shorts/Qb60FCggBOU"
+    },
+    {
+      "id": "J8b16unablc",
+      "title": "Lagu Satine Zaneta ini cocok buat kamu yang lagi kasmaran tapi belum berani ngungkapin",
+      "views": "441 views",
+      "url": "https://www.youtube.com/shorts/J8b16unablc"
+    },
+    {
+      "id": "TVqSuF4yUWA",
+      "title": "Satine Zaneta mengagumi sosok dari jarak jauh tapi belum pernah ngungkapin nih",
+      "views": "361 views",
+      "url": "https://www.youtube.com/shorts/TVqSuF4yUWA"
+    },
+    {
+      "id": "QxwkksRkkZA",
+      "title": "@rahmaniaastrini dengan lagu terbarunya yang dibawakan di konser #coldplayjakarta nih",
+      "views": "697 views",
+      "url": "https://www.youtube.com/shorts/QxwkksRkkZA"
+    },
+    {
+      "id": "XU4nK3de7PE",
+      "title": "@rahmaniaastrini bongkar obrolannya bareng chris martin @coldplay nih",
+      "views": "790 views",
+      "url": "https://www.youtube.com/shorts/XU4nK3de7PE"
+    },
+    {
+      "id": "Q0feMXEV8xs",
+      "title": "@undbodevan lewat “jatukrama” yang artinya pasangan hidup. Apapun itu keadaannya",
+      "views": "207 views",
+      "url": "https://www.youtube.com/shorts/Q0feMXEV8xs"
+    },
+    {
+      "id": "bouZmcCDY6k",
+      "title": "Apa yang terjadi antara @undbodevan dan apartemen nomor 1931 nya? Nonton fullnya",
+      "views": "179 views",
+      "url": "https://www.youtube.com/shorts/bouZmcCDY6k"
+    },
+    {
+      "id": "GLJVJ-lzi7w",
+      "title": "@Gavendri dengan format yang engga biasa nih dengan bass dan vokal rnb ala doi, freshh",
+      "views": "315 views",
+      "url": "https://www.youtube.com/shorts/GLJVJ-lzi7w"
+    },
+    {
+      "id": "WpreCDpnQ9g",
+      "title": "@Gavendri bikin melodi taman jadi makin menarik dan fresh! dengan sentuhan bass nya nih",
+      "views": "270 views",
+      "url": "https://www.youtube.com/shorts/WpreCDpnQ9g"
+    },
+    {
+      "id": "x_p05S7x5g0",
+      "title": "@Gavendri empati berlebih bisa ngerugiin diri kamu, iya ga sih?",
+      "views": "227 views",
+      "url": "https://www.youtube.com/shorts/x_p05S7x5g0"
+    },
+    {
+      "id": "1PF_WYYGQLo",
+      "title": "Banyak banget fakta menarik tentang @Gavendri dari guru tk, kurator lagu anak dan apa lagi ya?",
+      "views": "268 views",
+      "url": "https://www.youtube.com/shorts/1PF_WYYGQLo"
+    },
+    {
+      "id": "yoZd_XEvPYs",
+      "title": "Seberapa siap @chintyagabriellaofficial mengikhlaskan luka di hatinya?",
+      "views": "165 views",
+      "url": "https://www.youtube.com/shorts/yoZd_XEvPYs"
+    },
+    {
+      "id": "c9gzftBWLoY",
+      "title": "Siapa yang siap terluka kaya @chintyagabriellaofficial dan harus berdamai dengan itu?",
+      "views": "213 views",
+      "url": "https://www.youtube.com/shorts/c9gzftBWLoY"
+    },
+    {
+      "id": "gFHCAxdfiA8",
+      "title": "@chintyagabriellaofficial bilang level tertinggi dari mencintai adalah mengikhlaskan setuju?",
+      "views": "251 views",
+      "url": "https://www.youtube.com/shorts/gFHCAxdfiA8"
+    },
+    {
+      "id": "x6t19Mcc1J4",
+      "title": "@chintyagabriellaofficial bilang nambah mantan nambah lagu emang boleh gituuu?",
+      "views": "268 views",
+      "url": "https://www.youtube.com/shorts/x6t19Mcc1J4"
+    },
+    {
+      "id": "EadE7az_u2A",
+      "title": "Yang lagi patah hati, inget orang disekelilingmu bantuin kamu bangkit kok @MaizuraOfficial",
+      "views": "106 views",
+      "url": "https://www.youtube.com/shorts/EadE7az_u2A"
+    },
+    {
+      "id": "QxxLTPwUlkI",
+      "title": "@MaizuraOfficial  untuk pertama kalinya nulis lagu lewat \"Denganmu\"",
+      "views": "245 views",
+      "url": "https://www.youtube.com/shorts/QxxLTPwUlkI"
+    },
+    {
+      "id": "XctQ9yFURi4",
+      "title": "Gimana caranya @MaizuraOfficial bangkit dari keadaan yang bikin dia ga mau main musik lagi?",
+      "views": "81 views",
+      "url": "https://www.youtube.com/shorts/XctQ9yFURi4"
+    },
+    {
+      "id": "WyPy5S8SQVQ",
+      "title": "Bersyukurnya @MaizuraOfficial menemukan kebahagiannya, selengkapnya besok di youtube melodi alam",
+      "views": "74 views",
+      "url": "https://www.youtube.com/shorts/WyPy5S8SQVQ"
+    },
+    {
+      "id": "6U28NnnjZME",
+      "title": "Lagu @officialbirubaru ini bisa nguatin kamu menjalani hari hari yang berat",
+      "views": "281 views",
+      "url": "https://www.youtube.com/shorts/6U28NnnjZME"
+    },
+    {
+      "id": "nAC32t8GciM",
+      "title": "\"Hari ini terasa berat\" dari @officialbirubaru  ingetin kita penting nya mencintai diri sendiri",
+      "views": "332 views",
+      "url": "https://www.youtube.com/shorts/nAC32t8GciM"
+    },
+    {
+      "id": "JJvEyXw1-kQ",
+      "title": "@officialbirubaru  dengan segala perspektif menjalani hidup yang lagi cape capenya",
+      "views": "173 views",
+      "url": "https://www.youtube.com/shorts/JJvEyXw1-kQ"
+    },
+    {
+      "id": "N-kO4lExsUg",
+      "title": "@officialbirubaru bakal ceritain 5 tahun perjalanan mereka yang penuh lika liku",
+      "views": "235 views",
+      "url": "https://www.youtube.com/shorts/N-kO4lExsUg"
+    },
+    {
+      "id": "5Dwj8jIPvbg",
+      "title": "@Elisa.Jacquline  ngewakilin kamu semua korban ghosting lewat lagu “Lantas” nih",
+      "views": "284 views",
+      "url": "https://www.youtube.com/shorts/5Dwj8jIPvbg"
+    },
+    {
+      "id": "KaFaKFZkj58",
+      "title": "Korban ghosting bakal relate ni sama debut single nya @Elisa.Jacquline  bertajuk “Lantas” ni",
+      "views": "484 views",
+      "url": "https://www.youtube.com/shorts/KaFaKFZkj58"
+    },
+    {
+      "id": "I5ABQ87Ygmk",
+      "title": "Katanya @Elisa.Jacquline pernah kacangin @davidfoster selengkap nya di youtube melodi alam!",
+      "views": "346 views",
+      "url": "https://www.youtube.com/shorts/I5ABQ87Ygmk"
+    },
+    {
+      "id": "ZRUbJBCjGfM",
+      "title": "@Elisa.Jacquline Gimana sih cara ngedistraksi kesedihan? Tayang besok di youtube melodi alam",
+      "views": "252 views",
+      "url": "https://www.youtube.com/shorts/ZRUbJBCjGfM"
+    },
+    {
+      "id": "yGLNuDamDC4",
+      "title": "Berasa dibius dengan alunan indah nya @TentangDere",
+      "views": "981 views",
+      "url": "https://www.youtube.com/shorts/yGLNuDamDC4"
+    },
+    {
+      "id": "F8bkAQxticg",
+      "title": "Sudah siap hanyut dalam alunan indahnya @TentangDere ?? Besok tayang yes",
+      "views": "1.8K views",
+      "url": "https://www.youtube.com/shorts/F8bkAQxticg"
+    },
+    {
+      "id": "JM-94MZ7-c0",
+      "title": "Seperti apa sih hidup seperti rubik ala @TentangDere Selengkapnya di youtube melodi alam",
+      "views": "206 views",
+      "url": "https://www.youtube.com/shorts/JM-94MZ7-c0"
+    },
+    {
+      "id": "lkDKKHB3Gr0",
+      "title": "@TentangDere ngungkapin proses kreatif bareng @musiktulus Tayang besok di youtube melodi alam",
+      "views": "167 views",
+      "url": "https://www.youtube.com/shorts/lkDKKHB3Gr0"
+    },
+    {
+      "id": "QbAqQjj4X9g",
+      "title": "@jubileemarisa versi stripped nih! penasaran kan? selengkapnya di youtube melodi alam",
+      "views": "707 views",
+      "url": "https://www.youtube.com/shorts/QbAqQjj4X9g"
+    },
+    {
+      "id": "vLmRYNetlmg",
+      "title": "@jubileemarisa bakal terdengar stripped version kali ini nih! Penasaran kan?",
+      "views": "920 views",
+      "url": "https://www.youtube.com/shorts/vLmRYNetlmg"
+    },
+    {
+      "id": "DKl8xf-EAp8",
+      "title": "Sepatah hati apa sih  @jubileemarisa Selengkapnya ada di youtube melodi alam",
+      "views": "323 views",
+      "url": "https://www.youtube.com/shorts/DKl8xf-EAp8"
+    },
+    {
+      "id": "TZyp7hkE4Wg",
+      "title": "@jubileemarisa pernah sepatah hati itu?",
+      "views": "660 views",
+      "url": "https://www.youtube.com/shorts/TZyp7hkE4Wg"
+    },
+    {
+      "id": "H2G-KWtoo_E",
+      "title": "Buat yang lagi patah semangat, dengerin lagu “I'ts Coming Your Way” nya @agatha.pricilla yuk",
+      "views": "900 views",
+      "url": "https://www.youtube.com/shorts/H2G-KWtoo_E"
+    },
+    {
+      "id": "ycxsbR75OFs",
+      "title": "Can anyone guess what song @agatha.pricilla will sing?",
+      "views": "4.7K views",
+      "url": "https://www.youtube.com/shorts/ycxsbR75OFs"
+    },
+    {
+      "id": "Zck4r_kYHSw",
+      "title": "@agatha.pricilla merangkum petuah dari ibunda nya melalui E.P \"Adriana\"",
+      "views": "243 views",
+      "url": "https://www.youtube.com/shorts/Zck4r_kYHSw"
+    },
+    {
+      "id": "BK2M6NtsBMU",
+      "title": "@agatha.pricilla tentang Adriana, Blink & Asmara dirangkum disini ditemani Outside Indonesia",
+      "views": "850 views",
+      "url": "https://www.youtube.com/shorts/BK2M6NtsBMU"
+    },
+    {
+      "id": "uAhq4ySsdPQ",
+      "title": "wahh ini yang ditunggu tunggu sobat melolam @NonaRia live",
+      "views": "474 views",
+      "url": "https://www.youtube.com/shorts/uAhq4ySsdPQ"
+    },
+    {
+      "id": "08tjMJyetBw",
+      "title": "Ada yang bisa nebak @NonaRia bakal bawain lagu apa di melodi taman?",
+      "views": "2.9K views",
+      "url": "https://www.youtube.com/shorts/08tjMJyetBw"
+    },
+    {
+      "id": "1C5W_-6RCvQ",
+      "title": "Kamu dapat menemukan beberapa fakta menarik dari @NonaRia cuma di Bicara Melodi",
+      "views": "569 views",
+      "url": "https://www.youtube.com/shorts/1C5W_-6RCvQ"
+    },
+    {
+      "id": "BqsD67knpe0",
+      "title": "Ga sekedar ngobrolin musik tapi juga ngobrolin lingkungan hidup bareng @NonaRia tayang besok",
+      "views": "223 views",
+      "url": "https://www.youtube.com/shorts/BqsD67knpe0"
+    },
+    {
+      "id": "tghDwFe2nGs",
+      "title": "\"Bercinta Lewat Kata\" sebuah lagu yang dipersembahkan @donnemaula5977 kepada @YuraYunita",
+      "views": "59K views",
+      "url": "https://www.youtube.com/shorts/tghDwFe2nGs"
+    },
+    {
+      "id": "y4mw8zLO9II",
+      "title": "Lagu yang diciptakan @donnemaula5977 teruntuk istri tercinta @YuraYunita",
+      "views": "403 views",
+      "url": "https://www.youtube.com/shorts/y4mw8zLO9II"
+    },
+    {
+      "id": "7z4OWQv6FY8",
+      "title": "Seromantis apa sih @donnemaula5977 & @YuraYunita kita temukan jawabannya disini",
+      "views": "418 views",
+      "url": "https://www.youtube.com/shorts/7z4OWQv6FY8"
+    },
+    {
+      "id": "5ARHGuNO9Po",
+      "title": "Gimana sih kisah percintaan @donnemaula5977 sama @YuraYunita penasaran kan",
+      "views": "1.2K views",
+      "url": "https://www.youtube.com/shorts/5ARHGuNO9Po"
+    },
+    {
+      "id": "WEglt7CWprw",
+      "title": "Kaum overthinking merapat yuk! @bernadyaribka  bawain lagu Terlintas & Satu Bulan nih",
+      "views": "464 views",
+      "url": "https://www.youtube.com/shorts/WEglt7CWprw"
+    },
+    {
+      "id": "OFtdDr8WXWA",
+      "title": "@bernadyaribka  ga bawa 1 lagu aja nih, kira kira bakal bawain lagu apa lagi ya",
+      "views": "492 views",
+      "url": "https://www.youtube.com/shorts/OFtdDr8WXWA"
+    },
+    {
+      "id": "XDF0q02-Btk",
+      "title": "Se-overthinking apa sih @bernadyaribka Sudah tayang di youtube melodi alam",
+      "views": "151 views",
+      "url": "https://www.youtube.com/shorts/XDF0q02-Btk"
+    },
+    {
+      "id": "se8iEu76TAM",
+      "title": "Kita bikin @bernadyaribka  bingung dikit gapapa kali ya? Tayang besok di youtube melodi alam",
+      "views": "202 views",
+      "url": "https://www.youtube.com/shorts/se8iEu76TAM"
+    },
+    {
+      "id": "RCLwuC6jzEc",
+      "title": "Liriknya cukup berani, cocok untuk nyampein isi hati ke orang tersayang",
+      "views": "110 views",
+      "url": "https://www.youtube.com/shorts/RCLwuC6jzEc"
+    },
+    {
+      "id": "Fo34W8jo-lA",
+      "title": "Penasaran banget nih 23 (Too Deep, Too Much) versi acoustic bakal jadi gimana ya?",
+      "views": "157 views",
+      "url": "https://www.youtube.com/shorts/Fo34W8jo-lA"
+    },
+    {
+      "id": "OMdrBTnmuSk",
+      "title": "Bincang seru bareng @Kalya Islamadina  (.◜◡◝) dari ngomongin musik sampe zodiak",
+      "views": "167 views",
+      "url": "https://www.youtube.com/shorts/OMdrBTnmuSk"
+    },
+    {
+      "id": "y_65AgD7lTo",
+      "title": "ngobrol sama @kalyaislamadina kisah cinta remaja sampe ke zodiac pun ikut kebahas nihh",
+      "views": "257 views",
+      "url": "https://www.youtube.com/shorts/y_65AgD7lTo"
+    },
+    {
+      "id": "uXE7j5EVdew",
+      "title": "Lagu \"Cherry\" nya @JordanSusanto  dengan groovy nya dibawain versi acoustic fresh banget ya",
+      "views": "594 views",
+      "url": "https://www.youtube.com/shorts/uXE7j5EVdew"
+    },
+    {
+      "id": "Dgsb4_1PAe8",
+      "title": "Gimana menurut kamu “Cherry” versi akustik? Cukup fresh yaa",
+      "views": "459 views",
+      "url": "https://www.youtube.com/shorts/Dgsb4_1PAe8"
+    },
+    {
+      "id": "1smS5jrHyjM",
+      "title": "@JordanSusanto shares the story behind his song \"Cherry,\" inspired by his friend's toxic relation...",
+      "views": "1.4K views",
+      "url": "https://www.youtube.com/shorts/1smS5jrHyjM"
+    },
+    {
+      "id": "1UvwrTcUXKQ",
+      "title": "kita tanya tanya dibalik lagu \"Cherry\" sama @JordanSusanto sampe nurjanah kebawa bawa nih",
+      "views": "744 views",
+      "url": "https://www.youtube.com/shorts/1UvwrTcUXKQ"
+    },
+    {
+      "id": "3TRQPT6Re-Q",
+      "title": "lagu ini cukup mengingatkan kita pentingnya mendahului keinginan sendiri @PrinceHusein",
+      "views": "341 views",
+      "url": "https://www.youtube.com/shorts/3TRQPT6Re-Q"
+    },
+    {
+      "id": "2p2AosKjytM",
+      "title": "@PrinceHusein ceritain dilema jadi people pleaser Sudah tayang di youtube melodi alam ya",
+      "views": "74 views",
+      "url": "https://www.youtube.com/shorts/2p2AosKjytM"
+    },
+    {
+      "id": "Av79OBMS1uw",
+      "title": "@PrinceHusein bakal ceritain makna dibalik album nya bertajuk \"People Pleaser\" Tayang Besok!",
+      "views": "86 views",
+      "url": "https://www.youtube.com/shorts/Av79OBMS1uw"
+    },
+    {
+      "id": "lsqHXoZ0oRM",
+      "title": "Penasaran dengan kejutan di @TheSoundsProject Vol.6 nanti? Tonton full version nya deh",
+      "views": "66 views",
+      "url": "https://www.youtube.com/shorts/lsqHXoZ0oRM"
+    },
+    {
+      "id": "RMVdTu1Idiw",
+      "title": "Kira kira bakal ada kejutan apa ya di @TheSoundsProject  Vol.6 nanti? Tayang besok ya",
+      "views": "150 views",
+      "url": "https://www.youtube.com/shorts/RMVdTu1Idiw"
+    },
+    {
+      "id": "eZ9vlaAaiRw",
+      "title": "Lagu @manutized ini semoga mewakili kamu semua korban “Bully” di masa kecil",
+      "views": "78 views",
+      "url": "https://www.youtube.com/shorts/eZ9vlaAaiRw"
+    },
+    {
+      "id": "I0_nrA4paqw",
+      "title": "@manutized bakal bawain lagu yang menceritakan masa kecilnya yang pernah di bully",
+      "views": "122 views",
+      "url": "https://www.youtube.com/shorts/I0_nrA4paqw"
+    },
+    {
+      "id": "YcKNA_MFqAo",
+      "title": "Cerita @manutized pernah di Bully waktu kecil dituangkan lewat lagu “Nativity Trip”",
+      "views": "214 views",
+      "url": "https://www.youtube.com/shorts/YcKNA_MFqAo"
+    },
+    {
+      "id": "ixXyBpUqkuA",
+      "title": "Masih bersama Outside Indonesia yang mendukung obrolan bersama @manutized jadi lebih intimate",
+      "views": "134 views",
+      "url": "https://www.youtube.com/shorts/ixXyBpUqkuA"
+    },
+    {
+      "id": "qW_ViEar-aM",
+      "title": "Lagu yang bercerita tentang kegelisahan di masa lalu nya @RayhanNoor",
+      "views": "60 views",
+      "url": "https://www.youtube.com/shorts/qW_ViEar-aM"
+    },
+    {
+      "id": "roVbkksgPto",
+      "title": "@RayhanNoor bakal bawain lagu dari album terbarunya! Kira kira bawain lagu apa ya?",
+      "views": "397 views",
+      "url": "https://www.youtube.com/shorts/roVbkksgPto"
+    },
+    {
+      "id": "CN-F6TZZbWg",
+      "title": "@RayhanNoor cerita tentang keresahan di masa lalu nya yang pasti relate ama kamu",
+      "views": "273 views",
+      "url": "https://www.youtube.com/shorts/CN-F6TZZbWg"
+    },
+    {
+      "id": "RtLDurzgQKk",
+      "title": "Rayhan Noor cerita tentang keresahannya di album “Menjelang Tiga Puluh”",
+      "views": "110 views",
+      "url": "https://www.youtube.com/shorts/RtLDurzgQKk"
+    },
+    {
+      "id": "gESVJGTfM28",
+      "title": "Siap dijaga hatinya sama @nadhifbasalamah ?? #MelodiAlam #MelodiTaman",
+      "views": "94 views",
+      "url": "https://www.youtube.com/shorts/gESVJGTfM28"
+    },
+    {
+      "id": "Ma5CZOl-lGM",
+      "title": "Outside Indonesia ikut mendukung Melodi Taman untuk terciptanya melodi yang indah",
+      "views": "66 views",
+      "url": "https://www.youtube.com/shorts/Ma5CZOl-lGM"
+    },
+    {
+      "id": "TtbkPs3sK84",
+      "title": "Kedatangan @nadhifbasalamah  dengan keresahannya #MelodiAlam #BicaraMelodi #NadhifBasalamah",
+      "views": "111 views",
+      "url": "https://www.youtube.com/shorts/TtbkPs3sK84"
+    },
+    {
+      "id": "U_VKcnI9E_k",
+      "title": "Set baru Bicara Melodi didukung oleh @outsideindonesia1710 terasa semakin hangat dan nyaman",
+      "views": "107 views",
+      "url": "https://www.youtube.com/shorts/U_VKcnI9E_k"
+    },
+    {
+      "id": "XQ0WztRtyw4",
+      "title": "\"Nelangsa Pasar Turi\" dengan versi acoustic yang syahdu #MelodiAlam #MelodiTaman #BilalIndraJaya",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/XQ0WztRtyw4"
+    },
+    {
+      "id": "M5JDDysHRA4",
+      "title": "@BilalIndrajaya ungkap fakta \"Nelangsa Pasar Turi\"  #MelodiAlam #BicaraMelodi #BilalIndraJaya",
+      "views": "1.1K views",
+      "url": "https://www.youtube.com/shorts/M5JDDysHRA4"
+    },
+    {
+      "id": "49HBC4Qpmts",
+      "title": "Lagu @uapwidyamusic cocok buat cinta belum kesampean #MelodiAlam #MelodiTaman #UapWidya",
+      "views": "101 views",
+      "url": "https://www.youtube.com/shorts/49HBC4Qpmts"
+    },
+    {
+      "id": "w2Pd3CKaLRQ",
+      "title": "Cerita soal bangkit dari keterpurukan @uapwidyamusic  #MelodiAlam #BicaraMelodi #UapWidya",
+      "views": "137 views",
+      "url": "https://www.youtube.com/shorts/w2Pd3CKaLRQ"
+    },
+    {
+      "id": "oROr3V4vZIo",
+      "title": "Sebuah lagu indah untuk sang ibu dari @yeftajames - Pelahir #MelodiAlam #MelodiTaman #YeftaJames",
+      "views": "145 views",
+      "url": "https://www.youtube.com/shorts/oROr3V4vZIo"
+    },
+    {
+      "id": "EX2OkShezQ4",
+      "title": "Yang suka melawan ibu wajib nonton nih! #MelodiAlam #BicaraMelodi #YeftaJames",
+      "views": "149 views",
+      "url": "https://www.youtube.com/shorts/EX2OkShezQ4"
+    },
+    {
+      "id": "ki6SwkgfASk",
+      "title": "Tayang jam 16:00 di youtube melodi Alam #MelodiAlam #MelodiTaman #SadeSusanto #ILoveYouNoMatter",
+      "views": "77 views",
+      "url": "https://www.youtube.com/shorts/ki6SwkgfASk"
+    },
+    {
+      "id": "KlKB9xLm3uE",
+      "title": "pernah jadi korban ghosting sampai ke AMI AWARDS!!#MelodiAlam #BicaraMelodi #SadeSusanto",
+      "views": "71 views",
+      "url": "https://www.youtube.com/shorts/KlKB9xLm3uE"
+    },
+    {
+      "id": "meb9dQQJsR8",
+      "title": "Merayakan kesedihan bersama @Delladevina_  #MelodiAlam #MelodiTaman #DellaFirdatia #BelumSembuh",
+      "views": "250 views",
+      "url": "https://www.youtube.com/shorts/meb9dQQJsR8"
+    },
+    {
+      "id": "GlPONIgHADA",
+      "title": "Gagal move on bareng @Delladevina_ #MelodiAlam #BicaraMelodi #DellaFirdatia",
+      "views": "405 views",
+      "url": "https://www.youtube.com/shorts/GlPONIgHADA"
+    },
+    {
+      "id": "1wipmnqN2ZU",
+      "title": "Healing bareng sharen#MelodiAlam #MelodiTaman #SharenFernandez #Sembuh",
+      "views": "75 views",
+      "url": "https://www.youtube.com/shorts/1wipmnqN2ZU"
+    },
+    {
+      "id": "VKAG6nwZtDY",
+      "title": "@sharenfernandez_ Ternyata banyak Cerita haru #MelodiAlam #BicaraMelodi #SharenFernandez",
+      "views": "166 views",
+      "url": "https://www.youtube.com/shorts/VKAG6nwZtDY"
+    },
+    {
+      "id": "Q1-cVRKEGoU",
+      "title": "Yang sedang nunggu kepastian dari doi merapat #MelodiAlam #MelodiTaman #AdrianSetiawan #Semesta",
+      "views": "689 views",
+      "url": "https://www.youtube.com/shorts/Q1-cVRKEGoU"
+    },
+    {
+      "id": "sscwHTp7xZo",
+      "title": "Suka musik karena kartun Tom & Jerry #MelodiAlam #BicaraMelodi #AdrianSetiawan",
+      "views": "308 views",
+      "url": "https://www.youtube.com/shorts/sscwHTp7xZo"
+    },
+    {
+      "id": "_XuKDi02pnQ",
+      "title": "Gimana “Making Memories” Versi Acoustic? #MelodiAlam #MelodiTaman #Tanjung",
+      "views": "1.3K views",
+      "url": "https://www.youtube.com/shorts/_XuKDi02pnQ"
+    },
+    {
+      "id": "EUd8wIu0wDI",
+      "title": "Psychedelic musik buat TANJUNG Berada di dimensi lain??? #MelodiAlam #Tanjung #BicaraMelodi",
+      "views": "381 views",
+      "url": "https://www.youtube.com/shorts/EUd8wIu0wDI"
+    }
+  ],
+  "playlists": [
+    {
+      "id": "PL3hstHxZXaodN-0xzofBkLXr9Plb0hC_r",
+      "title": "Resonansi (Respon & Opini Skena Kini)",
+      "count": "3 videos",
+      "url": "https://www.youtube.com/playlist?list=PL3hstHxZXaodN-0xzofBkLXr9Plb0hC_r"
+    },
+    {
+      "id": "PL3hstHxZXaodGNtS-1TYcs_U49VAPW42x",
+      "title": "Swara Samsara",
+      "count": "4 videos",
+      "url": "https://www.youtube.com/playlist?list=PL3hstHxZXaodGNtS-1TYcs_U49VAPW42x"
+    },
+    {
+      "id": "PL3hstHxZXaof-z3uiXZPo_lXP_aNsYJD9",
+      "title": "Melodi Samsara",
+      "count": "104 videos",
+      "url": "https://www.youtube.com/playlist?list=PL3hstHxZXaof-z3uiXZPo_lXP_aNsYJD9"
+    },
+    {
+      "id": "PL3hstHxZXaodgPZhIreiGMzKZYbinho9J",
+      "title": "Melodi Taman",
+      "count": "36 videos",
+      "url": "https://www.youtube.com/playlist?list=PL3hstHxZXaodgPZhIreiGMzKZYbinho9J"
+    },
+    {
+      "id": "PL3hstHxZXaocRJUKWcGmt9j4RD1e5V5bg",
+      "title": "Bicara Melodi",
+      "count": "139 videos",
+      "url": "https://www.youtube.com/playlist?list=PL3hstHxZXaocRJUKWcGmt9j4RD1e5V5bg"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+# Dokumentasi Melodi Alam
+
+Kumpulan dokumen pendukung pengembangan untuk platform web Melodi Alam.
+Mulai dari sini.
+
+**Siapa yang membaca apa.** Tidak semua dokumen ditujukan untuk semua orang; tabel di
+bawah menandai audiensnya supaya tidak ada yang membaca 50 KB dokumen yang tidak
+diperlukannya.
+
+---
+
+## Status fase
+
+Repositori ini berada di **Fase Alfa** (lihat PRD §15). Artinya:
+
+- Antarmuka *Neo-Brutalist Editorial* sudah berjalan penuh di sisi klien.
+- Artikel, katalog video, dan antrean demo masih memakai data di dalam repo, bukan
+  basis data.
+- Seluruh dokumen di sini yang menyangkut backend, CMS, basis data, pengujian, dan
+  deployment bersifat **`RENCANA`** — belum diimplementasikan.
+
+> **Fase dokumen ini hanya dokumentasi.** Tidak ada paket baru yang dipasang dan tidak
+> ada kode aplikasi yang diubah saat dokumen-dokumen ini disusun. Setiap klaim membawa
+> label `TERVERIFIKASI`, `RENCANA`, atau `ASUMSI`.
+
+---
+
+## Daftar dokumen
+
+### Orientasi
+
+| Dokumen | Untuk | Isi |
+|---|---|---|
+| [`../README.md`](../README.md) | Semua orang | Apa proyek ini, cara menjalankannya, daftar perintah |
+| [`PRD-REFERENCE.md`](PRD-REFERENCE.md) | PM, QA, engineer | Ketertelusuran ID requirement PRD → status implementasi, penyimpangan, pertanyaan terbuka |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | Kontributor | Alur kerja, konvensi, gerbang mutu |
+
+### Arsitektur & data
+
+| Dokumen | Untuk | Isi |
+|---|---|---|
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Engineer | Batas modul, alur data, arsitektur target, kendala arsitektural |
+| [`DATA-MODEL.md`](DATA-MODEL.md) | Engineer backend | Entitas saat ini, skema Postgres target, RLS, migrasi |
+| [`API-CONTRACTS.md`](API-CONTRACTS.md) | Engineer, integrator | Kontrak endpoint hari ini dan target, model error, OpenAPI |
+| [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) | Engineer, pemilik produk | Temuan keamanan, penanganan PII, kontrol anti-penyalahgunaan |
+
+### Implementasi
+
+| Dokumen | Untuk | Isi |
+|---|---|---|
+| [`FRONTEND-PLAN.md`](FRONTEND-PLAN.md) | Engineer frontend | Route, komponen, batas server/client, state, gap aksesibilitas |
+| [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) | Engineer, desainer | Token, katalog utility, aturan interaksi yang dikunci, anti-pola |
+
+### Mutu & rilis
+
+| Dokumen | Untuk | Isi |
+|---|---|---|
+| [`TEST-STRATEGY.md`](TEST-STRATEGY.md) | Engineer, QA | Prioritas berbasis risiko, kasus uji, matriks ketertelusuran, gerbang CI |
+| [`DEPLOYMENT.md`](DEPLOYMENT.md) | Engineer, operator | Build nyata, lingkungan, pipeline, rollback, hazard deploy |
+
+### Keputusan
+
+| Dokumen | Keputusan |
+|---|---|
+| [`adr/0001-artikel-route-video-modal.md`](adr/0001-artikel-route-video-modal.md) | Artikel sebagai route crawlable; pemutar video tetap modal |
+| [`adr/0002-payload-supabase.md`](adr/0002-payload-supabase.md) | Payload CMS 3 di dalam Next.js sebagai CMS |
+| [`adr/0003-supabase-postgres-storage.md`](adr/0003-supabase-postgres-storage.md) | Supabase sebagai Postgres dan object storage |
+| [`adr/0004-katalog-video-build-time.md`](adr/0004-katalog-video-build-time.md) | Katalog video tetap di-*generate* saat build, tidak masuk CMS |
+| [`adr/0005-moderated-demo-queue.md`](adr/0005-moderated-demo-queue.md) | Antrean demo dimoderasi sebelum tampil publik |
+| [`adr/0006-vitest-playwright-vercel.md`](adr/0006-vitest-playwright-vercel.md) | Vitest + Playwright; deploy ke Vercel |
+| [`adr/0007-tipografi-inter-red-hat-display.md`](adr/0007-tipografi-inter-red-hat-display.md) | Tipografi Inter + Red Hat Display, menggantikan Plus Jakarta Sans |
+
+---
+
+## Urutan membaca yang disarankan
+
+**Kontributor baru** — `../README.md` → `ARCHITECTURE.md` → `FRONTEND-PLAN.md` →
+`CONTRIBUTING.md`.
+
+**Engineer backend** — `ARCHITECTURE.md` → `DATA-MODEL.md` → `API-CONTRACTS.md` →
+`SECURITY-PRIVACY.md`.
+
+**Desainer** — `DESIGN-SYSTEM.md` → `FRONTEND-PLAN.md` → ADR-0007.
+
+**Menjelang rilis** — `TEST-STRATEGY.md` → `DEPLOYMENT.md` → `SECURITY-PRIVACY.md` →
+`PRD-REFERENCE.md` §9 (release blockers).
+
+---
+
+## Konvensi penulisan
+
+Istilah kunci yang dipakai konsisten di seluruh dokumen ini.
+
+| Istilah | Arti |
+|---|---|
+| **Stories** | Pilar jurnalisme musik — artikel |
+| **Spaces** | Ruang dengar fisik: Samsara, Svarga, Acasa |
+| **Instruments** | Perangkat audio, terutama SVVARA V100 |
+| **Antrean demo** | Daftar kiriman musisi yang menunggu atau sudah ditinjau |
+| **Moderated queue** | Model moderasi yang dipilih: kiriman privat sampai kurator menyetujui (ADR-0005) |
+| **Artefak generated** | Berkas yang dihasilkan skrip dan tidak boleh disunting tangan: `lib/catalogue.json`, `public/brand/*`, `public/photos/*`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` |
+
+### Label status klaim
+
+Setiap klaim faktual membawa salah satu label berikut. Ini bukan hiasan — pembaca perlu
+tahu mana yang sudah teruji.
+
+| Label | Arti |
+|---|---|
+| `TERVERIFIKASI` | Dibaca langsung di kode, atau dijalankan dan hasilnya diamati |
+| `RENCANA` | Belum ada; target yang akan dibangun |
+| `ASUMSI` | Diperkirakan, belum dikonfirmasi |
+| `[PERLU VERIFIKASI]` | Secara eksplisit belum diperiksa dan butuh konfirmasi |
+
+### Menyebut rujukan
+
+- ID requirement PRD: `FR-001`, `BR-002`, `ACC-003`, `NFR-001`, `OQ-001`, `MET-02`,
+  `ANA-04`, `RISK-001`.
+- Risiko arsitektural di `ARCHITECTURE.md` memakai namespace terpisah: `ARCH-RISK-001`.
+  Ini disengaja supaya tidak tertukar dengan `RISK-*` milik PRD.
+- Keputusan: `ADR-000N`.
+
+---
+
+## Batasan yang perlu diketahui
+
+Tiga hal berikut memengaruhi hampir semua dokumen, dan sengaja disebut di depan.
+
+1. **Berkas sumber berada di luar repo.** `scripts/build-catalogue.mjs`,
+   `scripts/build-brand.mjs`, dan `scripts/copy-photos.mjs` membaca berkas dari folder
+   induk (`../melodi-alam-data.md`, `../logobulet.png`, `../logotext.png`,
+   `../FOTO PLACEHOLDER MELODI ALAM/`). **Checkout bersih tidak dapat membangun situs.**
+   Rincian dan pilihannya di [`DEPLOYMENT.md`](DEPLOYMENT.md).
+2. **PRD belum ada di repo.** `PRD-REFERENCE.md` merangkum isi mengikat setiap ID
+   requirement, tetapi teks PRD aslinya sebaiknya disalin menjadi `docs/PRD.md` agar
+   ketertelusuran dapat diverifikasi terhadap sumbernya.
+3. **Nama merek belum konsisten.** Header memakai wordmark gambar berbunyi
+   "MELODI SAMSARA", sementara metadata dan footer memakai "MELODI ALAM". Konsekuensinya
+   terhadap SEO dan pembaca layar dibahas di `PRD-REFERENCE.md` §11.
