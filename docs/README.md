@@ -15,15 +15,18 @@ Repositori ini berada di **Fase Alfa** (lihat PRD §15), tetapi backend-nya suda
 melewati tahap rencana. Yang benar hari ini:
 
 - Antarmuka *Neo-Brutalist Editorial* berjalan penuh di sisi klien.
-- **Artikel** dibaca dari Payload CMS + Supabase, dengan `lib/content.ts` sebagai
-  fallback — lihat [`PAYLOAD-INTEGRATION.md`](PAYLOAD-INTEGRATION.md).
-- **Antrean demo** juga sudah tersambung ke Postgres dan dimoderasi (ADR-0005).
+- **Artikel** dibaca dari Sanity Studio, dengan `lib/content.ts` sebagai fallback —
+  lihat [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
+- **Antrean demo** tersambung ke dataset Sanity **privat** dan dimoderasi (ADR-0005).
 - **Katalog video** tetap artefak build-time di dalam repo (ADR-0004).
 - Pengujian otomatis dan deployment masih **`RENCANA`** (ADR-0006).
 
-> Dokumen-dokumen ini disusun saat backend masih berupa rencana, jadi sebagian isinya
-> menggambarkan target, bukan keadaan sekarang. Bagian yang sudah berjalan diberi label
-> `TERVERIFIKASI`; sisanya tetap `RENCANA` atau `ASUMSI`.
+> **Sebagian dokumen di folder ini sudah usang.** Dokumen-dokumen itu disusun saat
+> backend direncanakan memakai Payload CMS 3 + Supabase; CMS-nya sejak itu diganti
+> dengan Sanity Studio dan seluruh kode Payload dihapus. Setiap dokumen yang terdampak
+> membawa banner di bagian atas yang menunjuk ke
+> [`adr/0008`](adr/0008-sanity-studio-menggantikan-payload.md) dan
+> [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
 
 ---
 
@@ -50,7 +53,7 @@ melewati tahap rencana. Yang benar hari ini:
 
 | Dokumen | Untuk | Isi |
 |---|---|---|
-| [`PAYLOAD-INTEGRATION.md`](PAYLOAD-INTEGRATION.md) | Editor, engineer | **Panduan integrasi web ↔ CMS: apa yang ditulis di `/admin` render di halaman mana, alur datanya, cara menambah koleksi, dan jebakan yang sudah ditemukan** |
+| [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) | Editor, engineer | **Panduan integrasi web ↔ CMS: apa yang ditulis di `/studio` render di halaman mana, alur datanya, dua dataset, cara menambah tipe konten, dan jebakan yang sudah ditemukan** |
 | [`FRONTEND-PLAN.md`](FRONTEND-PLAN.md) | Engineer frontend | Route, komponen, batas server/client, state, gap aksesibilitas |
 | [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) | Engineer, desainer | Token, katalog utility, aturan interaksi yang dikunci, anti-pola |
 
@@ -66,12 +69,13 @@ melewati tahap rencana. Yang benar hari ini:
 | Dokumen | Keputusan |
 |---|---|
 | [`adr/0001-artikel-route-video-modal.md`](adr/0001-artikel-route-video-modal.md) | Artikel sebagai route crawlable; pemutar video tetap modal |
-| [`adr/0002-payload-supabase.md`](adr/0002-payload-supabase.md) | Payload CMS 3 di dalam Next.js sebagai CMS |
-| [`adr/0003-supabase-postgres-storage.md`](adr/0003-supabase-postgres-storage.md) | Supabase sebagai Postgres dan object storage |
+| [`adr/0002-payload-supabase.md`](adr/0002-payload-supabase.md) | ~~Payload CMS 3 di dalam Next.js sebagai CMS~~ — **digantikan ADR-0008** |
+| [`adr/0003-supabase-postgres-storage.md`](adr/0003-supabase-postgres-storage.md) | ~~Supabase sebagai Postgres dan object storage~~ — tidak lagi dipakai kode |
 | [`adr/0004-katalog-video-build-time.md`](adr/0004-katalog-video-build-time.md) | Katalog video tetap di-*generate* saat build, tidak masuk CMS |
 | [`adr/0005-moderated-demo-queue.md`](adr/0005-moderated-demo-queue.md) | Antrean demo dimoderasi sebelum tampil publik |
 | [`adr/0006-vitest-playwright-vercel.md`](adr/0006-vitest-playwright-vercel.md) | Vitest + Playwright; deploy ke Vercel |
 | [`adr/0007-tipografi-inter-red-hat-display.md`](adr/0007-tipografi-inter-red-hat-display.md) | Tipografi Inter + Red Hat Display, menggantikan Plus Jakarta Sans |
+| [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md) | **Sanity Studio menggantikan Payload CMS 3 + Supabase** |
 
 ---
 
@@ -80,7 +84,7 @@ melewati tahap rencana. Yang benar hari ini:
 **Kontributor baru** — `../README.md` → `ARCHITECTURE.md` → `FRONTEND-PLAN.md` →
 `CONTRIBUTING.md`.
 
-**Editor konten** — `PAYLOAD-INTEGRATION.md` §3–§6. Tidak perlu membaca sisanya.
+**Editor konten** — `SANITY-INTEGRATION.md` §1–§5. Tidak perlu membaca sisanya.
 
 **Engineer backend** — `ARCHITECTURE.md` → `DATA-MODEL.md` → `API-CONTRACTS.md` →
 `SECURITY-PRIVACY.md`.

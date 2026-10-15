@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import {
+  DEMO_APPROVED_STATUSES,
   DEMO_AUDIO_EXTENSIONS,
   DEMO_AUDIO_MAX_BYTES,
   DEMO_GENRES,
@@ -9,17 +10,17 @@ import {
   type DemoStatus,
   type DemoSubmission,
 } from "@/lib/content";
-import { DEMO_APPROVED_STATUSES } from "@/collections/DemoSubmissions";
-import { getPayloadClient } from "@/lib/payload";
+import { submissionsClient } from "@/lib/sanity-server";
 
 /**
  * Demo queue. Two stores behind one contract:
  *
- * - DATABASE_URL set: Postgres via Payload. Reads return approved rows only
- *   (moderated queue, ADR-0005); writes go through the validation below and
- *   land as IN REVIEW with the contact in its own table.
- * - DATABASE_URL absent: the original process-local array seeded from
- *   SEED_DEMOS. A fresh checkout keeps working with no credentials.
+ * - Sanity configured: the PRIVATE `submissions` dataset. Reads return approved
+ *   rows only (moderated queue, ADR-0005); writes go through the validation
+ *   below and land as IN REVIEW, with the manager contact in its own document
+ *   type so it never travels with the row the public queue reads.
+ * - Not configured: the original process-local array seeded from SEED_DEMOS, so
+ *   a fresh checkout keeps working with no credentials.
  *
  * The response shapes are identical either way.
  */
@@ -28,7 +29,7 @@ type QueuedDemo = DemoSubmission;
 
 const memoryQueue: QueuedDemo[] = [...SEED_DEMOS];
 
-/** Mirrors the target schema until the database owns it. */
+/** Mirrors the target schema until the CMS owns it. */
 const memoryContacts = new Map<string, string>();
 
 const MAX_FIELD = 500;
@@ -36,7 +37,7 @@ const MAX_FIELD = 500;
 /** The whole submission is a few kilobytes of text; anything larger is abuse. */
 const MAX_BODY_BYTES = 16 * 1024;
 
-interface PayloadBody {
+interface DemoBody {
   artist?: unknown;
   city?: unknown;
   title?: unknown;
@@ -57,20 +58,23 @@ function id(): string {
   return `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function toPublicRow(doc: {
-  id: string | number;
+/** Shape returned by the queue query, before it is narrowed to `QueuedDemo`. */
+interface QueueRow {
+  id: string;
   artist: string;
   city: string;
   title: string;
-  genre?: string | null;
-  program?: string | null;
+  genre: string | null;
+  program: string | null;
   link: string;
   story: string;
   status: string;
-  createdAt: string;
-}): QueuedDemo {
+  submittedAt: string;
+}
+
+function toPublicRow(doc: QueueRow): QueuedDemo {
   return {
-    id: String(doc.id),
+    id: doc.id,
     artist: doc.artist,
     city: doc.city,
     title: doc.title,
@@ -79,32 +83,42 @@ function toPublicRow(doc: {
     link: doc.link,
     story: doc.story,
     status: doc.status as DemoStatus,
-    submittedAt: new Date(doc.createdAt).toISOString().slice(0, 10),
+    submittedAt: doc.submittedAt,
   };
 }
 
+const APPROVED_QUERY = /* groq */ `*[_type == "demoSubmission" && status in $approved] | order(submittedAt desc)[0...100] {
+  "id": _id,
+  artist,
+  city,
+  title,
+  genre,
+  program,
+  link,
+  story,
+  status,
+  submittedAt
+}`;
+
+const APPROVED_COUNT_QUERY = /* groq */ `count(*[_type == "demoSubmission" && status in $approved])`;
+
 export async function GET() {
-  const payload = await getPayloadClient();
-  if (!payload) {
+  if (!submissionsClient) {
     return NextResponse.json({ queue: memoryQueue, count: memoryQueue.length });
   }
 
-  const found = await payload.find({
-    collection: 'demo-submissions',
-    where: { status: { in: [...DEMO_APPROVED_STATUSES] } },
-    sort: '-createdAt',
-    limit: 100,
-    overrideAccess: true,
-  });
+  try {
+    const rows = await submissionsClient.fetch<QueueRow[]>(
+      APPROVED_QUERY,
+      { approved: [...DEMO_APPROVED_STATUSES] },
+      { cache: "no-store" },
+    );
 
-  // Payload types its docs generically; the shape is ours by construction.
-  type SubmissionDoc = Parameters<typeof toPublicRow>[0];
-  const docs = found.docs as unknown as SubmissionDoc[];
-
-  return NextResponse.json({
-    queue: docs.map(toPublicRow),
-    count: found.totalDocs,
-  });
+    return NextResponse.json({ queue: rows.map(toPublicRow), count: rows.length });
+  } catch {
+    // The queue is a convenience, not a page: fall back rather than 500.
+    return NextResponse.json({ queue: memoryQueue, count: memoryQueue.length });
+  }
 }
 
 export async function POST(request: Request) {
@@ -113,9 +127,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Kiriman terlalu besar." }, { status: 413 });
   }
 
-  let body: PayloadBody;
+  let body: DemoBody;
   try {
-    body = JSON.parse(raw) as PayloadBody;
+    body = JSON.parse(raw) as DemoBody;
   } catch {
     return NextResponse.json({ error: "Body harus berupa JSON." }, { status: 400 });
   }
@@ -163,11 +177,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Periksa kembali isian formulir.", errors }, { status: 422 });
   }
 
-  const payload = await getPayloadClient();
+  const submittedAt = new Date().toISOString().slice(0, 10);
 
-  // No database: the original in-memory path. The contact goes into its own
-  // map, never into the row the public queue reads.
-  if (!payload) {    const entry: QueuedDemo = {
+  // No CMS: the original in-memory path. The contact goes into its own map,
+  // never into the row the public queue reads.
+  if (!submissionsClient) {
+    const entry: QueuedDemo = {
       id: id(),
       artist,
       city,
@@ -178,7 +193,7 @@ export async function POST(request: Request) {
       story,
       // BR-002: a public submission can only ever be created as IN REVIEW.
       status: DEMO_INITIAL_STATUS,
-      submittedAt: new Date().toISOString().slice(0, 10),
+      submittedAt,
     };
     memoryContacts.set(entry.id, contact);
     memoryQueue.unshift(entry);
@@ -194,59 +209,53 @@ export async function POST(request: Request) {
     );
   }
 
-  const created = await payload.create({
-    collection: 'demo-submissions',
-    data: {
-      artist,
-      city,
-      title,
-      // Validated against the enums above, so the narrowing below is exact.
-      genre: (DEMO_GENRES as readonly string[]).includes(genre)
-        ? (genre as (typeof DEMO_GENRES)[number])
-        : undefined,
-      program: (DEMO_PROGRAMS as readonly string[]).includes(program)
-        ? (program as (typeof DEMO_PROGRAMS)[number])
-        : undefined,
-      link,
-      story,
-      status: DEMO_INITIAL_STATUS,
-    },
-    overrideAccess: true,
+  const created = await submissionsClient.create({
+    _type: "demoSubmission",
+    artist,
+    city,
+    title,
+    // Validated against the enums above, so these narrow exactly.
+    ...(genre ? { genre } : {}),
+    ...(program ? { program } : {}),
+    link,
+    story,
+    status: DEMO_INITIAL_STATUS,
+    submittedAt,
+    ...(audioName ? { audioName } : {}),
   });
 
-  await payload.create({
-    collection: 'demo-contacts',
-    data: {
-      submission: created.id,
-      contact,
-    },
-    overrideAccess: true,
+  // The contact lives in its own document, in the same private dataset, so it
+  // can never appear in a query that selects submission fields.
+  await submissionsClient.create({
+    _type: "demoContact",
+    submission: { _type: "reference", _ref: created._id },
+    contact,
   });
 
   const entry = toPublicRow({
-    id: created.id,
-    artist: created.artist,
-    city: created.city,
-    title: created.title,
-    genre: created.genre,
-    program: created.program,
-    link: created.link,
-    story: created.story,
-    status: created.status,
-    createdAt: created.createdAt,
+    id: created._id,
+    artist,
+    city,
+    title,
+    genre: genre || null,
+    program: program || null,
+    link,
+    story,
+    status: DEMO_INITIAL_STATUS,
+    submittedAt,
   });
 
-  const approved = await payload.count({
-    collection: 'demo-submissions',
-    where: { status: { in: [...DEMO_APPROVED_STATUSES] } },
-    overrideAccess: true,
-  });
+  const approvedCount = await submissionsClient.fetch<number>(
+    APPROVED_COUNT_QUERY,
+    { approved: [...DEMO_APPROVED_STATUSES] },
+    { cache: "no-store" },
+  );
 
   return NextResponse.json(
     {
       ok: true,
       entry,
-      queueLength: approved.totalDocs,
+      queueLength: approvedCount,
       note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
     },
     { status: 201 },

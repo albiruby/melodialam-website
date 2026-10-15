@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import { withPayload } from "@payloadcms/next/withPayload";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -33,12 +32,13 @@ const REPORT_ONLY_CSP = [
   "object-src 'none'",
   "frame-ancestors 'self'",
   "form-action 'self'",
-  "img-src 'self' data: blob: https://i.ytimg.com",
+  // Sanity serves article art and the Studio's own assets from these hosts.
+  "img-src 'self' data: blob: https://i.ytimg.com https://cdn.sanity.io",
   "media-src 'self' blob:",
-  "font-src 'self' data:",
+  "font-src 'self' data: https://*.sanity.io",
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "connect-src 'self'",
+  "connect-src 'self' https://*.api.sanity.io https://*.apicdn.sanity.io wss://*.api.sanity.io",
   "worker-src 'self' blob:",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
 ].join("; ");
@@ -76,15 +76,20 @@ const nextConfig: NextConfig = {
 
   images: {
     /**
-     * Everything local is served from public/. The only remote host left is
-     * YouTube's thumbnail CDN, for the video rows; article art now comes from
-     * the placeholder set in public/photos.
+     * Article art can now come from Sanity's CDN; the placeholder set in
+     * public/photos is the fallback. YouTube's thumbnail host serves the video
+     * rows.
      */
     remotePatterns: [
       {
         protocol: "https",
         hostname: "i.ytimg.com",
         pathname: "/vi/**",
+      },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+        pathname: "/images/**",
       },
     ],
   },
@@ -99,8 +104,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-/**
- * Payload's Next.js plugin (bundler compatibility for its dependencies).
- * Everything else in this file is ours; the wrapper only adds to it.
- */
-export default withPayload(nextConfig);
+export default nextConfig;

@@ -23,10 +23,22 @@ Postgres + Storage). ADR-0002 (Payload CMS 3 in-app + Supabase) dirujuk sesuai
 `RISK-001` (kontrol penyalahgunaan/abuse), `RISK-002` (retensi), serta
 `NFR-001`…`NFR-004`.
 
-> **Catatan cakupan.** Hanya ada **satu** route handler di repo,
-> `app/api/demos/route.ts` (`GET`, `POST`). Tidak ada `middleware.ts`, tidak ada
-> Server Action, tidak ada environment variable, dan tidak ada autentikasi di
-> mana pun. Semua klaim di bawah mengacu pada keadaan itu.
+> **Catatan cakupan.** Saat dokumen ini ditulis hanya ada **satu** route handler di
+> repo, `app/api/demos/route.ts` (`GET`, `POST`), tanpa environment variable dan tanpa
+> autentikasi. Sejak itu bertambah `app/api/revalidate/route.ts` dan variabel lingkungan
+> Sanity. Klaim di bawah mengacu pada keadaan **saat itu**; yang menyangkut CMS sudah
+> usang — lihat banner di atas.
+
+> **⚠️ Digantikan sebagian — baca ini dulu.**
+> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
+> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
+> dihapus.
+>
+> Bagian yang tidak lagi berlaku di dokumen ini: penanganan PII di Postgres, kontrol akses
+> koleksi, dan RLS. Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
+> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
+> di dokumen ini masih relevan sejauh tidak menyangkut backend.
 
 ---
 

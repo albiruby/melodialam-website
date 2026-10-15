@@ -16,11 +16,6 @@ const eslintConfig = defineConfig([
     ".codegraph/**",
     ".gitnexus/**",
     "lib/catalogue.json",
-    // Payload-generated artefacts.
-    "payload-types.ts",
-    "app/(payload)/admin/importMap.js",
-    // Payload's migrate:create output; its up/down signatures are fixed.
-    "migrations/**",
   ]),
 ]);
 

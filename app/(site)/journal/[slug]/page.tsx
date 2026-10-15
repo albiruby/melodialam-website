@@ -10,9 +10,9 @@ import { ArticleCard } from "@/components/ArticleCards";
 
 /**
  * The twelve articles in `lib/content.ts` are prerendered here. Articles that
- * live only in Payload are rendered on demand — `dynamicParams` defaults to
- * true, so publishing in `/admin` shows up at /journal/<slug> without a rebuild
- * and without touching this list.
+ * live only in Sanity are rendered on demand — `dynamicParams` defaults to
+ * true, so publishing in the Studio shows up at /journal/<slug> without a
+ * rebuild and without touching this list.
  */
 export function generateStaticParams() {
   return staticArticleSlugs().map((slug) => ({ slug }));

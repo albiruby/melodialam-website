@@ -1,119 +1,100 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { ARTICLES, type Article, type ArticleCategory } from "./content";
-import { getPayloadClient } from "./payload";
+import { ARTICLES, type Article } from "./content";
+import { contentClient, imageUrl } from "./sanity";
+import { isArticleCategory } from "./taxonomy";
 
 /**
  * Article data layer.
  *
- * One rule: the CMS wins when the database is reachable, the static file is the
- * fallback when it is not. That keeps two promises at once —
+ * One rule, unchanged from the previous backend: the CMS wins when it is
+ * reachable, the static file is the fallback when it is not. That keeps two
+ * promises at once —
  *
- *  - what an editor publishes in `/admin` shows up on the site without a code
+ *  - what an editor publishes in the Studio shows up on the site without a code
  *    change, and
- *  - a fresh checkout with no `DATABASE_URL` still renders the twelve articles
- *    that live in `lib/content.ts`.
+ *  - a fresh checkout with no `.env` still renders the twelve articles in
+ *    `lib/content.ts`.
  *
  * Collisions resolve in favour of the CMS, which is what makes the migration
- * gradual: seed an article into Payload and it takes over from that moment,
- * with nothing to delete from the static file until the move is done.
+ * gradual: seed an article into Sanity and it takes over from that moment, with
+ * nothing to delete from the static file until the move is done.
  */
 
 export interface SiteArticle extends Article {
   /**
-   * Lexical editor state, present only for CMS articles. The reader renders it
-   * through Payload's own `<RichText>` so headings, lists, quotes and uploads
+   * Portable Text blocks, present only for CMS articles. The reader renders
+   * them through `<PortableText>` so headings, lists, quotes and inline images
    * survive; `body` above stays the plain-text projection used for reading time
    * and search.
    */
-  richBody?: unknown;
-  /** Where this article came from. Handy in the admin UI and when debugging. */
+  richBody?: unknown[];
+  /** Where this article came from. Handy in the UI and when debugging. */
   source: "static" | "cms";
 }
 
 const STATIC: SiteArticle[] = ARTICLES.map((a) => ({ ...a, source: "static" as const }));
 
-/** Flattens a Lexical node tree into plain paragraphs. */
-function lexicalToParagraphs(node: unknown): string[] {
+/** Fallback art when an article has no cover of its own. */
+const PLACEHOLDER_IMAGE = "/photos/dsc09408.webp";
+
+/**
+ * Cache tag for every article read. `POST /api/revalidate` bumps it from a
+ * Sanity webhook, so publishing invalidates this immediately rather than
+ * waiting for the cache window to lapse.
+ */
+export const ARTICLES_TAG = "articles";
+
+const ARTICLE_FIELDS = /* groq */ `{
+  "slug": slug.current,
+  title,
+  category,
+  date,
+  excerpt,
+  image,
+  body,
+  featured
+}`;
+
+const ALL_ARTICLES_QUERY = /* groq */ `*[_type == "article" && defined(slug.current)] | order(date desc) ${ARTICLE_FIELDS}`;
+
+const ARTICLE_BY_SLUG_QUERY = /* groq */ `*[_type == "article" && slug.current == $slug][0] ${ARTICLE_FIELDS}`;
+
+interface CmsArticleDoc {
+  slug?: string;
+  title?: string;
+  category?: string;
+  date?: string;
+  excerpt?: string;
+  image?: unknown;
+  body?: unknown[];
+  featured?: boolean;
+}
+
+/** Pulls the readable text out of Portable Text, for reading time and search. */
+function portableTextToParagraphs(blocks: unknown): string[] {
+  if (!Array.isArray(blocks)) return [];
+
   const out: string[] = [];
+  for (const block of blocks) {
+    if (!block || typeof block !== "object") continue;
+    const rec = block as Record<string, unknown>;
 
-  const walk = (n: unknown): void => {
-    if (!n || typeof n !== "object") return;
-    const rec = n as Record<string, unknown>;
+    // Inline images and other non-text blocks contribute nothing to the count.
+    if (rec._type !== "block" || !Array.isArray(rec.children)) continue;
 
-    if (rec.type === "text" && typeof rec.text === "string") return;
-    if (Array.isArray(rec.children)) {
-      const before = out.length;
-      rec.children.forEach(walk);
-      // A leaf block whose children produced text becomes one paragraph.
-      if (out.length === before && typeof rec.text === "string" && rec.text.trim()) {
-        out.push(rec.text.trim());
-      }
-    }
-  };
+    const text = rec.children
+      .map((child) =>
+        child && typeof child === "object" && typeof (child as { text?: unknown }).text === "string"
+          ? (child as { text: string }).text
+          : "",
+      )
+      .join("")
+      .trim();
 
-  // Lexical wraps everything in a root node.
-  const root = (node as { root?: unknown })?.root ?? node;
-  const children = (root as { children?: unknown[] })?.children;
-  if (Array.isArray(children)) {
-    for (const block of children) {
-      const text = collectText(block);
-      if (text) out.push(text);
-    }
-  } else {
-    walk(node);
+    if (text) out.push(text);
   }
 
   return out;
-}
-
-/** Concatenates every text node under a block, joining paragraphs with a space. */
-function collectText(node: unknown): string {
-  if (!node || typeof node !== "object") return "";
-  const rec = node as Record<string, unknown>;
-
-  if (typeof rec.text === "string") return rec.text;
-  if (!Array.isArray(rec.children)) return "";
-
-  return rec.children
-    .map(collectText)
-    .filter(Boolean)
-    .join(" ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-/** Upload fields arrive as an id or a populated doc depending on `depth`. */
-function mediaUrl(value: unknown): string | null {
-  if (!value) return null;
-  if (typeof value === "string") return null;
-  const url = (value as { url?: unknown }).url;
-  return typeof url === "string" ? url : null;
-}
-
-/** A Payload article document → the shape the site's UI already speaks. */
-function fromCms(doc: Record<string, unknown>): SiteArticle | null {
-  const slug = typeof doc.slug === "string" ? doc.slug : null;
-  const title = typeof doc.title === "string" ? doc.title : null;
-  if (!slug || !title) return null;
-
-  const image = mediaUrl(doc.image);
-  const iso = typeof doc.date === "string" ? doc.date.slice(0, 10) : null;
-
-  return {
-    slug,
-    title,
-    category: (typeof doc.category === "string" ? doc.category : "Fakta Musik") as ArticleCategory,
-    date: iso ? formatDate(iso) : "",
-    dateISO: iso ?? "",
-    excerpt: typeof doc.excerpt === "string" ? doc.excerpt : "",
-    // Falls back to the media doc's own URL; the placeholder set is only used
-    // when an article somehow has no image at all.
-    image: image ?? "/photos/dsc09408.webp",
-    body: lexicalToParagraphs(doc.body),
-    featured: doc.featured === true,
-    richBody: doc.body,
-    source: "cms",
-  };
 }
 
 const MONTHS = [
@@ -138,13 +119,29 @@ function formatDate(iso: string): string {
   return `${d} ${MONTHS[m - 1]} ${y}`;
 }
 
-/**
- * Cache tag for every article read. Payload's `afterChange` / `afterDelete`
- * hooks on the articles collection call `revalidateTag(ARTICLES_TAG)`, so
- * publishing in `/admin` invalidates this immediately rather than waiting for
- * the cache window to lapse.
- */
-export const ARTICLES_TAG = "articles";
+/** A Sanity article document → the shape the site's UI already speaks. */
+function fromCms(doc: CmsArticleDoc): SiteArticle | null {
+  const slug = typeof doc.slug === "string" ? doc.slug : null;
+  const title = typeof doc.title === "string" ? doc.title : null;
+  if (!slug || !title) return null;
+
+  const iso = typeof doc.date === "string" ? doc.date.slice(0, 10) : "";
+
+  return {
+    slug,
+    title,
+    // An unknown desk falls back rather than rendering an undefined label.
+    category: isArticleCategory(doc.category) ? doc.category : "Fakta Musik",
+    date: iso ? formatDate(iso) : "",
+    dateISO: iso,
+    excerpt: typeof doc.excerpt === "string" ? doc.excerpt : "",
+    image: imageUrl(doc.image, { width: 1600 }) ?? PLACEHOLDER_IMAGE,
+    body: portableTextToParagraphs(doc.body),
+    featured: doc.featured === true,
+    richBody: Array.isArray(doc.body) ? doc.body : undefined,
+    source: "cms",
+  };
+}
 
 export async function allArticles(): Promise<SiteArticle[]> {
   "use cache";
@@ -152,29 +149,21 @@ export async function allArticles(): Promise<SiteArticle[]> {
   cacheLife("minutes");
   cacheTag(ARTICLES_TAG);
 
-  const payload = await getPayloadClient();
-  if (!payload) return STATIC;
+  if (!contentClient) return STATIC;
 
   try {
-    const found = await payload.find({
-      collection: "articles",
-      where: { _status: { equals: "published" } },
-      sort: "-date",
-      limit: 500,
-      depth: 1,
-      overrideAccess: true,
-    });
+    const docs = await contentClient.fetch<CmsArticleDoc[]>(ALL_ARTICLES_QUERY, {}, { cache: "no-store" });
 
     const bySlug = new Map(STATIC.map((a) => [a.slug, a]));
-    for (const doc of found.docs) {
-      const article = fromCms(doc as unknown as Record<string, unknown>);
-      // CMS replaces the static article of the same slug.
+    for (const doc of docs) {
+      const article = fromCms(doc);
+      // The CMS replaces the static article of the same slug.
       if (article) bySlug.set(article.slug, article);
     }
 
     return [...bySlug.values()].sort((a, b) => b.dateISO.localeCompare(a.dateISO));
   } catch {
-    // Database unreachable mid-request: the site keeps working from the file.
+    // Sanity unreachable mid-request: the site keeps working from the file.
     return STATIC;
   }
 }
@@ -184,21 +173,17 @@ export async function articleBySlug(slug: string): Promise<SiteArticle | null> {
   cacheLife("minutes");
   cacheTag(ARTICLES_TAG);
 
-  const payload = await getPayloadClient();
-  if (!payload) return STATIC.find((a) => a.slug === slug) ?? null;
+  if (!contentClient) return STATIC.find((a) => a.slug === slug) ?? null;
 
   try {
-    const found = await payload.find({
-      collection: "articles",
-      where: { and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }] },
-      limit: 1,
-      depth: 1,
-      overrideAccess: true,
-    });
+    const doc = await contentClient.fetch<CmsArticleDoc | null>(
+      ARTICLE_BY_SLUG_QUERY,
+      { slug },
+      { cache: "no-store" },
+    );
 
-    const doc = found.docs[0];
     if (doc) {
-      const article = fromCms(doc as unknown as Record<string, unknown>);
+      const article = fromCms(doc);
       if (article) return article;
     }
   } catch {

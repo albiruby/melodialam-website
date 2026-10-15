@@ -16,6 +16,17 @@ Label status yang dipakai konsisten: `TERVERIFIKASI` (dibaca di kode atau dijala
 Acuan requirement: `FR-001`…`FR-007`, `BR-001`…`BR-004`, `ACC-001`…`ACC-003`,
 `OQ-001`…`OQ-003`, `NFR-001`…`NFR-004`, `RISK-001`…`RISK-003`.
 
+> **⚠️ Digantikan sebagian — baca ini dulu.**
+> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
+> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
+> dihapus.
+>
+> Bagian yang tidak lagi berlaku di dokumen ini: arsitektur backend, modul CMS, alur data
+> tulis, dan kendala arsitektural. Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
+> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
+> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+
 ---
 
 ## 1. Architecture Overview

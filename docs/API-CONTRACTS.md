@@ -26,6 +26,17 @@ penyalahgunaan / abuse). Acuan skema data: `docs/DATA-MODEL.md`.
 > `app/api/demos/route.ts` (method `GET` dan `POST`). Semua endpoint lain di
 > dokumen ini diberi label `RENCANA` dan **tidak diklaim ada**.
 
+> **⚠️ Digantikan sebagian — baca ini dulu.**
+> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
+> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
+> dihapus.
+>
+> Bagian yang tidak lagi berlaku di dokumen ini: endpoint yang dilayani CMS (`/admin`,
+> REST/GraphQL Payload). Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
+> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
+> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+
 ---
 
 ## 1. API Context

@@ -4,13 +4,28 @@
  * Article bodies are arrays of plain strings rather than raw HTML, so nothing
  * from the content layer can inject markup. They render through
  * <ArticleBody />, which turns each entry into a paragraph.
+ *
+ * The editorial desks and the demo-queue enums live in `lib/taxonomy.ts`,
+ * because the Sanity schema needs them too and this file is far too heavy to
+ * pull into that bundle. They are re-exported here so existing imports of
+ * `@/lib/content` keep working unchanged.
  */
 
-export type ArticleCategory =
-  | "Fakta Musik"
-  | "Rekomendasi Melodi"
-  | "Bicara Melodi"
-  | "Liputan Panggung";
+import type { ArticleCategory, DemoStatus, DemoSubmission } from "./taxonomy";
+
+export type { ArticleCategory, DemoStatus, DemoSubmission };
+export {
+  ARTICLE_CATEGORIES,
+  CATEGORY_LABELS,
+  DEMO_APPROVED_STATUSES,
+  DEMO_AUDIO_EXTENSIONS,
+  DEMO_AUDIO_MAX_BYTES,
+  DEMO_AUDIO_TYPES,
+  DEMO_GENRES,
+  DEMO_INITIAL_STATUS,
+  DEMO_PROGRAMS,
+  DEMO_STATUSES,
+} from "./taxonomy";
 
 export interface Article {
   slug: string;
@@ -78,15 +93,6 @@ const PHOTO = {
   tableDetail: "/photos/dsc09421.webp",
   brickArch: "/photos/dsc09056.webp",
 } as const;
-
-export const CATEGORY_LABELS: Record<ArticleCategory, string> = {
-  "Fakta Musik": "Fakta Musik & Esai",
-  "Rekomendasi Melodi": "Rekomendasi Melodi",
-  "Bicara Melodi": "Bicara Melodi Notes",
-  "Liputan Panggung": "Liputan & Gig Report",
-};
-
-export const ARTICLE_CATEGORIES = Object.keys(CATEGORY_LABELS) as ArticleCategory[];
 
 export const ARTICLES: Article[] = [
   {
@@ -488,64 +494,9 @@ export const TICKER_ITEMS: { label: string; href: string | null }[] = [
    Demo submission queue.
 ------------------------------------------------------------------------- */
 
-/**
- * `BR-002` — a submission always starts `IN REVIEW` and only a curator moves it
- * on. `SHORTLISTED (SAMSARA)` and `APPROVED (ARTICLE)` are the two outcomes the
- * PRD names; `ARCHIVED` is the terminal state for a reviewed-and-parked
- * submission.
- *
- * A podcast-bound submission has no outcome of its own in `BR-002`, so it stays
- * `IN REVIEW` until a curator picks one. The transition rules live in
- * docs/DATA-MODEL.md; there is no curator endpoint yet to enforce them.
- */
-export const DEMO_STATUSES = [
-  "IN REVIEW",
-  "SHORTLISTED (SAMSARA)",
-  "APPROVED (ARTICLE)",
-  "ARCHIVED",
-] as const;
-
-export type DemoStatus = (typeof DEMO_STATUSES)[number];
-
-/** The only status a public submission may be created with. */
-export const DEMO_INITIAL_STATUS: DemoStatus = "IN REVIEW";
-
-/**
- * `BR-001` — audio limits. Enforced in the browser before a file is accepted,
- * and again on the route from the metadata the form reports, so a crafted
- * request cannot skip the client check.
- */
-export const DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024;
-export const DEMO_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg"] as const;
-export const DEMO_AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg"] as const;
-
-export interface DemoSubmission {
-  id: string;
-  artist: string;
-  city: string;
-  title: string;
-  genre: string;
-  program: string;
-  link: string;
-  story: string;
-  status: DemoStatus;
-  submittedAt: string;
-}
-
-export const DEMO_GENRES = [
-  "Indie Pop / Folk",
-  "Alternative Rock / Shoegaze",
-  "Surf Rock / Punk",
-  "R&B / Soul / Jazz",
-  "Ska / Reggae / Dub",
-  "Electronic / Experimental",
-] as const;
-
-export const DEMO_PROGRAMS = [
-  "Review Artikel dan Rekomendasi IG",
-  "Live at Melodi Samsara",
-  "Tamu Podcast Bicara Melodi",
-] as const;
+/* Demo-queue enums and the `DemoSubmission` shape now live in `lib/taxonomy.ts`
+   and are re-exported at the top of this file. `SEED_DEMOS` below is the
+   in-memory fallback used when no CMS is configured. */
 
 export const SEED_DEMOS: DemoSubmission[] = [
   {

@@ -1,45 +1,72 @@
-import { RichText } from "@payloadcms/richtext-lexical/react";
+import { PortableText, type PortableTextComponents } from "@portabletext/react";
+import { imageUrl } from "@/lib/sanity";
 
 /**
  * Renders an article body.
  *
  * Two shapes reach this component:
  *
- * - CMS articles carry Lexical editor state, which goes through Payload's own
- *   `<RichText>` so headings, lists, quotes, links and inline uploads survive.
+ * - CMS articles carry Portable Text, which goes through `<PortableText>` so
+ *   headings, lists, quotes, links and inline images survive.
  * - Static articles (the twelve in `lib/content.ts`) carry plain paragraphs.
  *
- * Both land in the same column width and type scale so the two sources are
- * visually indistinguishable, which is what lets the migration be gradual.
+ * Both land in the same column width and type scale, so the two sources are
+ * visually indistinguishable — which is what lets the migration be gradual.
+ *
+ * A server component: it renders text and builds image URLs, and nothing here
+ * needs the browser.
  */
+
+const components: PortableTextComponents = {
+  types: {
+    image: ({ value }) => {
+      const src = imageUrl(value, { width: 1600 });
+      if (!src) return null;
+
+      const alt =
+        value && typeof value === "object" && typeof (value as { alt?: unknown }).alt === "string"
+          ? (value as { alt: string }).alt
+          : "";
+
+      return (
+        <figure className="my-8">
+          {/*
+            A plain <img>, not next/image: Sanity's CDN already resizes and
+            converts this URL (`auto=format` in lib/sanity.ts), and the inline
+            block carries no stored dimensions for next/image to lay out against.
+          */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={alt} className="w-full border border-ink" loading="lazy" />
+        </figure>
+      );
+    },
+  },
+};
+
 export function ArticleBody({
   rich,
   paragraphs,
 }: {
-  rich?: unknown;
+  rich?: unknown[];
   paragraphs: string[];
 }) {
-  if (rich) {
+  if (rich && rich.length > 0) {
     return (
       <div className="article-prose mx-auto max-w-2xl">
-        <RichText data={rich as never} />
+        <PortableText value={rich as never} components={components} />
       </div>
     );
   }
 
   return (
     <div className="article-prose mx-auto max-w-2xl space-y-5">
+      {/*
+        No per-paragraph classes: the opening drop cap is applied in
+        app/globals.css to `.article-prose > p:first-of-type`, so the static and
+        CMS paths get identical typography from one place.
+      */}
       {paragraphs.map((paragraph, i) => (
-        <p
-          key={i}
-          className={`text-base leading-relaxed text-neutral-800 ${
-            i === 0
-              ? "first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-6xl first-letter:leading-[0.85] first-letter:text-forest"
-              : ""
-          }`}
-        >
-          {paragraph}
-        </p>
+        <p key={i}>{paragraph}</p>
       ))}
     </div>
   );

@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Payload when the database is reachable, the static file otherwise.
+  // Sanity when it is configured, the static file otherwise.
   const articles = await allArticles();
   const [hero, ...rest] = articles.filter((a) => a.featured);
   const subFeatures = rest.slice(0, 3);

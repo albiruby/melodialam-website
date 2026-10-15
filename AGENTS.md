@@ -64,23 +64,27 @@ section is maintained by hand. Keep it accurate or delete it.
 
 A Next.js 16 App Router + React 19 + TypeScript site for **Melodi Alam**, an Indonesian
 music-media platform: editorial articles (*Stories*), a YouTube catalogue hub (*Watch*),
-a demo-submission pipeline (*Submit Demo*), and a showcase for the physical ecosystem
-(Samsara / Svarga / Acasa listening spaces, SVVARA turntables).
+and a demo-submission pipeline (*Submit Demo*). Content is edited in a Sanity Studio
+embedded at `/studio`.
 
 **Read `docs/README.md` first.** It indexes the whole documentation set and says who each
-document is for. Ten documents live in `docs/`, plus seven ADRs in `docs/adr/`.
+document is for. Twelve documents live in `docs/`, plus eight ADRs in `docs/adr/`.
+`docs/SANITY-INTEGRATION.md` is the CMS guide; several older documents carry a
+"superseded" banner from the Payload era — heed it.
 
 ## Commands (these are all of them)
 
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Dev server on port **3100** |
-| `npm run build` | Production build — 26 static pages |
+| `npm run build` | Production build — 28 static pages |
 | `npm run start` | Serve the production build on 3100 |
 | `npm run lint` | ESLint |
 | `npm run catalogue` | Regenerate `lib/catalogue.json` |
 | `npm run brand` | Regenerate brand assets + app icons |
 | `npm run photos` | Copy the placeholder photo set |
+| `npm run sanity` | Sanity CLI (`npm run sanity -- dataset list`) |
+| `npm run sanity:deploy` | Deploy the Studio to Sanity hosting |
 
 Port 3000 is deliberately avoided. There is no `test` script yet.
 
@@ -114,6 +118,11 @@ These are measured regressions, not style preferences. Full detail in
    ESLint already ignores `.codegraph/**`, `.gitnexus/**`, and `lib/catalogue.json`.
 8. **Next 16 deprecated `priority` on `next/image`** in favour of `preload`, and changed
    the default `qualities` to `[75]`. The Next.js docs are in `node_modules/next/dist/docs/`.
+9. **`lib/sanity-server.ts` is server-only.** It holds `SANITY_API_READ_TOKEN`, which reads
+   the private `submissions` dataset — every musician's contact number. Import it from
+   server code only; a client component that imports it ships the token to the browser.
+   `lib/sanity.ts` is the tokenless one and is safe anywhere. See
+   `docs/SANITY-INTEGRATION.md` §8.
 
 ## Design system is locked
 
@@ -136,7 +145,7 @@ Do not implement these without being asked. They are documented targets.
 
 | Decision | ADR |
 |---|---|
-| Payload CMS 3 running inside this Next app + Supabase | `docs/adr/0002`, `docs/adr/0003` |
+| CMS is **Sanity Studio**, embedded at `/studio`, two datasets (`production` public, `submissions` private) | `docs/adr/0008` (supersedes `docs/adr/0002`, `docs/adr/0003`) |
 | Video catalogue stays a build-time artefact, not a CMS collection | `docs/adr/0004` |
 | Demo queue is **moderated** — private until a curator approves | `docs/adr/0005` |
 | Vitest + Playwright, deploy to Vercel | `docs/adr/0006` |

@@ -14,6 +14,17 @@ E2E, deploy ke **Vercel**. Keduanya **belum terpasang** (lihat §1). Cara membac
 | `ASUMSI` | Diasumsikan; perlu konfirmasi |
 | `[PERLU VERIFIKASI]` | Tidak dapat diverifikasi dari workspace |
 
+> **⚠️ Digantikan sebagian — baca ini dulu.**
+> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
+> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
+> dihapus.
+>
+> Bagian yang tidak lagi berlaku di dokumen ini: kasus uji yang mengasumsikan
+> Postgres/Payload. Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
+> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
+> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+
 ---
 
 ## 1. Test Context and Scope (Konteks & Cakupan)

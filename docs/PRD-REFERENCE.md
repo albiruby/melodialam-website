@@ -13,6 +13,17 @@ pemetaan di dokumen lain dapat diverifikasi alih-alih diasumsikan.
 > kriteria penerimaan siap diimplementasikan; sejumlah keputusan arsitektur backend
 > disisakan terbuka (kini sudah dijawab — lihat [Keputusan yang Sudah Diambil](#keputusan-yang-sudah-diambil)).
 
+> **⚠️ Digantikan sebagian — baca ini dulu.**
+> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
+> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
+> dihapus.
+>
+> Bagian yang tidak lagi berlaku di dokumen ini: status implementasi requirement yang
+> menyangkut CMS dan basis data. Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
+> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
+> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+
 ---
 
 ## Cara membaca kolom Status

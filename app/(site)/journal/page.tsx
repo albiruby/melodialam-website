@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function JournalPage() {
-  // Payload when the database is reachable, the static file otherwise.
+  // Sanity when it is configured, the static file otherwise.
   const articles = await allArticles();
 
   return (

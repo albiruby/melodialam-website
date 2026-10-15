@@ -8,7 +8,7 @@ import { ArticleCard } from "@/components/ArticleCards";
 
 /**
  * Articles arrive as a prop rather than being imported, because they now come
- * from Payload on the server (`lib/articles.ts`) and this is a client component.
+ * from Sanity on the server (`lib/articles.ts`) and this is a client component.
  */
 export function JournalBrowser({ articles }: { articles: SiteArticle[] }) {
   const [category, setCategory] = useState<ArticleCategory | "all">("all");
