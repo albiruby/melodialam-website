@@ -46,7 +46,7 @@ export function SiteHeader({
               <h1 className="leading-none">
                 <MelodiAlamWordmark
                   width={360}
-                  tone="ink"
+                  tone="green"
                   sizes="(min-width: 768px) 360px, 260px"
                   className="h-auto w-[260px] transition-transform duration-500 group-hover:scale-[1.03] md:w-[360px]"
                   eager

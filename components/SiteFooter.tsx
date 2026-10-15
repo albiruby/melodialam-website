@@ -48,7 +48,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             Ekosistem Ruang & Kanal Resmi
           </div>
           {/* Copy below names the venue; this wordmark names the ecosystem owner. */}
-          <MelodiAlamWordmark width={240} tone="forest" className="h-auto w-[240px]" />
+          <MelodiAlamWordmark width={240} tone="green" className="h-auto w-[240px]" />
           <p className="text-neutral-700">
             <strong>Samsara Listening Space &amp; Resto:</strong>
             <br />

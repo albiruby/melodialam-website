@@ -373,7 +373,13 @@ pengaturan OS nyata, hanya blok CSS-nya dibaca.
    (`#376b30`), atau tetap sebagai hijau fungsional di luar palet?
 3. **Target kontras `ACC-001`** — apakah ≥ 15:1 berlaku untuk semua pasangan, atau
    hanya tinta-di-atas-kertas? Saat ini tombol `forest` berada di ≈ 12.4:1.
-4. **Aset merek** — `logobulet.png` mengandung garis hijau lepas 335×22 yang dipotong
-   saat pembuatan aset. Apakah itu bagian desain?
-5. **Wordmark** — aslinya emas `#c2ac7a`; header memakai varian `ink` karena emas terlalu
-   pudar di atas putih. Apakah recolor ini disetujui sebagai warna merek?
+4. **Aset merek** — `LOGO2/Melodi Alam Logo Only - Color.png` memuat medallion
+   (1042×1057) plus dua pita terpisah: garis hijau 226×14 dan wordmark 637×51. Build
+   hanya mengambil pita medallion. Apakah dua pita itu bagian dari sistem lockup
+   (versi stacked) yang perlu direproduksi?
+5. ~~**Wordmark** — aslinya emas `#c2ac7a`; header memakai varian `ink` karena emas terlalu
+   pudar di atas putih. Apakah recolor ini disetujui sebagai warna merek?~~ **Selesai.**
+   Masthead tidak lagi memakai wordmark Samsara. Wordmark Melodi Alam sekarang
+   mereproduksi warna kit apa adanya — hijau `#376a2e` di-sample dari
+   `LOGO2/Melodi Alam Logo Only - Color.png` saat build, bukan dipetakan ke palet
+   situs. Recolor `ink`/`forest` dihapus.

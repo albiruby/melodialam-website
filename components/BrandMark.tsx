@@ -121,11 +121,12 @@ interface MelodiAlamWordmarkProps {
   /** Intrinsic render width in px. The artwork's own aspect is 713:57. */
   width?: number;
   /**
-   * The supplied artwork is white (for dark surfaces). `ink` and `forest` are
-   * recolours built by scripts/build-brand.mjs, so the wordmark reads on the
-   * paper background — confirm a new surface's contrast before using `white`.
+   * `green` is the kit's own colour, sampled from its colour artwork by
+   * scripts/build-brand.mjs — the mark is reproduced as supplied, not mapped
+   * onto the site palette. `white` is the supplied artwork, for dark surfaces;
+   * check contrast before using it on paper.
    */
-  tone?: "white" | "ink" | "forest";
+  tone?: "green" | "white";
   /** Responsive srcset hint, whenever `className` changes the display width. */
   sizes?: string;
   className?: string;
@@ -136,19 +137,18 @@ interface MelodiAlamWordmarkProps {
 }
 
 const MELODI_ALAM_SRC = {
-  white: "/brand/melodi-alam-wordmark.png",
-  ink: "/brand/melodi-alam-wordmark-ink.png",
-  forest: "/brand/melodi-alam-wordmark-forest.png",
+  green: "/brand/melodi-alam-wordmark-green.png",
+  white: "/brand/melodi-alam-wordmark-white.png",
 } as const;
 
 /**
- * The MELODI ALAM wordmark from LOGO2/Melodi Alam Text Logo - White.png. This
- * is the parent-site name — the masthead and the footer ecosystem block use it;
- * the medallion beside it stays the colour BrandMark.
+ * The MELODI ALAM wordmark from LOGO2/Melodi Alam Text Logo - White.png, in the
+ * kit's own green. This is the parent-site name — the masthead and the footer
+ * ecosystem block use it, and the medallion beside it is the colour BrandMark.
  */
 export function MelodiAlamWordmark({
   width = 360,
-  tone = "ink",
+  tone = "green",
   sizes,
   className = "",
   alt = "Melodi Alam",

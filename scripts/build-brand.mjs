@@ -61,6 +61,34 @@ async function measure(abs) {
   return { width, height, data, channels, bands, minX, maxX };
 }
 
+/**
+ * The flat colour of the last ink band — the kit's own brand colour.
+ *
+ * Sampled rather than typed in: the green belongs to the supplied artwork, so
+ * the build reads it back from the colour source instead of us restating it
+ * (and drifting from it) in code.
+ */
+async function sampleFlatColour(abs) {
+  const { data, width, channels, bands } = await measure(abs);
+  const band = bands[bands.length - 1];
+
+  const counts = new Map();
+  for (let y = band.top; y <= band.bottom; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * channels;
+      if (data[i + 3] < 200) continue;
+      const key = `${data[i]},${data[i + 1]},${data[i + 2]}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+  }
+
+  const [rgb] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
+  return `#${rgb
+    .split(",")
+    .map((v) => Number(v).toString(16).padStart(2, "0"))
+    .join("")}`;
+}
+
 /** Swaps the RGB of every pixel for a flat colour, keeping the alpha mask intact. */
 function recolor(data, channels, hex) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -227,11 +255,16 @@ async function emit(name, pipeline, note) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. LOGO2/Melodi Alam Text Logo - White.png — the MELODI ALAM lockup.
+// 3. LOGO2/Melodi Alam Text Logo - White.png — the MELODI ALAM wordmark.
 //    The lockup is [medallion][wordmark]. The medallion already ships in colour
-//    from logobulet.png above, so only the wordmark is emitted here — the split
-//    is measured from the widest empty column run, not guessed. Recoloured for
-//    the two surfaces it lands on: ink on paper (masthead), forest in the footer.
+//    from LOGO2/Melodi Alam Logo Only - Color.png above, so only the wordmark is
+//    emitted here — the split is measured from the widest empty column run, not
+//    guessed.
+//
+//    Colour: the wordmark keeps the kit's OWN green, sampled from the colour
+//    artwork in LOGO2. It is deliberately not mapped onto the site palette
+//    (ink/forest) — the logo is the client's mark and is reproduced as supplied.
+//    The white variant is the supplied artwork, kept for dark surfaces.
 // ---------------------------------------------------------------------------
 {
   const abs = path.join(ROOT, "LOGO2", "Melodi Alam Text Logo - White.png");
@@ -286,23 +319,23 @@ async function emit(name, pipeline, note) {
   const meta = await sharp(full).metadata();
   const { data: raw, info } = await sharp(full).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 
-  console.log(`\nMelodi Alam Text Logo — wordmark ${meta.width}x${meta.height} (medallion split at x=${split})`);
-
-  await emit("melodi-alam-wordmark.png", sharp(full), `white ${meta.width}x${meta.height}`);
-
-  const ink = recolor(raw, info.channels, "#0d0d0d");
-  await emit(
-    "melodi-alam-wordmark-ink.png",
-    sharp(ink, { raw: { width: info.width, height: info.height, channels: 4 } }),
-    "recoloured #0d0d0d",
+  const brandGreen = await sampleFlatColour(
+    path.join(ROOT, "LOGO2", "Melodi Alam Logo Only - Color.png"),
   );
 
-  const forest = recolor(raw, info.channels, "#1b3b2b");
-  await emit(
-    "melodi-alam-wordmark-forest.png",
-    sharp(forest, { raw: { width: info.width, height: info.height, channels: 4 } }),
-    "recoloured #1b3b2b",
+  console.log(
+    `\nMelodi Alam Text Logo — wordmark ${meta.width}x${meta.height} (medallion split at x=${split})`,
   );
+  console.log(`   kit colour sampled from the colour artwork: ${brandGreen}`);
+
+  const green = recolor(raw, info.channels, brandGreen);
+  await emit(
+    "melodi-alam-wordmark-green.png",
+    sharp(green, { raw: { width: info.width, height: info.height, channels: 4 } }),
+    `kit green ${brandGreen} ${meta.width}x${meta.height}`,
+  );
+
+  await emit("melodi-alam-wordmark-white.png", sharp(full), `white ${meta.width}x${meta.height}`);
 }
 
 console.log(`\nwritten to public/brand/`);
