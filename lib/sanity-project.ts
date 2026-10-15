@@ -1,25 +1,27 @@
 /**
- * Public Sanity identifiers.
+ * Public Sanity identifiers for reading content.
  *
  * These are literals, not environment variables, and that is deliberate.
  *
- * `sanity.config.ts` is read by TWO different bundlers:
+ * The same three values are read by two different builds, in two repos:
  *
- * - Next, for the embedded Studio at /studio. Next inlines `NEXT_PUBLIC_*` into
- *   the client bundle at build time.
- * - Sanity's own Vite build, for the hosted Studio at melodi-alam.sanity.studio.
- *   Vite's `envPrefix` only exposes `SANITY_STUDIO_*`, and it exposes them as
- *   `import.meta.env`, not `process.env`.
+ * - This repo's Next build, which inlines `NEXT_PUBLIC_*` into the client bundle
+ *   at build time.
+ * - The Studio in `melodialam-sanity`, built by Sanity's own Vite, which exposes
+ *   only `SANITY_STUDIO_*` and exposes them as `import.meta.env`, not
+ *   `process.env`.
  *
- * A config file that reads either form breaks the other build: the hosted Studio
- * shipped with all three values `undefined` and refused to boot. A literal is the
- * one shape both bundlers agree on.
+ * A shared config that read either form broke the other build: the hosted Studio
+ * once shipped with all three values `undefined` and refused to boot. A literal is
+ * the one shape both bundlers agree on.
  *
  * None of this is secret. The project id appears in every Studio URL and in every
  * image URL Sanity serves. The things that ARE secret — the read token and the
  * webhook secret — stay in `.env` and are read only by server code.
  *
- * Keep this module dependency-free: it is pulled into the Studio bundle.
+ * DUPLICATED, ON PURPOSE: `melodialam-sanity/lib/sanity-project.ts` holds the same
+ * three values, because the Studio needs them to open the datasets. Change one,
+ * change the other.
  */
 
 /** Sanity project. */

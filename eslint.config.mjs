@@ -16,9 +16,6 @@ const eslintConfig = defineConfig([
     ".codegraph/**",
     ".gitnexus/**",
     "lib/catalogue.json",
-    // Sanity Studio build output — hundreds of minified framework files. Linting
-    // them is pointless and, at this size, enough to crash the ESLint process.
-    "dist/**",
   ]),
 ]);
 

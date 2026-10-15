@@ -1,11 +1,14 @@
 /**
  * Shared vocabulary: the editorial desks and the demo-queue enums.
  *
- * Both the Sanity schema and `lib/content.ts` need these values, and they must
- * agree — the CMS stores the raw string and the site narrows it back on read.
- * They live in their own module because the Studio bundle imports this file, and
- * importing `lib/content.ts` instead would drag all twelve articles into that
- * bundle with it.
+ * These are the values the CMS stores, so anything reading that data must agree
+ * on them exactly. Here they narrow what comes back out of a query and supply the
+ * display labels; in `melodialam-sanity` the same list drives the Studio's field
+ * options and validation.
+ *
+ * DUPLICATED, ON PURPOSE: `melodialam-sanity/lib/taxonomy.ts` holds the same
+ * values, because the Studio cannot import from this repo at build time and this
+ * repo must not depend on the Studio's. Change one, change the other.
  *
  * `lib/content.ts` re-exports everything here, so existing imports keep working.
  */

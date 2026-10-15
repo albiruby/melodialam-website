@@ -17,6 +17,8 @@ melewati tahap rencana. Yang benar hari ini:
 - Antarmuka *Neo-Brutalist Editorial* berjalan penuh di sisi klien.
 - **Artikel** dibaca dari Sanity Studio, dengan `lib/content.ts` sebagai fallback —
   lihat [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
+- **Studio Sanity** berada di repo terpisah, `melodialam-sanity`, bukan di sini. Repo ini
+  hanya membaca.
 - **Antrean demo** tersambung ke dataset Sanity **privat** dan dimoderasi (ADR-0005).
 - **Katalog video** tetap artefak build-time di dalam repo (ADR-0004).
 - Pengujian otomatis dan deployment masih **`RENCANA`** (ADR-0006).

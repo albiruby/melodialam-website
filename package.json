@@ -9,21 +9,16 @@
     "lint": "eslint",
     "catalogue": "node scripts/build-catalogue.mjs",
     "brand": "node scripts/build-brand.mjs",
-    "photos": "node scripts/copy-photos.mjs",
-    "sanity": "sanity",
-    "sanity:deploy": "sanity deploy"
+    "photos": "node scripts/copy-photos.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",
+    "@sanity/client": "^8.9.0",
     "@sanity/image-url": "^2.1.1",
-    "@sanity/vision": "^6.19.0",
     "motion": "^14.2.0",
     "next": "16.4.0",
-    "next-sanity": "^13.3.4",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "sanity": "^6.19.0",
-    "styled-components": "^6.6.0"
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

@@ -49,25 +49,25 @@ demo memakai array proses-lokal. Untuk mengaktifkan CMS, salin contohnya dan isi
 nilai wajib:
 
 ```bash
-cp .env.example .env      # isi NEXT_PUBLIC_SANITY_PROJECT_ID dan SANITY_API_READ_TOKEN
+cp .env.example .env      # isi SANITY_API_READ_TOKEN (dan SANITY_REVALIDATE_SECRET)
 ```
 
 | Variabel | Wajib untuk | Catatan |
 |---|---|---|
-| `NEXT_PUBLIC_SANITY_PROJECT_ID` | Studio, artikel dari CMS | `03sgar5q` |
-| `NEXT_PUBLIC_SANITY_DATASET` | Studio, artikel dari CMS | `production` (publik) |
-| `NEXT_PUBLIC_SANITY_SUBMISSIONS_DATASET` | antrean demo | `submissions` (**privat**) |
-| `NEXT_PUBLIC_SANITY_STUDIO_URL` | Studio | `http://localhost:3100/studio` |
 | `SANITY_API_READ_TOKEN` | antrean demo | **server-only**; baca dataset privat + tulis antrean |
 | `SANITY_REVALIDATE_SECRET` | webhook revalidasi | dibagi dengan webhook Sanity |
 | `NEXT_PUBLIC_SITE_URL` | canonical, sitemap, JSON-LD | default `http://localhost:3100` |
 
-Tanpa env Sanity, `lib/articles.ts` jatuh ke `lib/content.ts` dan
-`lib/sanity-server.ts` mengembalikan `null` sehingga antrean demo memakai memori. Itu
-perilaku yang disengaja, bukan kegagalan.
+Project id dan nama dataset **bukan** variabel lingkungan — keduanya literal di
+`lib/sanity-project.ts`, karena `sanity.config.ts` dibangun dua bundler berbeda yang
+mengekspos env var dengan cara berbeda. Lihat berkas itu untuk penjelasannya.
+
+Membaca artikel **tidak butuh kredensial sama sekali**: dataset `production` publik dan
+project id-nya ada di kode. Tanpa `.env` situs tetap jalan penuh; hanya antrean demo
+yang jatuh ke memori, karena `lib/sanity-server.ts` mengembalikan `null` tanpa token.
 
 > **Penting:** `SANITY_API_READ_TOKEN` memberi akses ke nomor kontak musisi. Ia hanya
-> boleh diimpor dari kode server. Lihat `docs/SANITY-INTEGRATION.md` §8.
+> boleh diimpor dari kode server. Lihat `docs/SANITY-INTEGRATION.md` §9.
 
 ---
 
@@ -80,10 +80,14 @@ perilaku yang disengaja, bukan kegagalan.
 | TypeScript | `^5` |
 | Tailwind CSS | `^4` |
 | Motion (penerus Framer Motion) | `^14.2.0` |
-| Sanity Studio | `^6.19.0` |
-| next-sanity | `^13.3.4` |
+| Sanity (`@sanity/client`) | `^8.9.0` |
+| Portable Text (`@portabletext/react`) | `^8.0.1` |
 
-Build produksi menghasilkan **28 halaman statis**.
+Build produksi menghasilkan **27 halaman statis**.
+
+> Studio Sanity-nya **tidak** ada di repo ini. Ia berdiri sendiri di
+> [`albiruby/melodialam-sanity`](https://github.com/albiruby/melodialam-sanity) dan
+> di-host di **https://melodi-alam.sanity.studio**.
 
 ---
 
@@ -98,8 +102,6 @@ Build produksi menghasilkan **28 halaman statis**.
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari hasil scrape |
 | `npm run brand` | Menghasilkan ulang aset merek dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
-| `npm run sanity` | Sanity CLI (`npm run sanity -- dataset list`, dst.) |
-| `npm run sanity:deploy` | Deploy Studio ke hosting Sanity (opsional) |
 
 > Hentikan dev server sebelum menjalankan `npm run build`; keduanya memakai state
 > Turbopack yang sama dan menjalankannya bersamaan membuat halaman tampil kosong.
@@ -116,32 +118,34 @@ Build produksi menghasilkan **28 halaman statis**.
 | `/bicara-melodi` | Indeks wawancara |
 | `/videos` | Katalog penuh 292 video, filter, pencarian, paginasi |
 | `/submit` | Formulir demo dan antrean kiriman |
-| `/studio` | Sanity Studio (dua workspace: Konten, Antrean Demo). Versi hosted: **[melodi-alam.sanity.studio](https://melodi-alam.sanity.studio)** |
 | `/api/demos` | Route handler `GET` dan `POST` untuk antrean demo |
 | `/api/revalidate` | Webhook Sanity → buang cache artikel |
+
+> Studio Sanity-nya bukan route di aplikasi ini. Ia repo terpisah —
+> [`albiruby/melodialam-sanity`](https://github.com/albiruby/melodialam-sanity) —
+> di-host di **https://melodi-alam.sanity.studio**.
 
 ---
 
 ## Struktur
 
 ```
-app/            Route, layout, dan route handler; app/(site) dan app/studio
+app/            Route, layout, dan route handler; app/(site)
 components/     Komponen UI; components/motion/ untuk primitif gerak
-sanity/         Skema Sanity Studio
-lib/            Lapisan data: articles.ts, sanity.ts, sanity-server.ts, taxonomy.ts,
-                content.ts, catalogue.ts, site.ts
+lib/            Lapisan data: articles.ts, sanity.ts, sanity-server.ts,
+                sanity-project.ts, taxonomy.ts, content.ts, catalogue.ts, site.ts
 scripts/        Generator untuk katalog, aset merek, dan foto
 public/         Aset statis; brand/ dan photos/ adalah artefak generated
 docs/           Dokumentasi pengembangan
 ```
 
-`lib/articles.ts` adalah lapisan data artikel: ia membaca **Sanity saat terkonfigurasi**
-dan jatuh ke `lib/content.ts` saat tidak. Karena itu artikel yang ditulis di `/studio`
-langsung render di situs tanpa ubah kode, sementara checkout bersih tetap berfungsi.
-`lib/catalogue.json` adalah artefak **generated** dan tidak boleh disunting tangan.
+`lib/articles.ts` adalah lapisan data artikel: ia membaca **Sanity** dan jatuh ke
+`lib/content.ts` kalau Sanity tidak dapat dijangkau. Karena itu artikel yang ditulis di
+Studio langsung render di situs tanpa ubah kode. `lib/catalogue.json` adalah artefak
+**generated** dan tidak boleh disunting tangan.
 
-Alur lengkapnya — termasuk cara menambah tipe konten dan jebakan yang sudah ditemukan —
-ada di [`docs/SANITY-INTEGRATION.md`](docs/SANITY-INTEGRATION.md).
+Alur lengkapnya — termasuk cara mengubah skema dan jebakan yang sudah ditemukan — ada
+di [`docs/SANITY-INTEGRATION.md`](docs/SANITY-INTEGRATION.md).
 
 ---
 
@@ -185,7 +189,7 @@ Mulai dari [`docs/README.md`](docs/README.md).
 
 ## Status
 
-Antarmuka berjalan penuh, dan CMS-nya hidup: artikel yang ditulis di `/studio` render di
+Antarmuka berjalan penuh, dan CMS-nya hidup: artikel yang ditulis di Studio render di
 situs tanpa ubah kode.
 
 | Area | Status |
@@ -193,8 +197,8 @@ situs tanpa ubah kode.
 | UI *Neo-Brutalist Editorial*, animasi, interaksi hover | Berjalan |
 | Artikel | Sanity + fallback `lib/content.ts` — [`docs/SANITY-INTEGRATION.md`](docs/SANITY-INTEGRATION.md) |
 | Katalog video | Dari repo (statis, artefak build-time — [`ADR-0004`](docs/adr/0004-katalog-video-build-time.md)) |
-| Antrean demo | Sanity dataset privat, moderasi; fallback array proses-lokal tanpa env |
-| CMS | Sanity Studio — embedded di `/studio`, hosted di [melodi-alam.sanity.studio](https://melodi-alam.sanity.studio) — [`ADR-0008`](docs/adr/0008-sanity-studio-menggantikan-payload.md) (menggantikan [`ADR-0002`](docs/adr/0002-payload-supabase.md)) |
+| Antrean demo | Sanity dataset privat, moderasi; fallback array proses-lokal tanpa token |
+| CMS | Repo terpisah [`melodialam-sanity`](https://github.com/albiruby/melodialam-sanity), hosted di [melodi-alam.sanity.studio](https://melodi-alam.sanity.studio) — [`ADR-0008`](docs/adr/0008-sanity-studio-menggantikan-payload.md) (menggantikan [`ADR-0002`](docs/adr/0002-payload-supabase.md)) |
 | Pratinjau draf | Belum ada |
 | Uji otomatis | Belum ada — [`ADR-0006`](docs/adr/0006-vitest-playwright-vercel.md) |
 | Analytics | Belum ada |

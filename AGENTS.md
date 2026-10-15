@@ -64,8 +64,11 @@ section is maintained by hand. Keep it accurate or delete it.
 
 A Next.js 16 App Router + React 19 + TypeScript site for **Melodi Alam**, an Indonesian
 music-media platform: editorial articles (*Stories*), a YouTube catalogue hub (*Watch*),
-and a demo-submission pipeline (*Submit Demo*). Content is edited in a Sanity Studio
-embedded at `/studio`.
+and a demo-submission pipeline (*Submit Demo*).
+
+Content lives in **Sanity**, and the Studio is **not in this repo** — it is
+[`albiruby/melodialam-sanity`](https://github.com/albiruby/melodialam-sanity), hosted at
+melodi-alam.sanity.studio. This repo only reads from it.
 
 **Read `docs/README.md` first.** It indexes the whole documentation set and says who each
 document is for. Twelve documents live in `docs/`, plus eight ADRs in `docs/adr/`.
@@ -77,14 +80,12 @@ document is for. Twelve documents live in `docs/`, plus eight ADRs in `docs/adr/
 | Command | Purpose |
 |---|---|
 | `npm run dev` | Dev server on port **3100** |
-| `npm run build` | Production build — 28 static pages |
+| `npm run build` | Production build — 27 static pages |
 | `npm run start` | Serve the production build on 3100 |
 | `npm run lint` | ESLint |
 | `npm run catalogue` | Regenerate `lib/catalogue.json` |
 | `npm run brand` | Regenerate brand assets + app icons |
 | `npm run photos` | Copy the placeholder photo set |
-| `npm run sanity` | Sanity CLI (`npm run sanity -- dataset list`) |
-| `npm run sanity:deploy` | Deploy the Studio to Sanity hosting |
 
 Port 3000 is deliberately avoided. There is no `test` script yet.
 

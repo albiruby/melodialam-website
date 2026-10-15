@@ -44,6 +44,13 @@ Pemisahan itu bukan hiasan. Antrean demo menyimpan nomor WhatsApp manajer, dan d
 Sanity yang publik dapat dibaca siapa pun yang tahu project id. Dua dataset adalah cara
 menjaga artikel tetap tokenless dan CDN-*cacheable* sementara PII tetap tertutup.
 
+Studio-nya kemudian dipindah ke repo sendiri, **`melodialam-sanity`**, karena keputusan
+itu tidak menyentuh repo ini: situs hanya membaca. Repo ini menyimpan tiga paket baca
+(`@sanity/client`, `@portabletext/react`, `@sanity/image-url`); dependensi Studio
+(`sanity`, `styled-components`, `@sanity/vision`) — ratusan paket — sudah tidak ada di
+sini. `lib/sanity-project.ts` dan `lib/taxonomy.ts` diduplikasi di kedua repo, dan
+keduanya menyatakan itu di bagian atas berkas.
+
 Konsekuensi yang mengikat:
 
 1. **Tidak ada lagi basis data milik sendiri.** Tidak ada Postgres, tidak ada migrasi,

@@ -1,27 +1,55 @@
-# Integrasi Web ↔ Sanity Studio
+# Integrasi Web ↔ Sanity
 
-Panduan lengkap: apa yang Anda tulis di `/studio` akan render di halaman mana, lewat
-jalur apa, dan apa yang harus dilakukan saat menambah tipe konten baru.
+Panduan lengkap: apa yang Anda tulis di Studio akan render di halaman mana, lewat
+jalur apa, dan apa yang harus dilakukan saat mengubah model konten.
 
-**Audiens:** editor yang menulis konten, dan developer yang menambah tipe konten.
-**Status:** artikel dan antrean demo sudah tersambung. Pratinjau draf belum.
+**Audiens:** editor yang menulis konten, dan developer yang mengubah skema.
+**Status:** artikel dan antrean demo tersambung. Pratinjau draf belum.
 
-> Menggantikan `PAYLOAD-INTEGRATION.md`, yang sudah dihapus bersama seluruh kode Payload.
+> Menggantikan `PAYLOAD-INTEGRATION.md`, yang dihapus bersama seluruh kode Payload.
 > Latar belakang keputusan ada di [`adr/0008`](adr/0008-sanity-studio-menggantikan-payload.md).
 
 ---
 
-## 1. Model mental
+## 1. Dua repo
 
-Dua aturan yang menjelaskan hampir semuanya.
+Sejak Studio dipindah keluar, ada dua repositori yang harus dipahami bersama:
 
-> **1. Sanity menang kalau terkonfigurasi; `lib/content.ts` jadi fallback kalau tidak.**
+| Repo | Isi | Perubahan di sini kalau… |
+|---|---|---|
+| **`melodialam-website`** (repo ini) | situs Next.js + lapisan baca Sanity | …Anda mengubah halaman, kueri, atau tampilan |
+| **`melodialam-sanity`** | Studio: `sanity.config.ts`, skema, kosakata | …Anda mengubah model konten atau field |
+
+**Editor tidak perlu menyentuh repo ini.** Studio-nya berdiri sendiri di
+**https://melodi-alam.sanity.studio** (atau `npm run dev` di repo Sanity untuk
+versi lokal di port 3333).
+
+Dua berkas **sengaja diduplikasi** di kedua repo, dan mengubah salah satunya berarti
+mengubah yang lain:
+
+| Berkas | Isi |
+|---|---|
+| `lib/sanity-project.ts` | project id + nama dua dataset |
+| `lib/taxonomy.ts` | rubrik artikel + seluruh enum antrean demo |
+
+Duplikasi ini disadari: Studio tidak bisa mengimpor dari repo ini saat build, dan
+repo ini tidak boleh bergantung pada repo Studio.
+
+---
+
+## 2. Model mental
+
+> **1. Sanity menang; `lib/content.ts` adalah jaring pengaman.**
 
 - Artikel yang Anda publish di Studio muncul di situs **tanpa ubah kode**.
-- Checkout bersih tanpa `.env` tetap render 12 artikel dari berkas.
-- Kalau slug-nya bentrok, versi Sanity yang menang — jadi migrasi bisa bertahap: seed
-  satu artikel ke Sanity, ia langsung mengambil alih, dan Anda tidak perlu menghapus apa
-  pun dari berkas statis sampai migrasinya selesai.
+- Kalau Sanity tidak dapat dijangkau, situs render 12 artikel dari `lib/content.ts`
+  alih-alih gagal.
+- Kalau slug-nya bentrok, versi Sanity yang menang — jadi migrasi bisa bertahap:
+  seed satu artikel ke Sanity, ia langsung mengambil alih.
+
+Pembacaan artikel **tidak butuh kredensial sama sekali**: dataset `production`
+publik dan project id-nya literal di kode. Sanity adalah sumber default, bukan
+sesuatu yang Anda aktifkan lewat `.env`.
 
 > **2. Ada dua dataset, dan pemisahannya disengaja.**
 
@@ -30,14 +58,12 @@ Dua aturan yang menjelaskan hampir semuanya.
 | `production` | publik | artikel + gambar | tidak perlu |
 | `submissions` | **privat** | kiriman demo + kontak manajer | **wajib** |
 
-Antrean demo menyimpan nomor WhatsApp manajer. Dataset Sanity yang publik dapat dibaca
-siapa pun yang tahu project id, jadi PII tidak boleh berada di sana. Dua dataset adalah
-cara menjaga artikel tetap terbaca tanpa token (dan bisa lewat CDN) sementara PII tetap
-tertutup.
+Antrean demo menyimpan nomor WhatsApp manajer. Dataset Sanity yang publik dapat
+dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 
 ---
 
-## 2. Peta: tulis di sini → render di sana
+## 3. Peta: tulis di sini → render di sana
 
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
@@ -49,10 +75,10 @@ tertutup.
 
 ---
 
-## 3. Alur satu artikel, dari ketik sampai tampil
+## 4. Alur satu artikel, dari ketik sampai tampil
 
 ```
-/studio/content  →  Artikel  →  Create new
+melodi-alam.sanity.studio  →  Konten  →  Artikel  →  Create new
    │
    ├─ Judul, Slug, Rubrik, Tanggal, Ringkasan, Sampul, Isi (rich text), Headline
    ├─ Publish                            ← tombol kanan bawah
@@ -81,36 +107,36 @@ app/(site)/page.tsx                 →  hero + 3 kartu
    layar (stale-while-revalidate) — jadi tidak ada yang menunggu.
 5. Setelah itu semua pembaca melihat versi baru.
 
-Kalau webhook-nya belum dipasang, perubahan tetap muncul, hanya setelah jendela cache
-habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfungsi.
+Kalau webhook-nya belum dipasang, perubahan tetap muncul, hanya setelah jendela
+cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfungsi.
 
 ---
 
-## 4. Cara menambah artikel
+## 5. Cara menambah artikel
 
-1. Buka **http://localhost:3100/studio** → masuk dengan akun Sanity Anda.
+1. Buka **https://melodi-alam.sanity.studio** (atau `npm run dev` di repo
+   `melodialam-sanity`, lalu **http://localhost:3333**) dan masuk dengan akun Sanity.
 2. Pilih workspace **Konten** → **Artikel** → **Create new**.
 3. Isi:
    - **Judul** — judul penuh.
    - **Slug** — **menjadi alamat URL**. `judul-artikel-baru` → `/journal/judul-artikel-baru`.
      Tombol *Generate* mengisinya dari judul. Huruf kecil, tanda hubung, tanpa spasi.
-   - **Rubrik** — salah satu dari empat (Fakta Musik, Rekomendasi Melodi, Bicara Melodi,
-     Liputan Panggung).
+   - **Rubrik** — salah satu dari empat (Fakta Musik, Rekomendasi Melodi, Bicara
+     Melodi, Liputan Panggung).
    - **Tanggal terbit** — dipakai untuk pengurutan dan JSON-LD.
    - **Ringkasan** — dipakai di kartu, meta description, dan JSON-LD.
    - **Sampul** — unggah langsung; ada *hotspot* supaya pemotongan tidak memenggal wajah.
-   - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline semuanya
-     didukung.
+   - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline didukung.
    - **Jadikan headline beranda** — centang untuk menjadikannya hero di beranda.
 4. **Publish**.
 5. Buka `/journal/<slug>`. Langsung tampil.
 
-> **Slug itu kontrak.** Halaman detail membaca artikel berdasarkan slug, jadi mengganti
-> slug setelah publish akan mematikan URL lama. Tidak ada redirect otomatis.
+> **Slug itu kontrak.** Halaman detail membaca artikel berdasarkan slug, jadi
+> mengganti slug setelah publish akan mematikan URL lama. Tidak ada redirect otomatis.
 
 ---
 
-## 5. Halaman mana membaca apa
+## 6. Halaman mana membaca apa
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
@@ -120,21 +146,29 @@ habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfungsi.
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
-`generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di Sanity
-dirender saat diminta (`dynamicParams` default `true`) — **tanpa rebuild**. Itu sebabnya
-publish langsung tampil.
+`generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
+Sanity dirender saat diminta (`dynamicParams` default `true`) — **tanpa rebuild**.
+Itu sebabnya publish langsung tampil.
 
 ---
 
-## 6. Menambah tipe konten baru
+## 7. Mengubah model konten
 
-1. **Tulis skemanya** di `sanity/schemaTypes/<nama>.ts` dengan `defineType`.
-2. **Daftarkan** di `sanity/schemaTypes/index.ts` — pilih `contentSchemaTypes` (dataset
-   publik) atau `submissionSchemaTypes` (dataset privat). Salah taruh berarti konten
-   sensitif jadi publik.
-3. **Tambah lapisan data** di `lib/` kalau halaman publik perlu membacanya; ikuti pola
-   `lib/articles.ts` (kueri GROQ, pemetaan ke bentuk yang dipakai UI, fallback).
-4. **Cache dan revalidasi** kalau bacaannya di-cache:
+Skemanya hidup di repo lain: `melodialam-sanity/sanity/schemaTypes/`.
+
+1. **Ubah skemanya** di sana dengan `defineType`.
+2. **Daftarkan** di `sanity/schemaTypes/index.ts` — pilih `contentSchemaTypes`
+   (dataset publik) atau `submissionSchemaTypes` (dataset privat). Salah taruh
+   berarti konten sensitif jadi publik.
+3. **Kalau menyentuh `lib/taxonomy.ts`**, perbarui salinannya di repo ini juga.
+4. **Deploy** dari repo Sanity: `npm run deploy` (skema ikut terunggah).
+5. **Kalau halaman publik perlu membacanya**, tambah lapisan data di `lib/` di repo
+   ini — ikuti pola `lib/articles.ts` (kueri GROQ, pemetaan ke bentuk yang dipakai
+   UI, fallback, cache).
+
+### Cache dan revalidasi
+
+Pembacaan yang di-cache harus diberi tag, dan tag itu dibuang dari webhook:
 
 ```ts
 export async function getX() {
@@ -145,21 +179,9 @@ export async function getX() {
 }
 ```
 
-5. **Verifikasi**: `npm run lint`, `npx tsc --noEmit`, `npm run build`.
-
-### Kosakata bersama
-
-Nilai yang dipakai skema **dan** kode situs hidup di `lib/taxonomy.ts` — rubrik artikel
-dan seluruh enum antrean demo. `lib/content.ts` me-*re-export*-nya, jadi impor lama tetap
-jalan.
-
-Alasannya bukan kerapian: skema berjalan di bundel Studio, dan mengimpor `lib/content.ts`
-ke sana akan menyeret dua belas artikel ikut masuk. `lib/taxonomy.ts` sengaja tidak
-mengimpor apa pun.
-
 ---
 
-## 7. Render rich text
+## 8. Render rich text
 
 Isi artikel adalah **Portable Text**, bukan HTML. Ia dirender di
 `components/ArticleBody.tsx`:
@@ -170,28 +192,28 @@ import { PortableText } from "@portabletext/react";
 <PortableText value={article.richBody} components={components} />
 ```
 
-Keluaran Portable Text adalah tag "telanjang" — `<p>`, `<h2>`, `<ul>`, `<blockquote>` —
-tanpa kelas. Karena itu tipografinya diatur di `app/globals.css` di bawah
-`.article-prose`, termasuk drop cap pada blok pertama, yang berlaku untuk kedua sumber
-(statis dan Sanity).
+Keluaran Portable Text adalah tag "telanjang" — `<p>`, `<h2>`, `<ul>`, `<blockquote>`
+— tanpa kelas. Karena itu tipografinya diatur di `app/globals.css` di bawah
+`.article-prose`, termasuk drop cap pada blok pertama, yang berlaku untuk kedua
+sumber (statis dan Sanity).
 
 `ArticleBody` memilih otomatis: ada `richBody` → Portable Text; tidak ada → paragraf
-biasa dari `lib/content.ts`. Lebar kolom dan skala hurufnya sama, jadi kedua sumber tidak
-bisa dibedakan pembaca.
+biasa dari `lib/content.ts`.
 
-Gambar di dalam isi dirender dengan `<img>` biasa, bukan `next/image`: CDN Sanity sudah
-meresize dan mengonversi formatnya (`auto=format` di `lib/sanity.ts`), dan blok inline
-tidak menyimpan dimensi untuk `next/image` pakai menghitung tata letak.
+Gambar di dalam isi dirender dengan `<img>` biasa, bukan `next/image`: CDN Sanity
+sudah meresize dan mengonversi formatnya (`auto=format` di `lib/sanity.ts`), dan blok
+inline tidak menyimpan dimensi untuk `next/image` pakai menghitung tata letak.
 
 ---
 
-## 8. Token: di mana boleh, di mana tidak
+## 9. Token: di mana boleh, di mana tidak
 
 Ini bagian yang paling mudah salah.
 
 | Berkas | Memuat token? | Boleh diimpor dari |
 |---|---|---|
 | `lib/sanity.ts` | **tidak** | mana saja, termasuk komponen |
+| `lib/sanity-project.ts` | **tidak** | mana saja |
 | `lib/sanity-server.ts` | **ya** | kode server saja |
 
 `lib/sanity-server.ts` memegang `SANITY_API_READ_TOKEN`, yang memberi akses baca ke
@@ -199,81 +221,58 @@ dataset privat **dan** hak tulis ke antrean demo. Kalau berkas itu sampai diimpo
 komponen klien, token ikut ke bundel peramban — dan bersamanya seluruh nomor kontak
 musisi.
 
-Kalau ragu: cek apakah berkas pemanggilnya punya `"use client"` di baris pertama. Kalau
-ya, jangan impor `lib/sanity-server.ts`.
-
----
-
-## 9. Media
-
-Gambar artikel diunggah langsung ke Sanity dan disajikan dari `cdn.sanity.com` (resize dan
-konversi format dilakukan di sana). Tidak ada bucket S3, tidak ada berkas lokal, tidak ada
-yang hilang saat redeploy.
-
-Host-nya harus terdaftar di dua tempat, dan keduanya sudah diisi:
-
-- `next.config.ts` → `images.remotePatterns` (`cdn.sanity.io`, path `/images/**`)
-- `next.config.ts` → CSP report-only (`img-src` dan `connect-src`)
+Kalau ragu: cek apakah berkas pemanggilnya punya `"use client"` di baris pertama.
+Kalau ya, jangan impor `lib/sanity-server.ts`.
 
 ---
 
 ## 10. Jebakan yang sudah ditemukan (baca sebelum mengubah)
 
-Delapan hal ini sudah memakan waktu. Jangan ulangi.
-
-**1. Rute `/studio` butuh root layout sendiri.**
-Layout situs hidup di route group `app/(site)/`, dan route group bukan penyedia layout
-untuk rute di luarnya. Tanpa `app/studio/layout.tsx`, Next.js menolak render. Berkas itu
-sengaja telanjang: Studio membawa gayanya sendiri.
+**1. `sanity.config.ts` pernah dibangun dua bundler berbeda.**
+Ini bug yang benar-benar terkirim: Studio hosted menolak boot dengan
+*"Sanity env vars missing"*. Sebabnya, Next meng-*inline* `NEXT_PUBLIC_*` sementara
+Vite milik Sanity hanya mengekspos `SANITY_STUDIO_*` lewat `import.meta.env`. Kini
+identitasnya **literal** di `lib/sanity-project.ts` — satu-satunya bentuk yang
+disepakati keduanya. Jangan kembalikan ke env var.
 
 **2. `cacheComponents` melarang `dynamic = 'force-dynamic'`.**
-Untuk segmen dinamis pakai `await connection()` atau `instant = false`. Dan pembacaan
-data di halaman harus di-cache (`"use cache"` + `cacheTag`) atau dibungkus `<Suspense>`,
-kalau tidak build gagal dengan "encountered uncached data during prerendering".
+Untuk segmen dinamis pakai `await connection()` atau `instant = false`. Pembacaan
+data di halaman harus di-cache (`"use cache"` + `cacheTag`) atau dibungkus
+`<Suspense>`, kalau tidak build gagal dengan "encountered uncached data during
+prerendering".
 
 **3. `revalidateTag` di Next 16 butuh argumen kedua.**
 Pakai `"max"` — stale-while-revalidate, yang tepat untuk konten seperti ini.
 
 **4. `useCdn` sengaja `false`.**
 Artikel di-cache di Next di bawah satu tag. Kalau CDN dipasang di depannya, CDN akan
-mengembalikan salinan lama yang baru saja kita coba buang. Trade-off-nya: setiap
-pembacaan menyentuh API Sanity, bukan CDN — tetapi dengan `"use cache"` itu terjadi
-sekali per jendela cache, bukan per permintaan.
+mengembalikan salinan lama yang baru saja kita coba buang.
 
 **5. Dataset privat mengembalikan `200` dengan `result: null`, bukan `401`.**
-Ini menjebak saat menguji: kueri `count(...)` pada dataset kosong mengembalikan `0` baik
-dengan maupun tanpa token, jadi terlihat seperti ACL-nya tidak bekerja. Ujilah dengan
-**dokumen nyata** — itu yang membedakan.
+Ini menjebak saat menguji: kueri `count(...)` pada dataset kosong mengembalikan `0`
+baik dengan maupun tanpa token, jadi terlihat seperti ACL-nya tidak bekerja. Ujilah
+dengan **dokumen nyata** — itu yang membedakan.
 
-**6. Management API memakai `displayName`, bukan `projectName`.**
-Dan secret token ada di field **`key`**, bukan `token`. Secret hanya ditampilkan sekali
-saat dibuat; kalau tidak tertangkap, token harus dihapus dan dibuat ulang.
+**6. Jangan impor `sanity` di repo ini.**
+Situs hanya butuh `@sanity/client`, `@portabletext/react`, dan `@sanity/image-url`.
+Dependensi Studio (`sanity`, `styled-components`, `@sanity/vision`) ratusan paket dan
+sudah tidak ada di sini — jangan tambahkan kembali.
 
-**7. Origin harus didaftarkan, atau Studio bilang "isn't connected to your project".**
-Tambahkan `http://localhost:3100` lewat Management API (`POST /projects/{id}/cors`) atau
-di sanity.io/manage. Untuk produksi, tambahkan juga domain deploy-nya.
-
-**8. `.valid()` tidak ada di `StringRule` Sanity v6.**
+**7. `.valid()` tidak ada di `StringRule` Sanity v6.**
 Validasi keanggotaan enum pakai `rule.custom(...)`, bukan `rule.valid(...)`.
-
-Dan satu sisa dari era Payload: setelah menghapus rute, **bersihkan `.next`**. Tipe rute
-yang di-*generate* akan terus menunjuk ke berkas yang sudah tidak ada, dan `PageProps`
-(global dari Next) baru muncul lagi setelah build berikutnya.
 
 ---
 
 ## 11. Menjalankan dari nol
 
 ```bash
-cp .env.example .env      # isi NEXT_PUBLIC_SANITY_PROJECT_ID dan SANITY_API_READ_TOKEN
+cp .env.example .env      # isi SANITY_API_READ_TOKEN (dan SANITY_REVALIDATE_SECRET)
 npm install
 npm run dev               # http://localhost:3100
 ```
 
-Buka `/studio` → masuk → mulai menulis.
-
-Tanpa `.env`, situs tetap jalan penuh dari `lib/content.ts` dan antrean demo memakai
-array proses-lokal; yang mati hanya Studio dan persistensi antrean.
+Tanpa `.env` pun situs jalan: artikel dibaca dari Sanity (tanpa kredensial), dan
+hanya antrean demo yang jatuh ke memori.
 
 ### Memasang webhook revalidasi
 
@@ -288,33 +287,17 @@ Di sanity.io/manage → project → **API → Webhooks**:
 Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka adalah cara mudah
 menjadikan cache sebagai sasaran serangan.
 
-### Deploy Studio ke hosting Sanity
+### Deploy Studio
 
-Studio bisa di-host Sanity sendiri, terpisah dari situsnya:
+Dari repo **`melodialam-sanity`**, bukan repo ini:
 
 ```bash
-npm run sanity:deploy        # bangun + unggah; host dari sanity.cli.ts
+npm run deploy        # build + unggah ke https://melodi-alam.sanity.studio
 ```
 
-Hasilnya: **https://melodi-alam.sanity.studio**
-
-Dua hal yang perlu diketahui:
-
-1. **Hosting Sanity mengabaikan `basePath`.** Studio yang di-host memakai nama
-   workspace sebagai path kanonik — `/content` dan `/submissions` — sementara Studio
-   embedded memakai `/studio/content` dan `/studio/submissions`. Keduanya bekerja;
-   `basePath` di `sanity.config.ts` hanya berlaku untuk yang embedded. Jadi jangan
-   bingung kalau URL-nya berbeda dari yang tertulis di konfigurasi.
-2. **Akses lewat dashboard Sanity.** Membuka host itu mengalihkan (302) ke
-   `www.sanity.io/@<org>/studio/<id>`, yang meminta login. Ini benar: Studio adalah alat
-   editor, bukan halaman publik. Alamat yang layak dibagikan ke editor adalah
-   `https://melodi-alam.sanity.studio` — pengalihannya otomatis.
-
-`sanity deploy` juga mengunggah skema, jadi editor mendapat struktur terbaru tanpa
-langkah tambahan. Menjalankan `npm run sanity -- deploy --dry-run -y` lebih dulu
-menunjukkan apa yang akan diunggah tanpa mengubah apa pun.
-
-> `dist/` adalah keluaran build Studio dan sudah masuk `.gitignore`.
+`npm run deploy` juga mengunggah skema, jadi editor langsung mendapat struktur
+terbaru. Untuk melihat apa yang akan diunggah tanpa mengubah apa pun, pakai
+`npx sanity deploy --dry-run -y`.
 
 ---
 
@@ -324,12 +307,11 @@ Sengaja, bukan lupa:
 
 | | Kenapa |
 |---|---|
-| **Pratinjau draf** | Publikasi langsung terlihat, tetapi menyunting draf belum bisa dipratinjau di situs. Butuh `defineLive` dari `next-sanity` plus route draft-mode. |
-| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`). Kalau butuh kurasi, bentuknya tipe konten kecil yang merujuk `youtubeId`, bukan memindahkan seluruh katalog. |
+| **Pratinjau draf** | Publikasi langsung terlihat, tetapi menyunting draf belum bisa dipratinjau di situs. Butuh `next-sanity` (`defineLive`) plus route draft-mode — sengaja tidak dipasang selama Studio belum butuh. |
+| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`). |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Antrean Demo**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
-| **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. Sanity Asset Pipeline menerima audio, tetapi belum dipasang. |
+| **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
-| **Halaman `/admin` lama** | Sudah hilang bersama Payload. Alamatnya kini `/studio`. |
 
 ---
 
@@ -337,15 +319,16 @@ Sengaja, bukan lupa:
 
 | Gejala | Sebab | Perbaikan |
 |---|---|---|
-| Studio bilang "isn't connected to your project" | origin belum didaftarkan | tambahkan origin-nya (jebakan #7) |
-| Studio kosong / error saat boot | env var Sanity tidak lengkap | `sanity.config.ts` melempar kalau salah satu kosong |
+| Studio bilang "isn't connected to your project" | origin belum terdaftar | tambahkan di sanity.io/manage → API → CORS |
+| Studio hosted error "env vars missing" | identitas dibaca dari env var | harus literal dari `lib/sanity-project.ts` (jebakan #1) |
 | Build gagal "encountered uncached data" | pembacaan tanpa cache | tambah `"use cache"` + `cacheTag` |
 | Build gagal "Cannot find name 'PageProps'" | `.next` dibersihkan | jalankan `npm run build` untuk regenerate |
 | Publish tidak muncul | webhook belum dipasang | tunggu jendela cache (1 menit), atau pasang webhook |
 | Artikel 404 padahal ada di Studio | belum di-**Publish** | draf tidak terlihat publik |
 | Kiriman demo tidak muncul di antrean | status masih `IN REVIEW` | ubah status di workspace Antrean Demo |
-| Gambar artikel tidak tampil | `cdn.sanity.io` tidak terdaftar | cek `images.remotePatterns` |
+| Gambar artikel tidak tampil | `cdn.sanity.io` tidak terdaftar | cek `images.remotePatterns` di `next.config.ts` |
 | Kontak musisi terlihat publik | dokumen salah dataset | pindahkan ke `submissions`; itu satu-satunya dataset privat |
+| Perubahan skema tidak muncul di Studio | belum di-deploy | `npm run deploy` dari repo `melodialam-sanity` |
 
 ---
 
@@ -363,14 +346,7 @@ Diperiksa dengan menjalankan, bukan membaca:
   `GET /api/demos` → `count 0`.
 - `POST /api/revalidate`: tanpa secret / salah / sepanjang benar-tapi-salah → **401**;
   secret tepat → **200** `{revalidated: true}`.
-- `/studio` dan `/studio/content` → **200**; Studio terhubung ke project `03sgar5q`.
 - Build: lint dan `tsc` bersih, **28 halaman statis**, `/journal` `Revalidate 1m · Expire 1h`.
-- **Deploy Studio.** `npm run sanity:deploy` → `https://melodi-alam.sanity.studio`, dengan
-  2 skema ikut terunggah. Host-nya mengalihkan **302** ke dashboard Sanity dan meminta
-  login — benar, karena Studio bukan halaman publik. Studio embedded tidak terpengaruh:
-  `/studio` → `/studio/content/structure` (workspace Konten, berisi "Artikel"),
-  `/studio/submissions` → `/studio/submissions/structure` (workspace Antrean Demo, berisi
-  "Kiriman Demo" dan "Kontak Demo").
 
-Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji secara
-logika), dan pratinjau draf (belum dibangun).
+Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
+secara logika), dan pratinjau draf (belum dibangun).

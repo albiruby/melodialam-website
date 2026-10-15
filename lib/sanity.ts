@@ -1,5 +1,5 @@
 import { createImageUrlBuilder } from "@sanity/image-url";
-import { createClient } from "next-sanity";
+import { createClient } from "@sanity/client";
 import { SANITY_DATASET, SANITY_PROJECT_ID } from "./sanity-project";
 
 /**

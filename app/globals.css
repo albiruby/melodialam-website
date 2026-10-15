@@ -9,10 +9,6 @@
 @source not "../.codegraph";
 @source not "../.gitnexus";
 @source not "../.next";
-/* The Sanity Studio build output (npm run sanity:deploy). 372 minified files of
-   framework code: nothing in it is ours, and it is large enough to make both the
-   CSS scan and ESLint choke. */
-@source not "../dist";
 
 /* ---------------------------------------------------------------------------
    Melodi Alam — Swiss editorial brutalism
