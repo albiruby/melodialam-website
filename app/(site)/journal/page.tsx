@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JournalBrowser } from "@/components/JournalBrowser";
 import { Reveal } from "@/components/Reveal";
+import { allArticles } from "@/lib/articles";
 
 export const metadata: Metadata = {
   title: "Journal & Stories",
@@ -8,7 +9,10 @@ export const metadata: Metadata = {
     "Catatan redaksi Melodi Alam: esai skena musik, rekomendasi melodi, catatan wawancara Bicara Melodi, dan liputan panggung.",
 };
 
-export default function JournalPage() {
+export default async function JournalPage() {
+  // Payload when the database is reachable, the static file otherwise.
+  const articles = await allArticles();
+
   return (
     <Reveal>
       <div className="flex items-baseline justify-between pb-4">
@@ -17,7 +21,7 @@ export default function JournalPage() {
           (kurasi redaksi — oktober 2026)
         </span>
       </div>
-      <JournalBrowser />
+      <JournalBrowser articles={articles} />
     </Reveal>
   );
 }

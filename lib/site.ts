@@ -12,7 +12,12 @@ export const SITE = {
   est: "EST. 2017",
   description:
     "Melodi Alam adalah rumah bagi jurnalisme musik, sesi intim panggung, ruang dengar, dan perangkat audio analog di Indonesia.",
-  url: "https://melodialam.id",
+  /**
+   * Canonical origin. Overridable with NEXT_PUBLIC_SITE_URL so a Vercel preview
+   * or a newly attached domain produces correct canonical URLs, a correct
+   * sitemap and a correct robots host without touching code.
+   */
+  url: process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "https://melodialam.id",
   locale: "id_ID",
 } as const;
 
@@ -28,8 +33,6 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/journal", label: "Journal & Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Videos", badge: "YT" },
-  { href: "/pahlawan-kota", label: "Pahlawan Kota" },
-  { href: "/spaces", label: "Instruments & Space" },
 ];
 
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Demo" };

@@ -1,6 +1,6 @@
 import { Instrument_Serif, Inter, JetBrains_Mono, Red_Hat_Display } from "next/font/google";
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata, Viewport } from "next";
+import "../globals.css";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -68,6 +68,16 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * The site is light-only, so `colorScheme` is pinned rather than left to the OS.
+ * That is what keeps form controls and scrollbars from rendering dark on a
+ * machine set to dark mode. `themeColor` matches the paper surface.
+ */
+export const viewport: Viewport = {
+  colorScheme: "light",
+  themeColor: "#f6f5f2",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // Next 16 no longer force-overrides scroll-behavior during navigation.
@@ -80,10 +90,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="antialiased">
         <MotionRoot>
+          {/* First tab stop on every page, so a keyboard user can skip the
+              ticker, masthead and nav instead of walking through all of them. */}
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:border-2 focus:border-ink focus:bg-white focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:text-ink"
+          >
+            Lompat ke konten utama
+          </a>
           <ScrollProgress />
           <Ticker />
           <SiteHeader />
-          <main className="mx-auto max-w-[1360px] space-y-20 px-4 py-10 sm:px-8">{children}</main>
+          <main
+            id="main"
+            tabIndex={-1}
+            className="mx-auto max-w-[1360px] space-y-20 px-4 py-10 sm:px-8"
+          >
+            {children}
+          </main>
           <SiteFooter />
         </MotionRoot>
       </body>

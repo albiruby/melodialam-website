@@ -80,7 +80,14 @@ export function MarqueeTape({ children }: { children: React.ReactNode }) {
   return (
     <motion.div
       ref={track}
-      style={still ? undefined : { x }}
+      /*
+        The style object is always present, even under reduced motion. Branching
+        it to `undefined` produced different markup on the server (which cannot
+        know the user's motion preference) and on the client, which React reports
+        as a hydration mismatch. Under reduced motion the frame loop below simply
+        never advances `x`, so the tape stays still.
+      */
+      style={{ x }}
       className="flex w-max will-change-transform"
       onMouseEnter={() => {
         hovered.current = true;

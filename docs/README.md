@@ -11,17 +11,19 @@ diperlukannya.
 
 ## Status fase
 
-Repositori ini berada di **Fase Alfa** (lihat PRD §15). Artinya:
+Repositori ini berada di **Fase Alfa** (lihat PRD §15), tetapi backend-nya sudah
+melewati tahap rencana. Yang benar hari ini:
 
-- Antarmuka *Neo-Brutalist Editorial* sudah berjalan penuh di sisi klien.
-- Artikel, katalog video, dan antrean demo masih memakai data di dalam repo, bukan
-  basis data.
-- Seluruh dokumen di sini yang menyangkut backend, CMS, basis data, pengujian, dan
-  deployment bersifat **`RENCANA`** — belum diimplementasikan.
+- Antarmuka *Neo-Brutalist Editorial* berjalan penuh di sisi klien.
+- **Artikel** dibaca dari Payload CMS + Supabase, dengan `lib/content.ts` sebagai
+  fallback — lihat [`PAYLOAD-INTEGRATION.md`](PAYLOAD-INTEGRATION.md).
+- **Antrean demo** juga sudah tersambung ke Postgres dan dimoderasi (ADR-0005).
+- **Katalog video** tetap artefak build-time di dalam repo (ADR-0004).
+- Pengujian otomatis dan deployment masih **`RENCANA`** (ADR-0006).
 
-> **Fase dokumen ini hanya dokumentasi.** Tidak ada paket baru yang dipasang dan tidak
-> ada kode aplikasi yang diubah saat dokumen-dokumen ini disusun. Setiap klaim membawa
-> label `TERVERIFIKASI`, `RENCANA`, atau `ASUMSI`.
+> Dokumen-dokumen ini disusun saat backend masih berupa rencana, jadi sebagian isinya
+> menggambarkan target, bukan keadaan sekarang. Bagian yang sudah berjalan diberi label
+> `TERVERIFIKASI`; sisanya tetap `RENCANA` atau `ASUMSI`.
 
 ---
 
@@ -48,6 +50,7 @@ Repositori ini berada di **Fase Alfa** (lihat PRD §15). Artinya:
 
 | Dokumen | Untuk | Isi |
 |---|---|---|
+| [`PAYLOAD-INTEGRATION.md`](PAYLOAD-INTEGRATION.md) | Editor, engineer | **Panduan integrasi web ↔ CMS: apa yang ditulis di `/admin` render di halaman mana, alur datanya, cara menambah koleksi, dan jebakan yang sudah ditemukan** |
 | [`FRONTEND-PLAN.md`](FRONTEND-PLAN.md) | Engineer frontend | Route, komponen, batas server/client, state, gap aksesibilitas |
 | [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) | Engineer, desainer | Token, katalog utility, aturan interaksi yang dikunci, anti-pola |
 
@@ -76,6 +79,8 @@ Repositori ini berada di **Fase Alfa** (lihat PRD §15). Artinya:
 
 **Kontributor baru** — `../README.md` → `ARCHITECTURE.md` → `FRONTEND-PLAN.md` →
 `CONTRIBUTING.md`.
+
+**Editor konten** — `PAYLOAD-INTEGRATION.md` §3–§6. Tidak perlu membaca sisanya.
 
 **Engineer backend** — `ARCHITECTURE.md` → `DATA-MODEL.md` → `API-CONTRACTS.md` →
 `SECURITY-PRIVACY.md`.

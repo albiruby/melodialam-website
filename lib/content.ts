@@ -24,6 +24,29 @@ export interface Article {
   featured?: boolean;
 }
 
+/** Words per minute the read-time rule assumes. */
+const WORDS_PER_MINUTE = 200;
+
+/**
+ * `BR-004` — read time is deterministic, not estimated by hand:
+ * `max(1, ceil(words / 200))`. Counting the title, excerpt and body together is
+ * what a reader actually reads before the article ends.
+ */
+export function readingTimeMinutes(...parts: (string | string[])[]): number {
+  const words = parts
+    .flatMap((part) => (Array.isArray(part) ? part : [part]))
+    .join(" ")
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+  return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
+}
+
+export function articleReadingTime(article: Article): number {
+  return readingTimeMinutes(article.title, article.excerpt, article.body);
+}
+
 /**
  * Placeholder photography. Every frame in this set was shot at Samsara Bogor,
  * so the images read as one venue rather than as individual news art — swap a
@@ -303,6 +326,14 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
 
 /* -------------------------------------------------------------------------
    Pahlawan Musik Kota — genre directory rows.
+
+   UNUSED as of the request that removed the "Pahlawan Musik Kota" and
+   "Instruments & Space" sections: the home-page blocks, the /pahlawan-kota and
+   /spaces routes, the nav entries and the sitemap rows are all gone. The data
+   is kept deliberately rather than deleted, because none of this work is
+   committed yet and there is no git history to restore it from. Reinstating the
+   section is one import away; delete this block (and SPACE_ITEMS below) once
+   the removal is committed and you are sure it is permanent.
 ------------------------------------------------------------------------- */
 
 export interface GenreRow {
@@ -456,6 +487,37 @@ export const TICKER_ITEMS: { label: string; href: string | null }[] = [
    Demo submission queue.
 ------------------------------------------------------------------------- */
 
+/**
+ * `BR-002` — a submission always starts `IN REVIEW` and only a curator moves it
+ * on. `SHORTLISTED (SAMSARA)` and `APPROVED (ARTICLE)` are the two outcomes the
+ * PRD names; `ARCHIVED` is the terminal state for a reviewed-and-parked
+ * submission.
+ *
+ * A podcast-bound submission has no outcome of its own in `BR-002`, so it stays
+ * `IN REVIEW` until a curator picks one. The transition rules live in
+ * docs/DATA-MODEL.md; there is no curator endpoint yet to enforce them.
+ */
+export const DEMO_STATUSES = [
+  "IN REVIEW",
+  "SHORTLISTED (SAMSARA)",
+  "APPROVED (ARTICLE)",
+  "ARCHIVED",
+] as const;
+
+export type DemoStatus = (typeof DEMO_STATUSES)[number];
+
+/** The only status a public submission may be created with. */
+export const DEMO_INITIAL_STATUS: DemoStatus = "IN REVIEW";
+
+/**
+ * `BR-001` — audio limits. Enforced in the browser before a file is accepted,
+ * and again on the route from the metadata the form reports, so a crafted
+ * request cannot skip the client check.
+ */
+export const DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024;
+export const DEMO_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg"] as const;
+export const DEMO_AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg"] as const;
+
 export interface DemoSubmission {
   id: string;
   artist: string;
@@ -465,7 +527,7 @@ export interface DemoSubmission {
   program: string;
   link: string;
   story: string;
-  status: string;
+  status: DemoStatus;
   submittedAt: string;
 }
 
@@ -495,7 +557,7 @@ export const SEED_DEMOS: DemoSubmission[] = [
     link: "https://www.instagram.com/melodi.alam/",
     story:
       "Direkam secara live di studio kecil kawasan Baranangsiang, terinspirasi kabut sore Kota Bogor.",
-    status: "SELECTED FOR SAMSARA LIVE",
+    status: "SHORTLISTED (SAMSARA)",
     submittedAt: "2026-10-12",
   },
   {
@@ -508,7 +570,7 @@ export const SEED_DEMOS: DemoSubmission[] = [
     link: "https://www.instagram.com/melodi.alam/",
     story:
       "Single kedua dari EP mendatang kami yang menceritakan pertemuan singkat di sudut kota.",
-    status: "SHORTLISTED BY EDITOR",
+    status: "APPROVED (ARTICLE)",
     submittedAt: "2026-10-10",
   },
   {
@@ -521,7 +583,7 @@ export const SEED_DEMOS: DemoSubmission[] = [
     link: "https://www.instagram.com/melodi.alam/",
     story:
       "Perpaduan gitar akustik hangat dan terompet kamar tidur untuk menemani perjalanan pulang.",
-    status: "IN CURATION QUEUE",
+    status: "IN REVIEW",
     submittedAt: "2026-10-08",
   },
 ];

@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# …except the template, which must ship so a fresh checkout knows the shape.
+!.env.example
 
 # vercel
 .vercel
@@ -39,6 +41,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Payload's local-disk upload fallback — runtime data, not source. Real uploads
+# belong in Supabase Storage (S3_* vars); files written here vanish on redeploy.
+/media
 
 # tool-generated indexes — these hold live database files, and Tailwind's
 # automatic content detection must not walk into them (see app/globals.css)

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { VENUES, VENUE_COUNTS, videosByVenue, type CatalogueVideo } from "@/lib/catalogue";
+import { YoutubeThumb } from "./YoutubeThumb";
 import { WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
 
@@ -163,13 +164,7 @@ function VideoRow({ video, index }: { video: CatalogueVideo; index: number }) {
           title={video.title}
           className="h-24 w-44 shrink-0 overflow-hidden border border-ink bg-neutral-900 sm:h-28 sm:w-56"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
-            alt=""
-            loading="lazy"
-            className="editorial-img h-full w-full object-cover"
-          />
+          <YoutubeThumb id={video.id} className="editorial-img h-full w-full object-cover" />
         </WatchButton>
       </div>
 

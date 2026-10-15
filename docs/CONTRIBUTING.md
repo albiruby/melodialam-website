@@ -57,6 +57,26 @@ Hanya ada tujuh skrip npm. Ini daftar lengkapnya.
 
 Belum ada skrip `test`. Rencananya ada di [`docs/TEST-STRATEGY.md`](TEST-STRATEGY.md).
 
+### `dev.cmd` (Windows)
+
+Untuk menyalakan server tanpa mengetik perintah, jalankan `dev.cmd` dari root proyek —
+klik dua kali juga bisa. Berkas itu memeriksa Node ada di PATH, memasang `node_modules`
+bila belum ada, membebaskan port 3100 bila server lama masih memegangnya, menjalankan
+dev server, lalu membuka browser begitu server benar-benar menjawab.
+
+```bat
+dev.cmd            :: nyalakan dan buka browser
+dev.cmd noopen     :: nyalakan tanpa membuka browser
+```
+
+Saat port 3100 sedang dipakai, ia menanyakan lebih dulu dan **hanya** menghentikan
+proses yang memegang port itu. Jangan menggantinya dengan `taskkill /IM node.exe`: itu
+juga mematikan server MCP lokal dan proses Node lain di mesin ini.
+
+Skripnya sengaja murni ASCII. Berkas `.cmd` yang memuat byte non-ASCII tampil sebagai
+mojibake pada code page konsol bawaan; `chcp 65001` di dalamnya hanya agar keluaran dev
+server sendiri (Next.js mencetak karakter `▲`) terbaca benar.
+
 ---
 
 ## 3. Gerbang mutu

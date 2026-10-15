@@ -1,20 +1,42 @@
 import { NextResponse } from "next/server";
-import { DEMO_GENRES, DEMO_PROGRAMS, SEED_DEMOS, type DemoSubmission } from "@/lib/content";
+import {
+  DEMO_AUDIO_EXTENSIONS,
+  DEMO_AUDIO_MAX_BYTES,
+  DEMO_GENRES,
+  DEMO_INITIAL_STATUS,
+  DEMO_PROGRAMS,
+  SEED_DEMOS,
+  type DemoStatus,
+  type DemoSubmission,
+} from "@/lib/content";
+import { DEMO_APPROVED_STATUSES } from "@/collections/DemoSubmissions";
+import { getPayloadClient } from "@/lib/payload";
 
 /**
- * In-memory queue for demo submissions.
+ * Demo queue. Two stores behind one contract:
  *
- * A process-local array is the honest default here: it survives across requests
- * within a single server instance and resets on restart. Swap the store for a
- * database or a queue before running this in production — the validation below
- * is what matters at the boundary.
+ * - DATABASE_URL set: Postgres via Payload. Reads return approved rows only
+ *   (moderated queue, ADR-0005); writes go through the validation below and
+ *   land as IN REVIEW with the contact in its own table.
+ * - DATABASE_URL absent: the original process-local array seeded from
+ *   SEED_DEMOS. A fresh checkout keeps working with no credentials.
+ *
+ * The response shapes are identical either way.
  */
 
-const queue: DemoSubmission[] = [...SEED_DEMOS];
+type QueuedDemo = DemoSubmission;
+
+const memoryQueue: QueuedDemo[] = [...SEED_DEMOS];
+
+/** Mirrors the target schema until the database owns it. */
+const memoryContacts = new Map<string, string>();
 
 const MAX_FIELD = 500;
 
-interface Payload {
+/** The whole submission is a few kilobytes of text; anything larger is abuse. */
+const MAX_BODY_BYTES = 16 * 1024;
+
+interface PayloadBody {
   artist?: unknown;
   city?: unknown;
   title?: unknown;
@@ -23,6 +45,8 @@ interface Payload {
   link?: unknown;
   contact?: unknown;
   story?: unknown;
+  audioName?: unknown;
+  audioSize?: unknown;
 }
 
 function str(value: unknown, max = MAX_FIELD): string {
@@ -33,14 +57,65 @@ function id(): string {
   return `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
+function toPublicRow(doc: {
+  id: string | number;
+  artist: string;
+  city: string;
+  title: string;
+  genre?: string | null;
+  program?: string | null;
+  link: string;
+  story: string;
+  status: string;
+  createdAt: string;
+}): QueuedDemo {
+  return {
+    id: String(doc.id),
+    artist: doc.artist,
+    city: doc.city,
+    title: doc.title,
+    genre: doc.genre ?? "",
+    program: doc.program ?? "",
+    link: doc.link,
+    story: doc.story,
+    status: doc.status as DemoStatus,
+    submittedAt: new Date(doc.createdAt).toISOString().slice(0, 10),
+  };
+}
+
 export async function GET() {
-  return NextResponse.json({ queue, count: queue.length });
+  const payload = await getPayloadClient();
+  if (!payload) {
+    return NextResponse.json({ queue: memoryQueue, count: memoryQueue.length });
+  }
+
+  const found = await payload.find({
+    collection: 'demo-submissions',
+    where: { status: { in: [...DEMO_APPROVED_STATUSES] } },
+    sort: '-createdAt',
+    limit: 100,
+    overrideAccess: true,
+  });
+
+  // Payload types its docs generically; the shape is ours by construction.
+  type SubmissionDoc = Parameters<typeof toPublicRow>[0];
+  const docs = found.docs as unknown as SubmissionDoc[];
+
+  return NextResponse.json({
+    queue: docs.map(toPublicRow),
+    count: found.totalDocs,
+  });
 }
 
 export async function POST(request: Request) {
-  let body: Payload;
+  const raw = await request.text();
+  if (raw.length > MAX_BODY_BYTES) {
+    return NextResponse.json({ error: "Kiriman terlalu besar." }, { status: 413 });
+  }
+
+  let body: PayloadBody;
   try {
-    body = (await request.json()) as Payload;
+    body = JSON.parse(raw) as PayloadBody;
   } catch {
     return NextResponse.json({ error: "Body harus berupa JSON." }, { status: 400 });
   }
@@ -53,6 +128,8 @@ export async function POST(request: Request) {
   const link = str(body.link, 500);
   const contact = str(body.contact, 160);
   const story = str(body.story, 2000);
+  const audioName = str(body.audioName, 200);
+  const audioSize = typeof body.audioSize === "number" ? body.audioSize : 0;
 
   const errors: Record<string, string> = {};
   if (!artist) errors.artist = "Nama band atau solois wajib diisi.";
@@ -70,33 +147,107 @@ export async function POST(request: Request) {
     errors.program = "Program tujuan tidak dikenal.";
   }
 
+  // BR-001. The browser blocks a bad file before it is ever previewed; this
+  // catches a crafted request that reports metadata it could not produce.
+  if (audioName) {
+    const lower = audioName.toLowerCase();
+    if (!DEMO_AUDIO_EXTENSIONS.some((ext) => lower.endsWith(ext))) {
+      errors.audioName = `Format berkas harus ${DEMO_AUDIO_EXTENSIONS.join(", ")}.`;
+    }
+    if (audioSize > DEMO_AUDIO_MAX_BYTES) {
+      errors.audioName = "Ukuran berkas melebihi batas 25 MB.";
+    }
+  }
+
   if (Object.keys(errors).length > 0) {
     return NextResponse.json({ error: "Periksa kembali isian formulir.", errors }, { status: 422 });
   }
 
-  const entry: DemoSubmission = {
-    id: id(),
-    artist,
-    city,
-    title,
-    genre,
-    program,
-    link,
-    story,
-    status: "NEW SUBMISSION • JUST NOW",
-    submittedAt: new Date().toISOString().slice(0, 10),
-  };
+  const payload = await getPayloadClient();
 
-  // Newest first, matching the original UI.
-  queue.unshift(entry);
+  // No database: the original in-memory path. The contact goes into its own
+  // map, never into the row the public queue reads.
+  if (!payload) {    const entry: QueuedDemo = {
+      id: id(),
+      artist,
+      city,
+      title,
+      genre,
+      program,
+      link,
+      story,
+      // BR-002: a public submission can only ever be created as IN REVIEW.
+      status: DEMO_INITIAL_STATUS,
+      submittedAt: new Date().toISOString().slice(0, 10),
+    };
+    memoryContacts.set(entry.id, contact);
+    memoryQueue.unshift(entry);
 
-  // Surface the manager contact to curators rather than the public queue.
+    return NextResponse.json(
+      {
+        ok: true,
+        entry,
+        queueLength: memoryQueue.length,
+        note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
+      },
+      { status: 201 },
+    );
+  }
+
+  const created = await payload.create({
+    collection: 'demo-submissions',
+    data: {
+      artist,
+      city,
+      title,
+      // Validated against the enums above, so the narrowing below is exact.
+      genre: (DEMO_GENRES as readonly string[]).includes(genre)
+        ? (genre as (typeof DEMO_GENRES)[number])
+        : undefined,
+      program: (DEMO_PROGRAMS as readonly string[]).includes(program)
+        ? (program as (typeof DEMO_PROGRAMS)[number])
+        : undefined,
+      link,
+      story,
+      status: DEMO_INITIAL_STATUS,
+    },
+    overrideAccess: true,
+  });
+
+  await payload.create({
+    collection: 'demo-contacts',
+    data: {
+      submission: created.id,
+      contact,
+    },
+    overrideAccess: true,
+  });
+
+  const entry = toPublicRow({
+    id: created.id,
+    artist: created.artist,
+    city: created.city,
+    title: created.title,
+    genre: created.genre,
+    program: created.program,
+    link: created.link,
+    story: created.story,
+    status: created.status,
+    createdAt: created.createdAt,
+  });
+
+  const approved = await payload.count({
+    collection: 'demo-submissions',
+    where: { status: { in: [...DEMO_APPROVED_STATUSES] } },
+    overrideAccess: true,
+  });
+
   return NextResponse.json(
     {
       ok: true,
       entry,
-      queueLength: queue.length,
-      note: `Kontak manajer (${contact}) dicatat terpisah dan tidak tampil di daftar publik.`,
+      queueLength: approved.totalDocs,
+      note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
     },
     { status: 201 },
   );

@@ -49,6 +49,94 @@
     background-color: var(--color-forest);
     color: #ffffff;
   }
+
+  /*
+    A single visible focus indicator for everything interactive. Components can
+    still override it, but nothing has to opt in to being keyboard-visible.
+  */
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 2px;
+  }
+}
+
+/* --- Article body ------------------------------------------------------ */
+
+/*
+  Both sources render into `.article-prose`: the static paragraphs carry their
+  own classes, while Lexical output arrives as bare tags from Payload's renderer
+  and gets its type from here. The drop cap is applied to whichever element ends
+  up first.
+*/
+.article-prose > * + * {
+  margin-top: 1.25rem;
+}
+
+.article-prose p,
+.article-prose li,
+.article-prose blockquote {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--color-ink);
+}
+
+.article-prose h2,
+.article-prose h3 {
+  margin-top: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.article-prose h2 {
+  font-size: 1.5rem;
+}
+
+.article-prose h3 {
+  font-size: 1.25rem;
+}
+
+.article-prose ul,
+.article-prose ol {
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+.article-prose ol {
+  list-style: decimal;
+}
+
+.article-prose a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.article-prose a:hover {
+  color: var(--color-forest);
+}
+
+.article-prose blockquote {
+  border-left: 2px solid var(--color-forest);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+/* Drop cap on the opening paragraph of either source. */
+.article-prose > p:first-of-type::first-letter,
+.article-prose > :first-child > p:first-child::first-letter {
+  float: left;
+  margin-right: 0.75rem;
+  font-family: var(--font-serif);
+  font-size: 3.75rem;
+  line-height: 0.85;
+  color: var(--color-forest);
+}
+/*
+  Was used in five places and defined in none, so the Bicara Melodi index, the
+  demo form and the journal empty state all silently lost their background. The
+  original single-file design defined it as exactly the paper token.
+*/
+@utility editorial-paper {
+  background-color: var(--color-paper);
 }
 
 /* --- Outline typography ------------------------------------------------ */
@@ -61,7 +149,8 @@
     -webkit-text-stroke 0.45s var(--ease-editorial),
     transform 0.45s var(--ease-editorial);
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     color: #0d0d0d;
     -webkit-text-stroke: 0 transparent;
     transform: translateX(-6px);
@@ -76,7 +165,8 @@
     color 0.35s var(--ease-editorial);
 }
 
-.group:hover .text-outline-muted {
+.group:hover .text-outline-muted,
+.group:focus-within .text-outline-muted {
   -webkit-text-stroke: 1.5px var(--color-forest);
   color: var(--color-forest);
 }
@@ -166,7 +256,8 @@
     filter 0.6s var(--ease-editorial);
 }
 
-.group:hover .editorial-img {
+.group:hover .editorial-img,
+.group:focus-within .editorial-img {
   transform: scale(1.06);
 }
 
@@ -191,7 +282,8 @@
   z-index: 10;
 }
 
-.group:hover .hover-reveal-curtain {
+.group:hover .hover-reveal-curtain,
+.group:focus-within .hover-reveal-curtain {
   transform: translateY(0);
 }
 
@@ -203,7 +295,8 @@
     opacity 0.45s var(--ease-editorial) 0.08s;
 }
 
-.group:hover .hover-reveal-tag {
+.group:hover .hover-reveal-tag,
+.group:focus-within .hover-reveal-tag {
   transform: translateY(0);
   opacity: 1;
 }
@@ -242,7 +335,9 @@
 }
 
 .group:hover .corner-frame::before,
-.group:hover .corner-frame::after {
+.group:hover .corner-frame::after,
+.group:focus-within .corner-frame::before,
+.group:focus-within .corner-frame::after {
   opacity: 1;
   transform: translate(0, 0);
 }
@@ -270,7 +365,8 @@
   margin-right: 0;
 }
 
-.dash-reveal-item:hover .dash-reveal-prefix {
+.dash-reveal-item:hover .dash-reveal-prefix,
+.dash-reveal-item:focus-within .dash-reveal-prefix {
   max-width: 1.5em;
   opacity: 1;
   margin-right: 0.28em;
@@ -293,7 +389,8 @@
   pointer-events: none;
 }
 
-.group:hover .video-action-reveal {
+.group:hover .video-action-reveal,
+.group:focus-within .video-action-reveal {
   max-width: 440px;
   opacity: 1;
   transform: translateX(0);
@@ -369,5 +466,16 @@
   .stagger-item {
     opacity: 1;
     transform: none;
+  }
+
+  /*
+    Scroll-linked parallax is a `style` motion value, not an animation, so
+    MotionConfig's `reducedMotion="user"` does not touch it. Zeroing it here
+    rather than branching in the component is deliberate: the server cannot see
+    the user's motion preference, and a render-time branch on it makes the
+    server markup disagree with the client's during hydration.
+  */
+  .parallax-layer {
+    transform: none !important;
   }
 }

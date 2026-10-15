@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Article } from "@/lib/content";
+import { articleReadingTime, type Article } from "@/lib/content";
 import { ParallaxImage } from "./motion/ParallaxImage";
 
 /**
@@ -49,7 +49,11 @@ export function ArticleCard({
 
       <div className="flex justify-between border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
         <span className="font-medium text-ink">{article.category}</span>
-        <time dateTime={article.dateISO}>{article.date}</time>
+        <span className="flex items-center gap-2">
+          <span>{articleReadingTime(article)} menit</span>
+          <span aria-hidden>•</span>
+          <time dateTime={article.dateISO}>{article.date}</time>
+        </span>
       </div>
     </article>
   );

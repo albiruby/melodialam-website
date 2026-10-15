@@ -1,7 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
+  DEMO_AUDIO_EXTENSIONS,
+  DEMO_AUDIO_MAX_BYTES,
+  DEMO_AUDIO_TYPES,
   DEMO_GENRES,
   DEMO_PROGRAMS,
   SEED_DEMOS,
@@ -17,19 +20,74 @@ export function DemoPortal() {
   const [queue, setQueue] = useState<DemoSubmission[]>(SEED_DEMOS);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [banner, setBanner] = useState<string | null>(null);
+  const [bannerIsError, setBannerIsError] = useState(false);
   const [pending, setPending] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
 
   const audioUrl = useRef<string | null>(null);
   const [audioName, setAudioName] = useState<string | null>(null);
+  const [audioSize, setAudioSize] = useState(0);
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
+  const [audioError, setAudioError] = useState<string | null>(null);
 
-  function onPickAudio(file: File | undefined) {
-    if (!file) return;
+  /**
+   * Only one object URL exists at a time, and it is revoked both when a new file
+   * replaces it and when the component goes away. Leaving it alive would keep
+   * the picked file readable for the life of the document.
+   */
+  useEffect(
+    () => () => {
+      if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
+    },
+    [],
+  );
+
+  function clearAudio() {
+    if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
+    audioUrl.current = null;
+    setAudioName(null);
+    setAudioSize(0);
+    setAudioSrc(null);
+  }
+
+  /** BR-001 — the browser is the first of the two places this rule is enforced. */
+  function onPickAudio(input: HTMLInputElement) {
+    const file = input.files?.[0];
+    setAudioError(null);
+
+    if (!file) {
+      clearAudio();
+      return;
+    }
+
+    const lower = file.name.toLowerCase();
+    const extensionOk = DEMO_AUDIO_EXTENSIONS.some((ext) => lower.endsWith(ext));
+    // Some browsers report an empty MIME type for WAV, so an empty type is not
+    // treated as a failure; the extension is the reliable signal there.
+    const typeOk = !file.type || (DEMO_AUDIO_TYPES as readonly string[]).includes(file.type);
+
+    const reject = (message: string) => {
+      setAudioError(message);
+      // Clear the input too, so an invalid pick cannot be submitted by a
+      // subsequent submit of the otherwise-valid form.
+      input.value = "";
+      clearAudio();
+    };
+
+    if (!extensionOk || !typeOk) {
+      reject(`Format berkas harus ${DEMO_AUDIO_EXTENSIONS.join(", ")}.`);
+      return;
+    }
+    if (file.size > DEMO_AUDIO_MAX_BYTES) {
+      reject("Ukuran berkas melebihi batas 25 MB.");
+      return;
+    }
+
     if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
     const url = URL.createObjectURL(file);
     audioUrl.current = url;
     setAudioName(file.name);
+    setAudioSize(file.size);
     setAudioSrc(url);
   }
 
@@ -51,19 +109,29 @@ export function DemoPortal() {
       const data = (await res.json()) as ApiError & { entry?: DemoSubmission };
 
       if (!res.ok) {
-        setErrors(data.errors ?? {});
+        const fieldErrors = data.errors ?? {};
+        setErrors(fieldErrors);
+        setBannerIsError(true);
         setBanner(data.error ?? "Pengiriman gagal. Coba lagi sebentar.");
+
+        // Put the caret on the first field that needs attention, so a keyboard
+        // user is not left hunting for it.
+        const first = Object.keys(fieldErrors)[0];
+        if (first) {
+          formRef.current
+            ?.querySelector<HTMLElement>(`[name="${CSS.escape(first)}"]`)
+            ?.focus();
+        }
       } else {
         if (data.entry) setQueue((q) => [data.entry as DemoSubmission, ...q]);
-        setBanner("✓ Demo berhasil dikirim. Karya Anda sudah masuk antreanIncoming Demo Queue.");
+        setBannerIsError(false);
+        setBanner("Demo berhasil dikirim dan sudah masuk Incoming Demo Queue untuk ditinjau kurator.");
         formRef.current?.reset();
-        if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
-        audioUrl.current = null;
-        setAudioName(null);
-        setAudioSrc(null);
+        clearAudio();
       }
     } catch {
-      setBanner("Tidak bisa menghubungi server. Periksa koneksi Anda.");
+      setBannerIsError(true);
+      setBanner("Tidak bisa menghubungi server. Periksa koneksi Anda lalu coba lagi.");
     } finally {
       setPending(false);
     }
@@ -83,30 +151,46 @@ export function DemoPortal() {
         </div>
 
         <form ref={formRef} onSubmit={onSubmit} noValidate className="space-y-6">
-          <Field label="(01) Nama Band / Solois *" error={errors.artist}>
+          <Field label="(01) Nama Band / Solois *" htmlFor="demo-artist" error={errors.artist}>
             <input
+              id="demo-artist"
               name="artist"
               required
+              autoComplete="organization"
               placeholder="Contoh: Shroomeater / Skyline"
               className={inputClass}
             />
           </Field>
 
-          <Field label="(02) Kota Asal *" error={errors.city}>
+          <Field label="(02) Kota Asal *" htmlFor="demo-city" error={errors.city}>
             <input
+              id="demo-city"
               name="city"
               required
+              autoComplete="address-level2"
               placeholder="Contoh: Bogor / Bandung / Malang"
               className={inputClass}
             />
           </Field>
 
-          <Field label="(03) Judul Lagu / EP *" error={errors.title}>
-            <input name="title" required placeholder="Judul rilisan..." className={inputClass} />
+          <Field label="(03) Judul Lagu / EP *" htmlFor="demo-title" error={errors.title}>
+            <input
+              id="demo-title"
+              name="title"
+              required
+              autoComplete="off"
+              placeholder="Judul rilisan…"
+              className={inputClass}
+            />
           </Field>
 
-          <Field label="(04) Genre Utama" error={errors.genre}>
-            <select name="genre" defaultValue={DEMO_GENRES[0]} className={inputClass}>
+          <Field label="(04) Genre Utama" htmlFor="demo-genre" error={errors.genre}>
+            <select
+              id="demo-genre"
+              name="genre"
+              defaultValue={DEMO_GENRES[0]}
+              className={inputClass}
+            >
               {DEMO_GENRES.map((g) => (
                 <option key={g} value={g}>
                   {g}
@@ -115,8 +199,13 @@ export function DemoPortal() {
             </select>
           </Field>
 
-          <Field label="(05) Tujuan Submit" error={errors.program}>
-            <select name="program" defaultValue={DEMO_PROGRAMS[0]} className={inputClass}>
+          <Field label="(05) Tujuan Submit" htmlFor="demo-program" error={errors.program}>
+            <select
+              id="demo-program"
+              name="program"
+              defaultValue={DEMO_PROGRAMS[0]}
+              className={inputClass}
+            >
               {DEMO_PROGRAMS.map((p) => (
                 <option key={p} value={p}>
                   {p}
@@ -125,60 +214,90 @@ export function DemoPortal() {
             </select>
           </Field>
 
-          <Field label="(06) Link Streaming / EPK *" error={errors.link}>
+          <Field label="(06) Link Streaming / EPK *" htmlFor="demo-link" error={errors.link}>
             <input
+              id="demo-link"
               name="link"
               type="url"
               required
-              placeholder="https://open.spotify.com/..."
+              autoComplete="url"
+              spellCheck={false}
+              placeholder="https://open.spotify.com/…"
               className={inputClass}
             />
           </Field>
 
-          <Field label="(07) Kontak WhatsApp / Email Manajer *" error={errors.contact}>
+          <Field
+            label="(07) Kontak WhatsApp / Email Manajer *"
+            htmlFor="demo-contact"
+            error={errors.contact}
+          >
             <input
+              id="demo-contact"
               name="contact"
               required
-              placeholder="0812xxxx / management@band.id"
+              autoComplete="off"
+              spellCheck={false}
+              placeholder="0812xxxx atau management@band.id"
               className={inputClass}
             />
+            <p className="mt-1.5 text-[11px] leading-relaxed text-neutral-500">
+              Hanya dibaca kurator Melodi Alam. Tidak pernah ditampilkan di antrean publik.
+            </p>
           </Field>
 
-          {/* Local audio preview — the file itself is never uploaded */}
-          <Field label="(08) Opsional: Pratinjau File Audio (.MP3 / .WAV)">
+          {/*
+            (08) is not wrapped in <Field>. The file input's own <label> is the
+            dropzone, so a Field label here would nest one label inside another,
+            which is invalid. The heading is a plain span instead.
+          */}
+          <div>
+            <span className="mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-wider">
+              (08) Opsional: Pratinjau File Audio (.MP3 / .WAV / .OGG, maks 25 MB)
+            </span>
             <label
               htmlFor="demo-audio"
-              className="editorial-paper flex cursor-pointer flex-col items-center justify-center border border-dashed border-ink p-5 text-center transition-all duration-300 hover:bg-white hover:shadow-[4px_4px_0px_#0D0D0D]"
+              className="editorial-paper flex cursor-pointer flex-col items-center justify-center border border-dashed border-ink p-5 text-center transition-all duration-300 hover:bg-white hover:shadow-[4px_4px_0px_#0D0D0D] focus-within:bg-white focus-within:shadow-[4px_4px_0px_#0D0D0D]"
             >
-              <span className="text-xs font-bold uppercase transition-colors group-hover:text-forest">
-                {audioName ? `✓ File dipilih: ${audioName}` : "+ Pilih file audio ke Sini"}
+              <span className="text-xs font-bold uppercase">
+                {audioName ? `File dipilih: ${audioName}` : "Pilih file audio dari perangkat ini"}
               </span>
               <span className="mt-1 font-serif text-xs italic text-neutral-600">
-                File hanya diputar lokal di peramban Anda untuk dipratinjau.
+                Berkas hanya diputar di peramban Anda. Tidak ada berkas yang diunggah.
               </span>
               <input
                 id="demo-audio"
+                name="audioName"
                 type="file"
-                accept="audio/*"
-                className="hidden"
-                onChange={(e) => onPickAudio(e.target.files?.[0])}
+                accept=".mp3,.wav,.ogg,audio/mpeg,audio/wav,audio/ogg"
+                className="sr-only"
+                onChange={(e) => onPickAudio(e.currentTarget)}
               />
             </label>
 
+            {audioError ? (
+              <p role="alert" className="mt-1.5 font-mono text-[11px] text-red-700">
+                {audioError}
+              </p>
+            ) : null}
+
             {audioSrc ? (
               <div className="mt-3 flex items-center justify-between gap-4 border border-ink bg-paper p-3">
-                <span className="truncate font-mono text-xs">{audioName}</span>
+                <span className="min-w-0 truncate font-mono text-xs">
+                  {audioName} · {(audioSize / 1024 / 1024).toFixed(1)} MB
+                </span>
                 <audio src={audioSrc} controls className="h-8 w-60" />
               </div>
             ) : null}
-          </Field>
+          </div>
 
-          <Field label="(09) Cerita Singkat di Balik Lagu / Press Release *" error={errors.story}>
+          <Field label="(09) Cerita Singkat di Balik Lagu / Press Release *" htmlFor="demo-story" error={errors.story}>
             <textarea
+              id="demo-story"
               name="story"
               rows={3}
               required
-              placeholder="Ceritakan latar belakang lagu, proses rekaman, atau pesan yang ingin disampaikan..."
+              placeholder="Ceritakan latar belakang lagu, proses rekaman, atau pesan yang ingin disampaikan…"
               className={`${inputClass} h-auto py-3`}
             />
           </Field>
@@ -191,10 +310,13 @@ export function DemoPortal() {
             <button
               type="submit"
               disabled={pending}
-              className="group flex items-center gap-4 bg-ink px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:-translate-y-1 hover:bg-forest hover:shadow-[5px_5px_0px_#0D0D0D] active:translate-y-0 disabled:opacity-50"
+              className="group flex items-center gap-4 bg-ink px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:-translate-y-1 hover:bg-forest hover:shadow-[5px_5px_0px_#0D0D0D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest active:translate-y-0 disabled:opacity-50"
             >
-              <span>{pending ? "Mengirim..." : "Kirim Demo Sekarang"}</span>
-              <span className="inline-block transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1">
+              <span>{pending ? "Mengirim…" : "Kirim Demo Sekarang"}</span>
+              <span
+                aria-hidden
+                className="inline-block transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1"
+              >
                 ↗
               </span>
             </button>
@@ -203,8 +325,12 @@ export function DemoPortal() {
 
         {banner ? (
           <div
-            role="status"
-            className="stagger-item mt-6 border-2 border-forest bg-green-50 p-4 font-mono text-xs text-forest"
+            role={bannerIsError ? "alert" : "status"}
+            className={`stagger-item mt-6 border-2 p-4 font-mono text-xs ${
+              bannerIsError
+                ? "border-red-700 bg-red-50 text-red-800"
+                : "border-forest bg-green-50 text-forest"
+            }`}
           >
             {banner}
           </div>
@@ -217,7 +343,7 @@ export function DemoPortal() {
           <div className="mb-4 flex items-center justify-between border-b border-ink pb-3">
             <div className="flex items-center gap-2">
               <span className="font-mono text-xs font-bold uppercase">Incoming Demo Queue</span>
-              <span className="flex h-3.5 items-end gap-0.5 text-forest">
+              <span aria-hidden className="flex h-3.5 items-end gap-0.5 text-forest">
                 <span className="eq-bar" />
                 <span className="eq-bar" />
                 <span className="eq-bar" />
@@ -229,9 +355,15 @@ export function DemoPortal() {
           </div>
 
           <p className="mb-5 text-xs leading-relaxed text-neutral-600">
-            Daftar kiriman demo terbaru dari Sobat Melolam yang sedang dalam tahap kurasi redaksi
-            pekan ini.
+            Kiriman terbaru yang sudah lolos tinjauan awal kurator. Yang masih ditinjau belum
+            ditampilkan di sini, dan kontak pengirim tidak pernah dipublikasikan.
           </p>
+
+          {queue.length === 0 ? (
+            <p className="border border-dashed border-ink p-4 text-center font-mono text-xs text-neutral-500">
+              Belum ada demo yang lolos tinjauan.
+            </p>
+          ) : null}
 
           <div className="space-y-4">
             {queue.map((demo, i) => (
@@ -257,8 +389,8 @@ export function DemoPortal() {
                   <a
                     href={demo.link}
                     target="_blank"
-                    rel="noreferrer"
-                    className="underline hover:text-forest"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
                   >
                     EPK / Track ↗
                   </a>
@@ -278,8 +410,8 @@ export function DemoPortal() {
           <a
             href="https://www.instagram.com/samsara.bogor/"
             target="_blank"
-            rel="noreferrer"
-            className="border border-ink px-3 py-2 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+            rel="noopener noreferrer"
+            className="border border-ink px-3 py-2 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
           >
             Info Slot ↗
           </a>
@@ -289,21 +421,32 @@ export function DemoPortal() {
   );
 }
 
+/**
+ * An explicit `htmlFor` plus a matching `id` on the control, rather than a
+ * wrapping label. Wrapping works too, but it cannot be nested — and one of these
+ * fields used to wrap a file input that had its own label inside it, which is
+ * invalid HTML.
+ */
 const inputClass =
-  "w-full border border-ink px-3 py-2.5 text-sm outline-none transition-all duration-300 focus:bg-paper focus:shadow-[4px_4px_0px_#1B3B2B]";
+  "w-full border border-ink bg-white px-3 py-2.5 text-sm text-ink transition-all duration-300 focus:bg-paper focus:shadow-[4px_4px_0px_#1B3B2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 function Field({
   label,
+  htmlFor,
   error,
   children,
 }: {
   label: string;
+  htmlFor: string;
   error?: string;
   children: React.ReactNode;
 }) {
   return (
     <div>
-      <label className="mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-wider">
+      <label
+        htmlFor={htmlFor}
+        className="mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-wider"
+      >
         {label}
       </label>
       {children}

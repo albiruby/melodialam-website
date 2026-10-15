@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 
 interface ParallaxImageProps {
@@ -54,7 +54,6 @@ export function ParallaxImage({
   preload = false,
 }: ParallaxImageProps) {
   const frame = useRef<HTMLDivElement>(null);
-  const still = useReducedMotion();
 
   const { scrollYProgress } = useScroll({
     target: frame,
@@ -70,8 +69,19 @@ export function ParallaxImage({
   return (
     <div ref={frame} className={`relative overflow-hidden ${className}`.trim()}>
       <motion.div
-        className="absolute inset-x-0"
-        style={still ? { top: 0, bottom: 0 } : { top: -bleed, bottom: -bleed, y }}
+        /*
+          Reduced motion is NOT branched on here. The server cannot know the
+          user's motion preference, so any `prefers-reduced-motion` branch in the
+          render path makes the server markup disagree with the client's and
+          React reports a hydration mismatch. The preference is resolved in CSS
+          instead, against `.parallax-layer` in globals.css.
+
+          `top`/`bottom` are px strings rather than bare numbers because React
+          compares the parsed server attribute with the client prop during
+          hydration, and a number serialises as `-96` against `-96px`.
+        */
+        className="parallax-layer absolute inset-x-0"
+        style={{ top: `-${bleed}px`, bottom: `-${bleed}px`, y }}
       >
         <Image
           src={src}

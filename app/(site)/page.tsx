@@ -5,12 +5,13 @@ import { Reveal } from "@/components/Reveal";
 import { FeatureCard, HeroArticle } from "@/components/ArticleCards";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
-import { ARTICLES, GENRE_ROWS, INTERVIEW_ROWS, SPACE_ITEMS } from "@/lib/content";
+import { INTERVIEW_ROWS } from "@/lib/content";
+import { allArticles } from "@/lib/articles";
 import { latestVideos, videosByIds } from "@/lib/catalogue";
 import { CHANNEL, COUNTS } from "@/lib/catalogue";
 import { CountUp } from "@/components/motion/CountUp";
-import { ParallaxImage } from "@/components/motion/ParallaxImage";
 import { RevealText } from "@/components/motion/RevealText";
+import { YoutubeThumb } from "@/components/YoutubeThumb";
 
 export const metadata: Metadata = {
   title: "Stories, Spaces & Instruments",
@@ -18,8 +19,10 @@ export const metadata: Metadata = {
     "Melodi Alam: jurnalisme musik, sesi intim panggung, ruang dengar, dan perangkat audio analog. Kurasi redaksi Oktober 2026.",
 };
 
-export default function HomePage() {
-  const [hero, ...rest] = ARTICLES.filter((a) => a.featured);
+export default async function HomePage() {
+  // Payload when the database is reachable, the static file otherwise.
+  const articles = await allArticles();
+  const [hero, ...rest] = articles.filter((a) => a.featured);
   const subFeatures = rest.slice(0, 3);
 
   // A handful of the freshest uploads, for the home-page video teaser.
@@ -53,7 +56,7 @@ export default function HomePage() {
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
-            <CountUp to={ARTICLES.length} /> artikel di journal • <CountUp to={COUNTS.videos} />{" "}
+            <CountUp to={articles.length} /> artikel di journal • <CountUp to={COUNTS.videos} />{" "}
             video + <CountUp to={COUNTS.shorts} /> shorts
           </span>
           <Link
@@ -165,11 +168,8 @@ export default function HomePage() {
                   title={video.title}
                   className="h-24 w-44 shrink-0 overflow-hidden border border-ink bg-neutral-900 sm:h-28 sm:w-56"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`}
-                    alt=""
-                    loading="lazy"
+                  <YoutubeThumb
+                    id={video.id}
                     className="editorial-img h-full w-full object-cover"
                   />
                 </WatchButton>
@@ -241,145 +241,6 @@ export default function HomePage() {
               <span className="text-[10px] text-neutral-500">Browse all {COUNTS.videos}</span>
             </Link>
           </div>
-        </div>
-      </Reveal>
-
-      {/* ---------- Pahlawan Musik Kota teaser ---------- */}
-      <Reveal>
-        <div className="flex items-baseline justify-between border-b-2 border-ink pb-2">
-          <h2 className="text-3xl tracking-tight sm:text-4xl">
-            <RevealText text="Pahlawan Musik Kota & Skena" />
-          </h2>
-          <span className="text-xs font-bold uppercase tracking-wider">#RekomendasiMelodi ↗</span>
-        </div>
-
-        <div className="divide-y divide-ink border-b border-ink">
-          {GENRE_ROWS.map((row) => (
-            <div
-              key={row.slug}
-              className="group grid cursor-pointer grid-cols-1 items-center gap-6 px-2 py-5 transition-all duration-300 hover:bg-paper md:grid-cols-12"
-            >
-              <ParallaxImage
-                src={row.image}
-                alt={row.title}
-                className="hover-reveal-box corner-frame aspect-[16/7] border border-ink bg-neutral-900 md:col-span-4"
-                sizes="(min-width: 768px) 33vw, 100vw"
-                distance={32}
-              />
-
-              <div className="flex items-center justify-between gap-4 md:col-span-8">
-                <div className="transition-transform duration-300 group-hover:translate-x-1.5">
-                  <div className="mb-1 flex flex-wrap items-baseline justify-between gap-2">
-                    <h3 className="text-2xl font-bold tracking-tight transition-colors group-hover:text-forest">
-                      {row.title}
-                    </h3>
-                    <span className="font-mono text-[11px] text-neutral-500">{row.artists}</span>
-                  </div>
-                  <p className="max-w-2xl text-xs leading-relaxed text-neutral-600 sm:text-sm">
-                    {row.description}
-                  </p>
-                </div>
-
-                <div className="video-action-reveal flex shrink-0 items-center gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-ink bg-ink text-xs text-white">
-                    ▶
-                  </span>
-                  <span className="font-mono text-xs text-neutral-400">—</span>
-                  <div className="inline-flex items-center gap-2 border border-ink bg-white px-3 py-2 shadow-[3px_3px_0px_#0D0D0D]">
-                    <span className="flex h-5 w-5 items-center justify-center bg-forest font-serif text-[11px] font-bold italic text-white">
-                      M
-                    </span>
-                    <span className="text-xs font-black uppercase tracking-wider">
-                      {row.videoId ? "Watch" : "Read"} ↗
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-4 text-right">
-          <Link
-            href="/pahlawan-kota"
-            className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
-          >
-            Buka direktori lengkap ↗
-          </Link>
-        </div>
-      </Reveal>
-
-      {/* ---------- Spaces & Instruments teaser ---------- */}
-      <Reveal>
-        <div className="mb-6 flex items-baseline justify-between border-b-2 border-ink pb-3">
-          <div className="flex items-baseline gap-3">
-            <h2 className="text-4xl tracking-tight sm:text-5xl">
-              <RevealText text="Spaces & Instruments" />
-            </h2>
-            <span className="font-serif text-sm italic text-neutral-600">
-              (svvara, samsara, svarga &amp; acasa)
-            </span>
-          </div>
-          <Link
-            href="/spaces"
-            className="nav-link-anim text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
-          >
-            Show All ↗
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {SPACE_ITEMS.map((item) => (
-            <div
-              key={item.slug}
-              className={`brutalist-card group flex h-full flex-col justify-between border border-ink p-4 ${
-                item.dark ? "bg-ink text-white" : "bg-white"
-              }`}
-            >
-              <div
-                className={`relative mb-4 overflow-hidden ${
-                  item.ratio === "tall"
-                    ? "aspect-[4/5] border border-neutral-200"
-                    : "aspect-square"
-                } ${item.dark ? "bg-neutral-800" : "bg-paper"}`}
-              >
-                <Image
-                  src={item.image}
-                  alt={item.title}
-                  fill
-                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 50vw, 100vw"
-                  className="editorial-img object-cover"
-                />
-              </div>
-              <div>
-                <span
-                  className={`text-[10px] uppercase ${
-                    item.dark ? "text-green-400" : "text-neutral-500"
-                  }`}
-                >
-                  {item.label}
-                </span>
-                <h3
-                  className={`mt-1 text-xs font-bold uppercase ${
-                    item.dark ? "" : "transition-colors group-hover:text-forest"
-                  }`}
-                >
-                  {item.title}
-                </h3>
-                {item.price ? (
-                  <p className="mt-2 font-mono text-xs font-bold">{item.price}</p>
-                ) : (
-                  <p
-                    className={`mt-2 font-mono text-xs transition-colors ${
-                      item.dark ? "text-neutral-300 group-hover:text-green-400" : "text-forest"
-                    }`}
-                  >
-                    {item.slug === "samsara-bogor" ? "Reservasi Meja" : "Explore Stay"} ↗
-                  </p>
-                )}
-              </div>
-            </div>
-          ))}
         </div>
       </Reveal>
 

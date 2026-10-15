@@ -8,10 +8,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
  *
  * Mount it with <VideoModal /> and open it imperatively through
  * window.dispatchEvent(new CustomEvent("melodi:watch", { detail: { id, title } })).
+ *
+ * Accessibility contract, since this is a dialog: focus moves into the panel on
+ * open and returns to whatever opened it on close, Tab cycles inside the panel
+ * instead of escaping to the page behind, the page behind cannot scroll, and
+ * Escape closes.
  */
 export function VideoModal() {
   const [state, setState] = useState<{ id: string; title: string } | null>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const panel = useRef<HTMLDivElement>(null);
+  const closeButton = useRef<HTMLButtonElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
 
   const close = useCallback(() => {
     setState(null);
@@ -39,30 +48,89 @@ export function VideoModal() {
     };
   }, [open, close]);
 
+  /**
+   * Remember the opener, lock the page behind, move focus in; undo all three
+   * when the dialog goes away. The horizontal padding compensates for the
+   * scrollbar that locking removes, so the layout does not jump.
+   */
+  useEffect(() => {
+    if (!state) return;
+
+    opener.current = document.activeElement as HTMLElement | null;
+    const { overflow, paddingRight } = document.body.style;
+    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = "hidden";
+    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
+
+    closeButton.current?.focus();
+
+    return () => {
+      document.body.style.overflow = overflow;
+      document.body.style.paddingRight = paddingRight;
+      opener.current?.focus?.();
+    };
+  }, [state]);
+
+  /** Keep Tab inside the panel. */
+  const onPanelKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key !== "Tab") return;
+
+    const root = panel.current;
+    if (!root) return;
+
+    const focusable = Array.from(
+      root.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => el.offsetParent !== null || el.tagName === "IFRAME");
+
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
+
   if (!state) return null;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={state.title}
-      className="modal-backdrop is-open fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4"
+      aria-labelledby="video-modal-title"
+      className="modal-backdrop is-open fixed inset-0 z-50 flex items-center justify-center overscroll-contain bg-black/85 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
     >
-      <div className="modal-panel w-full max-w-4xl border-2 border-ink bg-white shadow-[10px_10px_0px_#1B3B2B]">
+      <div
+        ref={panel}
+        onKeyDown={onPanelKeyDown}
+        className="modal-panel w-full max-w-4xl border-2 border-ink bg-white shadow-[10px_10px_0px_#1B3B2B]"
+      >
         <div className="flex items-center justify-between border-b border-ink bg-paper px-4 py-3">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-red-600" />
-            <h2 className="max-w-md truncate font-mono text-xs font-bold uppercase sm:max-w-xl">
+            <span aria-hidden className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-red-600" />
+            <h2
+              id="video-modal-title"
+              className="max-w-md truncate font-mono text-xs font-bold uppercase sm:max-w-xl"
+            >
               {state.title}
             </h2>
           </div>
           <button
+            ref={closeButton}
             type="button"
             onClick={close}
-            className="border border-ink px-2.5 py-1 font-mono text-xs font-bold uppercase transition hover:bg-ink hover:text-white"
+            className="border border-ink px-2.5 py-1 font-mono text-xs font-bold uppercase transition hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
           >
             Tutup [ESC] ✕
           </button>
@@ -79,15 +147,15 @@ export function VideoModal() {
           />
         </div>
 
-        <div className="flex items-center justify-between border-t border-ink bg-white px-4 py-3 text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink bg-white px-4 py-3 text-xs">
           <span className="font-serif italic text-neutral-600">
             Tayang di kanal resmi YouTube @melodialam
           </span>
           <a
             href={`https://www.youtube.com/watch?v=${state.id}`}
             target="_blank"
-            rel="noreferrer"
-            className="font-bold uppercase hover:underline"
+            rel="noopener noreferrer"
+            className="font-bold uppercase hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
           >
             Buka Langsung di YouTube ↗
           </a>

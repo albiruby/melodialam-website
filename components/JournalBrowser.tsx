@@ -2,24 +2,29 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ARTICLE_CATEGORIES, ARTICLES, CATEGORY_LABELS, type ArticleCategory } from "@/lib/content";
+import { ARTICLE_CATEGORIES, CATEGORY_LABELS, type ArticleCategory } from "@/lib/content";
+import type { SiteArticle } from "@/lib/articles";
 import { ArticleCard } from "@/components/ArticleCards";
 
-export function JournalBrowser() {
+/**
+ * Articles arrive as a prop rather than being imported, because they now come
+ * from Payload on the server (`lib/articles.ts`) and this is a client component.
+ */
+export function JournalBrowser({ articles }: { articles: SiteArticle[] }) {
   const [category, setCategory] = useState<ArticleCategory | "all">("all");
   const [query, setQuery] = useState("");
 
   const counts = useMemo(() => {
-    const map: Record<string, number> = { all: ARTICLES.length };
+    const map: Record<string, number> = { all: articles.length };
     for (const cat of ARTICLE_CATEGORIES) {
-      map[cat] = ARTICLES.filter((a) => a.category === cat).length;
+      map[cat] = articles.filter((a) => a.category === cat).length;
     }
     return map;
-  }, []);
+  }, [articles]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return ARTICLES.filter((a) => {
+    return articles.filter((a) => {
       const matchesCategory = category === "all" || a.category === category;
       const matchesQuery =
         q === "" ||
@@ -28,7 +33,7 @@ export function JournalBrowser() {
         a.category.toLowerCase().includes(q);
       return matchesCategory && matchesQuery;
     });
-  }, [category, query]);
+  }, [articles, category, query]);
 
   const options: { value: ArticleCategory | "all"; label: string; count: number }[] = [
     { value: "all", label: "All Articles", count: counts.all },
@@ -93,7 +98,7 @@ export function JournalBrowser() {
           className="w-full max-w-sm border-b border-ink bg-transparent py-1 text-xs outline-none transition-colors placeholder:text-neutral-500 focus:border-forest"
         />
         <span className="font-mono text-[11px] text-neutral-500">
-          {filtered.length} / {ARTICLES.length} artikel
+          {filtered.length} / {articles.length} artikel
         </span>
       </div>
 
