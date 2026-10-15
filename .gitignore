@@ -20,6 +20,10 @@
 # Sanity Studio build output (npm run sanity:deploy)
 /dist
 
+# Sanity's local runtime shim — auto-generated, and its own header says edits are
+# discarded. Not source.
+/.sanity
+
 # production
 /build
 
