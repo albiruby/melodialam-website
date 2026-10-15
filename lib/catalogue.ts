@@ -73,20 +73,10 @@ interface Catalogue {
 export const catalogue = raw as Catalogue;
 
 export const CHANNEL = catalogue.meta;
-export const PROFILE = catalogue.profile;
 export const COUNTS = catalogue.counts;
 export const VIDEOS = catalogue.videos;
 export const SHORTS = catalogue.shorts;
 export const PLAYLISTS = catalogue.playlists;
-
-/** Looks up a single profile row by its `platform_metric` key. */
-export function fact(key: string): ProfileFact | undefined {
-  return catalogue.profile[key];
-}
-
-export function factValue(key: string, fallback = "-"): string {
-  return catalogue.profile[key]?.value ?? fallback;
-}
 
 /** Venue filter order — Melodi Alam's own formats first, the archive last. */
 export const VENUES = [
@@ -97,14 +87,6 @@ export const VENUES = [
 ] as const;
 
 export type Venue = (typeof VENUES)[number];
-
-export const VENUE_COUNTS: Record<string, number> = VENUES.reduce(
-  (acc, venue) => {
-    acc[venue] = COUNTS.byVenue[venue] ?? 0;
-    return acc;
-  },
-  {} as Record<string, number>,
-);
 
 export function getVideo(id: string): CatalogueVideo | undefined {
   return VIDEOS.find((v) => v.id === id);

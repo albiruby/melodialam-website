@@ -8,7 +8,7 @@ import { WatchLink } from "@/components/WatchLink";
 import { INTERVIEW_ROWS } from "@/lib/content";
 import { allArticles } from "@/lib/articles";
 import { allVideos, latestVideos, videoById } from "@/lib/videos";
-import { CHANNEL, COUNTS } from "@/lib/catalogue";
+import { CHANNEL } from "@/lib/catalogue";
 import { CountUp } from "@/components/motion/CountUp";
 import { RevealText } from "@/components/motion/RevealText";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
@@ -65,7 +65,7 @@ export default async function HomePage() {
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
             <CountUp to={articles.length} /> artikel di journal • <CountUp to={videos.length} />{" "}
-            video + <CountUp to={COUNTS.shorts} /> shorts
+            video
           </span>
           <Link
             href="/journal"
@@ -156,7 +156,7 @@ export default async function HomePage() {
             </span>
           </div>
           <span className="font-mono text-[11px] text-neutral-500">
-            <CountUp to={videos.length} /> video + <CountUp to={COUNTS.shorts} /> shorts
+            <CountUp to={videos.length} /> video
           </span>
         </div>
 

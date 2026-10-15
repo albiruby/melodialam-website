@@ -4,10 +4,6 @@ import type { SiteSettings } from "@/lib/site-settings";
 import { BrandMark, SamsaraWordmark } from "./BrandMark";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
-  // Aliased so the markup below reads the way it did when these were module
-  // constants; only the source changed.
-  const SITE = { name: settings.name };
-  const CHANNEL_FACTS = settings.channelFacts;
   return (
     <footer className="mt-20 border-t-2 border-ink bg-paper">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-8 border-b border-ink px-4 py-12 md:grid-cols-12 sm:px-8">
@@ -19,7 +15,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               sizes="(min-width: 640px) 96px, 80px"
               className="h-20 w-20 shrink-0 sm:h-24 sm:w-24"
             />
-            <h2 className="text-3xl font-black uppercase tracking-tighter">{SITE.name}</h2>
+            <h2 className="text-3xl font-black uppercase tracking-tighter">{settings.name}</h2>
           </div>
           <p className="font-serif text-lg italic text-neutral-700">
             A living ecosystem of melody: Stories and Watch.
@@ -28,35 +24,6 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             Bagian dari ekosistem Intellectual Property (IP) PT Infia Pariwara Nusantara
             (INFIA Corp). Menghubungkan jurnalisme musik, sesi intim panggung, ruang dengar
             Samsara Bogor, hingga perangkat audio analog SVVARA.
-          </p>
-          <dl className="grid grid-cols-2 gap-x-6 gap-y-1 pt-2 text-[11px] font-mono text-neutral-500">
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Subscribers</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.youtubeSubscribers}</dd>
-            </div>
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Total views</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.youtubeViews}</dd>
-            </div>
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Video</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.youtubeVideos}</dd>
-            </div>
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Instagram</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.instagramFollowers}</dd>
-            </div>
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Joined</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.youtubeJoined}</dd>
-            </div>
-            <div className="flex justify-between border-b border-neutral-200 py-1">
-              <dt>Scraped</dt>
-              <dd className="text-ink">{CHANNEL_FACTS.scrapedAt}</dd>
-            </div>
-          </dl>
-          <p className="pt-1 text-[10px] font-mono text-neutral-400">
-            {CHANNEL_FACTS.scrapedVideos} • {CHANNEL_FACTS.scrapedShorts}
           </p>
         </div>
 
@@ -109,7 +76,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
       </div>
 
       <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between px-4 py-4 text-[11px] font-mono text-neutral-500 sm:px-8">
-        <span>© 2017–2026 {SITE.name} • INFIA PARIWARA NUSANTARA</span>
+        <span>© 2017–2026 {settings.name} • INFIA PARIWARA NUSANTARA</span>
         <span>DESIGN SYSTEM: SWISS EDITORIAL BRUTALISM</span>
       </div>
     </footer>

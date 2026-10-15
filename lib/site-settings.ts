@@ -1,10 +1,10 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { TICKER_ITEMS } from "./content";
-import { CHANNEL_FACTS, SITE } from "./site";
+import { SITE } from "./site";
 import { contentClient } from "./sanity";
 
 /**
- * Site-wide copy and channel facts.
+ * Site-wide copy.
  *
  * Reads the `siteSettings` singleton from Sanity and falls back to the constants
  * in `lib/site.ts` and `lib/content.ts`, so the site renders before an editor has
@@ -13,6 +13,11 @@ import { contentClient } from "./sanity";
  * `url` and `locale` are deliberately NOT here: the origin has to come from the
  * environment so a preview deployment produces correct canonical URLs, and the
  * locale is a technical constant.
+ *
+ * Channel statistics are deliberately NOT here either. Subscriber counts, total
+ * views and "last scraped" were shown in the footer and rotted the moment the
+ * scrape aged: nothing refreshed them, so they drifted further from the truth
+ * every day. A number nobody maintains is worse than no number.
  */
 
 export const SETTINGS_TAG = "siteSettings";
@@ -29,17 +34,6 @@ export interface SiteSettings {
   owner: string;
   est: string;
   description: string;
-  channelFacts: {
-    youtubeSubscribers: string;
-    youtubeVideos: string;
-    youtubeViews: string;
-    youtubeJoined: string;
-    instagramFollowers: string;
-    instagramPosts: string;
-    scrapedVideos: string;
-    scrapedShorts: string;
-    scrapedAt: string;
-  };
   tickerItems: TickerItem[];
   /** Where the values came from, for the admin UI and for debugging. */
   source: "cms" | "static";
@@ -52,7 +46,6 @@ const STATIC: SiteSettings = {
   owner: SITE.owner,
   est: SITE.est,
   description: SITE.description,
-  channelFacts: { ...CHANNEL_FACTS },
   tickerItems: TICKER_ITEMS.map((item) => ({ label: item.label, href: item.href })),
   source: "static",
 };
@@ -64,13 +57,6 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   owner,
   est,
   description,
-  youtubeSubscribers,
-  youtubeVideos,
-  youtubeViews,
-  youtubeJoined,
-  instagramFollowers,
-  instagramPosts,
-  scrapedAt,
   tickerItems[]{ label, href }
 }`;
 
@@ -81,13 +67,6 @@ interface SettingsDoc {
   owner?: string;
   est?: string;
   description?: string;
-  youtubeSubscribers?: string;
-  youtubeVideos?: string;
-  youtubeViews?: string;
-  youtubeJoined?: string;
-  instagramFollowers?: string;
-  instagramPosts?: string;
-  scrapedAt?: string;
   tickerItems?: { label?: string; href?: string }[];
 }
 
@@ -121,18 +100,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     owner: or(doc.owner, STATIC.owner),
     est: or(doc.est, STATIC.est),
     description: or(doc.description, STATIC.description),
-    channelFacts: {
-      youtubeSubscribers: or(doc.youtubeSubscribers, STATIC.channelFacts.youtubeSubscribers),
-      youtubeVideos: or(doc.youtubeVideos, STATIC.channelFacts.youtubeVideos),
-      youtubeViews: or(doc.youtubeViews, STATIC.channelFacts.youtubeViews),
-      youtubeJoined: or(doc.youtubeJoined, STATIC.channelFacts.youtubeJoined),
-      instagramFollowers: or(doc.instagramFollowers, STATIC.channelFacts.instagramFollowers),
-      instagramPosts: or(doc.instagramPosts, STATIC.channelFacts.instagramPosts),
-      // These two are derived from the catalogue, not typed by an editor.
-      scrapedVideos: STATIC.channelFacts.scrapedVideos,
-      scrapedShorts: STATIC.channelFacts.scrapedShorts,
-      scrapedAt: or(doc.scrapedAt, STATIC.channelFacts.scrapedAt),
-    },
     tickerItems: tickerItems.length > 0 ? tickerItems : STATIC.tickerItems,
     source: "cms",
   };
