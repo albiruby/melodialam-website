@@ -116,7 +116,7 @@ Build produksi menghasilkan **28 halaman statis**.
 | `/bicara-melodi` | Indeks wawancara |
 | `/videos` | Katalog penuh 292 video, filter, pencarian, paginasi |
 | `/submit` | Formulir demo dan antrean kiriman |
-| `/studio` | Sanity Studio (dua workspace: Konten, Antrean Demo) |
+| `/studio` | Sanity Studio (dua workspace: Konten, Antrean Demo). Versi hosted: **[melodi-alam.sanity.studio](https://melodi-alam.sanity.studio)** |
 | `/api/demos` | Route handler `GET` dan `POST` untuk antrean demo |
 | `/api/revalidate` | Webhook Sanity → buang cache artikel |
 
@@ -194,7 +194,7 @@ situs tanpa ubah kode.
 | Artikel | Sanity + fallback `lib/content.ts` — [`docs/SANITY-INTEGRATION.md`](docs/SANITY-INTEGRATION.md) |
 | Katalog video | Dari repo (statis, artefak build-time — [`ADR-0004`](docs/adr/0004-katalog-video-build-time.md)) |
 | Antrean demo | Sanity dataset privat, moderasi; fallback array proses-lokal tanpa env |
-| CMS | Sanity Studio — [`ADR-0008`](docs/adr/0008-sanity-studio-menggantikan-payload.md) (menggantikan [`ADR-0002`](docs/adr/0002-payload-supabase.md)) |
+| CMS | Sanity Studio — embedded di `/studio`, hosted di [melodi-alam.sanity.studio](https://melodi-alam.sanity.studio) — [`ADR-0008`](docs/adr/0008-sanity-studio-menggantikan-payload.md) (menggantikan [`ADR-0002`](docs/adr/0002-payload-supabase.md)) |
 | Pratinjau draf | Belum ada |
 | Uji otomatis | Belum ada — [`ADR-0006`](docs/adr/0006-vitest-playwright-vercel.md) |
 | Analytics | Belum ada |

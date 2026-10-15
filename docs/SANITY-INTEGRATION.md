@@ -288,6 +288,34 @@ Di sanity.io/manage → project → **API → Webhooks**:
 Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka adalah cara mudah
 menjadikan cache sebagai sasaran serangan.
 
+### Deploy Studio ke hosting Sanity
+
+Studio bisa di-host Sanity sendiri, terpisah dari situsnya:
+
+```bash
+npm run sanity:deploy        # bangun + unggah; host dari sanity.cli.ts
+```
+
+Hasilnya: **https://melodi-alam.sanity.studio**
+
+Dua hal yang perlu diketahui:
+
+1. **Hosting Sanity mengabaikan `basePath`.** Studio yang di-host memakai nama
+   workspace sebagai path kanonik — `/content` dan `/submissions` — sementara Studio
+   embedded memakai `/studio/content` dan `/studio/submissions`. Keduanya bekerja;
+   `basePath` di `sanity.config.ts` hanya berlaku untuk yang embedded. Jadi jangan
+   bingung kalau URL-nya berbeda dari yang tertulis di konfigurasi.
+2. **Akses lewat dashboard Sanity.** Membuka host itu mengalihkan (302) ke
+   `www.sanity.io/@<org>/studio/<id>`, yang meminta login. Ini benar: Studio adalah alat
+   editor, bukan halaman publik. Alamat yang layak dibagikan ke editor adalah
+   `https://melodi-alam.sanity.studio` — pengalihannya otomatis.
+
+`sanity deploy` juga mengunggah skema, jadi editor mendapat struktur terbaru tanpa
+langkah tambahan. Menjalankan `npm run sanity -- deploy --dry-run -y` lebih dulu
+menunjukkan apa yang akan diunggah tanpa mengubah apa pun.
+
+> `dist/` adalah keluaran build Studio dan sudah masuk `.gitignore`.
+
 ---
 
 ## 12. Yang belum tersambung
@@ -337,6 +365,12 @@ Diperiksa dengan menjalankan, bukan membaca:
   secret tepat → **200** `{revalidated: true}`.
 - `/studio` dan `/studio/content` → **200**; Studio terhubung ke project `03sgar5q`.
 - Build: lint dan `tsc` bersih, **28 halaman statis**, `/journal` `Revalidate 1m · Expire 1h`.
+- **Deploy Studio.** `npm run sanity:deploy` → `https://melodi-alam.sanity.studio`, dengan
+  2 skema ikut terunggah. Host-nya mengalihkan **302** ke dashboard Sanity dan meminta
+  login — benar, karena Studio bukan halaman publik. Studio embedded tidak terpengaruh:
+  `/studio` → `/studio/content/structure` (workspace Konten, berisi "Artikel"),
+  `/studio/submissions` → `/studio/submissions/structure` (workspace Antrean Demo, berisi
+  "Kiriman Demo" dan "Kontak Demo").
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji secara
 logika), dan pratinjau draf (belum dibangun).
