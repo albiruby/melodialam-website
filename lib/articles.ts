@@ -51,6 +51,7 @@ const ARTICLE_FIELDS = /* groq */ `{
   date,
   excerpt,
   image,
+  imagePath,
   body,
   featured
 }`;
@@ -66,6 +67,7 @@ interface CmsArticleDoc {
   date?: string;
   excerpt?: string;
   image?: unknown;
+  imagePath?: string;
   body?: unknown[];
   featured?: boolean;
 }
@@ -135,7 +137,9 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
     date: iso ? formatDate(iso) : "",
     dateISO: iso,
     excerpt: typeof doc.excerpt === "string" ? doc.excerpt : "",
-    image: imageUrl(doc.image, { width: 1600 }) ?? PLACEHOLDER_IMAGE,
+    // An uploaded cover wins; then the carried-over local path from the import;
+    // then the shared placeholder.
+    image: imageUrl(doc.image, { width: 1600 }) ?? doc.imagePath ?? PLACEHOLDER_IMAGE,
     body: portableTextToParagraphs(doc.body),
     featured: doc.featured === true,
     richBody: Array.isArray(doc.body) ? doc.body : undefined,

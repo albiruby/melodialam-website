@@ -46,6 +46,9 @@ next-env.d.ts
 # belong in Supabase Storage (S3_* vars); files written here vanish on redeploy.
 /media
 
+# CommonJS output from `npm run seed:sanity`; deleted by the script when it ends.
+/.seed-build
+
 # tool-generated indexes — these hold live database files, and Tailwind's
 # automatic content detection must not walk into them (see app/globals.css)
 /.codegraph

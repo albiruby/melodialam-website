@@ -34,6 +34,8 @@ export interface SiteSettings {
   owner: string;
   est: string;
   description: string;
+  /** The small note beside a section heading. Never carries a date. */
+  curationNote: string;
   tickerItems: TickerItem[];
   /** Where the values came from, for the admin UI and for debugging. */
   source: "cms" | "static";
@@ -46,6 +48,7 @@ const STATIC: SiteSettings = {
   owner: SITE.owner,
   est: SITE.est,
   description: SITE.description,
+  curationNote: "kurasi redaksi",
   tickerItems: TICKER_ITEMS.map((item) => ({ label: item.label, href: item.href })),
   source: "static",
 };
@@ -57,6 +60,7 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   owner,
   est,
   description,
+  curationNote,
   tickerItems[]{ label, href }
 }`;
 
@@ -67,6 +71,7 @@ interface SettingsDoc {
   owner?: string;
   est?: string;
   description?: string;
+  curationNote?: string;
   tickerItems?: { label?: string; href?: string }[];
 }
 
@@ -100,6 +105,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     owner: or(doc.owner, STATIC.owner),
     est: or(doc.est, STATIC.est),
     description: or(doc.description, STATIC.description),
+    curationNote: or(doc.curationNote, STATIC.curationNote),
     tickerItems: tickerItems.length > 0 ? tickerItems : STATIC.tickerItems,
     source: "cms",
   };

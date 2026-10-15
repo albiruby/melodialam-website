@@ -5,9 +5,10 @@ import { Reveal } from "@/components/Reveal";
 import { FeatureCard, HeroArticle } from "@/components/ArticleCards";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
-import { INTERVIEW_ROWS } from "@/lib/content";
 import { allArticles } from "@/lib/articles";
+import { allInterviews } from "@/lib/interviews";
 import { allVideos, latestVideos, videoById } from "@/lib/videos";
+import { getSiteSettings } from "@/lib/site-settings";
 import { CHANNEL } from "@/lib/catalogue";
 import { CountUp } from "@/components/motion/CountUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -31,11 +32,17 @@ export default async function HomePage() {
   const subFeatures = rest.slice(0, 3);
 
   // Sanity first, the build-time catalogue behind it.
-  const videos = await allVideos();
+  const [videos, interviews, settings] = await Promise.all([
+    allVideos(),
+    allInterviews(),
+    getSiteSettings(),
+  ]);
 
   // A handful of the freshest uploads, for the home-page video teaser.
   const teasers = latestVideos(videos, 4);
-  const interviewVideos = INTERVIEW_ROWS.map((r) => videoById(videos, r.videoId));
+  // The home page shows the first three rows of the index, not all of them.
+  const interviewRows = interviews.slice(0, 3);
+  const interviewVideos = interviewRows.map((r) => videoById(videos, r.videoId));
 
   return (
     <>
@@ -46,7 +53,7 @@ export default async function HomePage() {
             <RevealText text="Latest News" />
           </h2>
           <span className="font-serif text-sm italic text-neutral-600">
-            (kurasi redaksi)
+            ({settings.curationNote})
           </span>
         </div>
 
@@ -95,7 +102,7 @@ export default async function HomePage() {
         </div>
 
         <div className="divide-y divide-ink border-b border-ink">
-          {INTERVIEW_ROWS.map((row, i) => {
+          {interviewRows.map((row, i) => {
             const video = interviewVideos[i];
             return (
               <article

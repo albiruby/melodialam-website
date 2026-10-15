@@ -9,7 +9,8 @@
     "lint": "eslint",
     "catalogue": "node scripts/build-catalogue.mjs",
     "brand": "node scripts/build-brand.mjs",
-    "photos": "node scripts/copy-photos.mjs"
+    "photos": "node scripts/copy-photos.mjs",
+    "seed:sanity": "node node_modules/typescript/bin/tsc lib/content.ts lib/taxonomy.ts lib/site.ts --outDir .seed-build --module commonjs --target es2022 --moduleResolution node --skipLibCheck --esModuleInterop && node scripts/seed-sanity.js .seed-build"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

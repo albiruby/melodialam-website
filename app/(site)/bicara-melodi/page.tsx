@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
-import { INTERVIEW_ROWS } from "@/lib/content";
+import { allInterviews } from "@/lib/interviews";
 import { allVideos, videoById } from "@/lib/videos";
 
 export const metadata: Metadata = {
@@ -13,10 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function BicaraMelodiPage() {
-  // Each row's real video entry, so the stats come from the CMS (or the
-  // catalogue behind it) rather than being hand-written.
-  const videos = await allVideos();
-  const rows = INTERVIEW_ROWS.map((row) => ({ row, video: videoById(videos, row.videoId) }));
+  // The curated index comes from Sanity, and each row's stats from the video it
+  // points at — so nothing on this page is hand-written twice.
+  const [interviews, videos] = await Promise.all([allInterviews(), allVideos()]);
+  const rows = interviews.map((row) => ({ row, video: videoById(videos, row.videoId) }));
 
   return (
     <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
