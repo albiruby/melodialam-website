@@ -25,7 +25,7 @@ export default async function BicaraMelodiPage() {
         <div>
           Interview &amp; Session
           <br />
-          <span className="font-normal text-neutral-500">October 2026</span>
+          <span className="font-normal text-neutral-500">Index</span>
         </div>
         <div className="text-center font-serif text-base font-normal italic lowercase text-ink">
           (index)

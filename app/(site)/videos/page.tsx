@@ -8,7 +8,7 @@ import { allPlaylists, allVideos } from "@/lib/videos";
 export const metadata: Metadata = {
   title: "Videos",
   description:
-    "Katalog lengkap video Melodi Alam: live session Melodi Samsara dan Melodi Taman, wawancara Bicara Melodi, serta Shorts.",
+    "Katalog video Melodi Alam: live session Melodi Samsara dan Melodi Taman, serta wawancara Bicara Melodi.",
 };
 
 export default async function VideosPage() {

@@ -27,7 +27,7 @@ export type ArticleCategory = (typeof ARTICLE_CATEGORY_VALUES)[number];
 /** The long form shown in the UI; the stored value is the short one. */
 export const CATEGORY_LABELS: Record<ArticleCategory, string> = {
   "Fakta Musik": "Fakta Musik & Esai",
-  "Rekomendasi Melodi": "Rekomendasi Melodi",
+  "Rekomendasi Melodi": "Fakta Musik",
   "Bicara Melodi": "Bicara Melodi Notes",
   "Liputan Panggung": "Liputan & Gig Report",
 };

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
    * layout default gives "MELODI ALAM — Stories & Watch".
    */
   description:
-    "Melodi Alam: jurnalisme musik, catatan wawancara, dan katalog video sesi panggung. Kurasi redaksi Oktober 2026.",
+    "Melodi Alam: jurnalisme musik, catatan wawancara, dan katalog video sesi panggung.",
 };
 
 export default async function HomePage() {
@@ -46,7 +46,7 @@ export default async function HomePage() {
             <RevealText text="Latest News" />
           </h2>
           <span className="font-serif text-sm italic text-neutral-600">
-            (kurasi redaksi — oktober 2026)
+            (kurasi redaksi)
           </span>
         </div>
 
@@ -82,7 +82,7 @@ export default async function HomePage() {
           <div>
             Interview &amp; Session
             <br />
-            <span className="font-normal text-neutral-500">October 2026</span>
+            <span className="font-normal text-neutral-500">Index</span>
           </div>
           <div className="text-center font-serif text-base font-normal italic lowercase text-ink">
             (index)

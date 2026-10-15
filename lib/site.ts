@@ -33,7 +33,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/videos", label: "Videos", badge: "YT" },
 ];
 
-export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Demo" };
+export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };
 
 export const FOOTER_RUBRIKS: NavItem[] = [
   { href: "/journal", label: "#FaktaMusik & Esai Skena" },

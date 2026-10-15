@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { articleReadingTime, type Article } from "@/lib/content";
+import { articleReadingTime, CATEGORY_LABELS, type Article } from "@/lib/content";
 import { ParallaxImage } from "./motion/ParallaxImage";
 
 /**
@@ -48,7 +48,7 @@ export function ArticleCard({
       </div>
 
       <div className="flex justify-between border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
-        <span className="font-medium text-ink">{article.category}</span>
+        <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
         <span className="flex items-center gap-2">
           <span>{articleReadingTime(article)} menit</span>
           <span aria-hidden>•</span>
@@ -85,7 +85,7 @@ function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "squar
       />
       <div className="hover-reveal-curtain">
         <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-green-400">
-          <span>{article.category}</span>
+          <span>{CATEGORY_LABELS[article.category]}</span>
           <span>READ STORY</span>
         </div>
         <p className="hover-reveal-tag line-clamp-3 text-xs leading-relaxed text-neutral-200">
@@ -117,7 +117,7 @@ export function HeroArticle({ article }: { article: Article }) {
         <div className="mb-2 flex items-center gap-2 text-[11px] uppercase tracking-widest text-neutral-300">
           <span className="bg-forest px-2 py-0.5 text-white">COVER STORY</span>
           <span>•</span>
-          <span>{article.category.toUpperCase()}</span>
+          <span>{CATEGORY_LABELS[article.category].toUpperCase()}</span>
         </div>
         <h2 className="max-w-3xl text-2xl font-bold leading-[1.08] tracking-tight transition-transform duration-500 group-hover:translate-x-1.5 sm:text-4xl lg:text-5xl">
           <Link href={`/journal/${article.slug}`} className="after:absolute after:inset-0">
@@ -157,7 +157,7 @@ export function FeatureCard({ article, note }: { article: Article; note: string 
           />
           <div className="hover-reveal-curtain">
             <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-green-400">
-              <span>{article.category.toUpperCase()}</span>
+              <span>{CATEGORY_LABELS[article.category].toUpperCase()}</span>
               <span>{note}</span>
             </div>
             <p className="hover-reveal-tag line-clamp-3 text-xs leading-relaxed text-neutral-200">
@@ -178,7 +178,7 @@ export function FeatureCard({ article, note }: { article: Article; note: string 
       <div className="mt-6 flex items-center justify-between border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
         <time dateTime={article.dateISO}>{article.date}</time>
         <span className="font-medium text-ink transition-transform group-hover:translate-x-1">
-          {article.category} ↗
+          {CATEGORY_LABELS[article.category]} ↗
         </span>
       </div>
     </article>

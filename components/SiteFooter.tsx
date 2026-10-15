@@ -52,7 +52,15 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <p className="text-neutral-700">
             <strong>Samsara Listening Space &amp; Resto:</strong>
             <br />
-            Kawasan Sekitar Kebun Raya Bogor, Kota Bogor, Jawa Barat.
+            Kawasan Sekitar Kebun Raya Bogor, Kota Bogor, Jawa Barat.{" "}
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Samsara+Listening+Space+%26+Resto+Bogor"
+              target="_blank"
+              rel="noreferrer"
+              className="whitespace-nowrap font-bold underline transition-colors hover:text-forest"
+            >
+              Lihat di Google Maps ↗
+            </a>
           </p>
           <div className="flex flex-wrap gap-2 pt-3">
             <a
@@ -70,6 +78,14 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               className="border border-ink bg-white px-3 py-1.5 font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               YouTube ↗
+            </a>
+            <a
+              href="https://www.tiktok.com/@melodi.alam"
+              target="_blank"
+              rel="noreferrer"
+              className="border border-ink bg-white px-3 py-1.5 font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+            >
+              TikTok ↗
             </a>
           </div>
         </div>

@@ -98,7 +98,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
         </Link>
 
         <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-500">
-          <span className="bg-forest px-2 py-0.5 text-white">{article.category}</span>
+          <span className="bg-forest px-2 py-0.5 text-white">{CATEGORY_LABELS[article.category]}</span>
           <time dateTime={article.dateISO}>{article.date}</time>
           <span aria-hidden>•</span>
           <span>{readMinutes} menit baca</span>

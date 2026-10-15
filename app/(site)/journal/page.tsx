@@ -18,7 +18,7 @@ export default async function JournalPage() {
       <div className="flex items-baseline justify-between pb-4">
         <h2 className="text-4xl tracking-tight sm:text-5xl">Journal &amp; Stories</h2>
         <span className="font-serif text-sm italic text-neutral-600">
-          (kurasi redaksi — oktober 2026)
+          (kurasi redaksi)
         </span>
       </div>
       <JournalBrowser articles={articles} />

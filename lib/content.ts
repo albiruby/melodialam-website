@@ -471,21 +471,19 @@ export const SPACE_ITEMS: SpaceItem[] = [
 
 export const TICKER_ITEMS: { label: string; href: string | null }[] = [
   {
-    label:
-      "TONIGHT AT SAMSARA BOGOR (14 OCT • 19:10 WIB): MELODI SAMSARA WITH SHROOMEATER",
-    href: null,
+    label: "SESI PANGGUNG BARU TIAP PEKAN — MELODI SAMSARA, BOGOR",
+    href: "/videos",
   },
   {
-    label: "IG: @MELODI.ALAM (220K FOLLOWERS) ↗",
-    href: "https://www.instagram.com/melodi.alam/?hl=en",
+    label: "BICARA MELODI: OBROLAN PANJANG BERSAMA MUSISI INDONESIA",
+    href: "/bicara-melodi",
   },
   {
-    label: "NEW EPISODE: BICARA MELODI S3 EP30 FT. ENDAH N RHESA ↗",
-    href: "https://www.youtube.com/@melodialam/videos",
+    label: "JOURNAL & STORIES — ESAI, LIPUTAN, DAN CATATAN SKENA",
+    href: "/journal",
   },
   {
-    label:
-      "OPEN SUBMISSION: KIRIM DEMO LAGU BAND KAMU UNTUK KURASI PANGGUNG SAMSARA DAN REVIEW ARTIKEL",
+    label: "OPEN SUBMISSION: KIRIM KARYA BAND KAMU UNTUK DIKURASI",
     href: "/submit",
   },
 ];
