@@ -14,9 +14,14 @@ import { RevealText } from "@/components/motion/RevealText";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 
 export const metadata: Metadata = {
-  title: "Stories, Spaces & Instruments",
+  /**
+   * No `title` override on purpose. A page in the same segment as its layout does
+   * not get that layout's `title.template` applied, so setting one here rendered
+   * the home page as the bare tagline with no brand name in it. Inheriting the
+   * layout default gives "MELODI ALAM — Stories & Watch".
+   */
   description:
-    "Melodi Alam: jurnalisme musik, sesi intim panggung, ruang dengar, dan perangkat audio analog. Kurasi redaksi Oktober 2026.",
+    "Melodi Alam: jurnalisme musik, catatan wawancara, dan katalog video sesi panggung. Kurasi redaksi Oktober 2026.",
 };
 
 export default async function HomePage() {

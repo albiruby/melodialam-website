@@ -1,6 +1,6 @@
 # Melodi Alam
 
-Platform web media musik Indonesia — **Stories, Spaces & Instruments**.
+Platform web media musik Indonesia — **Stories & Watch**.
 
 Situs ini menyatukan jurnalisme musik (*Stories*), katalog video YouTube
 `@melodialam` (*Watch*), dan jalur pengiriman demo musisi (*Submit Demo*).

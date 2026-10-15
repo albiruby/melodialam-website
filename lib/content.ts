@@ -327,13 +327,12 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
 /* -------------------------------------------------------------------------
    Pahlawan Musik Kota — genre directory rows.
 
-   UNUSED as of the request that removed the "Pahlawan Musik Kota" and
-   "Instruments & Space" sections: the home-page blocks, the /pahlawan-kota and
-   /spaces routes, the nav entries and the sitemap rows are all gone. The data
-   is kept deliberately rather than deleted, because none of this work is
-   committed yet and there is no git history to restore it from. Reinstating the
-   section is one import away; delete this block (and SPACE_ITEMS below) once
-   the removal is committed and you are sure it is permanent.
+   UNUSED: the request that removed the "Pahlawan Musik Kota" and "Instruments &
+   Space" sections took the home-page blocks, the /pahlawan-kota and /spaces
+   routes, the nav entries and the sitemap rows with it, and that removal is
+   committed. So this is a deliberate archive now, not a backup for uncommitted
+   work. Reinstating the section is one import away; delete this block (and
+   SPACE_ITEMS below) once you are sure the removal is permanent.
 ------------------------------------------------------------------------- */
 
 export interface GenreRow {
@@ -385,7 +384,9 @@ export const GENRE_ROWS: GenreRow[] = [
 ];
 
 /* -------------------------------------------------------------------------
-   Spaces and Instruments.
+   Spaces and Instruments — kept for the same reason as GENRE_ROWS above: the
+   showcase section and its /spaces route are gone, and this data is the only
+   copy left.
 ------------------------------------------------------------------------- */
 
 export interface SpaceItem {

@@ -6,7 +6,7 @@ import { CHANNEL, COUNTS } from "./catalogue";
  */
 export const SITE = {
   name: "MELODI ALAM",
-  tagline: "Stories, Spaces & Instruments",
+  tagline: "Stories & Watch",
   strapline: "A living ecosystem of melody",
   owner: "By Infia Pariwara Nusantara",
   est: "EST. 2017",

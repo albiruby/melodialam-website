@@ -17,7 +17,7 @@ export function SiteFooter() {
             <h2 className="text-3xl font-black uppercase tracking-tighter">{SITE.name}</h2>
           </div>
           <p className="font-serif text-lg italic text-neutral-700">
-            A living ecosystem of melody: Stories, Spaces and Instruments.
+            A living ecosystem of melody: Stories and Watch.
           </p>
           <p className="max-w-sm text-xs leading-relaxed text-neutral-600">
             Bagian dari ekosistem Intellectual Property (IP) PT Infia Pariwara Nusantara
