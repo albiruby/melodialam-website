@@ -300,9 +300,16 @@ export interface InterviewRow {
   headline: string;
   videoId: string;
   caption: string;
-  image: string;
 }
 
+/**
+ * The Bicara Melodi short list — established artists only, which is an editorial
+ * judgement the catalogue cannot supply: of its 118 interview videos, only six
+ * carry a `featuring` credit, so nothing can be filtered automatically.
+ *
+ * The card artwork is the episode's YouTube thumbnail, derived from `videoId`,
+ * which is why there is no image field here.
+ */
 export const INTERVIEW_ROWS: InterviewRow[] = [
   {
     slug: "endah-n-rhesa",
@@ -310,7 +317,6 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
     headline: "DARI BAND ROCK SAMPAI JADI ICON PAMULANG",
     videoId: "WN-Go-1hA68",
     caption: "bicara melodi ep.30",
-    image: PHOTO.loungeTerracotta,
   },
   {
     slug: "bilal-indrajaya",
@@ -318,7 +324,6 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
     headline: "MENJIWAI PUISI, BRITPOP DAN MENYELAMI THE BEATLES",
     videoId: "_uqU8Q4Vwl8",
     caption: "profile and talk",
-    image: PHOTO.coffeeBar,
   },
   {
     slug: "sore-ze-band",
@@ -326,7 +331,48 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
     headline: "MENJAGA LEGACY ADE PALOH, FORMASI BARU DAN PALOH POP",
     videoId: "j5DjXbSSLoU",
     caption: "legacy notes",
-    image: PHOTO.arch,
+  },
+  {
+    slug: "armada",
+    artist: "Armada",
+    headline: "ISU PLAGIAT, TULANG PUNGGUNG KELUARGA & MENGAGUMI HINDIA",
+    videoId: "VOg_B_0yigw",
+    caption: "bicara melodi",
+  },
+  {
+    slug: "dmasiv",
+    artist: "D'Masiv",
+    headline: "PERJALANAN DARI CILEDUG KE EROPA & AGREGATOR BARU",
+    videoId: "OYeOf-jqLC0",
+    caption: "bicara melodi",
+  },
+  {
+    slug: "dul-jaelani",
+    artist: "Dul Jaelani",
+    headline: "PENGARUH KURT COBAIN, AHMAD DHANI & DEWA 19",
+    videoId: "U0RUMakt_GM",
+    caption: "bicara melodi",
+  },
+  {
+    slug: "teddy-adhitya",
+    artist: "Teddy Adhitya",
+    headline: "TRAUMA MASA KECIL & LAGU UNTUK GLENN FREDLY",
+    videoId: "Tj90MOZ4QWA",
+    caption: "bicara melodi",
+  },
+  {
+    slug: "the-lantis",
+    artist: "The Lantis",
+    headline: "DARI LAMPU MERAH KE BUNGA MAAF",
+    videoId: "j7jx5cqgULw",
+    caption: "bicara melodi",
+  },
+  {
+    slug: "nadhif-basalamah",
+    artist: "Nadhif Basalamah",
+    headline: "AKAN NGELAKUIN APAPUN UNTUK MUSIK",
+    videoId: "iqfqKFS2sQc",
+    caption: "bicara melodi ep.15",
   },
 ];
 

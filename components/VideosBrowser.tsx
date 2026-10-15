@@ -162,7 +162,7 @@ export function VideosBrowser({ videos }: { videos: SiteVideo[] }) {
   );
 }
 
-function VideoRow({ video, index }: { video: SiteVideo; index: number }) {
+export function VideoRow({ video, index }: { video: SiteVideo; index: number }) {
   const no = String(index + 1).padStart(2, "0");
 
   return (

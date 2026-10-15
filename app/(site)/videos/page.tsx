@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/Reveal";
-import { VideosBrowser } from "@/components/VideosBrowser";
-import { VideoModal } from "@/components/VideoModal";
+import { VideosBrowser, VideoRow } from "@/components/VideosBrowser";
+import { VideoModal, WatchButton } from "@/components/VideoModal";
+import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { CHANNEL } from "@/lib/catalogue";
-import { allPlaylists, allVideos } from "@/lib/videos";
+import { allInterviews } from "@/lib/interviews";
+import { allPlaylists, allVideos, videoById } from "@/lib/videos";
 
 export const metadata: Metadata = {
   title: "Videos",
@@ -11,17 +13,120 @@ export const metadata: Metadata = {
     "Katalog video Melodi Alam: live session Melodi Samsara dan Melodi Taman, serta wawancara Bicara Melodi.",
 };
 
+/** The live sessions shown before the archive takes over. */
+const SAMSARA_PREVIEW = 8;
+
+function SectionHead({
+  title,
+  note,
+  href,
+  linkLabel,
+}: {
+  title: string;
+  note: string;
+  href?: string;
+  linkLabel?: string;
+}) {
+  return (
+    <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
+      <div className="flex items-baseline gap-4">
+        <h2 className="font-display text-4xl font-black uppercase leading-none tracking-tight sm:text-5xl">
+          {title}
+        </h2>
+        <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
+      </div>
+      {href && linkLabel ? (
+        <a
+          href={href}
+          className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
+        >
+          {linkLabel} ↗
+        </a>
+      ) : null}
+    </div>
+  );
+}
+
 export default async function VideosPage() {
-  // Sanity first, the build-time catalogue behind it.
-  const videos = await allVideos();
-  const playlists = await allPlaylists();
+  const [videos, playlists, interviews] = await Promise.all([
+    allVideos(),
+    allPlaylists(),
+    allInterviews(),
+  ]);
+
+  // Two editorial sections, then the whole catalogue.
+  const samsara = videos.filter((v) => v.venue === "Melodi Samsara");
+  const samsaraPreview = samsara.slice(0, SAMSARA_PREVIEW);
+  const curated = interviews.map((interview) => ({
+    interview,
+    video: videoById(videos, interview.videoId),
+  }));
 
   return (
     <>
+      {/* ---------- Bicara Melodi: the curated short list ---------- */}
       <Reveal>
+        <SectionHead
+          title="Bicara Melodi"
+          note={`${interviews.length} episode pilihan`}
+          href="/bicara-melodi"
+          linkLabel="Index lengkap"
+        />
+        <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
+          {curated.map(({ interview }) => (
+            <article key={interview.slug} className="group">
+              <WatchButton
+                id={interview.videoId}
+                title={`${interview.artist} — ${interview.headline}`}
+                className="block aspect-video w-full overflow-hidden border border-ink bg-neutral-900"
+              >
+                <YoutubeThumb
+                  id={interview.videoId}
+                  className="editorial-img h-full w-full object-cover"
+                />
+              </WatchButton>
+              <h3 className="mt-3 font-display text-2xl leading-none tracking-tight">
+                {interview.artist}
+              </h3>
+              <p className="mt-1 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest">
+                {interview.headline}
+              </p>
+              {interview.caption ? (
+                <span className="mt-1 block font-serif text-sm italic text-neutral-600">
+                  ({interview.caption})
+                </span>
+              ) : null}
+            </article>
+          ))}
+        </div>
+      </Reveal>
+
+      {/* ---------- Melodi Samsara: the live sessions ---------- */}
+      <Reveal>
+        <SectionHead
+          title="Melodi Samsara"
+          note={`${samsara.length} sesi panggung`}
+          href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}
+          linkLabel="Kanal YouTube"
+        />
+        <div className="divide-y divide-neutral-300 border-b border-ink">
+          {samsaraPreview.map((video, i) => (
+            <VideoRow key={video.id} video={video} index={i} />
+          ))}
+        </div>
+        <p className="pt-3 text-xs font-mono text-neutral-500">
+          Menampilkan {samsaraPreview.length} terbaru dari {samsara.length} sesi. Sisanya ada di
+          arsip di bawah.
+        </p>
+      </Reveal>
+
+      {/* ---------- The full catalogue ---------- */}
+      <Reveal>
+        <SectionHead title="Arsip" note={`${videos.length} video`} />
         <VideosBrowser videos={videos} />
       </Reveal>
 
+      {/* ---------- Playlists ---------- */}
       <Reveal>
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
           <h2 className="text-3xl tracking-tight sm:text-4xl">Playlists</h2>
@@ -51,8 +156,8 @@ export default async function VideosPage() {
         </div>
 
         <p className="pt-4 text-xs font-mono text-neutral-500">
-          Katalog diambil dari kanal YouTube resmi. Angka views mengikuti tampilan YouTube dan
-          diperbarui manual lewat Sanity Studio; umur video dihitung dari tanggal terbitnya.
+          Katalog diambil dari kanal YouTube resmi. Angka views diperbarui manual lewat Sanity
+          Studio; umur video dihitung dari tanggal terbitnya.
         </p>
       </Reveal>
 
