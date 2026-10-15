@@ -302,7 +302,7 @@ Presisi centering sudah diverifikasi: `main` berada tepat di tengah pada 360/390
 | Token primitif & semantik | blok `@theme` di `app/globals.css` |
 | Pola perilaku (komponen maya) | `@utility` di `app/globals.css` |
 | Komponen nyata | `components/*.tsx` |
-| Aset merek | `components/BrandMark.tsx` (`BrandMark`, `MelodiAlamLockup`, `MelodiAlamWordmark`, `SamsaraWordmark`) |
+| Aset merek | `components/MelodiAlamLockup.tsx` (`MelodiAlamLockup`) |
 | Primitif gerak | `components/motion/*.tsx` |
 
 Menambah token atau utility baru wajib punya alasan nyata. Memperpanjang daftar tanpa
@@ -375,12 +375,12 @@ pengaturan OS nyata, hanya blok CSS-nya dibaca.
    hanya tinta-di-atas-kertas? Saat ini tombol `forest` berada di ≈ 12.4:1.
 4. **Aset merek** — `LOGO2/Melodi Alam Logo Only - Color.png` memuat medallion
    (1042×1057) plus dua pita terpisah: garis hijau 226×14 dan wordmark 637×51. Build
-   hanya mengambil pita medallion. Apakah dua pita itu bagian dari sistem lockup
-   (versi stacked) yang perlu direproduksi?
+   hanya mengambil pita medallion, dan hanya untuk ikon app. Apakah dua pita itu
+   bagian dari sistem lockup (versi stacked) yang perlu direproduksi?
 5. ~~**Wordmark** — aslinya emas `#c2ac7a`; header memakai varian `ink` karena emas terlalu
    pudar di atas putih. Apakah recolor ini disetujui sebagai warna merek?~~ **Selesai.**
-   Masthead tidak lagi memakai wordmark Samsara. Logo Melodi Alam sekarang
-   direproduksi apa adanya dari `LOGO2/Melodi Alam Text Logo - Black.png`, dan
-   halaman merender lockup penuh (medallion + wordmark) di masthead dan kedua blok
-   footer — bukan potongan teks. Semua varian recolor (ink, forest, hijau kit, putih)
-   dihapus.
+   Logo Melodi Alam direproduksi apa adanya dari
+   `LOGO2/Melodi Alam Text Logo - Black.png`, dan halaman merender lockup penuh
+   (medallion + wordmark) di masthead dan kedua blok footer — bukan potongan teks.
+   `public/brand/` hanya berisi satu berkas, `melodi-alam-lockup-black.png`; seluruh
+   varian recolor dan crop terpisah dihapus.

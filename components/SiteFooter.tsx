@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FOOTER_RUBRIKS } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
-import { MelodiAlamLockup } from "./BrandMark";
+import { MelodiAlamLockup } from "./MelodiAlamLockup";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (

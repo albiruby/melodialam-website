@@ -590,7 +590,7 @@ melodi-alam/
 │   └── site.ts               MOD-004
 ├── scripts/                  MOD-008 (build-catalogue, build-brand, copy-photos)
 ├── public/
-│   ├── brand/                medallion + wordmark (GENERATED)
+│   ├── brand/                lockup logo (GENERATED)
 │   └── photos/               33 foto placeholder (GENERATED)
 ├── next.config.ts            cacheComponents, partialPrefetching, remotePatterns
 ├── package.json              6 skrip npm
@@ -816,9 +816,9 @@ DOCS ONLY dipatuhi.
    (ADR-004), editorial pindah penuh ke Payload. **Perlu keputusan pemilik.**
 2. ~~**Konsistensi nama brand.**~~ **Selesai.** Header `<h1>` sempat memakai
    wordmark "MELODI SAMSARA" sementara `lib/site.ts` memakai `SITE.name =
-   "MELODI ALAM"`. Sejak kit logo di `LOGO2/`, masthead dan blok ekosistem di
-   footer memakai wordmark `MelodiAlamWordmark` (`alt="Melodi Alam"`), jadi
-   header, metadata, dan footer kini menamai situs yang sama.
+   "MELODI ALAM"`. Sejak kit logo di `LOGO2/`, masthead dan kedua blok footer
+   memakai lockup `MelodiAlamLockup` (`alt="Melodi Alam"`), jadi header, metadata,
+   dan footer kini menamai situs yang sama.
 3. **README stale.** `README.md` masih menyebut remote image Unsplash dan font
    Plus Jakarta Sans, sementara `next.config.ts` hanya mengizinkan `i.ytimg.com`
    dan `layout.tsx` memuat Inter/Red Hat Display/Instrument Serif/JetBrains Mono.

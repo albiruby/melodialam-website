@@ -231,7 +231,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 
 **Server component (tanpa directive)** di `components/`:
 
-`SiteFooter`, `Ticker`, `ArticleCards`, `BrandMark`.
+`SiteFooter`, `Ticker`, `ArticleCards`, `MelodiAlamLockup`.
 
 ```mermaid
 graph LR
@@ -240,7 +240,7 @@ graph LR
     FO["SiteFooter"]
     TI["Ticker"]
     AC["ArticleCards"]
-    BM["BrandMark"]
+    BM["MelodiAlamLockup"]
   end
   subgraph client["Client boundary (13)"]
     HD["SiteHeader"]
@@ -329,10 +329,7 @@ terlihat scanner Tailwind dan pernah meruntuhkan frame kartu (brief §9 temuan #
 | `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,004,005,006 |
 | `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
 | `SubmitLink` (dari `Ticker`) | Pattern | Server | `className?` | `SiteHeader` (nav desktop) |
-| `BrandMark` | Primitive | Server | `size?`, `sizes?`, `className?`, `alt?` (default `""`), `eager?` | tidak dipakai saat ini |
 | `MelodiAlamLockup` | Primitive | Server | `width?`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | `SiteHeader`, `SiteFooter` (dua blok) |
-| `MelodiAlamWordmark` | Primitive | Server | `width?`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | tidak dipakai saat ini |
-| `SamsaraWordmark` | Primitive | Server | `width?`, `tone?: "gold"\|"forest"\|"ink"`, `sizes?`, `className?`, `alt?` (default `"Melodi Samsara"`), `eager?` | tidak dipakai saat ini |
 
 **Progressive enhancement `WatchLink` (`TERVERIFIKASI`).** Anchor menyimpan
 `href="https://www.youtube.com/watch?v={id}"` yang nyata (crawlable dan berfungsi
@@ -345,17 +342,19 @@ mengirim `CustomEvent("melodi:watch")`.
 `next/image fill`), dan `stopPropagation()` + `preventDefault()` sebelum
 mengirim event yang sama.
 
-**`BrandMark` (`TERVERIFIKASI`).** `BRAND_MARK_MIN_SIZE = 48` diekspor sebagai
-batas bawah yang disepakati; komentar kode mencatat verifikasi ukuran
-20/24/32/40/48/64/96 px. `alt` default kosong karena mark dianggap dekoratif
-(judul di sebelahnya sudah menamai situs).
+**`MelodiAlamLockup` (`TERVERIFIKASI`).** Satu-satunya aset merek yang dirender
+halaman: masthead dan dua blok footer memakainya. Ukuran diatur `className`
+(`w-[...]` + `h-auto`); atribut `width`/`height` di `next/image` memakai ukuran
+asli artwork (2021×286), bukan ukuran tampilan — tinggi hasil optimasi dibulatkan,
+jadi atribut turunan tidak pernah sama dengan kotak yang dirender dan Next
+mencatat warning "width or height modified" di tiap page load.
 
-**Aset merek (`TERVERIFIKASI`).** `MelodiAlamLockup`, `MelodiAlamWordmark`, dan
-`BrandMark` memotong satu berkas yang sama —
-`LOGO2/Melodi Alam Text Logo - Black.png` — apa adanya: tanpa recolor, dan jarak
-medallion–wordmark di dalam lockup adalah jarak artwork-nya. Halaman merender
-lockup penuh (masthead + dua blok footer); dua crop lain dibangun tetapi belum
-dipakai. Mark warna (`medallion*.png`) tetap dibangun untuk ikon app.
+**Aset merek (`TERVERIFIKASI`).** `npm run brand` hanya menulis dua hal:
+`public/brand/melodi-alam-lockup-black.png`, dipotong apa adanya dari
+`LOGO2/Melodi Alam Text Logo - Black.png` (tanpa recolor; jarak
+medallion–wordmark adalah jarak artwork-nya), dan ikon app dari
+`LOGO2/Melodi Alam Logo Only - Color.png`. Tidak ada medallion warna, crop
+wordmark, atau aset Samsara di halaman.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
@@ -658,7 +657,7 @@ front-end.
 | Search | `<label htmlFor>` + `sr-only` | `JournalBrowser`, `VideosBrowser` |
 | Feedback form | `role="alert"` (per-field), `role="status"` (banner) | `DemoPortal` |
 | Dialog video | `role="dialog"`, `aria-modal="true"`, `aria-label`, tutup via `Escape`/backdrop, `title` iframe | `VideoModal` |
-| Alt text | Artikel/genre/space → `article.title`/`row.title`; thumbnail video → `alt=""` (dekoratif, tombol memberi nama); `BrandMark.alt` default `""`; footer wordmark `alt=""` karena salinan menamai venue | lihat `BrandMark`, `ArticleCards`, halaman |
+| Alt text | Artikel/genre/space → `article.title`/`row.title`; thumbnail video → `alt=""` (dekoratif, tombol memberi nama); footer wordmark `alt=""` karena salinan menamai venue | lihat `MelodiAlamLockup`, `ArticleCards`, halaman |
 | Landmark | `<header>`, `<main>`, `<footer>`, `<nav>` | layout + `SiteHeader`/`SiteFooter` |
 | Halaman 404 | `<h1>` semantik + daftar link navigasi | `app/not-found.tsx` |
 
@@ -849,7 +848,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `@utility`, selektor `.group:hover`, blok `prefers-reduced-motion`.
 - `components/SiteHeader.tsx`, `SiteFooter.tsx`, `Ticker.tsx`, `ScrollProgress.tsx`,
   `Reveal.tsx`, `ArticleCards.tsx`, `JournalBrowser.tsx`, `VideosBrowser.tsx`,
-  `VideoModal.tsx`, `WatchLink.tsx`, `DemoPortal.tsx`, `BrandMark.tsx`.
+  `VideoModal.tsx`, `WatchLink.tsx`, `DemoPortal.tsx`, `MelodiAlamLockup.tsx`.
 - `components/motion/MotionRoot.tsx`, `RevealText.tsx`, `ParallaxImage.tsx`,
   `CountUp.tsx`, `MarqueeTape.tsx`.
 - `lib/site.ts`, `lib/catalogue.ts`, `lib/content.ts` (tipe + ekspor + seed/enum).
