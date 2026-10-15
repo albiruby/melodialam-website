@@ -7,7 +7,7 @@ import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
 import { allArticles } from "@/lib/articles";
 import { allInterviews } from "@/lib/interviews";
-import { allVideos, latestVideos, videoById } from "@/lib/videos";
+import { allVideos, latestVideos } from "@/lib/videos";
 import { getSiteSettings } from "@/lib/site-settings";
 import { CHANNEL } from "@/lib/catalogue";
 import { CountUp } from "@/components/motion/CountUp";
@@ -42,7 +42,6 @@ export default async function HomePage() {
   const teasers = latestVideos(videos, 4);
   // The home page shows the first three rows of the index, not all of them.
   const interviewRows = interviews.slice(0, 3);
-  const interviewVideos = interviewRows.map((r) => videoById(videos, r.videoId));
 
   return (
     <>
@@ -102,43 +101,37 @@ export default async function HomePage() {
         </div>
 
         <div className="divide-y divide-ink border-b border-ink">
-          {interviewRows.map((row, i) => {
-            const video = interviewVideos[i];
-            return (
-              <article
-                key={row.slug}
-                className="group -mx-3 flex cursor-pointer flex-col items-start justify-between gap-6 px-3 py-7 transition-all duration-500 hover:bg-white md:flex-row md:items-center"
-              >
-                <div className="max-w-3xl transition-transform duration-500 group-hover:translate-x-3">
-                  <h3 className="mb-1 font-display text-4xl leading-none tracking-tight text-ink sm:text-6xl">
-                    {row.artist}
-                  </h3>
-                  <p className="text-2xl font-extrabold uppercase leading-[0.94] tracking-tight text-ink transition-colors duration-300 group-hover:text-forest sm:text-5xl">
-                    {row.headline}
-                  </p>
-                </div>
+          {interviewRows.map((row) => (
+            <article
+              key={row.slug}
+              className="group -mx-3 flex cursor-pointer flex-col items-start justify-between gap-6 px-3 py-7 transition-all duration-500 hover:bg-white md:flex-row md:items-center"
+            >
+              <div className="max-w-3xl transition-transform duration-500 group-hover:translate-x-3">
+                <h3 className="mb-1 font-display text-4xl leading-none tracking-tight text-ink sm:text-6xl">
+                  {row.artist}
+                </h3>
+                <p className="text-2xl font-extrabold uppercase leading-[0.94] tracking-tight text-ink transition-colors duration-300 group-hover:text-forest sm:text-5xl">
+                  {row.headline}
+                </p>
+              </div>
 
-                <div className="flex shrink-0 flex-col items-end self-end md:self-center">
-                  <WatchButton
-                    id={row.videoId}
-                    title={`${row.artist} — ${row.headline}`}
-                    className="h-28 w-40 overflow-hidden border border-ink bg-neutral-300 transition-all duration-500 group-hover:shadow-[5px_5px_0px_#0D0D0D]"
-                  >
-                    <Image
-                      src={row.image}
-                      alt={row.artist}
-                      fill
-                      sizes="160px"
-                      className="editorial-img object-cover"
-                    />
-                  </WatchButton>
-                  <span className="mt-1.5 font-serif text-sm italic text-neutral-600 transition-colors group-hover:text-forest">
-                    ({video ? video.views : "youtube"} views ↗)
-                  </span>
-                </div>
-              </article>
-            );
-          })}
+              <div className="flex shrink-0 flex-col items-end self-end md:self-center">
+                <WatchButton
+                  id={row.videoId}
+                  title={`${row.artist} — ${row.headline}`}
+                  className="h-28 w-40 overflow-hidden border border-ink bg-neutral-300 transition-all duration-500 group-hover:shadow-[5px_5px_0px_#0D0D0D]"
+                >
+                  <Image
+                    src={row.image}
+                    alt={row.artist}
+                    fill
+                    sizes="160px"
+                    className="editorial-img object-cover"
+                  />
+                </WatchButton>
+              </div>
+            </article>
+          ))}
         </div>
 
         <div className="pt-5 text-right">
@@ -192,7 +185,7 @@ export default async function HomePage() {
 
               <div className="min-w-[240px] flex-1 transition-transform duration-300 group-hover:translate-x-1.5">
                 <div className="font-mono text-[10px] uppercase text-neutral-500">
-                  {video.venue} • {video.views} views • {video.uploaded}
+                  {video.venue} • {video.uploaded}
                 </div>
                 <h3 className="mt-0.5 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest sm:text-base">
                   <WatchLink id={video.id} title={video.title}>

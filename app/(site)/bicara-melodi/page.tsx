@@ -58,7 +58,7 @@ export default async function BicaraMelodiPage() {
               </p>
               {video ? (
                 <p className="mt-2 font-mono text-[10px] uppercase text-neutral-500">
-                  {video.duration} • {video.views} views • {video.uploaded}
+                  {video.duration} • {video.uploaded}
                 </p>
               ) : null}
             </div>

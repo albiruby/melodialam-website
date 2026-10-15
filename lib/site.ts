@@ -31,6 +31,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/journal", label: "Journal & Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Videos", badge: "YT" },
+  { href: "/pahlawan-kota", label: "Pahlawan Kota" },
 ];
 
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };
@@ -40,7 +41,7 @@ export const FOOTER_RUBRIKS: NavItem[] = [
   { href: "/bicara-melodi", label: "Bicara Melodi Podcast (Season 3)" },
   { href: "/videos", label: "Melodi Samsara Live Session" },
   { href: "/videos", label: "Melodi Taman Outdoor Session" },
-  { href: "/submit", label: "Submit Demo Musisi" },
+  { href: "/submit", label: "Submit Karya" },
 ];
 
 export const EXTERNAL_LINKS = [

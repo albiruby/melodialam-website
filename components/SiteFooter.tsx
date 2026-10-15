@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { FOOTER_RUBRIKS } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
-import { BrandMark, SamsaraWordmark } from "./BrandMark";
+import { BrandMark, MelodiAlamWordmark } from "./BrandMark";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (
@@ -47,12 +47,13 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <div className="mb-3 font-mono font-bold uppercase tracking-wider">
             Ekosistem Ruang & Kanal Resmi
           </div>
-          {/* Copy below names the venue, so the mark itself is decorative. */}
-          <SamsaraWordmark width={200} tone="forest" alt="" className="h-auto w-[200px]" />
+          {/* Copy below names the venue; this wordmark names the ecosystem owner. */}
+          <MelodiAlamWordmark width={240} tone="forest" className="h-auto w-[240px]" />
           <p className="text-neutral-700">
             <strong>Samsara Listening Space &amp; Resto:</strong>
             <br />
-            Kawasan Sekitar Kebun Raya Bogor, Kota Bogor, Jawa Barat.{" "}
+            Jl. Jalak Harupat No.19, RT.04/RW.04, Babakan, Kecamatan Bogor Tengah, Kota Bogor,
+            Jawa Barat 16129.{" "}
             <a
               href="https://www.google.com/maps/search/?api=1&query=Samsara+Listening+Space+%26+Resto+Bogor"
               target="_blank"

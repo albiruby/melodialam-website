@@ -302,7 +302,7 @@ Presisi centering sudah diverifikasi: `main` berada tepat di tengah pada 360/390
 | Token primitif & semantik | blok `@theme` di `app/globals.css` |
 | Pola perilaku (komponen maya) | `@utility` di `app/globals.css` |
 | Komponen nyata | `components/*.tsx` |
-| Aset merek | `components/BrandMark.tsx` (`BrandMark`, `SamsaraWordmark`) |
+| Aset merek | `components/BrandMark.tsx` (`BrandMark`, `MelodiAlamWordmark`, `SamsaraWordmark`) |
 | Primitif gerak | `components/motion/*.tsx` |
 
 Menambah token atau utility baru wajib punya alasan nyata. Memperpanjang daftar tanpa

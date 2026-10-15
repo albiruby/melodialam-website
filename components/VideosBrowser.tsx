@@ -185,7 +185,7 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
 
       <div className="min-w-[240px] flex-1 transition-transform duration-300 group-hover:translate-x-1.5">
         <div className="font-mono text-[10px] uppercase text-neutral-500">
-          {video.venue} • {video.views} views • {video.uploaded}
+          {video.venue} • {video.uploaded}
         </div>
         <h3 className="mt-0.5 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest sm:text-base">
           <WatchLink id={video.id} title={video.title}>

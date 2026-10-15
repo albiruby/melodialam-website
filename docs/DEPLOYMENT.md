@@ -192,11 +192,12 @@ masalah deploy karena sumbernya berada **di luar repo** (lihat §4.6).
 | Artefak hasil | Generator | Sumber | Dikomit atau di-regenerate? | Kalau langkah dilewati pada clean checkout |
 |---|---|---|---|---|
 | `lib/catalogue.json` (192.670 byte) | `npm run catalogue` → `scripts/build-catalogue.mjs` | `../melodi-alam-data.md` (fallback: `melodi-alam-data.md` di root proyek) | **Belum di-track** (`TERVERIFIKASI`) | **`next build` GAGAL** — `lib/catalogue.ts` meng-import JSON ini |
-| `public/brand/medallion.png`, `medallion-128.png`, `medallion-256.png` | `npm run brand` → `scripts/build-brand.mjs` | `../logobulet.png` | **Belum di-track** | Halaman brand/header kehilangan gambar → aset 404 |
-| `public/brand/samsara-wordmark.png`, `samsara-wordmark-ink.png`, `samsara-wordmark-forest.png` | `npm run brand` → `scripts/build-brand.mjs` | `../logotext.png` | **Belum di-track** | Wordmark header hilang → aset 404 |
-| `app/icon.png` (512 px, favicon) | `npm run brand` → `scripts/build-brand.mjs` | `../logobulet.png` | **Belum di-track** | Rute `/icon.png` kosong / fallback |
-| `app/apple-icon.png` (180 px) | `npm run brand` → `scripts/build-brand.mjs` | `../logobulet.png` | **Belum di-track** | Rute `/apple-icon.png` kosong / fallback |
-| `app/favicon.ico` (16/32/48) | `npm run brand` → `scripts/build-brand.mjs` | `../logobulet.png` | **Di-track** (`TERVERIFIKASI`, satu-satunya artefak generated yang masuk git) | Favicon lama/bawaan Next.js tetap ada |
+| `public/brand/medallion.png`, `medallion-128.png`, `medallion-256.png` | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Belum di-track** | Halaman brand/header kehilangan gambar → aset 404 |
+| `public/brand/melodi-alam-wordmark.png`, `-ink.png`, `-forest.png` | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Text Logo - White.png` | **Belum di-track** | Wordmark masthead & footer hilang → aset 404 |
+| `public/brand/samsara-wordmark.png`, `samsara-wordmark-ink.png`, `samsara-wordmark-forest.png` | `npm run brand` → `scripts/build-brand.mjs` | `../logotext.png` (**tidak ada lagi** — bagian ini di-skip bila sumber absen) | **Belum di-track** | Tidak ada — aset yang sudah di-commit tetap dipakai |
+| `app/icon.png` (512 px, favicon) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Belum di-track** | Rute `/icon.png` kosong / fallback |
+| `app/apple-icon.png` (180 px) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Belum di-track** | Rute `/apple-icon.png` kosong / fallback |
+| `app/favicon.ico` (16/32/48) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Di-track** (`TERVERIFIKASI`, satu-satunya artefak generated yang masuk git) | Favicon lama/bawaan Next.js tetap ada |
 | `public/photos/*` (33 berkas) | `npm run photos` → `scripts/copy-photos.mjs` | `../../FOTO PLACEHOLDER MELODI ALAM` | **Belum di-track** | Semua foto artikel/space → aset 404 |
 
 Catatan: **seluruh proyek belum ter-commit** selain initial scaffold (`git log` hanya

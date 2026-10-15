@@ -114,16 +114,16 @@ async function emit(name, pipeline, note) {
 }
 
 // ---------------------------------------------------------------------------
-// 1. logobulet.png — the circular batik medallion.
-//    The export carries a detached green rule below the mark (a stray 335x22
-//    bar, 122px clear of the art). It is not part of the emblem, so it is
-//    cropped off along with the surrounding whitespace.
+// 1. LOGO2/Melodi Alam Logo Only - Color.png — the circular batik medallion.
+//    The export is a stacked lockup: the medallion, then a detached green rule
+//    and the wordmark below it. Only the medallion band is the emblem, so the
+//    smaller bands below are dropped along with the surrounding whitespace.
 // ---------------------------------------------------------------------------
 {
-  const abs = path.join(ROOT, "logobulet.png");
+  const abs = path.join(ROOT, "LOGO2", "Melodi Alam Logo Only - Color.png");
   const { bands } = await measure(abs);
 
-  console.log(`\nlogobulet.png — ${bands.length} ink band(s):`);
+  console.log(`\nMelodi Alam Logo Only - Color.png — ${bands.length} ink band(s):`);
   for (const b of bands) {
     console.log(
       `   y ${b.top}..${b.bottom}  ${b.width}x${b.height}  x ${b.left}..${b.right}` +
@@ -182,41 +182,125 @@ async function emit(name, pipeline, note) {
 
 // ---------------------------------------------------------------------------
 // 2. logotext.png — the "MELODI SAMSARA" wordmark in gold.
-//    Only 23% of the canvas is ink; the rest is padding, so this trims to the
-//    true 2212x337 lockup and then offers a darkened variant for legibility on
-//    the paper background.
+//    The source left the workspace when the LOGO2 kit replaced it, so this
+//    section is skipped when the file is absent and the committed
+//    samsara-wordmark assets stay as they are. The site no longer renders this
+//    wordmark; the artwork remains for the venue sections that may want it.
 // ---------------------------------------------------------------------------
 {
   const abs = path.join(ROOT, "logotext.png");
-  const { bands } = await measure(abs);
-  const art = bands[0];
+  if (!fs.existsSync(abs)) {
+    console.log("\nlogotext.png — source not present, keeping the committed samsara-wordmark assets.");
+  } else {
+    const { bands } = await measure(abs);
+    const art = bands[0];
 
-  console.log(`\nlogotext.png — ink ${art.width}x${art.height} at y ${art.top}..${art.bottom}`);
+    console.log(`\nlogotext.png — ink ${art.width}x${art.height} at y ${art.top}..${art.bottom}`);
+
+    const cropped = sharp(abs).extract({
+      left: art.left,
+      top: art.top,
+      width: art.width,
+      height: art.height,
+    });
+
+    const full = await cropped.png().toBuffer();
+    const meta = await sharp(full).metadata();
+    const { data: raw, info } = await sharp(full).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+
+    await emit("samsara-wordmark.png", sharp(full).resize(1600), `gold ${meta.width}x${meta.height} -> 1600px`);
+
+    const ink = recolor(raw, info.channels, "#0d0d0d");
+    await emit(
+      "samsara-wordmark-ink.png",
+      sharp(ink, { raw: { width: info.width, height: info.height, channels: 4 } }).resize(1600),
+      "recoloured #0d0d0d",
+    );
+
+    const forest = recolor(raw, info.channels, "#1b3b2b");
+    await emit(
+      "samsara-wordmark-forest.png",
+      sharp(forest, { raw: { width: info.width, height: info.height, channels: 4 } }).resize(1600),
+      "recoloured #1b3b2b",
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// 3. LOGO2/Melodi Alam Text Logo - White.png — the MELODI ALAM lockup.
+//    The lockup is [medallion][wordmark]. The medallion already ships in colour
+//    from logobulet.png above, so only the wordmark is emitted here — the split
+//    is measured from the widest empty column run, not guessed. Recoloured for
+//    the two surfaces it lands on: ink on paper (masthead), forest in the footer.
+// ---------------------------------------------------------------------------
+{
+  const abs = path.join(ROOT, "LOGO2", "Melodi Alam Text Logo - White.png");
+  const { width, height, data, channels } = await measure(abs);
+
+  const colInk = new Array(width).fill(false);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (data[(y * width + x) * channels + 3] > ALPHA_MIN) colInk[x] = true;
+    }
+  }
+
+  let split = -1;
+  let best = 0;
+  let runStart = null;
+  for (let x = 0; x <= width; x++) {
+    const empty = x === width || !colInk[x];
+    if (empty) {
+      if (runStart === null) runStart = x;
+    } else {
+      if (runStart !== null) {
+        const len = x - runStart;
+        if (runStart > 0 && len > best) {
+          best = len;
+          split = x;
+        }
+        runStart = null;
+      }
+    }
+  }
+
+  let minX = width, maxX = -1, minY = height, maxY = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = split; x < width; x++) {
+      if (data[(y * width + x) * channels + 3] > ALPHA_MIN) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
 
   const cropped = sharp(abs).extract({
-    left: art.left,
-    top: art.top,
-    width: art.width,
-    height: art.height,
+    left: minX,
+    top: minY,
+    width: maxX - minX + 1,
+    height: maxY - minY + 1,
   });
 
   const full = await cropped.png().toBuffer();
   const meta = await sharp(full).metadata();
   const { data: raw, info } = await sharp(full).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
 
-  await emit("samsara-wordmark.png", sharp(full).resize(1600), `gold ${meta.width}x${meta.height} -> 1600px`);
+  console.log(`\nMelodi Alam Text Logo — wordmark ${meta.width}x${meta.height} (medallion split at x=${split})`);
+
+  await emit("melodi-alam-wordmark.png", sharp(full), `white ${meta.width}x${meta.height}`);
 
   const ink = recolor(raw, info.channels, "#0d0d0d");
   await emit(
-    "samsara-wordmark-ink.png",
-    sharp(ink, { raw: { width: info.width, height: info.height, channels: 4 } }).resize(1600),
+    "melodi-alam-wordmark-ink.png",
+    sharp(ink, { raw: { width: info.width, height: info.height, channels: 4 } }),
     "recoloured #0d0d0d",
   );
 
   const forest = recolor(raw, info.channels, "#1b3b2b");
   await emit(
-    "samsara-wordmark-forest.png",
-    sharp(forest, { raw: { width: info.width, height: info.height, channels: 4 } }).resize(1600),
+    "melodi-alam-wordmark-forest.png",
+    sharp(forest, { raw: { width: info.width, height: info.height, channels: 4 } }),
     "recoloured #1b3b2b",
   );
 }

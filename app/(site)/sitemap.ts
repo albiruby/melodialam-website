@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/journal", priority: 0.9, changeFrequency: "daily" },
     { path: "/videos", priority: 0.8, changeFrequency: "weekly" },
     { path: "/bicara-melodi", priority: 0.7, changeFrequency: "weekly" },
+    { path: "/pahlawan-kota", priority: 0.7, changeFrequency: "weekly" },
     { path: "/submit", priority: 0.6, changeFrequency: "monthly" },
   ];
 

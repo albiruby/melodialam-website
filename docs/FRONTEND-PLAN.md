@@ -330,7 +330,8 @@ terlihat scanner Tailwind dan pernah meruntuhkan frame kartu (brief §9 temuan #
 | `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
 | `SubmitLink` (dari `Ticker`) | Pattern | Server | `className?` | `SiteHeader` (nav desktop) |
 | `BrandMark` | Primitive | Server | `size?`, `sizes?`, `className?`, `alt?` (default `""`), `eager?` | `SiteHeader`, `SiteFooter` |
-| `SamsaraWordmark` | Primitive | Server | `width?`, `tone?: "gold"\|"forest"\|"ink"`, `sizes?`, `className?`, `alt?` (default `"Melodi Samsara"`), `eager?` | `SiteHeader`, `SiteFooter` |
+| `MelodiAlamWordmark` | Primitive | Server | `width?`, `tone?: "white"\|"ink"\|"forest"`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | `SiteHeader`, `SiteFooter` |
+| `SamsaraWordmark` | Primitive | Server | `width?`, `tone?: "gold"\|"forest"\|"ink"`, `sizes?`, `className?`, `alt?` (default `"Melodi Samsara"`), `eager?` | tidak dipakai saat ini |
 
 **Progressive enhancement `WatchLink` (`TERVERIFIKASI`).** Anchor menyimpan
 `href="https://www.youtube.com/watch?v={id}"` yang nyata (crawlable dan berfungsi

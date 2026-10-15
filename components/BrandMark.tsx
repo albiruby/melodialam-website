@@ -90,6 +90,10 @@ const WORDMARK_SRC = {
  * The Melodi Samsara wordmark from logotext.png — a sub-brand of Melodi Alam
  * (the live-session series and the Samsara Bogor listening space), not the
  * parent site name. Use it only where Samsara is the actual subject.
+ *
+ * No caller uses it right now — the masthead and the footer both carry the
+ * Melodi Alam wordmark instead — but the artwork stays built for the venue
+ * sections that may want it back.
  */
 export function SamsaraWordmark({
   width = 220,
@@ -105,6 +109,57 @@ export function SamsaraWordmark({
       alt={alt}
       width={width}
       height={Math.round((width * 337) / 2212)}
+      sizes={sizes ?? `${width}px`}
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      className={className}
+    />
+  );
+}
+
+interface MelodiAlamWordmarkProps {
+  /** Intrinsic render width in px. The artwork's own aspect is 713:57. */
+  width?: number;
+  /**
+   * The supplied artwork is white (for dark surfaces). `ink` and `forest` are
+   * recolours built by scripts/build-brand.mjs, so the wordmark reads on the
+   * paper background — confirm a new surface's contrast before using `white`.
+   */
+  tone?: "white" | "ink" | "forest";
+  /** Responsive srcset hint, whenever `className` changes the display width. */
+  sizes?: string;
+  className?: string;
+  /** Empty when adjacent copy already names the site. */
+  alt?: string;
+  /** Set for the above-the-fold instance, which is the masthead lockup. */
+  eager?: boolean;
+}
+
+const MELODI_ALAM_SRC = {
+  white: "/brand/melodi-alam-wordmark.png",
+  ink: "/brand/melodi-alam-wordmark-ink.png",
+  forest: "/brand/melodi-alam-wordmark-forest.png",
+} as const;
+
+/**
+ * The MELODI ALAM wordmark from LOGO2/Melodi Alam Text Logo - White.png. This
+ * is the parent-site name — the masthead and the footer ecosystem block use it;
+ * the medallion beside it stays the colour BrandMark.
+ */
+export function MelodiAlamWordmark({
+  width = 360,
+  tone = "ink",
+  sizes,
+  className = "",
+  alt = "Melodi Alam",
+  eager = false,
+}: MelodiAlamWordmarkProps) {
+  return (
+    <Image
+      src={MELODI_ALAM_SRC[tone]}
+      alt={alt}
+      width={width}
+      height={Math.round((width * 57) / 713)}
       sizes={sizes ?? `${width}px`}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}

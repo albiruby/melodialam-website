@@ -814,10 +814,11 @@ DOCS ONLY dipatuhi.
    `lib/catalogue.json` dipertahankan sebagai artefak build-time di samping
    Payload, atau dihapus? Rekomendasi dokumen ini: katalog tetap artefak
    (ADR-004), editorial pindah penuh ke Payload. **Perlu keputusan pemilik.**
-2. **Konsistensi nama brand.** Header `<h1>` adalah wordmark "MELODI SAMSARA"
-   (`alt="Melodi Samsara"`), sementara `lib/site.ts` memakai `SITE.name =
-   "MELODI ALAM"` untuk metadata & footer. Konsekuensi SEO/aksesibilitas belum
-   diputuskan.
+2. ~~**Konsistensi nama brand.**~~ **Selesai.** Header `<h1>` sempat memakai
+   wordmark "MELODI SAMSARA" sementara `lib/site.ts` memakai `SITE.name =
+   "MELODI ALAM"`. Sejak kit logo di `LOGO2/`, masthead dan blok ekosistem di
+   footer memakai wordmark `MelodiAlamWordmark` (`alt="Melodi Alam"`), jadi
+   header, metadata, dan footer kini menamai situs yang sama.
 3. **README stale.** `README.md` masih menyebut remote image Unsplash dan font
    Plus Jakarta Sans, sementara `next.config.ts` hanya mengizinkan `i.ytimg.com`
    dan `layout.tsx` memuat Inter/Red Hat Display/Instrument Serif/JetBrains Mono.

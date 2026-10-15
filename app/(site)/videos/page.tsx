@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { Reveal } from "@/components/Reveal";
-import { VideosBrowser, VideoRow } from "@/components/VideosBrowser";
+import { VideoRow } from "@/components/VideosBrowser";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { CHANNEL } from "@/lib/catalogue";
 import { allInterviews } from "@/lib/interviews";
-import { allPlaylists, allVideos, videoById } from "@/lib/videos";
+import { allPlaylists, allVideos } from "@/lib/videos";
 
 export const metadata: Metadata = {
   title: "Videos",
@@ -57,10 +57,6 @@ export default async function VideosPage() {
   // Two editorial sections, then the whole catalogue.
   const samsara = videos.filter((v) => v.venue === "Melodi Samsara");
   const samsaraPreview = samsara.slice(0, SAMSARA_PREVIEW);
-  const curated = interviews.map((interview) => ({
-    interview,
-    video: videoById(videos, interview.videoId),
-  }));
 
   return (
     <>
@@ -73,7 +69,7 @@ export default async function VideosPage() {
           linkLabel="Index lengkap"
         />
         <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
-          {curated.map(({ interview }) => (
+          {interviews.map((interview) => (
             <article key={interview.slug} className="group">
               <WatchButton
                 id={interview.videoId}
@@ -91,11 +87,6 @@ export default async function VideosPage() {
               <p className="mt-1 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest">
                 {interview.headline}
               </p>
-              {interview.caption ? (
-                <span className="mt-1 block font-serif text-sm italic text-neutral-600">
-                  ({interview.caption})
-                </span>
-              ) : null}
             </article>
           ))}
         </div>
@@ -116,14 +107,8 @@ export default async function VideosPage() {
         </div>
         <p className="pt-3 text-xs font-mono text-neutral-500">
           Menampilkan {samsaraPreview.length} terbaru dari {samsara.length} sesi. Sisanya ada di
-          arsip di bawah.
+          kanal YouTube.
         </p>
-      </Reveal>
-
-      {/* ---------- The full catalogue ---------- */}
-      <Reveal>
-        <SectionHead title="Arsip" note={`${videos.length} video`} />
-        <VideosBrowser videos={videos} />
       </Reveal>
 
       {/* ---------- Playlists ---------- */}
@@ -156,8 +141,7 @@ export default async function VideosPage() {
         </div>
 
         <p className="pt-4 text-xs font-mono text-neutral-500">
-          Katalog diambil dari kanal YouTube resmi. Angka views diperbarui manual lewat Sanity
-          Studio; umur video dihitung dari tanggal terbitnya.
+          Katalog diambil dari kanal YouTube resmi. Umur video dihitung dari tanggal terbitnya.
         </p>
       </Reveal>
 

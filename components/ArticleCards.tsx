@@ -100,42 +100,53 @@ function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "squar
   );
 }
 
-/** Large hero card for the cover story. */
+/**
+ * Cover story for the top of the home page.
+ *
+ * The art is square — the 1:1 frame Instagram feed posts use — so covers cut
+ * for @melodi.alam drop in without being re-cropped. On wide screens the
+ * caption sits beside the image; on phones it stacks under it.
+ */
 export function HeroArticle({ article }: { article: Article }) {
   return (
-    <article className="group relative overflow-hidden border-b border-ink">
-      <ParallaxImage
-        src={article.image}
-        alt={article.title}
-        className="aspect-[16/10] w-full bg-neutral-900 sm:aspect-[21/9]"
-        imageClassName="object-cover opacity-85"
-        sizes="(min-width: 1360px) 1328px, 100vw"
-        distance={64}
-        preload
-      />
-      <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/35 to-transparent p-5 text-white sm:p-10">
-        <div className="mb-2 flex items-center gap-2 text-[11px] uppercase tracking-widest text-neutral-300">
-          <span className="bg-forest px-2 py-0.5 text-white">COVER STORY</span>
-          <span>•</span>
-          <span>{CATEGORY_LABELS[article.category].toUpperCase()}</span>
+    <article className="group relative border-b border-ink">
+      <div className="grid grid-cols-1 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          <ParallaxImage
+            src={article.image}
+            alt={article.title}
+            className="aspect-square w-full bg-neutral-900"
+            imageClassName="object-cover"
+            sizes="(min-width: 1024px) 775px, 100vw"
+            distance={48}
+            preload
+          />
         </div>
-        <h2 className="max-w-3xl text-2xl font-bold leading-[1.08] tracking-tight transition-transform duration-500 group-hover:translate-x-1.5 sm:text-4xl lg:text-5xl">
-          <Link href={`/journal/${article.slug}`} className="after:absolute after:inset-0">
-            {article.title}
-          </Link>
-        </h2>
-        <p className="mt-3 line-clamp-2 max-w-2xl text-xs text-neutral-200 opacity-90 transition-opacity group-hover:opacity-100 sm:text-sm">
-          {article.excerpt}
-        </p>
-        <div className="mt-4 flex items-center gap-4 text-[11px] uppercase tracking-wider text-neutral-300">
-          <span>Oleh Tim Redaksi Melodi Alam</span>
-          <span>•</span>
-          <span className="inline-flex items-center gap-1 transition-colors group-hover:text-green-400">
-            Baca Selengkapnya{" "}
-            <span className="inline-block transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1">
-              ↗
+
+        <div className="flex flex-col justify-center gap-3 border-t border-ink p-5 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-8">
+          <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-neutral-500">
+            <span className="bg-forest px-2 py-0.5 text-white">COVER STORY</span>
+            <span aria-hidden>•</span>
+            <span>{CATEGORY_LABELS[article.category].toUpperCase()}</span>
+          </div>
+          <h2 className="text-2xl font-bold leading-[1.08] tracking-tight transition-transform duration-500 group-hover:translate-x-1.5 sm:text-3xl lg:text-4xl">
+            <Link href={`/journal/${article.slug}`} className="after:absolute after:inset-0">
+              {article.title}
+            </Link>
+          </h2>
+          <p className="line-clamp-3 text-xs leading-relaxed text-neutral-600 sm:text-sm">
+            {article.excerpt}
+          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] uppercase tracking-wider text-neutral-500">
+            <span>Oleh Tim Redaksi Melodi Alam</span>
+            <span aria-hidden>•</span>
+            <span className="inline-flex items-center gap-1 transition-colors group-hover:text-forest">
+              Baca Selengkapnya{" "}
+              <span className="inline-block transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1">
+                ↗
+              </span>
             </span>
-          </span>
+          </div>
         </div>
       </div>
     </article>
@@ -147,7 +158,7 @@ export function FeatureCard({ article, note }: { article: Article; note: string 
   return (
     <article className="group flex cursor-pointer flex-col justify-between p-4 transition-colors duration-300 hover:bg-paper sm:p-5">
       <div>
-        <div className="hover-reveal-box corner-frame mb-3 aspect-[16/10] border border-ink bg-neutral-900">
+        <div className="hover-reveal-box corner-frame mb-3 aspect-square border border-ink bg-neutral-900">
           <Image
             src={article.image}
             alt={article.title}

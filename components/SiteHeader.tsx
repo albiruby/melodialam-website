@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
-import { BrandMark, SamsaraWordmark } from "./BrandMark";
+import { BrandMark, MelodiAlamWordmark } from "./BrandMark";
 import { SubmitLink } from "./Ticker";
 
 /** Brand copy comes from the `siteSettings` singleton, passed down by the layout. */
@@ -44,11 +44,11 @@ export function SiteHeader({
             />
             <span className="flex flex-col items-center md:items-start">
               <h1 className="leading-none">
-                <SamsaraWordmark
-                  width={520}
+                <MelodiAlamWordmark
+                  width={360}
                   tone="ink"
-                  sizes="(min-width: 768px) 260px, 210px"
-                  className="h-auto w-[210px] transition-transform duration-500 group-hover:scale-[1.03] md:w-[260px]"
+                  sizes="(min-width: 768px) 360px, 260px"
+                  className="h-auto w-[260px] transition-transform duration-500 group-hover:scale-[1.03] md:w-[360px]"
                   eager
                 />
               </h1>
