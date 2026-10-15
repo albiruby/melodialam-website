@@ -3,11 +3,12 @@ import Image from "next/image";
 /**
  * Smallest size at which the medallion still reads.
  *
- * Measured from the source art (logobulet.png, 1544x1559 of actual ink): the
- * radial ornament carries detail down to roughly 4px at native scale. Rendered
- * below ~48px that detail collapses into a speck, so callers must not go under
- * this floor. Verified by rendering the mark at 20/24/32/40/48/64/96px on the
- * paper background.
+ * Measured from the source art (the medallion in
+ * LOGO2/Melodi Alam Text Logo - Black.png, 280x286 of actual ink): the radial
+ * ornament carries detail down to roughly 4px at native scale. Rendered below
+ * ~48px that detail collapses into a speck, so callers must not go under this
+ * floor. Verified by rendering the mark at 20/24/32/40/48/64/96px on the paper
+ * background.
  */
 export const BRAND_MARK_MIN_SIZE = 48;
 
@@ -30,9 +31,13 @@ interface BrandMarkProps {
 }
 
 /**
- * The circular batik medallion — Melodi Alam's symbol, from logobulet.png.
- * The source export also carries a detached green rule 122px below the mark;
- * it is cropped out during asset build. See scripts/build-brand.mjs.
+ * The circular batik medallion — Melodi Alam's symbol, from
+ * LOGO2/Melodi Alam Text Logo - Black.png. The mark is reproduced as supplied:
+ * black, squared onto a transparent canvas by scripts/build-brand.mjs.
+ *
+ * No caller uses it right now — the masthead and the footer both render the
+ * whole MelodiAlamLockup — but the crop stays built for any place that wants
+ * the mark on its own.
  */
 export function BrandMark({
   size = 64,
@@ -43,7 +48,7 @@ export function BrandMark({
 }: BrandMarkProps) {
   return (
     <Image
-      src="/brand/medallion-256.png"
+      src="/brand/medallion-black-256.png"
       alt={alt}
       width={size}
       height={size}
@@ -118,15 +123,8 @@ export function SamsaraWordmark({
 }
 
 interface MelodiAlamWordmarkProps {
-  /** Intrinsic render width in px. The artwork's own aspect is 713:57. */
+  /** Intrinsic render width in px. The artwork's own aspect is 1566:126. */
   width?: number;
-  /**
-   * `green` is the kit's own colour, sampled from its colour artwork by
-   * scripts/build-brand.mjs — the mark is reproduced as supplied, not mapped
-   * onto the site palette. `white` is the supplied artwork, for dark surfaces;
-   * check contrast before using it on paper.
-   */
-  tone?: "green" | "white";
   /** Responsive srcset hint, whenever `className` changes the display width. */
   sizes?: string;
   className?: string;
@@ -136,19 +134,16 @@ interface MelodiAlamWordmarkProps {
   eager?: boolean;
 }
 
-const MELODI_ALAM_SRC = {
-  green: "/brand/melodi-alam-wordmark-green.png",
-  white: "/brand/melodi-alam-wordmark-white.png",
-} as const;
-
 /**
- * The MELODI ALAM wordmark from LOGO2/Melodi Alam Text Logo - White.png, in the
- * kit's own green. This is the parent-site name — the masthead and the footer
- * ecosystem block use it, and the medallion beside it is the colour BrandMark.
+ * The MELODI ALAM wordmark alone, from LOGO2/Melodi Alam Text Logo - Black.png,
+ * reproduced as supplied — no recolouring.
+ *
+ * No caller uses it right now: the masthead and both footer blocks carry the
+ * full MelodiAlamLockup. It stays available for a surface that wants the name
+ * without the mark.
  */
 export function MelodiAlamWordmark({
   width = 360,
-  tone = "green",
   sizes,
   className = "",
   alt = "Melodi Alam",
@@ -156,10 +151,53 @@ export function MelodiAlamWordmark({
 }: MelodiAlamWordmarkProps) {
   return (
     <Image
-      src={MELODI_ALAM_SRC[tone]}
+      src="/brand/melodi-alam-wordmark-black.png"
       alt={alt}
       width={width}
-      height={Math.round((width * 57) / 713)}
+      height={Math.round((width * 126) / 1566)}
+      sizes={sizes ?? `${width}px`}
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "high" : "auto"}
+      className={className}
+    />
+  );
+}
+
+interface MelodiAlamLockupProps {
+  /**
+   * Intrinsic render width in px. The artwork's own aspect is 2021:286, and the
+   * medallion-to-wordmark gap is part of the artwork — do not rebuild the lockup
+   * out of the two crops.
+   */
+  width?: number;
+  /** Responsive srcset hint, whenever `className` changes the display width. */
+  sizes?: string;
+  className?: string;
+  /** Empty when adjacent copy already names the site. */
+  alt?: string;
+  /** Set for the above-the-fold instance, which is the masthead lockup. */
+  eager?: boolean;
+}
+
+/**
+ * The complete MELODI ALAM lockup — [medallion][wordmark] — from
+ * LOGO2/Melodi Alam Text Logo - Black.png, at the supplied spacing. The
+ * masthead uses this; anywhere the two parts are wanted separately, use
+ * BrandMark and MelodiAlamWordmark, which are cut from the same file.
+ */
+export function MelodiAlamLockup({
+  width = 420,
+  sizes,
+  className = "",
+  alt = "Melodi Alam",
+  eager = false,
+}: MelodiAlamLockupProps) {
+  return (
+    <Image
+      src="/brand/melodi-alam-lockup-black.png"
+      alt={alt}
+      width={width}
+      height={Math.round((width * 286) / 2021)}
       sizes={sizes ?? `${width}px`}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}

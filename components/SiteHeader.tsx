@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
-import { BrandMark, MelodiAlamWordmark } from "./BrandMark";
+import { MelodiAlamLockup } from "./BrandMark";
 import { SubmitLink } from "./Ticker";
 
 /** Brand copy comes from the `siteSettings` singleton, passed down by the layout. */
@@ -27,34 +27,24 @@ export function SiteHeader({
     <header className="mx-auto max-w-[1360px] px-4 pt-6 sm:px-8">
       {/* Masthead row.
           On phones the lockup takes the whole first row and the meta line and
-          actions share the second, because the wordmark is a fixed-aspect image
-          (2212:337) and cannot wrap the way the old text masthead did. From
+          actions share the second, because the lockup is a fixed-aspect image
+          (2021:286) and cannot wrap the way the old text masthead did. From
           `md` the three-column masthead is restored via explicit ordering. */}
       <div className="grid grid-cols-3 items-center gap-x-3 gap-y-4 border-b-2 border-ink pb-4">
         <div className="order-1 col-span-3 text-center md:order-2 md:col-span-1">
-          <Link
-            href="/"
-            className="group inline-flex flex-col items-center justify-center gap-2 md:flex-row md:gap-3.5"
-          >
-            <BrandMark
-              size={64}
-              sizes="(min-width: 768px) 64px, 56px"
-              className="h-14 w-14 shrink-0 md:h-16 md:w-16"
-              eager
-            />
-            <span className="flex flex-col items-center md:items-start">
-              <h1 className="leading-none">
-                <MelodiAlamWordmark
-                  width={360}
-                  tone="green"
-                  sizes="(min-width: 768px) 360px, 260px"
-                  className="h-auto w-[260px] transition-transform duration-500 group-hover:scale-[1.03] md:w-[360px]"
-                  eager
-                />
-              </h1>
-              <span className="mt-1 block font-serif text-xs italic tracking-normal text-neutral-600 transition-colors group-hover:text-forest sm:text-sm">
-                {brand.tagline}
-              </span>
+          <Link href="/" className="group inline-flex flex-col items-center justify-center gap-1.5">
+            <h1 className="leading-none">
+              <MelodiAlamLockup
+                width={400}
+                sizes="(min-width: 768px) 400px, (min-width: 640px) 360px, 300px"
+                className="h-auto w-[300px] transition-transform duration-500 group-hover:scale-[1.03] sm:w-[360px] md:w-[400px]"
+                eager
+              />
+            </h1>
+            {/* Sits under the wordmark, not under the medallion: the mark and the
+                gap take the first 22.5% of the artwork (455 of 2021px). */}
+            <span className="block w-full pl-[22.5%] text-left font-serif text-xs italic tracking-normal text-neutral-600 transition-colors group-hover:text-forest sm:text-sm">
+              {brand.tagline}
             </span>
           </Link>
         </div>

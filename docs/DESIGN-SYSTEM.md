@@ -302,7 +302,7 @@ Presisi centering sudah diverifikasi: `main` berada tepat di tengah pada 360/390
 | Token primitif & semantik | blok `@theme` di `app/globals.css` |
 | Pola perilaku (komponen maya) | `@utility` di `app/globals.css` |
 | Komponen nyata | `components/*.tsx` |
-| Aset merek | `components/BrandMark.tsx` (`BrandMark`, `MelodiAlamWordmark`, `SamsaraWordmark`) |
+| Aset merek | `components/BrandMark.tsx` (`BrandMark`, `MelodiAlamLockup`, `MelodiAlamWordmark`, `SamsaraWordmark`) |
 | Primitif gerak | `components/motion/*.tsx` |
 
 Menambah token atau utility baru wajib punya alasan nyata. Memperpanjang daftar tanpa
@@ -379,7 +379,8 @@ pengaturan OS nyata, hanya blok CSS-nya dibaca.
    (versi stacked) yang perlu direproduksi?
 5. ~~**Wordmark** — aslinya emas `#c2ac7a`; header memakai varian `ink` karena emas terlalu
    pudar di atas putih. Apakah recolor ini disetujui sebagai warna merek?~~ **Selesai.**
-   Masthead tidak lagi memakai wordmark Samsara. Wordmark Melodi Alam sekarang
-   mereproduksi warna kit apa adanya — hijau `#376a2e` di-sample dari
-   `LOGO2/Melodi Alam Logo Only - Color.png` saat build, bukan dipetakan ke palet
-   situs. Recolor `ink`/`forest` dihapus.
+   Masthead tidak lagi memakai wordmark Samsara. Logo Melodi Alam sekarang
+   direproduksi apa adanya dari `LOGO2/Melodi Alam Text Logo - Black.png`, dan
+   halaman merender lockup penuh (medallion + wordmark) di masthead dan kedua blok
+   footer — bukan potongan teks. Semua varian recolor (ink, forest, hijau kit, putih)
+   dihapus.

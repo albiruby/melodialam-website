@@ -329,8 +329,9 @@ terlihat scanner Tailwind dan pernah meruntuhkan frame kartu (brief §9 temuan #
 | `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,004,005,006 |
 | `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
 | `SubmitLink` (dari `Ticker`) | Pattern | Server | `className?` | `SiteHeader` (nav desktop) |
-| `BrandMark` | Primitive | Server | `size?`, `sizes?`, `className?`, `alt?` (default `""`), `eager?` | `SiteHeader`, `SiteFooter` |
-| `MelodiAlamWordmark` | Primitive | Server | `width?`, `tone?: "green"\|"white"`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | `SiteHeader`, `SiteFooter` |
+| `BrandMark` | Primitive | Server | `size?`, `sizes?`, `className?`, `alt?` (default `""`), `eager?` | tidak dipakai saat ini |
+| `MelodiAlamLockup` | Primitive | Server | `width?`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | `SiteHeader`, `SiteFooter` (dua blok) |
+| `MelodiAlamWordmark` | Primitive | Server | `width?`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | tidak dipakai saat ini |
 | `SamsaraWordmark` | Primitive | Server | `width?`, `tone?: "gold"\|"forest"\|"ink"`, `sizes?`, `className?`, `alt?` (default `"Melodi Samsara"`), `eager?` | tidak dipakai saat ini |
 
 **Progressive enhancement `WatchLink` (`TERVERIFIKASI`).** Anchor menyimpan
@@ -347,7 +348,14 @@ mengirim event yang sama.
 **`BrandMark` (`TERVERIFIKASI`).** `BRAND_MARK_MIN_SIZE = 48` diekspor sebagai
 batas bawah yang disepakati; komentar kode mencatat verifikasi ukuran
 20/24/32/40/48/64/96 px. `alt` default kosong karena mark dianggap dekoratif
-(wordmark di sebelahnya sudah menamai situs).
+(judul di sebelahnya sudah menamai situs).
+
+**Aset merek (`TERVERIFIKASI`).** `MelodiAlamLockup`, `MelodiAlamWordmark`, dan
+`BrandMark` memotong satu berkas yang sama —
+`LOGO2/Melodi Alam Text Logo - Black.png` — apa adanya: tanpa recolor, dan jarak
+medallion–wordmark di dalam lockup adalah jarak artwork-nya. Halaman merender
+lockup penuh (masthead + dua blok footer); dua crop lain dibangun tetapi belum
+dipakai. Mark warna (`medallion*.png`) tetap dibangun untuk ikon app.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 

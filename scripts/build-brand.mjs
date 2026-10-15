@@ -61,34 +61,6 @@ async function measure(abs) {
   return { width, height, data, channels, bands, minX, maxX };
 }
 
-/**
- * The flat colour of the last ink band — the kit's own brand colour.
- *
- * Sampled rather than typed in: the green belongs to the supplied artwork, so
- * the build reads it back from the colour source instead of us restating it
- * (and drifting from it) in code.
- */
-async function sampleFlatColour(abs) {
-  const { data, width, channels, bands } = await measure(abs);
-  const band = bands[bands.length - 1];
-
-  const counts = new Map();
-  for (let y = band.top; y <= band.bottom; y++) {
-    for (let x = 0; x < width; x++) {
-      const i = (y * width + x) * channels;
-      if (data[i + 3] < 200) continue;
-      const key = `${data[i]},${data[i + 1]},${data[i + 2]}`;
-      counts.set(key, (counts.get(key) ?? 0) + 1);
-    }
-  }
-
-  const [rgb] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0];
-  return `#${rgb
-    .split(",")
-    .map((v) => Number(v).toString(16).padStart(2, "0"))
-    .join("")}`;
-}
-
 /** Swaps the RGB of every pixel for a flat colour, keeping the alpha mask intact. */
 function recolor(data, channels, hex) {
   const r = parseInt(hex.slice(1, 3), 16);
@@ -146,6 +118,11 @@ async function emit(name, pipeline, note) {
 //    The export is a stacked lockup: the medallion, then a detached green rule
 //    and the wordmark below it. Only the medallion band is the emblem, so the
 //    smaller bands below are dropped along with the surrounding whitespace.
+//
+//    This is the colour mark. The site renders the black mark from
+//    LOGO2/Melodi Alam Text Logo - Black.png (section 3); the colour mark is
+//    kept for the app icons below and for surfaces that want the emblem in
+//    colour.
 // ---------------------------------------------------------------------------
 {
   const abs = path.join(ROOT, "LOGO2", "Melodi Alam Logo Only - Color.png");
@@ -183,9 +160,9 @@ async function emit(name, pipeline, note) {
 
   const squaredBuffer = await squared.png().toBuffer();
 
-  await emit("medallion.png", sharp(squaredBuffer).resize(1024, 1024), "primary mark, 1024px");
-  await emit("medallion-128.png", sharp(squaredBuffer).resize(128, 128), "header/footer, 128px");
-  await emit("medallion-256.png", sharp(squaredBuffer).resize(256, 256), "retina, 256px");
+  await emit("medallion.png", sharp(squaredBuffer).resize(1024, 1024), "colour mark, 1024px");
+  await emit("medallion-128.png", sharp(squaredBuffer).resize(128, 128), "colour mark, 128px");
+  await emit("medallion-256.png", sharp(squaredBuffer).resize(256, 256), "colour mark, 256px");
 
   // App Router picks these up by filename: app/icon.png becomes the favicon and
   // app/apple-icon.png the touch icon. No metadata wiring needed.
@@ -255,19 +232,17 @@ async function emit(name, pipeline, note) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. LOGO2/Melodi Alam Text Logo - White.png — the MELODI ALAM wordmark.
-//    The lockup is [medallion][wordmark]. The medallion already ships in colour
-//    from LOGO2/Melodi Alam Logo Only - Color.png above, so only the wordmark is
-//    emitted here — the split is measured from the widest empty column run, not
-//    guessed.
+// 3. LOGO2/Melodi Alam Text Logo - Black.png — the MELODI ALAM lockup.
+//    [medallion][wordmark], supplied in black on transparency. Everything the
+//    site renders comes out of this one file and is emitted exactly as supplied:
+//    no recolouring, no re-spacing. The split between the two parts is measured
+//    from the widest empty column run, not guessed.
 //
-//    Colour: the wordmark keeps the kit's OWN green, sampled from the colour
-//    artwork in LOGO2. It is deliberately not mapped onto the site palette
-//    (ink/forest) — the logo is the client's mark and is reproduced as supplied.
-//    The white variant is the supplied artwork, kept for dark surfaces.
+//    Three crops: the whole lockup (masthead), the wordmark alone (the footer's
+//    ecosystem block), and the medallion alone, squared (BrandMark).
 // ---------------------------------------------------------------------------
 {
-  const abs = path.join(ROOT, "LOGO2", "Melodi Alam Text Logo - White.png");
+  const abs = path.join(ROOT, "LOGO2", "Melodi Alam Text Logo - Black.png");
   const { width, height, data, channels } = await measure(abs);
 
   const colInk = new Array(width).fill(false);
@@ -296,46 +271,59 @@ async function emit(name, pipeline, note) {
     }
   }
 
-  let minX = width, maxX = -1, minY = height, maxY = -1;
-  for (let y = 0; y < height; y++) {
-    for (let x = split; x < width; x++) {
-      if (data[(y * width + x) * channels + 3] > ALPHA_MIN) {
-        if (x < minX) minX = x;
-        if (x > maxX) maxX = x;
-        if (y < minY) minY = y;
-        if (y > maxY) maxY = y;
+  /** Ink bounding box of one horizontal region, in sharp's extract shape. */
+  const bbox = (from, to) => {
+    let minX = width, maxX = -1, minY = height, maxY = -1;
+    for (let y = 0; y < height; y++) {
+      for (let x = from; x < to; x++) {
+        if (data[(y * width + x) * channels + 3] > ALPHA_MIN) {
+          if (x < minX) minX = x;
+          if (x > maxX) maxX = x;
+          if (y < minY) minY = y;
+          if (y > maxY) maxY = y;
+        }
       }
     }
-  }
+    return { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
+  };
 
-  const cropped = sharp(abs).extract({
-    left: minX,
-    top: minY,
-    width: maxX - minX + 1,
-    height: maxY - minY + 1,
-  });
-
-  const full = await cropped.png().toBuffer();
-  const meta = await sharp(full).metadata();
-  const { data: raw, info } = await sharp(full).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
-
-  const brandGreen = await sampleFlatColour(
-    path.join(ROOT, "LOGO2", "Melodi Alam Logo Only - Color.png"),
-  );
+  const lockup = bbox(0, width);
+  const mark = bbox(0, split);
+  const wordmark = bbox(split, width);
 
   console.log(
-    `\nMelodi Alam Text Logo — wordmark ${meta.width}x${meta.height} (medallion split at x=${split})`,
+    `\nMelodi Alam Text Logo - Black.png — lockup ${lockup.width}x${lockup.height},` +
+      ` medallion ${mark.width}x${mark.height}, wordmark ${wordmark.width}x${wordmark.height}` +
+      ` (split at x=${split}, gap ${split - (mark.left + mark.width)}px)`,
   );
-  console.log(`   kit colour sampled from the colour artwork: ${brandGreen}`);
 
-  const green = recolor(raw, info.channels, brandGreen);
   await emit(
-    "melodi-alam-wordmark-green.png",
-    sharp(green, { raw: { width: info.width, height: info.height, channels: 4 } }),
-    `kit green ${brandGreen} ${meta.width}x${meta.height}`,
+    "melodi-alam-lockup-black.png",
+    sharp(abs).extract(lockup),
+    `as supplied ${lockup.width}x${lockup.height}`,
+  );
+  await emit(
+    "melodi-alam-wordmark-black.png",
+    sharp(abs).extract(wordmark),
+    `as supplied ${wordmark.width}x${wordmark.height}`,
   );
 
-  await emit("melodi-alam-wordmark-white.png", sharp(full), `white ${meta.width}x${meta.height}`);
+  // Square canvas, so BrandMark's width=height render does not squash the mark.
+  const square = Math.max(mark.width, mark.height);
+  const squaredBuffer = await sharp(abs)
+    .extract(mark)
+    .extend({
+      top: Math.round((square - mark.height) / 2),
+      bottom: Math.round((square - mark.height) / 2),
+      left: Math.round((square - mark.width) / 2),
+      right: Math.round((square - mark.width) / 2),
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    })
+    .png()
+    .toBuffer();
+
+  await emit("medallion-black-128.png", sharp(squaredBuffer).resize(128, 128), "black mark, 128px");
+  await emit("medallion-black-256.png", sharp(squaredBuffer).resize(256, 256), "black mark, 256px");
 }
 
 console.log(`\nwritten to public/brand/`);

@@ -1,22 +1,19 @@
 import Link from "next/link";
 import { FOOTER_RUBRIKS } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
-import { BrandMark, MelodiAlamWordmark } from "./BrandMark";
+import { MelodiAlamLockup } from "./BrandMark";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="mt-20 border-t-2 border-ink bg-paper">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-8 border-b border-ink px-4 py-12 md:grid-cols-12 sm:px-8">
         <div className="space-y-3 md:col-span-5">
-          {/* The footer is where the medallion gets room to read properly. */}
-          <div className="flex items-center gap-3.5">
-            <BrandMark
-              size={128}
-              sizes="(min-width: 640px) 96px, 80px"
-              className="h-20 w-20 shrink-0 sm:h-24 sm:w-24"
-            />
-            <h2 className="text-3xl font-black uppercase tracking-tighter">{settings.name}</h2>
-          </div>
+          {/* The footer is where the lockup gets room to read properly. */}
+          <MelodiAlamLockup
+            width={420}
+            sizes="(min-width: 640px) 420px, 360px"
+            className="h-auto w-[360px] sm:w-[420px]"
+          />
           <p className="font-serif text-lg italic text-neutral-700">
             A living ecosystem of melody: Stories and Watch.
           </p>
@@ -47,8 +44,8 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <div className="mb-3 font-mono font-bold uppercase tracking-wider">
             Ekosistem Ruang & Kanal Resmi
           </div>
-          {/* Copy below names the venue; this wordmark names the ecosystem owner. */}
-          <MelodiAlamWordmark width={240} tone="green" className="h-auto w-[240px]" />
+          {/* Copy below names the venue; this lockup names the ecosystem owner. */}
+          <MelodiAlamLockup width={280} sizes="280px" className="h-auto w-[280px]" />
           <p className="text-neutral-700">
             <strong>Samsara Listening Space &amp; Resto:</strong>
             <br />
