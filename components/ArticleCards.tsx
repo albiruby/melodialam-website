@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { articleReadingTime, CATEGORY_LABELS, type Article } from "@/lib/content";
+import { articleReadingTime, CATEGORY_LABELS } from "@/lib/content";
+import type { SiteArticle } from "@/lib/articles";
 import { ParallaxImage } from "./motion/ParallaxImage";
 
 /**
@@ -14,7 +15,7 @@ export function ArticleCard({
   titleFirst = false,
   index = 0,
 }: {
-  article: Article;
+  article: SiteArticle;
   titleFirst?: boolean;
   index?: number;
 }) {
@@ -71,13 +72,13 @@ const FRAME_SHAPE = {
   "4/3": "aspect-[4/3]",
 } as const;
 
-function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "square" }) {
+function CardImage({ article, ratio }: { article: SiteArticle; ratio: "4/3" | "square" }) {
   return (
     <div
       className={`hover-reveal-box corner-frame mb-4 ${FRAME_SHAPE[ratio]} border border-ink bg-neutral-900`}
     >
       <Image
-        src={article.image}
+        src={article.cardImage ?? article.image}
         alt={article.title}
         fill
         sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
@@ -107,7 +108,7 @@ function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "squar
  * for @melodi.alam drop in without being re-cropped. On wide screens the
  * caption sits beside the image; on phones it stacks under it.
  */
-export function HeroArticle({ article }: { article: Article }) {
+export function HeroArticle({ article }: { article: SiteArticle }) {
   return (
     <article className="group relative border-b border-ink">
       <div className="grid grid-cols-1 lg:grid-cols-12">
@@ -154,13 +155,13 @@ export function HeroArticle({ article }: { article: Article }) {
 }
 
 /** Compact card used in the three-column grid under the hero. */
-export function FeatureCard({ article, note }: { article: Article; note: string }) {
+export function FeatureCard({ article, note }: { article: SiteArticle; note: string }) {
   return (
     <article className="group flex cursor-pointer flex-col justify-between p-4 transition-colors duration-300 hover:bg-paper sm:p-5">
       <div>
         <div className="hover-reveal-box corner-frame mb-3 aspect-square border border-ink bg-neutral-900">
           <Image
-            src={article.image}
+            src={article.cardImage ?? article.image}
             alt={article.title}
             fill
             sizes="(min-width: 768px) 33vw, 100vw"

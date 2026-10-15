@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { ARTICLES, type Article } from "./content";
+import { cardCoverFor, heroCoverFor } from "./covers";
 import { contentClient, imageUrl } from "./sanity";
 import { isArticleCategory } from "./taxonomy";
 
@@ -28,11 +29,21 @@ export interface SiteArticle extends Article {
    * and search.
    */
   richBody?: unknown[];
+  /**
+   * Card art, when it should differ from `image`. Some Instagram covers are big
+   * enough for a card but not for the article's own frame — see `lib/covers.ts`.
+   */
+  cardImage?: string;
   /** Where this article came from. Handy in the UI and when debugging. */
   source: "static" | "cms";
 }
 
-const STATIC: SiteArticle[] = ARTICLES.map((a) => ({ ...a, source: "static" as const }));
+const STATIC: SiteArticle[] = ARTICLES.map((a) => ({
+  ...a,
+  image: heroCoverFor(a.slug, a.image),
+  cardImage: cardCoverFor(a.slug, a.image),
+  source: "static" as const,
+}));
 
 /** Fallback art when an article has no cover of its own. */
 const PLACEHOLDER_IMAGE = "/photos/dsc09408.webp";
@@ -129,6 +140,12 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
 
   const iso = typeof doc.date === "string" ? doc.date.slice(0, 10) : "";
 
+  // An uploaded cover wins. Then the local Instagram cover — for the card always,
+  // and for the article frame only when it is big enough. Then the carried-over
+  // placeholder path from the import.
+  const uploaded = imageUrl(doc.image, { width: 1600 });
+  const fallback = doc.imagePath ?? PLACEHOLDER_IMAGE;
+
   return {
     slug,
     title,
@@ -137,9 +154,8 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
     date: iso ? formatDate(iso) : "",
     dateISO: iso,
     excerpt: typeof doc.excerpt === "string" ? doc.excerpt : "",
-    // An uploaded cover wins; then the carried-over local path from the import;
-    // then the shared placeholder.
-    image: imageUrl(doc.image, { width: 1600 }) ?? doc.imagePath ?? PLACEHOLDER_IMAGE,
+    image: uploaded ?? heroCoverFor(slug, fallback),
+    cardImage: uploaded ?? cardCoverFor(slug, fallback),
     body: portableTextToParagraphs(doc.body),
     featured: doc.featured === true,
     richBody: Array.isArray(doc.body) ? doc.body : undefined,
