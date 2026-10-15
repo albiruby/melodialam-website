@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Reveal } from "@/components/Reveal";
 import { VideosBrowser } from "@/components/VideosBrowser";
 import { VideoModal } from "@/components/VideoModal";
-import { CHANNEL, COUNTS, PLAYLISTS } from "@/lib/catalogue";
+import { CHANNEL } from "@/lib/catalogue";
+import { allPlaylists, allVideos } from "@/lib/videos";
 
 export const metadata: Metadata = {
   title: "Videos",
@@ -10,20 +11,22 @@ export const metadata: Metadata = {
     "Katalog lengkap video Melodi Alam: live session Melodi Samsara dan Melodi Taman, wawancara Bicara Melodi, serta Shorts.",
 };
 
-export default function VideosPage() {
-  const playlists = [...PLAYLISTS].sort((a, b) => Number(b.count) - Number(a.count));
+export default async function VideosPage() {
+  // Sanity first, the build-time catalogue behind it.
+  const videos = await allVideos();
+  const playlists = await allPlaylists();
 
   return (
     <>
       <Reveal>
-        <VideosBrowser />
+        <VideosBrowser videos={videos} />
       </Reveal>
 
       <Reveal>
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
           <h2 className="text-3xl tracking-tight sm:text-4xl">Playlists</h2>
           <span className="font-mono text-[11px] text-neutral-500">
-            {COUNTS.playlists} playlist publik • {CHANNEL.handle}
+            {playlists.length} playlist publik • {CHANNEL.handle}
           </span>
         </div>
 
@@ -48,8 +51,8 @@ export default function VideosPage() {
         </div>
 
         <p className="pt-4 text-xs font-mono text-neutral-500">
-          Katalog diambil dari kanal YouTube resmi. Angka views mengikuti tampilan YouTube (dibulatkan)
-          dan waktu upload bersifat relatif terhadap waktu scrape.
+          Katalog diambil dari kanal YouTube resmi. Angka views mengikuti tampilan YouTube dan
+          diperbarui manual lewat Sanity Studio; umur video dihitung dari tanggal terbitnya.
         </p>
       </Reveal>
 

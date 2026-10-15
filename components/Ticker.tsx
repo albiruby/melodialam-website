@@ -1,13 +1,17 @@
 import Link from "next/link";
-import { TICKER_ITEMS } from "@/lib/content";
+import type { TickerItem } from "@/lib/site-settings";
 import { MarqueeTape } from "./motion/MarqueeTape";
 
 /**
  * Infinite ticker. `MarqueeTape` owns the loop and duplicates the entries, so
  * the scroll-velocity coupling stays seamless.
+ *
+ * The items come from the `siteSettings` singleton, handed down by the layout:
+ * this component sits inside `MotionRoot`, which is a client boundary, so it
+ * cannot read the CMS itself.
  */
-export function Ticker() {
-  const run = TICKER_ITEMS.map((item, i) => (
+export function Ticker({ items }: { items: TickerItem[] }) {
+  const run = items.map((item, i) => (
     <TickerEntry key={i} label={item.label} href={item.href} />
   ));
 

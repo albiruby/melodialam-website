@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Ticker } from "@/components/Ticker";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { SITE } from "@/lib/site";
+import { getSiteSettings } from "@/lib/site-settings";
 
 /**
  * Body and UI text. Loaded as a variable font, so the full weight axis is
@@ -78,7 +79,11 @@ export const viewport: Viewport = {
   themeColor: "#f6f5f2",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Brand copy lives in the `siteSettings` singleton; the header is a client
+  // component, so it takes what it needs as a prop.
+  const settings = await getSiteSettings();
+
   return (
     // Next 16 no longer force-overrides scroll-behavior during navigation.
     // The attribute opts back into an instant scroll-to-top on route change,
@@ -99,8 +104,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Lompat ke konten utama
           </a>
           <ScrollProgress />
-          <Ticker />
-          <SiteHeader />
+          <Ticker items={settings.tickerItems} />
+          <SiteHeader
+            brand={{
+              tagline: settings.tagline,
+              strapline: settings.strapline,
+              est: settings.est,
+              owner: settings.owner,
+            }}
+          />
           <main
             id="main"
             tabIndex={-1}
@@ -108,7 +120,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             {children}
           </main>
-          <SiteFooter />
+          <SiteFooter settings={settings} />
         </MotionRoot>
       </body>
     </html>

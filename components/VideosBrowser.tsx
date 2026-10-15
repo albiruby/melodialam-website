@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { VENUES, VENUE_COUNTS, videosByVenue, type CatalogueVideo } from "@/lib/catalogue";
+import { VENUES } from "@/lib/catalogue";
+import type { SiteVideo } from "@/lib/videos";
 import { YoutubeThumb } from "./YoutubeThumb";
 import { WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
@@ -9,12 +10,20 @@ import { WatchLink } from "@/components/WatchLink";
 const PAGE_SIZE = 12;
 type Filter = (typeof VENUES)[number] | "all";
 
-export function VideosBrowser() {
+/**
+ * Videos arrive as a prop rather than being imported: they now come from Sanity
+ * (with `lib/catalogue.json` as the back catalogue) on the server, and this is a
+ * client component.
+ */
+export function VideosBrowser({ videos }: { videos: SiteVideo[] }) {
   const [filter, setFilter] = useState<Filter>("all");
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
 
-  const all = useMemo(() => videosByVenue(filter), [filter]);
+  const all = useMemo(
+    () => (filter === "all" ? videos : videos.filter((v) => v.venue === filter)),
+    [videos, filter],
+  );
 
   const matches = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -30,9 +39,15 @@ export function VideosBrowser() {
   const safePage = Math.min(page, pageCount - 1);
   const rows = matches.slice(safePage * PAGE_SIZE, safePage * PAGE_SIZE + PAGE_SIZE);
 
+  // Counted from the videos actually handed in, so a CMS video is included in its
+  // program's total rather than only in the catalogue's frozen numbers.
   const tabs: { value: Filter; label: string; count: number }[] = [
-    { value: "all", label: "All", count: all.length },
-    ...VENUES.map((v) => ({ value: v, label: v, count: VENUE_COUNTS[v] ?? 0 })),
+    { value: "all", label: "All", count: videos.length },
+    ...VENUES.map((v) => ({
+      value: v,
+      label: v,
+      count: videos.filter((video) => video.venue === v).length,
+    })),
   ];
 
   const reset = (fn: () => void) => {
@@ -147,7 +162,7 @@ export function VideosBrowser() {
   );
 }
 
-function VideoRow({ video, index }: { video: CatalogueVideo; index: number }) {
+function VideoRow({ video, index }: { video: SiteVideo; index: number }) {
   const no = String(index + 1).padStart(2, "0");
 
   return (

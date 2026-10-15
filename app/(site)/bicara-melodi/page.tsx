@@ -4,7 +4,7 @@ import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { INTERVIEW_ROWS } from "@/lib/content";
-import { videosByIds } from "@/lib/catalogue";
+import { allVideos, videoById } from "@/lib/videos";
 
 export const metadata: Metadata = {
   title: "Bicara Melodi",
@@ -12,10 +12,11 @@ export const metadata: Metadata = {
     "Index wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
 };
 
-export default function BicaraMelodiPage() {
-  // Pull each row's real catalogue entry so the stats come from the scrape
-  // rather than being hand-written, falling back to the row data on mismatch.
-  const rows = INTERVIEW_ROWS.map((row) => ({ row, video: videosByIds([row.videoId])[0] }));
+export default async function BicaraMelodiPage() {
+  // Each row's real video entry, so the stats come from the CMS (or the
+  // catalogue behind it) rather than being hand-written.
+  const videos = await allVideos();
+  const rows = INTERVIEW_ROWS.map((row) => ({ row, video: videoById(videos, row.videoId) }));
 
   return (
     <Reveal className="editorial-paper border border-ink p-5 sm:p-10">

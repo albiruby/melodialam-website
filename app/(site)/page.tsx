@@ -7,7 +7,7 @@ import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { WatchLink } from "@/components/WatchLink";
 import { INTERVIEW_ROWS } from "@/lib/content";
 import { allArticles } from "@/lib/articles";
-import { latestVideos, videosByIds } from "@/lib/catalogue";
+import { allVideos, latestVideos, videoById } from "@/lib/videos";
 import { CHANNEL, COUNTS } from "@/lib/catalogue";
 import { CountUp } from "@/components/motion/CountUp";
 import { RevealText } from "@/components/motion/RevealText";
@@ -30,9 +30,12 @@ export default async function HomePage() {
   const [hero, ...rest] = articles.filter((a) => a.featured);
   const subFeatures = rest.slice(0, 3);
 
+  // Sanity first, the build-time catalogue behind it.
+  const videos = await allVideos();
+
   // A handful of the freshest uploads, for the home-page video teaser.
-  const teasers = latestVideos(4);
-  const interviewVideos = videosByIds(INTERVIEW_ROWS.map((r) => r.videoId));
+  const teasers = latestVideos(videos, 4);
+  const interviewVideos = INTERVIEW_ROWS.map((r) => videoById(videos, r.videoId));
 
   return (
     <>
@@ -61,7 +64,7 @@ export default async function HomePage() {
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
-            <CountUp to={articles.length} /> artikel di journal • <CountUp to={COUNTS.videos} />{" "}
+            <CountUp to={articles.length} /> artikel di journal • <CountUp to={videos.length} />{" "}
             video + <CountUp to={COUNTS.shorts} /> shorts
           </span>
           <Link
@@ -153,7 +156,7 @@ export default async function HomePage() {
             </span>
           </div>
           <span className="font-mono text-[11px] text-neutral-500">
-            <CountUp to={COUNTS.videos} /> video + <CountUp to={COUNTS.shorts} /> shorts
+            <CountUp to={videos.length} /> video + <CountUp to={COUNTS.shorts} /> shorts
           </span>
         </div>
 
@@ -243,7 +246,7 @@ export default async function HomePage() {
               <span className="block text-xl font-black uppercase tracking-tight text-ink transition-all duration-300 group-hover:translate-x-1.5 group-hover:text-forest sm:text-2xl">
                 NEXT →
               </span>
-              <span className="text-[10px] text-neutral-500">Browse all {COUNTS.videos}</span>
+              <span className="text-[10px] text-neutral-500">Browse all {videos.length}</span>
             </Link>
           </div>
         </div>

@@ -3,11 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { PRIMARY_NAV, SITE, SUBMIT_NAV } from "@/lib/site";
+import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
 import { BrandMark, SamsaraWordmark } from "./BrandMark";
 import { SubmitLink } from "./Ticker";
 
-export function SiteHeader() {
+/** Brand copy comes from the `siteSettings` singleton, passed down by the layout. */
+export function SiteHeader({
+  brand,
+}: {
+  brand: { tagline: string; strapline: string; est: string; owner: string };
+}) {
   const pathname = usePathname();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -48,16 +53,16 @@ export function SiteHeader() {
                 />
               </h1>
               <span className="mt-1 block font-serif text-xs italic tracking-normal text-neutral-600 transition-colors group-hover:text-forest sm:text-sm">
-                {SITE.tagline}
+                {brand.tagline}
               </span>
             </span>
           </Link>
         </div>
 
         <div className="order-2 col-span-2 text-[11px] uppercase tracking-wider text-neutral-600 md:order-1 md:col-span-1">
-          <span className="hidden md:inline">{SITE.strapline}</span>
-          <span className="md:hidden">{SITE.est}</span>
-          <div className="hidden text-[10px] text-neutral-400 sm:block">{SITE.owner}</div>
+          <span className="hidden md:inline">{brand.strapline}</span>
+          <span className="md:hidden">{brand.est}</span>
+          <div className="hidden text-[10px] text-neutral-400 sm:block">{brand.owner}</div>
         </div>
 
         <div className="order-3 col-span-1 flex items-center justify-end gap-3">

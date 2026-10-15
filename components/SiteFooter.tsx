@@ -1,8 +1,13 @@
 import Link from "next/link";
-import { CHANNEL_FACTS, FOOTER_RUBRIKS, SITE } from "@/lib/site";
+import { FOOTER_RUBRIKS } from "@/lib/site";
+import type { SiteSettings } from "@/lib/site-settings";
 import { BrandMark, SamsaraWordmark } from "./BrandMark";
 
-export function SiteFooter() {
+export function SiteFooter({ settings }: { settings: SiteSettings }) {
+  // Aliased so the markup below reads the way it did when these were module
+  // constants; only the source changed.
+  const SITE = { name: settings.name };
+  const CHANNEL_FACTS = settings.channelFacts;
   return (
     <footer className="mt-20 border-t-2 border-ink bg-paper">
       <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-8 border-b border-ink px-4 py-12 md:grid-cols-12 sm:px-8">
