@@ -105,10 +105,6 @@ export default async function VideosPage() {
             <VideoRow key={video.id} video={video} index={i} />
           ))}
         </div>
-        <p className="pt-3 text-xs font-mono text-neutral-500">
-          Menampilkan {samsaraPreview.length} terbaru dari {samsara.length} sesi. Sisanya ada di
-          kanal YouTube.
-        </p>
       </Reveal>
 
       {/* ---------- Playlists ---------- */}
@@ -139,10 +135,6 @@ export default async function VideosPage() {
             </a>
           ))}
         </div>
-
-        <p className="pt-4 text-xs font-mono text-neutral-500">
-          Katalog diambil dari kanal YouTube resmi. Umur video dihitung dari tanggal terbitnya.
-        </p>
       </Reveal>
 
       <VideoModal />

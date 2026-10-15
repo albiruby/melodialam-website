@@ -85,8 +85,7 @@ export default async function BicaraMelodiPage() {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-5 text-xs font-mono text-neutral-500">
-        <span>Semua episode tersedia di playlist Bicara Melodi pada halaman Videos.</span>
+      <div className="flex flex-wrap items-center justify-end gap-4 pt-5 text-xs font-mono text-neutral-500">
         <Link
           href="/videos"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"

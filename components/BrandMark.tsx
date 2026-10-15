@@ -123,7 +123,10 @@ export function SamsaraWordmark({
 }
 
 interface MelodiAlamWordmarkProps {
-  /** Intrinsic render width in px. The artwork's own aspect is 1566:126. */
+  /**
+   * The width you intend to display it at, in px — used for the default `sizes`
+   * hint only. Actual sizing comes from `className` (`w-[...]` + `h-auto`).
+   */
   width?: number;
   /** Responsive srcset hint, whenever `className` changes the display width. */
   sizes?: string;
@@ -153,8 +156,13 @@ export function MelodiAlamWordmark({
     <Image
       src="/brand/melodi-alam-wordmark-black.png"
       alt={alt}
-      width={width}
-      height={Math.round((width * 126) / 1566)}
+      // The artwork's own pixel size, not the display size. Callers size it with
+      // CSS (`w-[...]` + `h-auto`); passing the intrinsic dimensions keeps the
+      // attributes honest and avoids a one-sided-resize warning, since the
+      // optimiser rounds the served height and the rendered box never matches a
+      // derived attribute exactly.
+      width={1566}
+      height={126}
       sizes={sizes ?? `${width}px`}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}
@@ -165,7 +173,8 @@ export function MelodiAlamWordmark({
 
 interface MelodiAlamLockupProps {
   /**
-   * Intrinsic render width in px. The artwork's own aspect is 2021:286, and the
+   * The width you intend to display it at, in px — used for the default `sizes`
+   * hint only. Actual sizing comes from `className` (`w-[...]` + `h-auto`). The
    * medallion-to-wordmark gap is part of the artwork — do not rebuild the lockup
    * out of the two crops.
    */
@@ -196,8 +205,9 @@ export function MelodiAlamLockup({
     <Image
       src="/brand/melodi-alam-lockup-black.png"
       alt={alt}
-      width={width}
-      height={Math.round((width * 286) / 2021)}
+      // Intrinsic dimensions, not display ones — same reason as the wordmark.
+      width={2021}
+      height={286}
       sizes={sizes ?? `${width}px`}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}
