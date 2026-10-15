@@ -12,12 +12,12 @@ import { isArticleCategory } from "./taxonomy";
  *
  *  - what an editor publishes in the Studio shows up on the site without a code
  *    change, and
- *  - a fresh checkout with no `.env` still renders the twelve articles in
- *    `lib/content.ts`.
+ *  - if Sanity cannot be reached, the site still renders the twelve articles in
+ *    `lib/content.ts` rather than failing.
  *
- * Collisions resolve in favour of the CMS, which is what makes the migration
- * gradual: seed an article into Sanity and it takes over from that moment, with
- * nothing to delete from the static file until the move is done.
+ * The read client needs no credentials (the dataset is public and the project id
+ * is a literal), so Sanity is the default source rather than something you opt
+ * into with `.env`.
  */
 
 export interface SiteArticle extends Article {
@@ -149,8 +149,6 @@ export async function allArticles(): Promise<SiteArticle[]> {
   cacheLife("minutes");
   cacheTag(ARTICLES_TAG);
 
-  if (!contentClient) return STATIC;
-
   try {
     const docs = await contentClient.fetch<CmsArticleDoc[]>(ALL_ARTICLES_QUERY, {}, { cache: "no-store" });
 
@@ -172,8 +170,6 @@ export async function articleBySlug(slug: string): Promise<SiteArticle | null> {
   "use cache";
   cacheLife("minutes");
   cacheTag(ARTICLES_TAG);
-
-  if (!contentClient) return STATIC.find((a) => a.slug === slug) ?? null;
 
   try {
     const doc = await contentClient.fetch<CmsArticleDoc | null>(
