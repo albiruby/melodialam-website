@@ -13,8 +13,8 @@ export const metadata: Metadata = {
     "Katalog video Melodi Alam: live session Melodi Samsara dan Melodi Taman, serta wawancara Bicara Melodi.",
 };
 
-/** The live sessions shown before the archive takes over. */
-const SAMSARA_PREVIEW = 8;
+/** The live sessions shown before the archive takes over — nine, to match the Bicara Melodi grid. */
+const SAMSARA_PREVIEW = 9;
 
 function SectionHead({
   title,
@@ -98,7 +98,7 @@ export default async function VideosPage() {
           title="Melodi Samsara"
           note={`${samsara.length} sesi panggung`}
           href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}
-          linkLabel="Kanal YouTube"
+          linkLabel="YouTube Channel"
         />
         <div className="divide-y divide-neutral-300 border-b border-ink">
           {samsaraPreview.map((video, i) => (

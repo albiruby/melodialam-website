@@ -321,7 +321,7 @@ Sengaja, bukan lupa:
 | | Kenapa |
 |---|---|
 | **Pratinjau draf** | Publikasi langsung terlihat, tetapi menyunting draf belum bisa dipratinjau di situs. Butuh `next-sanity` (`defineLive`) plus route draft-mode — sengaja tidak dipasang selama Studio belum butuh. |
-| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`). |
+| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`); hanya seleksi tampil yang hidup sebagai dokumen `video` — 9 sesi Samsara ter-seed lewat `npm run seed:videos`. |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
@@ -364,6 +364,12 @@ Diperiksa dengan menjalankan, bukan membaca:
   merender baris dari Sanity — dokumen uji tampil setelah Publish dan hilang setelah
   dihapus; `POST /api/revalidate` membalas
   `{revalidated: true, tags: ["articles", "pahlawan-rows"]}`.
+- Dokumen `video`: 9 sesi Melodi Samsara ter-seed (`npm run seed:videos`, `createOrReplace`
+  dengan `_id` deterministik). `/videos` merender 9 baris preview dengan label
+  "YouTube Channel". Mengubah `title` satu dokumen di Sanity menggantikan baris katalognya
+  di HTML setelah jendela cache lewat (request pertama masih stale, request berikutnya
+  bersih) — judul katalog lama lenyap dari halaman, jadi Sanity benar-benar menggantikan
+  entri katalog. Penghitung "292 video" dan "101 sesi panggung" tidak berubah.
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
 secara logika), dan pratinjau draf (belum dibangun).
