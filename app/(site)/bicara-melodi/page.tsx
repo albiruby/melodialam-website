@@ -9,7 +9,7 @@ import { allVideos, videoById } from "@/lib/videos";
 export const metadata: Metadata = {
   title: "Bicara Melodi",
   description:
-    "Index wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
+    "Wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
 };
 
 export default async function BicaraMelodiPage() {
@@ -22,14 +22,8 @@ export default async function BicaraMelodiPage() {
     <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
       {/* Index header */}
       <div className="grid grid-cols-3 items-center border-b border-ink pb-4 text-[11px] font-bold uppercase tracking-wider">
-        <div>
-          Interview &amp; Session
-          <br />
-          <span className="font-normal text-neutral-500">Index</span>
-        </div>
-        <div className="text-center font-serif text-base font-normal italic lowercase text-ink">
-          (index)
-        </div>
+        <div>Interview &amp; Session</div>
+        <div />
         <div className="text-right">
           <a
             href="https://www.youtube.com/@melodialam/videos"

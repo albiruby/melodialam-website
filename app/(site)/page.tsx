@@ -90,14 +90,8 @@ export default async function HomePage() {
       {/* ---------- Bicara Melodi teaser ---------- */}
       <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
         <div className="grid grid-cols-3 items-center border-b border-ink pb-4 text-[11px] font-bold uppercase tracking-wider">
-          <div>
-            Interview &amp; Session
-            <br />
-            <span className="font-normal text-neutral-500">Index</span>
-          </div>
-          <div className="text-center font-serif text-base font-normal italic lowercase text-ink">
-            (index)
-          </div>
+          <div>Interview &amp; Session</div>
+          <div />
           <div className="text-right">
             <Link href="/bicara-melodi" className="nav-link-anim hover:text-forest">
               Bicara Melodi S3 ↗
@@ -144,7 +138,7 @@ export default async function HomePage() {
             href="/bicara-melodi"
             className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
           >
-            Buka index lengkap ↗
+            Lihat semua episode ↗
           </Link>
         </div>
       </Reveal>

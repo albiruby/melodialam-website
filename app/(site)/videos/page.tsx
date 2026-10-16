@@ -66,7 +66,7 @@ export default async function VideosPage() {
           title="Bicara Melodi"
           note={`${interviews.length} episode pilihan`}
           href="/bicara-melodi"
-          linkLabel="Index lengkap"
+          linkLabel="Lihat semua episode"
         />
         <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
           {interviews.map((interview) => (
