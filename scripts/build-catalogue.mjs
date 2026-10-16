@@ -65,7 +65,7 @@ function ageBucket(age) {
 function venueFor(title) {
   if (/live at melodi taman/i.test(title)) return "Melodi Taman";
   if (/live at melodi samsara/i.test(title)) return "Melodi Samsara";
-  if (/\bbicara melodi\b|\bmelody talk\b|\btalking melodies\b|\bresonance\b/i.test(title)) {
+  if (/\bbicara melodi\b|\bmelody talk\b|\btalking melodies\b|\bresonan(?:ce|si)\b/i.test(title)) {
     return "Interview";
   }
   return "Arsip & Lainnya";

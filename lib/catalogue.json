@@ -129,15 +129,15 @@
     "playlists": 5,
     "byVenue": {
       "Melodi Samsara": 101,
-      "Arsip & Lainnya": 34,
-      "Interview": 118,
+      "Interview": 143,
+      "Arsip & Lainnya": 9,
       "Melodi Taman": 39
     }
   },
   "videos": [
     {
       "id": "irtr9SnyTxM",
-      "title": "Endah N Rhesa - Baby It's You, When You Love Someone, Indie Vacation Live At Melodi Samsara",
+      "title": "Endah N Rhesa - Baby It's You, When You Love Someone, Liburan Indie Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "13:36",
       "seconds": 816,
@@ -151,8 +151,8 @@
     },
     {
       "id": "WN-Go-1hA68",
-      "title": "Endah & Rhesa - Speaking of Melody 1",
-      "venue": "Arsip & Lainnya",
+      "title": "Perjalanan 2 Dekade Endah N Rhesa: Dari Band Rock Sampai Jadi Icon Pamulang | Bicara Melodi S3 |EP30",
+      "venue": "Interview",
       "duration": "1:05:34",
       "seconds": 3934,
       "views": "166",
@@ -165,7 +165,7 @@
     },
     {
       "id": "qkgoThF5hno",
-      "title": "Hanin Dhiya - This Love is Killing Me, Let Me Keep It to Myself Live At Melodi Samsara",
+      "title": "Hanin Dhiya - Cinta Ini Membunuhku, Biar Kusimpan Sendiri Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "10:11",
       "seconds": 611,
@@ -179,7 +179,7 @@
     },
     {
       "id": "IyxSDhOO2NY",
-      "title": "Melody Talk: Hanin Dhiya",
+      "title": "Hanin Dhiya Berdamai Dari Stigma Cover & Warna Baru Cinta Ini Membunuhku | Bicara Melodi S3 | EP29",
       "venue": "Interview",
       "duration": "48:21",
       "seconds": 2901,
@@ -205,7 +205,7 @@
     },
     {
       "id": "UpwyNoYa5Io",
-      "title": "Dua Empat's Journey: From Emo Kids to Husband and Wife on the Jazz Stage | Bicara Melodi S3 | EP28",
+      "title": "Dua Empat Hijrah Dari Anak Emo Sampai Jadi Suami Istri Di Panggung Jazz | Bicara Melodi S3 | EP28",
       "venue": "Interview",
       "duration": "52:08",
       "seconds": 3128,
@@ -217,7 +217,7 @@
     },
     {
       "id": "_uqU8Q4Vwl8",
-      "title": "Bilal Indrajaya on Fatherhood, Britpop Rivalries & Diving into The Beatles | Bicara Melodi S3 | EP27",
+      "title": "Peran Bilal Indrajaya Sebagai Ayah, Rivalitas Britpop & Menyelami Beatles | Bicara Melodi S3 | EP27",
       "venue": "Interview",
       "duration": "54:38",
       "seconds": 3278,
@@ -257,7 +257,7 @@
     },
     {
       "id": "5F9L2CF-wxQ",
-      "title": "Khifnu - The Beginning, No Need to Worry Excessively (Live at Melodi Samsara)",
+      "title": "Khifnu - Awal, Tak Perlu Khawatir Berlebihan Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:39",
       "seconds": 459,
@@ -271,8 +271,8 @@
     },
     {
       "id": "Iq7qAvACZNc",
-      "title": "Khifnu ~ Melodic Conversations",
-      "venue": "Arsip & Lainnya",
+      "title": "Khifnu Pernah Dibully Sampai Merantau Ke Kota Jogja Demi Bermusik | Bicara Melodi S3 | EP25",
+      "venue": "Interview",
       "duration": "51:34",
       "seconds": 3094,
       "views": "212",
@@ -285,7 +285,7 @@
     },
     {
       "id": "iWU_Qqx3L0o",
-      "title": "Hifdzi Khoir - Wife, For Me For You Too Live At Melodi Samsara",
+      "title": "Hifdzi Khoir - Istri, Untukku Untukmu Juga Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "6:32",
       "seconds": 392,
@@ -299,7 +299,7 @@
     },
     {
       "id": "KXtMZhIQD1E",
-      "title": "Hifdzi Khoir, the Music Executioner Who Unsettles Musicians | Talking Melodies S3 | EP24",
+      "title": "Hifdzi Khoir Sang Algojo Musik Yang Bikin Resah Musisi | Bicara Melodi S3 | EP24",
       "venue": "Interview",
       "duration": "53:47",
       "seconds": 3227,
@@ -325,7 +325,7 @@
     },
     {
       "id": "hNiaDlPqQCM",
-      "title": "Tropical Desert Rhythmic Experiment: From Babon to the Birth of Tropical Desert | Bicara Melodi S...",
+      "title": "Eksperimen Irama Gurun Tropis Dari Babon Sampai Lahirnya Tropical Desert | Bicara Melodi S3 | EP23",
       "venue": "Interview",
       "duration": "45:04",
       "seconds": 2704,
@@ -337,7 +337,7 @@
     },
     {
       "id": "W0BW3tPBmxw",
-      "title": "Nuh - Sunday Breakfast, Even If Live At Melodi Samsara",
+      "title": "Nuh - Sarapan Di Hari Minggu, Bahkan Jika Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:19",
       "seconds": 439,
@@ -363,7 +363,7 @@
     },
     {
       "id": "w6BuhZL3f0w",
-      "title": "Sore Ze Band - Karolina, Surya Jelang Menepi, Half Past Five Live At Melodi Samsara",
+      "title": "Sore Ze Band - Karolina, Surya Jelang Menepi, Setengah Lima Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "14:01",
       "seconds": 841,
@@ -377,7 +377,7 @@
     },
     {
       "id": "j5DjXbSSLoU",
-      "title": "Sore Ze Band Keeps Ade Paloh's Legacy Alive, New Lineup and the Myth of Paloh Pop | Bicara Melodi...",
+      "title": "Sore Ze Band Menjaga Legacy Ade Paloh, Formasi Baru Sampai Mitos Paloh Pop | Bicara Melodi S3 | EP21",
       "venue": "Interview",
       "duration": "50:46",
       "seconds": 3046,
@@ -391,7 +391,7 @@
     },
     {
       "id": "9sBx-kRg1BY",
-      "title": "Dee Lestari - (Don't) Fall in Love, Even Angels Know (Live at Melodi Samsara)",
+      "title": "Dee Lestari - (Jangan) Jatuh Cinta, Malaikat Juga Tahu Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:20",
       "seconds": 500,
@@ -405,8 +405,8 @@
     },
     {
       "id": "QuAXyuGrNHI",
-      "title": "Diving Into the Soul of Storyteller Dee Lestari on Her New Album & Malaikat Juga Tahu | Bicara Me...",
-      "venue": "Arsip & Lainnya",
+      "title": "Menyelami Jiwa Storyteller Dee Lestari Di Album Baru & Malaikat Juga Tahu | Bicara Melodi S3 | EP20",
+      "venue": "Interview",
       "duration": "42:50",
       "seconds": 2570,
       "views": "158",
@@ -443,8 +443,8 @@
     },
     {
       "id": "i_ac4U0B5AQ",
-      "title": "Bringing 120+ Musicians to The Sounds Project Vol. 9 Celebrating an 11-Year Journey | Bicara Melo...",
-      "venue": "Arsip & Lainnya",
+      "title": "Bawa 120+ Musisi The Sounds Project Vol 9 Rayakan Perjalanan 11 Tahun | Bicara Melodi S3 | EP18",
+      "venue": "Interview",
       "duration": "40:57",
       "seconds": 2457,
       "views": "152",
@@ -455,32 +455,36 @@
     },
     {
       "id": "FLHNRZTkTig",
-      "title": "Successful and Prosperous - Live At Melodi Samsara",
+      "title": "Sukses Lancar Rejeki - Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "10:21",
       "seconds": 621,
       "views": "9.5K",
       "uploaded": "3mo ago",
       "ageBucket": "3mo",
-      "featuring": [],
+      "featuring": [
+        "Sukses Lancar Rejeki"
+      ],
       "url": "https://www.youtube.com/watch?v=FLHNRZTkTig"
     },
     {
       "id": "w_cP2Zj7Agw",
-      "title": "The Punk Band's Success and Smooth Fortune After School & The Thief Deterrent | Melody Talk S3 | ...",
+      "title": "Sukses Lancar Rejeki Band Punk Pulang Sekolah & Sang Penangkal Maling | Bicara Melodi S3 | EP17",
       "venue": "Interview",
       "duration": "49:24",
       "seconds": 2964,
       "views": "791",
       "uploaded": "3mo ago",
       "ageBucket": "3mo",
-      "featuring": [],
+      "featuring": [
+        "Sukses Lancar Rejeki"
+      ],
       "url": "https://www.youtube.com/watch?v=w_cP2Zj7Agw"
     },
     {
       "id": "NjPxn3wAJF0",
-      "title": "TheOvertunes on the Plagiarism Allegations Regarding Sayap Pelindungmu & Sampai Kapan? | Bicara M...",
-      "venue": "Arsip & Lainnya",
+      "title": "TheOvertunes Soal Isu Plagiat Sayap Pelindungmu & Sampai Kapan? | Bicara Melodi S3 | EP16",
+      "venue": "Interview",
       "duration": "52:11",
       "seconds": 3131,
       "views": "553",
@@ -491,7 +495,7 @@
     },
     {
       "id": "3a4F-b0MAJA",
-      "title": "TheOvertunes - Can't Believe It, How Long? Live At Melodi Samsara",
+      "title": "TheOvertunes - Tak Bisa Kupercaya, Sampai Kapan? Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "10:31",
       "seconds": 631,
@@ -503,7 +507,7 @@
     },
     {
       "id": "pLRouaF6-Dk",
-      "title": "Abbydzar - Still Here, Raindrops in Jakarta Live At Melodi Samsara",
+      "title": "Abbydzar - Masih Di Sini, Rintik Di Jakarta Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "6:22",
       "seconds": 382,
@@ -515,7 +519,7 @@
     },
     {
       "id": "-ooI5vCNvZk",
-      "title": "Abbydzar on Leaving Svmmerdose & Maturing in His Solo Project | Bicara Melodi S3 | EP15",
+      "title": "Abbydzar Soal Keluar Dari Svmmerdose & Pendewasaan Di Proyek Solonya | Bicara Melodi S3 | EP15",
       "venue": "Interview",
       "duration": "39:35",
       "seconds": 2375,
@@ -527,7 +531,7 @@
     },
     {
       "id": "l7iIRg_WKIE",
-      "title": "Parade Hujan - Light, For the Woman in My Arms Live At Melodi Samsara",
+      "title": "Parade Hujan - Cahaya, Untuk Perempuan Yang Sedang Di Pelukan Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "11:16",
       "seconds": 676,
@@ -539,8 +543,8 @@
     },
     {
       "id": "VmvEHbO8SN4",
-      "title": "The Transition from Payung Teduh to Parade Hujan, Starting a New Era Through Cahaya & Laju | Bica...",
-      "venue": "Arsip & Lainnya",
+      "title": "Transisi Payung Teduh Ke Parade Hujan, Mulai Era Baru Lewat Cahaya & Laju | Bicara Melodi S3 | EP14",
+      "venue": "Interview",
       "duration": "41:17",
       "seconds": 2477,
       "views": "2.6K",
@@ -587,7 +591,7 @@
     },
     {
       "id": "I0m4Pajq8ig",
-      "title": "Adikara's Regret Behind Primadona & Preparing Spotless Dove for His Child | Bicara Melodi S3 | EP12",
+      "title": "Penyesalan Adikara Dibalik Primadona & Siapkan Spotless Dove Untuk Anak | Bicara Melodi S3 | EP12",
       "venue": "Interview",
       "duration": "51:42",
       "seconds": 3102,
@@ -611,7 +615,7 @@
     },
     {
       "id": "Gu6UWlO5xxI",
-      "title": "Still Virgin: 2 Decades of Work, Deat Ndut, and Success in the Internet Cafe Era | Bicara Melodi ...",
+      "title": "Still Virgin 2 Dekade Berkarya, Deat Ndut, Hingga Berjaya Di Era Warnet | Bicara Melodi S3 | EP 11",
       "venue": "Interview",
       "duration": "51:02",
       "seconds": 3062,
@@ -635,7 +639,7 @@
     },
     {
       "id": "g_S9hcLxR3k",
-      "title": "Patras on Exes Haunting Him, Beatles Influences, and the 'Cha Cha Boo' Album | Bicara Melodi S3 |...",
+      "title": "Patras Soal Mantan Jadi Hantu, Pengaruh Beatles Hingga Album Cha Cha Boo | Bicara Melodi S3 | EP10",
       "venue": "Interview",
       "duration": "41:54",
       "seconds": 2514,
@@ -671,7 +675,7 @@
     },
     {
       "id": "N-X4lCUNr_s",
-      "title": "Canti Tachril - Imagine I Exist, Jingga Live At Melodi Samsara",
+      "title": "Canti Tachril - Anggap Aku Ada, Jingga Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:28",
       "seconds": 448,
@@ -683,7 +687,7 @@
     },
     {
       "id": "_dd3zVwsi6M",
-      "title": "Canti Tachril on Surviving Difficult Times & Maturing on the Citrus Album | Bicara Melodi S3 | EP 08",
+      "title": "Canti Tachril Soal Cara Bertahan Di Masa Sulit & Pendewasaan Album Citrus | Bicara Melodi S3 | EP 08",
       "venue": "Interview",
       "duration": "46:40",
       "seconds": 2800,
@@ -695,7 +699,7 @@
     },
     {
       "id": "po5A1s80CYk",
-      "title": "Prince Husein - Even Though It's a Mess, the Internet Says I Have ADHD Live At Melodi Samsara",
+      "title": "Prince Husein - Walau Berantakan, Internet Bilang Aku ADHD Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:15",
       "seconds": 495,
@@ -707,7 +711,7 @@
     },
     {
       "id": "aOuDOrYgIMw",
-      "title": "Prince Husein on Unresolved Anger and Life Trauma | Melody Talk S3 | EP 07",
+      "title": "Prince Husein Soal Kemarahan Yang Belum Tuntas & Trauma Kehidupan | Bicara Melodi S3 | EP 07",
       "venue": "Interview",
       "duration": "44:58",
       "seconds": 2698,
@@ -719,7 +723,7 @@
     },
     {
       "id": "Iem5CdDT0Cw",
-      "title": "Rafi Sudirman - Monday to Friday, That Somebody Live At Melodi Samsara",
+      "title": "Rafi Sudirman - Senin Sampai Jumat, That Somebody Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "11:53",
       "seconds": 713,
@@ -731,8 +735,8 @@
     },
     {
       "id": "6KFU-JDjThk",
-      "title": "Rafi Sudirman Thought About Becoming a Civil Servant & Manifested Prayers on New Album | Bicara M...",
-      "venue": "Arsip & Lainnya",
+      "title": "Rafi Sudirman Sempat Kepikiran Jadi PNS & Manifestasi Doa Di Album Baru | Bicara Melodi S3 | EP 06",
+      "venue": "Interview",
       "duration": "54:36",
       "seconds": 3276,
       "views": "134",
@@ -743,7 +747,7 @@
     },
     {
       "id": "o_0alNp89j8",
-      "title": "Sheryl Sheinafia - Alone Live At Melodi Samsara",
+      "title": "Sheryl Sheinafia - Sendiri Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "3:57",
       "seconds": 237,
@@ -755,7 +759,7 @@
     },
     {
       "id": "1BEJeO3O3DA",
-      "title": "Is the Magic Contest More Fun Than .Feast? 3 Baskara Putra Entities Revealed | Resonance Ep 03",
+      "title": "Apakah Lomba Sihir Lebih Asik Dari .Feast? Mengupas 3 Entitas Baskara Putra | Resonansi Ep 03",
       "venue": "Interview",
       "duration": "28:17",
       "seconds": 1697,
@@ -768,7 +772,7 @@
     {
       "id": "NSUSwHVsqkc",
       "title": "The Adams Terlalu Rapih Di Agterplaas? Era Janji Joni vs Mahakarya 13 Tahun | Resonansi Ep 02",
-      "venue": "Arsip & Lainnya",
+      "venue": "Interview",
       "duration": "27:42",
       "seconds": 1662,
       "views": "253",
@@ -779,7 +783,7 @@
     },
     {
       "id": "tOknMHWaZuo",
-      "title": "Sounds Mainstream Because of Afternoon Movies? Typhoon Era vs Sadrah Strait | Resonance Ep 01",
+      "title": "Barasuara Jadi Mainstream Karna Film Sore? Era Taifun vs Jalaran Sadrah | Resonansi Ep 01",
       "venue": "Interview",
       "duration": "23:55",
       "seconds": 1435,
@@ -803,7 +807,7 @@
     },
     {
       "id": "Qq4FmvZlscE",
-      "title": "Assia Keva on Trauma, Collaboration with Slank, and the EP \"Forevermore\" | Bicara Melodi S3 | EP05",
+      "title": "Assia Keva Soal Trauma, Kolaborasi Bareng Slank Hingga Ep Forevermore | Bicara Melodi S3 | EP05",
       "venue": "Interview",
       "duration": "58:02",
       "seconds": 3482,
@@ -827,7 +831,7 @@
     },
     {
       "id": "iWAOhAapVBQ",
-      "title": "Clever Moose on the Mediterranean Fuzz Album That Conquered the Asian Stage | Melody Talk S3 | EP 04",
+      "title": "Clever Moose Soal Album Mediterranean Fuzz Yang Taklukkan Panggung Asia | Bicara Melodi S3 | EP 04",
       "venue": "Interview",
       "duration": "42:56",
       "seconds": 2576,
@@ -839,7 +843,7 @@
     },
     {
       "id": "3lZLc2rRhSY",
-      "title": "New Blue - Let's Find Another Time, Lose Again Live At Melodi Samsara",
+      "title": "Biru Baru - Kita Cari Waktu Lain, Kalah Lagi Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "10:53",
       "seconds": 653,
@@ -863,7 +867,7 @@
     },
     {
       "id": "Lci1GEbvsmw",
-      "title": "Sheryl Sheinafia - Out of Control, Who Told You to Fall in Love? Live at Melodi Samsara",
+      "title": "Sheryl Sheinafia - Lepas Kendali, Siapa Suruh Jatuh Cinta? Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:47",
       "seconds": 467,
@@ -875,8 +879,8 @@
     },
     {
       "id": "jajx-IZOCHM",
-      "title": "Sheryl Sheinafia on Losing Control & Her Lovey-Dovey Side | Who Told You to Fall in Love? | Talk ...",
-      "venue": "Arsip & Lainnya",
+      "title": "Sheryl Sheinafia Soal Lepas Kendali & Sisi Bucin Siapa Suruh Jatuh Cinta? | Bicara Melodi S3 | EP 02",
+      "venue": "Interview",
       "duration": "39:16",
       "seconds": 2356,
       "views": "1.3K",
@@ -887,7 +891,7 @@
     },
     {
       "id": "kl5jUCBhG7c",
-      "title": "Nita & Gail - One Human Being, To Do This Live At Melodi Samsara",
+      "title": "Nita & Gail - Satu Manusia, Tuk Lakukan Ini Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:31",
       "seconds": 451,
@@ -899,7 +903,7 @@
     },
     {
       "id": "VMQhKBRmKDQ",
-      "title": "Nita & Gail: From the Adventures of Sherina, Yovie & Nuno to One Human Being | Talking Melodies S...",
+      "title": "Nita & Gail Dari Petualangan Sherina, Yovie & Nuno Hingga Satu Manusia | Bicara Melodi S3 | EP 01",
       "venue": "Interview",
       "duration": "58:34",
       "seconds": 3514,
@@ -923,7 +927,7 @@
     },
     {
       "id": "IbrEtBP6ABk",
-      "title": "Rampak Naong Returns After a Long Hiatus and Reveals Tape Recordings | Bicara Melodi S2 | EP 69",
+      "title": "Rampak Naong Comeback Setelah Hiatus Lama Sampai Bongkar Rekaman Era Pita | Bicara Melodi S2 | EP 69",
       "venue": "Interview",
       "duration": "52:38",
       "seconds": 3158,
@@ -947,7 +951,7 @@
     },
     {
       "id": "Uc3nxEfSjl0",
-      "title": "Tripov Makes Demos From Zoom to Sugar Coat Inc's Experimental Album | Bicara Melodi S2 | EP 68",
+      "title": "Tripov Bikin Demo Dari Zoom Sampai Album Eksperimental Sugar Coat Inc | Bicara Melodi S2 | EP 68",
       "venue": "Interview",
       "duration": "40:43",
       "seconds": 2443,
@@ -959,7 +963,7 @@
     },
     {
       "id": "Fs2u9ywoh58",
-      "title": "Arda Hatna – Learning to Be a Father, Growing Together Ft. Tantri Syalindri Live At Melodi Samsara",
+      "title": "Arda Hatna – Belajar Jadi Bapak, Tumbuh Bersama Ft. Tantri Syalindri Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "9:22",
       "seconds": 562,
@@ -971,8 +975,8 @@
     },
     {
       "id": "SJRzB-hX-AE",
-      "title": "Arda Hatna Experiences a Mystical Moment Performing with Naff & Learning to Be a Father | Talking...",
-      "venue": "Arsip & Lainnya",
+      "title": "Arda Hatna Alami Momen Mistis Manggung Bareng Naff & Belajar Jadi Bapak | Bicara Melodi S2 | EP67",
+      "venue": "Interview",
       "duration": "51:10",
       "seconds": 3070,
       "views": "125",
@@ -995,7 +999,7 @@
     },
     {
       "id": "zygHAVEbOOQ",
-      "title": "Moneva Survives in Music From Pamungkas Backing Vocals & Salon R&B | Bicara Melodi S2 | EP66",
+      "title": "Moneva Bertahan Di Musik Dari Backing Vokal Pamungkas & Salon RnB | Bicara Melodi S2 | EP66",
       "venue": "Interview",
       "duration": "44:33",
       "seconds": 2673,
@@ -1007,7 +1011,7 @@
     },
     {
       "id": "LqitfV3pIRo",
-      "title": "Gabriella Fernaldi – Blue, My Fingers Live At Melodi Samsara",
+      "title": "Gabriella Fernaldi – Biru, Jemariku Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:39",
       "seconds": 519,
@@ -1019,7 +1023,7 @@
     },
     {
       "id": "FsFTVxvHGKw",
-      "title": "Gabriella Fernaldi Traumatized by Insults While Performing with Ardhito Pramono | Bicara Melodi S...",
+      "title": "Gabriella Fernaldi Trauma Dihujat Pas Manggung Bareng Ardhito Pramono | Bicara Melodi S2 | EP65",
       "venue": "Interview",
       "duration": "39:54",
       "seconds": 2394,
@@ -1043,8 +1047,8 @@
     },
     {
       "id": "ZU2art5bsV0",
-      "title": "Julian Alka on the Musician's Curse, the Aceh Scene, and Sal Priadi's Major Influence | Bicara Me...",
-      "venue": "Arsip & Lainnya",
+      "title": "Julian Alka Soal Kutukan Musisi, Skena Aceh & Pengaruh Besar Sal Priadi | Bicara Melodi S2 | EP 64",
+      "venue": "Interview",
       "duration": "40:19",
       "seconds": 2419,
       "views": "304",
@@ -1067,7 +1071,7 @@
     },
     {
       "id": "fe8e-0E2HgM",
-      "title": "Black Horses: The Spirit of Rebellion & Rock 'n' Roll Attitude | Melody Talk S2 | EP 63",
+      "title": "Black Horses Adalah Spirit Pemberontakan & Attitude Rock n Roll | Bicara Melodi S2 | EP 63",
       "venue": "Interview",
       "duration": "53:33",
       "seconds": 3213,
@@ -1079,7 +1083,7 @@
     },
     {
       "id": "IqUgTPaknDY",
-      "title": "KIM - Impossible, Shadow of Past Love Live At Melodi Samsara",
+      "title": "KIM - Tak Mungkin, Bayangan Cinta Yang Lalu Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "9:17",
       "seconds": 557,
@@ -1091,7 +1095,7 @@
     },
     {
       "id": "-hwFEwFxMiM",
-      "title": "KIM Was Formed for Confidants Who Can't Move On | Bicara Melodi S2 | EP 62",
+      "title": "KIM Dibentuk Untuk Teman Curhat Yang Gagal Move On | Bicara Melodi S2 | EP 62",
       "venue": "Interview",
       "duration": "42:01",
       "seconds": 2521,
@@ -1103,7 +1107,7 @@
     },
     {
       "id": "XS4H5VLy0yI",
-      "title": "Mario Ginanjar - Really Missing, From Afar Ft. Andity Live At Melodi Samsara",
+      "title": "Mario Ginanjar - Sungguh Rindu, Dari Jauh Ft. Andity Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:41",
       "seconds": 521,
@@ -1115,8 +1119,8 @@
     },
     {
       "id": "TJk7-v27bFE",
-      "title": "Mario Ginanjar Reveals the Bittersweet Journey of 25 Years with Kahitna | Talk Melody S2 | EP61",
-      "venue": "Arsip & Lainnya",
+      "title": "Mario Ginanjar Ungkap Perjalanan Pahit Manis 25 Tahun Bersama Kahitna | Bicara Melodi S2 | EP61",
+      "venue": "Interview",
       "duration": "45:47",
       "seconds": 2747,
       "views": "10K",
@@ -1127,7 +1131,7 @@
     },
     {
       "id": "BiK2XXTztqE",
-      "title": "Dendi Nata - Forever, Eternal Live At Melodi Samsara",
+      "title": "Dendi Nata - Selamanya, Abadi Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "9:31",
       "seconds": 571,
@@ -1139,8 +1143,8 @@
     },
     {
       "id": "wjRMaHl7x0c",
-      "title": "Dendi Nata Saved by Eternal Song from Divorce and Infidelity | Talk Melody S2 | EP60",
-      "venue": "Arsip & Lainnya",
+      "title": "Dendi Nata Diselamatkan Lagu Abadi Dari Fase Perceraian & Perselingkuhan | Bicara Melodi S2 | EP60",
+      "venue": "Interview",
       "duration": "38:39",
       "seconds": 2319,
       "views": "169",
@@ -1151,7 +1155,7 @@
     },
     {
       "id": "bX18hNJMiQQ",
-      "title": "Armada - Thank You, Leave Early, Come Home Early Live At Melodi Samsara",
+      "title": "Armada - Terima Kasih, Pergi Pagi Pulang Pagi Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "9:34",
       "seconds": 574,
@@ -1187,8 +1191,8 @@
     },
     {
       "id": "MEQh-miYe3s",
-      "title": "Devano Bullied for Dangdut, Idolizes Raisa & Avoids Podcasts | Talk Melody S2 | EP58",
-      "venue": "Arsip & Lainnya",
+      "title": "Devano Dibully Karena Dangdut, Mengidolakan Raisa & Menghindari Podcast | Bicara Melodi S2 | EP58",
+      "venue": "Interview",
       "duration": "45:51",
       "seconds": 2751,
       "views": "1K",
@@ -1211,7 +1215,7 @@
     },
     {
       "id": "ZTlBFX_Mou4",
-      "title": "Monita Tahalea: 20 Years of Dark Work in Dandelion, Blooming Through Blush | Melody Talk S2 | EP57",
+      "title": "Monita Tahalea 20 Tahun Berkarya Gelap Dalam Dandelion, Mekar Lewat Merona | Bicara Melodi S2 | EP57",
       "venue": "Interview",
       "duration": "44:54",
       "seconds": 2694,
@@ -1223,7 +1227,7 @@
     },
     {
       "id": "J7K9cKma3jE",
-      "title": "OKAAY - Find Happiness, Forget the Name, Remember the Feeling Live at Melodi Samsara",
+      "title": "OKAAY - Temukan Bahagia, Lupa Nama Ingat Rasa Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:12",
       "seconds": 432,
@@ -1235,7 +1239,7 @@
     },
     {
       "id": "drlc2MSz6pM",
-      "title": "OKAAY Finds Happiness by Letting Go of a Toxic Relationship | Melody Talk S2 | EP56",
+      "title": "OKAAY Menemukan Bahagia Dengan Melepaskan Hubungan Toxic | Bicara Melodi S2 | EP56",
       "venue": "Interview",
       "duration": "41:55",
       "seconds": 2515,
@@ -1259,7 +1263,7 @@
     },
     {
       "id": "3J7JkvCpS1s",
-      "title": "Dnanda Can Play Keyboard Because of Dreams & Oldies' Droopy Eyes | Talking Melodies S2 | EP55",
+      "title": "Dnanda Bisa Main Keyboard Karena Mimpi & Bola Mata Sayu Yang Oldies | Bicara Melodi S2 | EP55",
       "venue": "Interview",
       "duration": "44:48",
       "seconds": 2688,
@@ -1271,7 +1275,7 @@
     },
     {
       "id": "6bf1Sa9i_TA",
-      "title": "Maisha Kanna - Upside Down, Want to Lose Memory Live at Melodi Samsara",
+      "title": "Maisha Kanna - Jungkir Balik, Ingin Hilang Ingatan Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:07",
       "seconds": 487,
@@ -1283,7 +1287,7 @@
     },
     {
       "id": "JLaYUXo9Pmg",
-      "title": "Maisha Kanna on Turning Upside Down and the Magic of Bernadya's Songs | Bicara Melodi S2 | EP54",
+      "title": "Maisha Kanna Soal Jungkir Balik Hingga Magisnya Lagu Buatan Bernadya | Bicara Melodi S2 | EP54",
       "venue": "Interview",
       "duration": "38:21",
       "seconds": 2301,
@@ -1307,7 +1311,7 @@
     },
     {
       "id": "LZ68ztEU7XE",
-      "title": "Madmax About a Band Filled with Girls on PMS & Inspired by Alvvays | Melody Talk S2 | EP53",
+      "title": "Madmax Soal Band Isinya Cewek Kalo Lagi PMS & Terinspirasi Dari Alvvays | Bicara Melodi S2 | EP53",
       "venue": "Interview",
       "duration": "35:12",
       "seconds": 2112,
@@ -1319,7 +1323,7 @@
     },
     {
       "id": "6SJMhICnALw",
-      "title": "Rrag - Chain, Sky Becomes Sea Live At Melodi Samsara",
+      "title": "Rrag - Rantai, Langit Menjadi Laut Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "5:45",
       "seconds": 345,
@@ -1331,8 +1335,8 @@
     },
     {
       "id": "k3TyIh1J8KU",
-      "title": "Rrag Creates \"Langit\" Album From Absurd Things, From Tooth Fillings to People with Mental Illness...",
-      "venue": "Arsip & Lainnya",
+      "title": "Rrag Bikin Album \"Langit\" Dari Hal Absurd Mulai Tambal Gigi Sampai ODGJ | Bicara Melodi S2 | EP52",
+      "venue": "Interview",
       "duration": "38:34",
       "seconds": 2314,
       "views": "2.2K",
@@ -1343,7 +1347,7 @@
     },
     {
       "id": "HkNQ0SB1fjo",
-      "title": "I'm Jeje - Look at My Garden (Flower Garden), Dansaria Live At Melodi Samsara",
+      "title": "Aku Jeje - Lihat Kebunku (Taman Bunga), Dansaria Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "6:53",
       "seconds": 413,
@@ -1355,7 +1359,7 @@
     },
     {
       "id": "0E2M1dijHiI",
-      "title": "I Jeje About Seeing My Garden Addressed to My Mother & My Lover's Death | Melody Talk S2 | EP51",
+      "title": "Aku Jeje Soal Lihat Kebunku Ditujukan Ke Ibu & Meninggalnya Kekasih | Bicara Melodi S2 | EP51",
       "venue": "Interview",
       "duration": "50:32",
       "seconds": 3032,
@@ -1367,7 +1371,7 @@
     },
     {
       "id": "i9J4JnRC44o",
-      "title": "Societeit de Harmonie – Tutukan, Sembilan Live At Melodi Samsara",
+      "title": "Societeit de Harmonie – Kutukan, Sembilan Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "7:31",
       "seconds": 451,
@@ -1379,8 +1383,8 @@
     },
     {
       "id": "S0ToURMyDhs",
-      "title": "Society of Harmonies: The Originator of Face-to-Face Jazz & the Curse of Toxic Relationships | Ta...",
-      "venue": "Arsip & Lainnya",
+      "title": "Societeit de Harmonie Pencetus Jazz Mepet Muka & Kutukan Hubungan Toxic | Bicara Melodi S2 | EP50",
+      "venue": "Interview",
       "duration": "39:56",
       "seconds": 2396,
       "views": "340",
@@ -1403,8 +1407,8 @@
     },
     {
       "id": "onMXLHgBJMA",
-      "title": "Rick Karnadi Reveals a Love Story Full of Strategy | Talk Melody S2 | EP49",
-      "venue": "Arsip & Lainnya",
+      "title": "Rick Karnadi Ungkap Kisah Cinta Yang Penuh Strategi | Bicara Melodi S2 | EP49",
+      "venue": "Interview",
       "duration": "29:23",
       "seconds": 1763,
       "views": "45",
@@ -1415,7 +1419,7 @@
     },
     {
       "id": "G7VwMDEge50",
-      "title": "GME – Reminder, Special Live At Melodi Samsara",
+      "title": "GME – Pengingat, Istimewa Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:53",
       "seconds": 533,
@@ -1427,7 +1431,7 @@
     },
     {
       "id": "2HQmP0Rwls8",
-      "title": "GME is said to resemble Sheila On 7, and the hardships of being a father | Bicara Melodi S2 | EP48",
+      "title": "GME Dibilang Mirip Sheila On 7 Sampai Beratnya Jadi Seorang Bapak | Bicara Melodi S2 | EP48",
       "venue": "Interview",
       "duration": "39:30",
       "seconds": 2370,
@@ -1451,8 +1455,8 @@
     },
     {
       "id": "uwwXnI0IuzU",
-      "title": "Indra Sinaga Wants to Sing as Sincerely as Chrisye, Go Solo, Lyla Heads to Ada Band | Talk Melody...",
-      "venue": "Arsip & Lainnya",
+      "title": "Indra Sinaga Mau Nyanyi Setulus Chrisye, Solo Karir, Lyla Menuju Ada Band | Bicara Melodi S2 | EP47",
+      "venue": "Interview",
       "duration": "30:57",
       "seconds": 1857,
       "views": "336",
@@ -1475,7 +1479,7 @@
     },
     {
       "id": "NqJ_qWWrdjg",
-      "title": "Gabriella Ekaputri, From K-pop Trainee to Betrayal in Relationships | Melody Talk S2 | EP46",
+      "title": "Gabriella Ekaputri Trainee K-pop Hingga Pengkhianatan Dalam Hubungan | Bicara Melodi S2 | EP46",
       "venue": "Interview",
       "duration": "36:29",
       "seconds": 2189,
@@ -1499,8 +1503,8 @@
     },
     {
       "id": "fXyjksP-fw8",
-      "title": "Lyla, the Musician of FTV Songs, From \"Ga Romantik\" to \"Magic,\" Which Turns Out to Be a Bonus Tra...",
-      "venue": "Arsip & Lainnya",
+      "title": "Lyla Pencetak Lagu FTV, Ga Romantis Hingga Magic Yang Ternyata Bonus Track | Bicara Melodi S2 | EP45",
+      "venue": "Interview",
       "duration": "45:18",
       "seconds": 2718,
       "views": "161",
@@ -1511,7 +1515,7 @@
     },
     {
       "id": "QtXhTkrecVw",
-      "title": "Starrducc - Bianglala, 15,000 Steps Live At Melodi Samsara",
+      "title": "Starrducc - Bianglala, 15.000 Langkah Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:30",
       "seconds": 510,
@@ -1523,7 +1527,7 @@
     },
     {
       "id": "lPuVNbpF1cY",
-      "title": "Starrducc: Long-Distance Recording, From Weird Song Titles to the Bogor Scene | Bicara Melodi S2 ...",
+      "title": "Starrducc Rekaman Jarak Jauh, Judul Lagu Nyeleneh Hingga Skena Bogor | Bicara Melodi S2 | EP44",
       "venue": "Interview",
       "duration": "36:48",
       "seconds": 2208,
@@ -1535,7 +1539,7 @@
     },
     {
       "id": "tX9wyKc68Fw",
-      "title": "Oslo Ibrahim – I'm Not Your Home Anymore, All My Friends Are Fallin' In Love Live At Melodi Samsara",
+      "title": "Oslo Ibrahim – Aku Bukan Rumahmu Lagi, All My Friends Are Fallin' In Love Live At Melodi Samsara",
       "venue": "Melodi Samsara",
       "duration": "8:02",
       "seconds": 482,
@@ -1667,7 +1671,7 @@
     },
     {
       "id": "lso6lVmkZDs",
-      "title": "Meiska: Behind the Pain of Disappearing Without a Word & Being Stubborn | Melody Talk S2 | EP38",
+      "title": "Meiska Dibalik Menyakitkannya Hilang Tanpa Bilang & Keras Kepala | Bicara Melodi S2 | EP38",
       "venue": "Interview",
       "duration": "30:44",
       "seconds": 1844,
@@ -1691,7 +1695,7 @@
     },
     {
       "id": "oll7QJBocLk",
-      "title": "Basboi Starts With Bismillah Until He's Alone, Young Lex & the Hip-Hop Scene | Talking Melodies S...",
+      "title": "Basboi Memulai Dengan Bismillah Hingga Sendiri, Young Lex & Skena Hiphop | Bicara Melodi S2 | EP37",
       "venue": "Interview",
       "duration": "44:01",
       "seconds": 2641,
@@ -1775,8 +1779,8 @@
     },
     {
       "id": "1_SRsClAAPs",
-      "title": "Shakira Jasmine Once Worked as a Vocal Director for a Legendary Musician & Always Loses | Bicara ...",
-      "venue": "Arsip & Lainnya",
+      "title": "Shakira Jasmine Pernah Jadi Vocal Director Musisi Legend & Selalu Kalah | Bicara Melodi S2 | EP34",
+      "venue": "Interview",
       "duration": "36:22",
       "seconds": 2182,
       "views": "350",
@@ -1847,7 +1851,7 @@
     },
     {
       "id": "GEzDOY_uL58",
-      "title": "Raissa Anggiani Influenced by Billie Eilish, Kau Rumahku & Satu Langkah | Bicara Melodi S2 | EP31",
+      "title": "Raissa Anggiani Terpengaruh Billie Elish, Kau Rumahku & Satu Langkah | Bicara Melodi S2 | EP31",
       "venue": "Interview",
       "duration": "31:50",
       "seconds": 1910,
@@ -1871,8 +1875,8 @@
     },
     {
       "id": "vpDXAfXeZ-A",
-      "title": "Tsaqib Inevitably Gives in & Surrenders in a Romantic Relationship | Talk Melody S2 | EP30",
-      "venue": "Arsip & Lainnya",
+      "title": "Tsaqib Mau Tak Mau Mengalah & Pasrah Di Hubungan Percintaan | Bicara Melodi S2 | EP30",
+      "venue": "Interview",
       "duration": "27:28",
       "seconds": 1648,
       "views": "695",
@@ -1919,7 +1923,7 @@
     },
     {
       "id": "RWGOsONFrcE",
-      "title": "Citra Scholastika Behind 'Everybody Knew' & Finding Her Identity in 'Tilik Jogja' | Bicara Melodi...",
+      "title": "Citra Scholastika Dibalik Everybody Knew & Temukan Jati Diri Di Tilik Jogja | Bicara Melodi S2 |EP28",
       "venue": "Interview",
       "duration": "34:23",
       "seconds": 2063,
@@ -1943,7 +1947,7 @@
     },
     {
       "id": "k3y8cYyuY1M",
-      "title": "Rio Clappy Explores the Meaning of the Eternal Flower and Embraces the Beatles | Melody Talk S2 |...",
+      "title": "Rio Clappy Menyelami Makna Bunga Abadi Sampai Menganut Sekte Beatles | Bicara Melodi S2 | EP27",
       "venue": "Interview",
       "duration": "42:52",
       "seconds": 2572,
@@ -1967,7 +1971,7 @@
     },
     {
       "id": "vfIe53b6BSI",
-      "title": "Prinsa Mandagie: The Story of a Child's Maturity from a Broken Home | Bicara Melodi S2 | EP26",
+      "title": "Prinsa Mandagie Cerita Kedewasaan Seorang Anak Broken Home | Bicara Melodi S2 | EP26",
       "venue": "Interview",
       "duration": "51:42",
       "seconds": 3102,
@@ -2135,8 +2139,8 @@
     },
     {
       "id": "kNVsFT9phAw",
-      "title": "Nadhif Basalamah Finds the Guardian of His Heart, Echoing Forever | Talk Melody S2 | EP19",
-      "venue": "Arsip & Lainnya",
+      "title": "Nadhif Basalamah Menemukan Penjaga Hati Hingga Bergema Sampai Selamanya | Bicara Melodi S2 | EP19",
+      "venue": "Interview",
       "duration": "33:36",
       "seconds": 2016,
       "views": "1.5K",
@@ -2183,7 +2187,7 @@
     },
     {
       "id": "LzM54e0GsKw",
-      "title": "Mike Ethan on His Musical Journey with Mario Kahitna | Melody Talk S2 | EP18",
+      "title": "Mike Ethan Soal Perjalanan Musiknya Bersama Mario Kahitna | Bicara Melodi S2 | EP18",
       "venue": "Interview",
       "duration": "27:39",
       "seconds": 1659,
@@ -2207,7 +2211,7 @@
     },
     {
       "id": "sI9265rM2J4",
-      "title": "Dere Is More Direct in Expressing Her Doubts About Falling in Love | Bicara Melodi S2 | EP17",
+      "title": "Dere Lebih Frontal Menuangkan Keraguannya Dalam Jatuh Cinta | Bicara Melodi S2 | EP17",
       "venue": "Interview",
       "duration": "25:26",
       "seconds": 1526,
@@ -2255,7 +2259,7 @@
     },
     {
       "id": "j7jx5cqgULw",
-      "title": "The Lantis: From Red Lights to Phenomenal Apology Flowers | Bicara Melodi S2 | EP15",
+      "title": "The Lantis Soal Lampu Merah Sampai Bunga Maaf Yang Fenomenal | Bicara Melodi S2 | EP15",
       "venue": "Interview",
       "duration": "35:19",
       "seconds": 2119,
@@ -2303,7 +2307,7 @@
     },
     {
       "id": "LHKPq0EapCg",
-      "title": "Sisca Saras on Relationship Equality, 'Cegil' (Crazy Girls), and Life After JKT48 | Bicara Melodi...",
+      "title": "Sisca Saras Soal Kesetaraan Cinta, Cegil Sampai Kehidupan Setelah JKT48 | Bicara Melodi S2 | EP13",
       "venue": "Interview",
       "duration": "39:23",
       "seconds": 2363,
@@ -2351,7 +2355,7 @@
     },
     {
       "id": "So4H9rLi718",
-      "title": "Mezzaluna on Opening Up, The Beatles, and Her Perspective on Bimbim Slank | Bicara Melodi S2 | EP11",
+      "title": "Mezzaluna Soal Membuka Diri, Beatles Sampai Sosok Bimbim Slank Di matanya | Bicara Melodi S2 | EP11",
       "venue": "Interview",
       "duration": "26:20",
       "seconds": 1580,
@@ -2375,7 +2379,7 @@
     },
     {
       "id": "4V0oRPmskS8",
-      "title": "Farrel Hilal on Romanticizing South Jakarta and Surrendering to God | Bicara Melodi S2 | EP10",
+      "title": "Farrel Hilal Romantisasi Selatan Jakarta Sampai Berserah Diri Ke Tuhan | Bicara Melodi S2 | EP10",
       "venue": "Interview",
       "duration": "38:34",
       "seconds": 2314,
@@ -2447,7 +2451,7 @@
     },
     {
       "id": "-NoExVHnlPk",
-      "title": "Aziz Hedra: From Somebody's Pleasure to Normalizing Pain | Bicara Melodi S2 | EP7",
+      "title": "Aziz Hedra Soal Somebody's Pleasure Sampai Menormalisasi Rasa Sakit | Bicara Melodi S2 | EP7",
       "venue": "Interview",
       "duration": "33:27",
       "seconds": 2007,
@@ -2471,7 +2475,7 @@
     },
     {
       "id": "aO0l_ZhkLQg",
-      "title": "JoRaffi on Loss of Family and Partners Due to Death | Bicara Melodi S2 | EP6",
+      "title": "JoRaffi Soal Perpisahan Keluarga Hingga Pasangan Karena Kematian | Bicara Melodi S2 | EP6",
       "venue": "Interview",
       "duration": "25:26",
       "seconds": 1526,
@@ -2495,7 +2499,7 @@
     },
     {
       "id": "Tj90MOZ4QWA",
-      "title": "Teddy Adhitya's Childhood Trauma Leads to Writing a Song at Glenn Fredly's Grave | Bicara Melodi ...",
+      "title": "Teddy Adhitya Trauma Masa Kecilnya Sampai Nulis Lagu Di Makam Glenn Fredly | Bicara Melodi S2 | EP5",
       "venue": "Interview",
       "duration": "41:27",
       "seconds": 2487,
@@ -2543,7 +2547,7 @@
     },
     {
       "id": "wjd1Jpspvv8",
-      "title": "Dbatlayar About Unrequited Love and Disappointed Expectations | Bicara Melodi S2 | EP3",
+      "title": "Dbatlayar Soal Cinta Tak Berbalas Sampai Dikecewakan Ekspektasi | Bicara Melodi S2 | EP3",
       "venue": "Interview",
       "duration": "22:45",
       "seconds": 1365,
@@ -2567,7 +2571,7 @@
     },
     {
       "id": "5gxMJI6XZXg",
-      "title": "Ruffy Finds Similarities With Bernadya in Experiencing the Bitterness of Life | Bicara Melodi S2 ...",
+      "title": "Rufi Temukan Kesamaan Dengan Bernadya Soal Merasakan Pahitnya Hidup | Bicara Melodi S2 | EP2",
       "venue": "Interview",
       "duration": "24:27",
       "seconds": 1467,
@@ -2591,7 +2595,7 @@
     },
     {
       "id": "0Phjvhk___s",
-      "title": "Lalahuta Makes a Breakthrough by Writing a Song for Homewreckers | Bicara Melodi S2 | EP1",
+      "title": "Lalahuta Bikin Gebrakan Dengan Membuat Lagu Untuk Pelakor | Bicara Melodi S2 | EP1",
       "venue": "Interview",
       "duration": "30:40",
       "seconds": 1840,
@@ -2723,7 +2727,7 @@
     },
     {
       "id": "0_9xdfekL5M",
-      "title": "Sheryl Sheinafia: On the realities of today's romantic relationships | Bicara Melodi EP39",
+      "title": "Sheryl Sheinafia : Soal realita hubungan percintaan masa kini | Bicara Melodi EP39",
       "venue": "Interview",
       "duration": "42:48",
       "seconds": 2568,
@@ -2747,8 +2751,8 @@
     },
     {
       "id": "MqKG28W5yto",
-      "title": "Ify Alyssa: A Mature Separation Through Nothing Special | Talk Melody EP38",
-      "venue": "Arsip & Lainnya",
+      "title": "Ify Alyssa : Berpisah Secara Dewasa Lewat Tak Istimewa | Bicara Melodi EP38",
+      "venue": "Interview",
       "duration": "23:39",
       "seconds": 1419,
       "views": "6.8K",
@@ -2771,7 +2775,7 @@
     },
     {
       "id": "tDjN4DCvQ1s",
-      "title": "Enau: Ari Lesmana Became His Inspiration to Choose a Life in Music | Bicara Melodi EP37",
+      "title": "Enau : Ari Lesmana Jadi Inspirasinya Memilih Hidup Di Musik | Bicara Melodi EP37",
       "venue": "Interview",
       "duration": "21:18",
       "seconds": 1278,
@@ -2843,7 +2847,7 @@
     },
     {
       "id": "KeVP2T8VHgE",
-      "title": "Rahmania Astrini: The Person Who Opened the Coldplay Concert in Jakarta | Bicara Melodi EP34",
+      "title": "Rahmania Astrini : Sosok Yang Membuka Konser Coldplay Jakarta | Bicara Melodi EP34",
       "venue": "Interview",
       "duration": "25:01",
       "seconds": 1501,
@@ -2867,8 +2871,8 @@
     },
     {
       "id": "siB82marItU",
-      "title": "Und Bodevan Recaps the Story Behind the 1931 Apartment | Talk Melody EP33",
-      "venue": "Arsip & Lainnya",
+      "title": "Und Bodevan Merangkum Kisah Dibalik Apartemen 1931 | Bicara Melodi EP33",
+      "venue": "Interview",
       "duration": "36:22",
       "seconds": 2182,
       "views": "3.2K",
@@ -2939,7 +2943,7 @@
     },
     {
       "id": "Oa2S0n2Awo8",
-      "title": "Maizura Was At Her Lowest Phase Until She Didn't Want to Play Music Anymore?? | Bicara Melodi EP30",
+      "title": "Maizura Pernah Di Fase Terendah Sampe Gak Mau Main Musik Lagi?? | Bicara Melodi EP30",
       "venue": "Interview",
       "duration": "41:17",
       "seconds": 2477,
@@ -2963,7 +2967,7 @@
     },
     {
       "id": "d_dZ1cHkVCc",
-      "title": "Biru Baru Discuss Rising From Their Lowest Point in Life | Bicara Melodi EP29",
+      "title": "Biru Baru Cerita Soal Bangkit Dari Titik Terendah Dalam Hidup | Bicara Melodi EP29",
       "venue": "Interview",
       "duration": "52:14",
       "seconds": 3134,
@@ -3011,8 +3015,8 @@
     },
     {
       "id": "pSc6ln_keN8",
-      "title": "Does Dere Feel Like Her Life Is a Rubik's Cube? And Her Sincere Role in Her Music | Talk Melody EP27",
-      "venue": "Arsip & Lainnya",
+      "title": "Dere Ngerasa Hidupnya Seperti Rubik? Dan Peran Tulus Terhadap Musiknya Dere | Bicara Melodi EP27",
+      "venue": "Interview",
       "duration": "41:10",
       "seconds": 2470,
       "views": "5.8K",
@@ -3059,7 +3063,7 @@
     },
     {
       "id": "1QOYwtAkAzs",
-      "title": "Agatha Pricilla Uses Her Mother's Advice as a Guide for Life's Challenges | Bicara Melodi EP25",
+      "title": "Agatha Pricilla Jadikan Petuah Ibunya Sebagai Acuan Untuk Masalah Hidup | Bicara Melodi EP25",
       "venue": "Interview",
       "duration": "38:15",
       "seconds": 2295,
@@ -3107,7 +3111,7 @@
     },
     {
       "id": "eWKla6XnHC8",
-      "title": "Bicara Melodi EP23 | Donne Maula Bongkar Kisah Percubuatan Nya Dengan Yura Yunita",
+      "title": "Bicara Melodi EP23 | Donne Maula Bongkar Kisah Percintaan nya Dengan Yura Yunita",
       "venue": "Interview",
       "duration": "41:10",
       "seconds": 2470,
@@ -3179,7 +3183,7 @@
     },
     {
       "id": "HLELcT2_ljE",
-      "title": "Bicara Melodi EP20 | Did Jordan Susanto Ever Have a Bad Experience on Stage??!",
+      "title": "Bicara Melodi EP20 | Jordan Susanto Pernah Dapat Pengalaman Buruk Di Panggung??!",
       "venue": "Interview",
       "duration": "33:51",
       "seconds": 2031,
@@ -3239,7 +3243,7 @@
     },
     {
       "id": "sr-GTFJKs9M",
-      "title": "Bicara Melodi EP17 | MANUTIZED SHARES HIS CHILDHOOD BULLYING EXPERIENCE THROUGH THE SONG \"NATIVIT...",
+      "title": "Bicara Melodi EP17 | MANUTIZED CERITAIN MASA KECILNYA YANG PERNAH DI BULLY LEWAT LAGU NATIVITY TRIP",
       "venue": "Interview",
       "duration": "43:10",
       "seconds": 2590,
@@ -3467,7 +3471,7 @@
     },
     {
       "id": "V6PGAFDMtyE",
-      "title": "TANJUNG - Making Memories Live at MELODI TAMAN",
+      "title": "TANJUNG - Making Memories Live At MELODI TAMAN",
       "venue": "Melodi Taman",
       "duration": "4:04",
       "seconds": 244,
@@ -3515,7 +3519,7 @@
     },
     {
       "id": "LOJHeRGVhto",
-      "title": "Ivan Heri - Dawai Asa Live at MELODI TAMAN",
+      "title": "Ivan Heri - Dawai Asa Live At MELODI TAMAN",
       "venue": "Melodi Taman",
       "duration": "4:30",
       "seconds": 270,
@@ -3575,7 +3579,7 @@
     },
     {
       "id": "r_jZirW5NRU",
-      "title": "Bicara Melodi EP03 | BULLIED BY NETIZENS for Her Type of Guy!",
+      "title": "Bicara Melodi EP03 | DIBULLY NETIZEN karena Tipe Cowoknya!",
       "venue": "Interview",
       "duration": "25:42",
       "seconds": 1542,
