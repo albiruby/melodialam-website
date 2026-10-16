@@ -34,6 +34,8 @@ export interface Article {
   date: string;
   dateISO: string;
   excerpt: string;
+  /** Teaser for the green hover curtain; `excerpt` is used when absent. */
+  note?: string;
   image: string;
   body: string[];
 }

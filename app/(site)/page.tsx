@@ -63,7 +63,11 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 divide-y divide-ink md:grid-cols-3 md:divide-x md:divide-y-0">
             {subFeatures.map((article) => (
               <div key={article.slug} className="relative">
-                <FeatureCard article={article} note="READ" />
+                <FeatureCard
+                  article={article}
+                  note={settings.cardCurtain.featureLabel}
+                  ctaLabel={settings.cardCurtain.featureCta}
+                />
               </div>
             ))}
           </div>

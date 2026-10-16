@@ -8,15 +8,22 @@ import { ParallaxImage } from "./motion/ParallaxImage";
  *
  * `titleFirst` flips the layout so every other column leads with the headline —
  * the alternation that produced the source page's staggered rhythm.
+ *
+ * The green hover curtain's copy comes from `siteSettings.cardCurtain`, passed
+ * down by the page; its teaser prefers the article's own `note` over `excerpt`.
  */
 export function ArticleCard({
   article,
   titleFirst = false,
   index = 0,
+  readLabel = "READ STORY",
+  noteCta = "Buka Catatan Redaksi",
 }: {
   article: Article;
   titleFirst?: boolean;
   index?: number;
+  readLabel?: string;
+  noteCta?: string;
 }) {
   return (
     <article
@@ -31,12 +38,12 @@ export function ArticleCard({
                 {article.title}
               </Link>
             </h3>
-            <CardImage article={article} ratio="4/3" />
+            <CardImage article={article} ratio="4/3" readLabel={readLabel} noteCta={noteCta} />
             <p className="mb-4 text-xs leading-relaxed text-neutral-600">{article.excerpt}</p>
           </>
         ) : (
           <>
-            <CardImage article={article} ratio="square" />
+            <CardImage article={article} ratio="square" readLabel={readLabel} noteCta={noteCta} />
             <h3 className="mb-2 text-xl font-medium leading-snug transition-colors duration-300 group-hover:text-forest">
               <Link href={`/journal/${article.slug}`} className="after:absolute after:inset-0">
                 {article.title}
@@ -71,7 +78,17 @@ const FRAME_SHAPE = {
   "4/3": "aspect-[4/3]",
 } as const;
 
-function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "square" }) {
+function CardImage({
+  article,
+  ratio,
+  readLabel,
+  noteCta,
+}: {
+  article: Article;
+  ratio: "4/3" | "square";
+  readLabel: string;
+  noteCta: string;
+}) {
   return (
     <div
       className={`hover-reveal-box corner-frame mb-4 ${FRAME_SHAPE[ratio]} border border-ink bg-neutral-900`}
@@ -81,18 +98,18 @@ function CardImage({ article, ratio }: { article: Article; ratio: "4/3" | "squar
         alt={article.title}
         fill
         sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-        className="editorial-img object-cover grayscale transition-[filter] duration-600 group-hover:grayscale-0"
+        className="editorial-img object-cover"
       />
       <div className="hover-reveal-curtain">
         <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-green-400">
           <span>{CATEGORY_LABELS[article.category]}</span>
-          <span>READ STORY</span>
+          <span>{readLabel}</span>
         </div>
         <p className="hover-reveal-tag line-clamp-3 text-xs leading-relaxed text-neutral-200">
-          {article.excerpt}
+          {article.note ?? article.excerpt}
         </p>
         <div className="hover-reveal-tag flex items-center justify-between border-t border-white/20 pt-2 text-[11px] uppercase">
-          <span>Buka Catatan Redaksi</span>
+          <span>{noteCta}</span>
           <span>↗</span>
         </div>
       </div>
@@ -153,8 +170,19 @@ export function HeroArticle({ article }: { article: Article }) {
   );
 }
 
-/** Compact card used in the three-column grid under the hero. */
-export function FeatureCard({ article, note }: { article: Article; note: string }) {
+/**
+ * Compact card used in the three-column grid under the hero. Same green curtain
+ * as `ArticleCard`; `note` and `ctaLabel` come from `siteSettings.cardCurtain`.
+ */
+export function FeatureCard({
+  article,
+  note,
+  ctaLabel = "Baca Artikel Penuh",
+}: {
+  article: Article;
+  note: string;
+  ctaLabel?: string;
+}) {
   return (
     <article className="group flex cursor-pointer flex-col justify-between p-4 transition-colors duration-300 hover:bg-paper sm:p-5">
       <div>
@@ -164,7 +192,7 @@ export function FeatureCard({ article, note }: { article: Article; note: string 
             alt={article.title}
             fill
             sizes="(min-width: 768px) 33vw, 100vw"
-            className="editorial-img object-cover grayscale transition-[filter] duration-600 group-hover:grayscale-0"
+            className="editorial-img object-cover"
           />
           <div className="hover-reveal-curtain">
             <div className="flex items-center justify-between text-[10px] uppercase tracking-widest text-green-400">
@@ -172,10 +200,10 @@ export function FeatureCard({ article, note }: { article: Article; note: string 
               <span>{note}</span>
             </div>
             <p className="hover-reveal-tag line-clamp-3 text-xs leading-relaxed text-neutral-200">
-              {article.excerpt}
+              {article.note ?? article.excerpt}
             </p>
             <div className="hover-reveal-tag flex items-center justify-between border-t border-white/20 pt-2 text-[11px] uppercase">
-              <span>Baca Artikel Penuh</span>
+              <span>{ctaLabel}</span>
               <span>↗</span>
             </div>
           </div>

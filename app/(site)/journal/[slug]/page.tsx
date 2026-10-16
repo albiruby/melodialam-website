@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content";
 import { allArticles, articleBySlug, staticArticleSlugs } from "@/lib/articles";
 import { SITE } from "@/lib/site";
+import { getSiteSettings } from "@/lib/site-settings";
 import { ArticleBody } from "@/components/ArticleBody";
 import { ArticleCard } from "@/components/ArticleCards";
 
@@ -59,7 +60,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
 
   // Same desk first, then topped up from the rest of the journal, so a category
   // with only one other article still fills the three-column grid.
-  const every = await allArticles();
+  const [every, settings] = await Promise.all([allArticles(), getSiteSettings()]);
   const sameDesk = every.filter((a) => a.slug !== article.slug && a.category === article.category);
   const otherDesks = every.filter((a) => a.slug !== article.slug && a.category !== article.category);
   const fallbacks = [...sameDesk, ...otherDesks].slice(0, 3);
@@ -175,7 +176,12 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
         <div className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">
           {fallbacks.map((a, i) => (
             <div key={a.slug} className="relative">
-              <ArticleCard article={a} index={i} />
+              <ArticleCard
+                article={a}
+                index={i}
+                readLabel={settings.cardCurtain.articleLabel}
+                noteCta={settings.cardCurtain.articleCta}
+              />
             </div>
           ))}
         </div>

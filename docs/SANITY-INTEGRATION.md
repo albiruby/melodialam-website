@@ -67,6 +67,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
+| **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
 | **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
 | **pahlawanRow** | Konten | `/pahlawan-kota` (direktori kota & skena) | ✅ tersambung |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
@@ -81,7 +82,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 ```
 melodi-alam.sanity.studio  →  Konten  →  Stories  →  Create new
    │
-   ├─ Judul, Slug, Rubrik, Tanggal, Ringkasan, Sampul, Isi (rich text)
+   ├─ Judul, Slug, Rubrik, Tanggal, Ringkasan, Catatan hover, Sampul, Isi (rich text)
    ├─ Publish                            ← tombol kanan bawah
    │
    ▼
@@ -126,12 +127,20 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
      Melodi, Liputan Panggung).
    - **Tanggal terbit** — dipakai untuk pengurutan dan JSON-LD.
    - **Ringkasan** — dipakai di kartu, meta description, dan JSON-LD.
+   - **Catatan panel hover** — teks di panel hijau saat kartu di-hover; kosong berarti
+     memakai **Ringkasan**.
    - **Sampul** — unggah langsung; ada *hotspot* supaya pemotongan tidak memenggal wajah.
    - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline didukung.
    - **Beranda** — blok `Latest News` selalu memuat **4 artikel terbaru** (urutan
      tanggal); tidak ada lagi pilihan headline.
 4. **Publish**.
 5. Buka `/journal/<slug>`. Langsung tampil.
+
+> **Panel hijau pada kartu.** Saat kartu artikel di-hover, muncul panel hijau berisi
+> label rubrik, label kecil kanan atas, teaser, dan tombol "buka catatan". Teaser-nya
+> otomatis memakai **Ringkasan**; isi **Catatan panel hover** pada artikel kalau ingin
+> teks yang berbeda. Empat label panelnya diatur sekali untuk seluruh situs di
+> **Pengaturan Situs → Panel hijau kartu (hover)**.
 
 > **Slug itu kontrak.** Halaman detail membaca artikel berdasarkan slug, jadi
 > mengganti slug setelah publish akan mematikan URL lama. Tidak ada redirect otomatis.
@@ -145,6 +154,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/journal/page.tsx` | `allArticles()` | dirender langsung sebagai grid 12 kartu; server component, tanpa filter |
 | `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
 | `app/(site)/page.tsx` | `allArticles()` | hero + 3 kartu = **4 artikel terbaru** |
+| `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |

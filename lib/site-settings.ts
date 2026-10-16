@@ -27,6 +27,18 @@ export interface TickerItem {
   href: string | null;
 }
 
+/** Copy for the green hover curtain that covers an article card. */
+export interface CardCurtainCopy {
+  /** Small top-right label on a Stories-page card. */
+  articleLabel: string;
+  /** Bottom "open the note" CTA on a Stories-page card. */
+  articleCta: string;
+  /** Small top-right label on a home-page feature card. */
+  featureLabel: string;
+  /** Bottom CTA on a home-page feature card. */
+  featureCta: string;
+}
+
 export interface SiteSettings {
   name: string;
   tagline: string;
@@ -36,6 +48,7 @@ export interface SiteSettings {
   description: string;
   /** The small note beside a section heading. Never carries a date. */
   curationNote: string;
+  cardCurtain: CardCurtainCopy;
   tickerItems: TickerItem[];
   /** Where the values came from, for the admin UI and for debugging. */
   source: "cms" | "static";
@@ -49,6 +62,12 @@ const STATIC: SiteSettings = {
   est: SITE.est,
   description: SITE.description,
   curationNote: "kurasi redaksi",
+  cardCurtain: {
+    articleLabel: "READ STORY",
+    articleCta: "Buka Catatan Redaksi",
+    featureLabel: "READ",
+    featureCta: "Baca Artikel Penuh",
+  },
   tickerItems: TICKER_ITEMS.map((item) => ({ label: item.label, href: item.href })),
   source: "static",
 };
@@ -61,6 +80,7 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   est,
   description,
   curationNote,
+  cardCurtain{ articleLabel, articleCta, featureLabel, featureCta },
   tickerItems[]{ label, href }
 }`;
 
@@ -72,6 +92,12 @@ interface SettingsDoc {
   est?: string;
   description?: string;
   curationNote?: string;
+  cardCurtain?: {
+    articleLabel?: string;
+    articleCta?: string;
+    featureLabel?: string;
+    featureCta?: string;
+  };
   tickerItems?: { label?: string; href?: string }[];
 }
 
@@ -106,6 +132,12 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     est: or(doc.est, STATIC.est),
     description: or(doc.description, STATIC.description),
     curationNote: or(doc.curationNote, STATIC.curationNote),
+    cardCurtain: {
+      articleLabel: or(doc.cardCurtain?.articleLabel, STATIC.cardCurtain.articleLabel),
+      articleCta: or(doc.cardCurtain?.articleCta, STATIC.cardCurtain.articleCta),
+      featureLabel: or(doc.cardCurtain?.featureLabel, STATIC.cardCurtain.featureLabel),
+      featureCta: or(doc.cardCurtain?.featureCta, STATIC.cardCurtain.featureCta),
+    },
     tickerItems: tickerItems.length > 0 ? tickerItems : STATIC.tickerItems,
     source: "cms",
   };

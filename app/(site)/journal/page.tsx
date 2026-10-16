@@ -27,7 +27,13 @@ export default async function JournalPage() {
       <div className="grid grid-cols-1 gap-8 border-b border-ink pb-10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
         {articles.map((article, i) => (
           <div key={article.slug} className="relative">
-            <ArticleCard article={article} titleFirst={i % 2 === 1} index={i} />
+            <ArticleCard
+              article={article}
+              titleFirst={i % 2 === 1}
+              index={i}
+              readLabel={settings.cardCurtain.articleLabel}
+              noteCta={settings.cardCurtain.articleCta}
+            />
           </div>
         ))}
       </div>
