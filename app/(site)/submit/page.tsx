@@ -11,11 +11,8 @@ export const metadata: Metadata = {
 export default function SubmitPage() {
   return (
     <Reveal className="pt-4">
-      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2 border-b-2 border-ink pb-3">
+      <div className="mb-4 border-b-2 border-ink pb-3">
         <h2 className="text-4xl tracking-tight sm:text-5xl">Submit Karya</h2>
-        <span className="font-serif text-base italic text-neutral-600">
-          (kurasi a&amp;r — artikel review, rekomendasi ig &amp; panggung melodi samsara)
-        </span>
       </div>
 
       <DemoPortal />

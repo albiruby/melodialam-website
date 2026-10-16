@@ -399,23 +399,6 @@ export function DemoPortal() {
             ))}
           </div>
         </div>
-
-        <div className="flex items-center justify-between border-t border-ink bg-white p-6">
-          <div>
-            <div className="text-xs font-bold uppercase">Jadwal Open Stage Samsara</div>
-            <div className="text-[11px] text-neutral-500">
-              Setiap Rabu &amp; Sabtu malam • Bogor
-            </div>
-          </div>
-          <a
-            href="https://www.instagram.com/samsara.bogor/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="border border-ink px-3 py-2 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-          >
-            Info Slot ↗
-          </a>
-        </div>
       </aside>
     </div>
   );
