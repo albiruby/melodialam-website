@@ -435,8 +435,8 @@ mengasumsikan `.env`. Audio diuji sebagai file sintetis di memori.
 
 `app/api/demos/route.ts` menyimpan `const queue = [...SEED_DEMOS]` di **level modul**
 (`TERVERIFIKASI`). Artinya state bocor antar-test dalam satu proses Vitest.
-`DemoPortal.tsx` juga menginisialisasi `useState(SEED_DEMOS)` — UI dan API berbagi seed
-yang sama.
+`DemoPortal.tsx` **tidak lagi** menginisialisasi state dari `SEED_DEMOS` — antrean
+klien dihapus 16 Okt 2026.
 
 Cara isolasi yang disarankan (`RENCANA`):
 
@@ -588,8 +588,8 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `lib/catalogue.ts` — `viewCount`, `videosByVenue`, `topVideos`, `latestVideos`,
   `formatDuration`, `getVideo`, `videosByIds`, `fact`/`factValue`, `VENUES`,
   `VENUE_COUNTS`, `thumbnailFor`.
-- `components/DemoPortal.tsx` — `useState(SEED_DEMOS)`, submit ke `/api/demos`,
-  `role="status"`/`role="alert"`, reset form, revoke audio.
+- `components/DemoPortal.tsx` — submit ke `/api/demos`, `role="status"`/`role="alert"`,
+  reset form, revoke audio (antrean `useState(SEED_DEMOS)` dihapus 16 Okt 2026).
 - `app/journal/page.tsx` — grid 12 kartu `ArticleCard`, server component; tanpa
   state klien (penyederhanaan Stories, 16 Oktober 2026).
 - `components/VideosBrowser.tsx` — `PAGE_SIZE = 12`, tab venue, search, pagination,

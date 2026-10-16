@@ -7,8 +7,6 @@ import {
   DEMO_AUDIO_TYPES,
   DEMO_GENRES,
   DEMO_PROGRAMS,
-  SEED_DEMOS,
-  type DemoSubmission,
 } from "@/lib/content";
 
 interface ApiError {
@@ -17,7 +15,6 @@ interface ApiError {
 }
 
 export function DemoPortal() {
-  const [queue, setQueue] = useState<DemoSubmission[]>(SEED_DEMOS);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [banner, setBanner] = useState<string | null>(null);
   const [bannerIsError, setBannerIsError] = useState(false);
@@ -106,7 +103,7 @@ export function DemoPortal() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as ApiError & { entry?: DemoSubmission };
+      const data = (await res.json()) as ApiError;
 
       if (!res.ok) {
         const fieldErrors = data.errors ?? {};
@@ -123,9 +120,8 @@ export function DemoPortal() {
             ?.focus();
         }
       } else {
-        if (data.entry) setQueue((q) => [data.entry as DemoSubmission, ...q]);
         setBannerIsError(false);
-        setBanner("Demo berhasil dikirim dan sudah masuk Incoming Demo Queue untuk ditinjau kurator.");
+        setBanner("Demo berhasil dikirim dan sudah masuk antrean tinjauan kurator.");
         formRef.current?.reset();
         clearAudio();
       }
@@ -138,9 +134,8 @@ export function DemoPortal() {
   }
 
   return (
-    <div className="grid grid-cols-1 border-x border-b border-ink divide-y divide-ink lg:grid-cols-12 lg:divide-y-0">
-      {/* Form */}
-      <div className="bg-white p-6 sm:p-8 lg:col-span-8">
+    <div className="border-x border-b border-ink">
+      <div className="bg-white p-6 sm:p-8">
         <div className="mb-6 flex items-center justify-between border-b border-ink pb-4">
           <span className="font-mono text-xs font-bold uppercase">
             Formulir Pengiriman Karya Musisi / Band
@@ -336,70 +331,6 @@ export function DemoPortal() {
           </div>
         ) : null}
       </div>
-
-      {/* Queue */}
-      <aside className="editorial-paper flex flex-col justify-between lg:col-span-4">
-        <div className="p-6">
-          <div className="mb-4 flex items-center justify-between border-b border-ink pb-3">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold uppercase">Incoming Demo Queue</span>
-              <span aria-hidden className="flex h-3.5 items-end gap-0.5 text-forest">
-                <span className="eq-bar" />
-                <span className="eq-bar" />
-                <span className="eq-bar" />
-              </span>
-            </div>
-            <span className="bg-ink px-2 py-0.5 font-mono text-[11px] text-white">
-              {queue.length} TRACKS
-            </span>
-          </div>
-
-          <p className="mb-5 text-xs leading-relaxed text-neutral-600">
-            Kiriman terbaru yang sudah lolos tinjauan awal kurator. Yang masih ditinjau belum
-            ditampilkan di sini, dan kontak pengirim tidak pernah dipublikasikan.
-          </p>
-
-          {queue.length === 0 ? (
-            <p className="border border-dashed border-ink p-4 text-center font-mono text-xs text-neutral-500">
-              Belum ada demo yang lolos tinjauan.
-            </p>
-          ) : null}
-
-          <div className="space-y-4">
-            {queue.map((demo, i) => (
-              <div
-                key={demo.id}
-                style={{ animationDelay: `${i * 80}ms` }}
-                className="brutalist-card space-y-2 border border-ink bg-white p-4"
-              >
-                <div className="flex items-center justify-between font-mono text-[10px]">
-                  <span className="bg-ink px-1.5 py-0.5 font-bold text-white">{demo.status}</span>
-                  <span className="uppercase text-neutral-500">
-                    {demo.city} • {demo.genre}
-                  </span>
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold leading-snug">
-                    {demo.artist} — &ldquo;{demo.title}&rdquo;
-                  </h3>
-                  <p className="mt-1 line-clamp-2 text-xs text-neutral-600">{demo.story}</p>
-                </div>
-                <div className="flex items-center justify-between border-t border-neutral-200 pt-2 font-mono text-[11px]">
-                  <span className="font-bold text-forest">Target: {demo.program}</span>
-                  <a
-                    href={demo.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-                  >
-                    EPK / Track ↗
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </aside>
     </div>
   );
 }

@@ -673,7 +673,7 @@ Trade-off & catatan:
 Antrean demo **dimoderasi**. Modelnya:
 
 1. Setiap submission lahir dengan `moderation_status = 'pending'`.
-2. Baris `pending` **privat** — tidak terlihat di *Incoming Demo Queue* publik.
+2. Baris `pending` **privat** — tidak pernah tampil publik.
 3. Kurator menyetujui → `moderation_status = 'approved'`, `reviewed_by` diisi,
    `reviewed_at = now()`.
 4. Read path publik **hanya** membaca baris `approved` (§8.4).
@@ -729,7 +729,7 @@ ditambahkan, di-backfill dari pemetaan di atas, lalu `status` lama dihapus.
 ### 8.4 Read path publik (approved only)
 
 ```sql
--- Daftar publik "Incoming Demo Queue"
+-- Daftar baris approved (antrean publik /submit dihapus 16 Okt 2026)
 select public_ref, artist, city, title, genre, program, link, story,
        submitted_at, moderation_status
 from   demo_submissions

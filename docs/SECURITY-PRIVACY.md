@@ -92,7 +92,6 @@ in-memory. Data editorial berasal dari `lib/content.ts` dan `lib/catalogue.json`
 flowchart LR
   subgraph Browser["Peramban (tak tepercaya)"]
     Form["DemoPortal form"]
-    Q["Incoming Demo Queue (state lokal)"]
   end
 
   subgraph Next["Next.js 16.4.0 / Vercel"]
@@ -111,8 +110,6 @@ flowchart LR
   RH -->|"unshift(entry) tanpa contact"| Mem
   RH -->|"201 + note (echo contact)"| Form
   G --> Mem
-  Q -.-> Cat
-  Q -->|"seed SEED_DEMOS"| Cat
   Cat --> YT
   Cat --> IMG
 ```

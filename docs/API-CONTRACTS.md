@@ -46,14 +46,14 @@ penyalahgunaan / abuse). Acuan skema data: `docs/DATA-MODEL.md`.
 | Kode | Konsumen | Kebutuhan | Status |
 |---|---|---|---|
 | `C1` | `components/DemoPortal.tsx` (client component, layar `/submit`) | Mengirim satu submission via `POST /api/demos`, membaca `errors` per-field dan `error` banner | `TERVERIFIKASI` |
-| `C2` | Antrean publik *Incoming Demo Queue* di layar `/submit` | Hari ini **di-seed dari `SEED_DEMOS` lokal**, tidak memanggil `GET /api/demos` | `TERVERIFIKASI` |
+| `C2` | Antrean publik *Incoming Demo Queue* di layar `/submit` | **Dihapus 16 Okt 2026** — antrean tidak lagi ditampilkan; `DemoPortal` kini hanya formulir + banner | `TERVERIFIKASI` |
 | `C3` | Kurator/editor (non-teknis) | Meninjau submission, menyetujui/menolak, membaca kontak artis | `RENCANA` (ADR-0005) |
 | `C4` | Halaman editorial (Journal, Videos) | Membaca artikel dan sesi video dari CMS | `RENCANA` (ADR-0002) |
 
 Temuan penting `TERVERIFIKASI`: meski `GET /api/demos` ada, **tidak ada konsumen
-yang memanggilnya**. `DemoPortal` menginisialisasi state dengan `SEED_DEMOS`
-langsung dan hanya menambahkan entri dari respons `POST`. Konsekuensinya,
-mengubah bentuk `GET` tidak memecahkan klien yang sudah dikirim — lihat §9.
+yang memanggilnya** — dan sejak 16 Okt 2026 `DemoPortal` tidak lagi menampilkan
+antrean sama sekali (hanya formulir + banner). Konsekuensinya, mengubah bentuk
+`GET` tidak memecahkan klien yang sudah dikirim — lihat §9.
 
 ### 1.2 Gaya antarmuka
 
@@ -193,7 +193,7 @@ Kolom **Fase**: `TERVERIFIKASI` = ada di kode hari ini; `RENCANA` = target.
 | `API-01` | `GET /api/demos` | Baca seluruh antrean demo (array in-memory) | Tidak ada | Layar `/submit` (klien tidak memanggilnya) | `TERVERIFIKASI` |
 | `API-02` | `POST /api/demos` | Kirim satu submission demo | Tidak ada | Form `/submit` (`DemoPortal`) | `TERVERIFIKASI` |
 | `API-03` | `POST /api/demos` | Tulis submission sebagai `pending` (privat) | Tidak ada (publik) | `/submit`; ADR-0005 | `RENCANA` |
-| `API-04` | `GET /api/demos` | Baca antrean **approved-only**, terpaginasi | Tidak ada (publik) | Incoming Demo Queue; ADR-0005 | `RENCANA` |
+| `API-04` | `GET /api/demos` | Baca antrean **approved-only**, terpaginasi | Tidak ada (publik) | ADR-0005 — antrean publik dihapus dari `/submit` (16 Okt 2026), konsumen menyusul | `RENCANA` |
 | `API-05` | `GET /api/curator/demos` | Kurator membaca seluruh antrean + PII terpisah | Kurator | Moderasi; ADR-0005 | `RENCANA` |
 | `API-06` | `GET /api/curator/demos/{id}/contact` | Kurator membaca kontak artis (PII) | Kurator | Menghubungi artis; ADR-0005 | `RENCANA` |
 | `API-07` | `POST /api/curator/demos/{id}/approve` | Setujui submission → tampil publik | Kurator | ADR-0005 | `RENCANA` |
@@ -251,8 +251,8 @@ export async function GET() {
 3. **Tanpa paginasi.** Mengembalikan **seluruh** antrean tanpa batas.
 4. **Tanpa filter/sortir/pencarian.** Tidak ada parameter `city`, `genre`, `q`.
 5. **Tanpa autentikasi dan tanpa rate limit.**
-6. **Antrean tidak dimoderasi.** Semua entri yang pernah di-`POST` langsung
-   tampil; belum ada konsep approved-only (akan diperbaiki `API-04`, ADR-0005).
+6. **Antrean tidak dimoderasi.** Semua entri yang pernah di-`POST` masuk ke
+   antrean ini; belum ada konsep approved-only (akan diperbaiki `API-04`, ADR-0005).
 
 **Contoh respons** (bentuk entry dari `SEED_DEMOS[0]`):
 
@@ -478,18 +478,15 @@ perilaku — Open Questions.
 `422` (`{ error, errors }`), `429` (rate limit), `409` (idempotency konflik) —
 amplop di §6.
 
-> Catatan kompatibilitas `RENCANA`. Klien saat ini menambahkan `entry` dari
-> respons `POST` ke antrean lokal yang tampil publik. Karena entri itu kini
-> `pending`, klien **harus** berhenti memperlakukannya sebagai baris publik — atau
-> baris pending ditandai dan tidak dihitung sebagai bagian `Incoming Demo Queue`.
-> Perubahan ini menyentuh `DemoPortal.tsx` dan harus direncanakan di
-> `FRONTEND-PLAN.md`.
+> Catatan kompatibilitas. Sejak antrean publik dihapus dari `/submit` (16 Okt
+> 2026), klien tidak lagi menampilkan `entry` hasil `POST` di mana pun — baris
+> `pending` sepenuhnya privat. Lihat `FRONTEND-PLAN.md`.
 
 ### 5.2 `API-04` — `GET /api/demos` (publik, approved-only, terpaginasi)
 
 | Properti | Nilai |
 |---|---|
-| Tujuan | Antrean publik *Incoming Demo Queue*: hanya baris `approved` (ADR-0005) |
+| Tujuan | Baris `approved` (ADR-0005); antrean publik di `/submit` dihapus 16 Okt 2026 — konsumen endpoint ini menyusul |
 | Method & path | `GET /api/demos` (path tidak berubah; **bentuk respons berubah**) |
 | Auth | Tidak ada (publik) |
 | Query | `page`, `limit`, `city`, `genre`, `program`, `q`, `sort` (§2.5, §2.6) |
@@ -1171,11 +1168,11 @@ dijalankan, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
   {ok, entry, queueLength, note}`; cap per field; keenam pesan wajib + pesan
   `link`/`genre`/`program`; `queue.unshift(entry)`; `status` dan `submittedAt`;
   fakta `contact` hanya muncul di `note`.
-- `components/DemoPortal.tsx` (**317 baris, penuh**) — `ApiError` hanya membaca
-  `{error, errors}`; `POST /api/demos` mengirim JSON 8 field; state queue
-  di-seed dari `SEED_DEMOS` dan **tidak** memanggil `GET`; `onPickAudio` memakai
+- `components/DemoPortal.tsx` — `ApiError` hanya membaca `{error, errors}`;
+  `POST /api/demos` mengirim JSON 8 field; `onPickAudio` memakai
   `URL.createObjectURL` (tanpa unggah); `accept="audio/*"`; pesan banner sukses
-  dan fallback error.
+  dan fallback error. **Pembaruan 16 Okt 2026:** state queue dari `SEED_DEMOS`
+  dihapus — antrean publik tidak lagi ditampilkan.
 - `lib/content.ts` — `DemoSubmission` (baris 459–470), `DEMO_GENRES` (6 nilai),
   `DEMO_PROGRAMS` (3 nilai), `SEED_DEMOS` (3 entri: `seed-shroomeater`,
   `seed-skyline`, `seed-pelabuhan-senja`).

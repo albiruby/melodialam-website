@@ -132,7 +132,7 @@ mengembalikan pembaca ke `lib/*` (lihat `ARCHITECTURE.md` §13.3).
 | Gap | Dampak | Status |
 |---|---|---|
 | `ACC-002` tidak terpenuhi: semua affordance hover-reveal hanya `:hover` | Pengguna keyboard tidak dapat memunculkan `—`/row-action/curtain | `TERVERIFIKASI` (lihat §10.3) |
-| `GET /api/demos` tidak dikonsumsi UI mana pun | Antrean publik = konstanta klien `SEED_DEMOS`, bukan data nyata | `TERVERIFIKASI` (lihat §7.2) |
+| `GET /api/demos` tidak dikonsumsi UI mana pun | Antrean publik dihapus dari `/submit` (16 Okt 2026); `GET` tetap tanpa konsumen | `TERVERIFIKASI` (lihat §7.2) |
 | `contact` tidak dipersistensi | Kurator tak dapat menghubungi artis | `TERVERIFIKASI` (brief §6) |
 | VideoModal tanpa manajemen fokus | Fokus tidak masuk/terkembali; tidak ada focus trap | `TERVERIFIKASI` (lihat §10.2) |
 | Label form tak terasosiasi (`Field` tanpa `htmlFor`/`id`) | Field selain audio tidak punya label programatik | `TERVERIFIKASI` (lihat §10.2) |
@@ -157,7 +157,7 @@ Semua halaman berada di bawah root layout tunggal
 | ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
 | ROUTE-006 | `/pahlawan-kota` | `app/pahlawan-kota/page.tsx` | Static | `allPahlawanRows()` (`lib/pahlawan`): Sanity `pahlawanRow`, fallback `GENRE_ROWS` | `Reveal` |
 | ROUTE-007 | `/spaces` | `app/spaces/page.tsx` | Static | `SPACE_ITEMS` (`lib/content`) | `Reveal` |
-| ROUTE-008 | `/submit` | `app/submit/page.tsx` | Static | `SEED_DEMOS`, `DEMO_GENRES`, `DEMO_PROGRAMS` (via `DemoPortal`) | `Reveal`, `DemoPortal` |
+| ROUTE-008 | `/submit` | `app/submit/page.tsx` | Static | `DEMO_GENRES`, `DEMO_PROGRAMS`, `DEMO_AUDIO_*` (via `DemoPortal`) | `Reveal`, `DemoPortal` |
 | ROUTE-009 | `/api/demos` | `app/api/demos/route.ts` | Route handler (`GET`, `POST`) | `SEED_DEMOS`, `DEMO_GENRES`, `DEMO_PROGRAMS` (`lib/content`); `queue` in-memory | — |
 | ROUTE-404 | sembarang path lain | `app/not-found.tsx` | Static | `PRIMARY_NAV` (`lib/site`) | — |
 
@@ -276,7 +276,7 @@ graph LR
 | Katalog video | `lib/catalogue.json` (generated) | ROUTE-001/004/005 | `TERVERIFIKASI` |
 | Fakta kanal | `lib/catalogue.json` | `lib/site.ts` → footer | `TERVERIFIKASI` |
 | Brand & nav | `lib/site.ts` | layout, `SiteHeader` | `TERVERIFIKASI` |
-| Antrean demo (klien) | konstanta `SEED_DEMOS` di `DemoPortal` | `DemoPortal` | `TERVERIFIKASI` |
+| Antrean demo (klien) | **dihapus 16 Okt 2026** — `DemoPortal` tidak lagi menampilkan antrean | — | `TERVERIFIKASI` |
 | Antrean demo (server) | array `queue` di route handler | **tidak ada konsumen** | `TERVERIFIKASI` |
 
 ---
@@ -370,9 +370,8 @@ dengan `disabled` yang sesuai; ada link kanal eksternal di tengah grid 3 kolom.
 `<label>` + `children` + `<p role="alert">` bila ada error. Submit mengirim JSON
 ke `POST /api/demos`. Preview audio memakai `URL.createObjectURL` (tidak diunggah)
 dan di-`revoke` saat diganti/berhasil. Antrean kanan ("Incoming Demo Queue")
-diinisialisasi dari `SEED_DEMOS` lalu di-`unshift` dengan `data.entry` setelah
-`201` — jadi hanya entri yang **dikonfirmasi server** yang ditambahkan (bukan
-optimistic update).
+**dihapus 16 Okt 2026** — halaman kini hanya formulir + banner konfirmasi;
+`DemoPortal` tidak lagi membaca `SEED_DEMOS` atau menambahkan `data.entry`.
 
 **`VideoModal`.** Dirender sekali per halaman yang memakainya; dibuka imperatif
 lewat `window.dispatchEvent(new CustomEvent("melodi:watch", { detail: { id, title } }))`.
@@ -478,7 +477,7 @@ dua paruh identik.
 | ST-05 | `query` | Local UI | `VideosBrowser` | komponen | `matches` | tidak |
 | ST-06 | `page` (0-based) | Local UI | `VideosBrowser` | komponen | `safePage`,`rows` | tidak |
 | ST-07 | `all`/`matches`/`pageCount`/`safePage`/`rows` | Derived (`useMemo`) | `VideosBrowser` | diturunkan | render baris | — |
-| ST-08 | `queue` (antrean demo) | Feature | `DemoPortal` | `SEED_DEMOS` + `data.entry` dari `201` | panel kanan | tidak |
+| ST-08 | `queue` (antrean demo) | **dihapus 16 Okt 2026** | — | — | — | — |
 | ST-09 | `errors` (per-field) | Local UI | `DemoPortal` | respons `422` | `Field` | tidak |
 | ST-10 | `banner` (status/error) | Local UI | `DemoPortal` | respons server / `catch` | `role="status"` | tidak |
 | ST-11 | `pending` | Local UI | `DemoPortal` | komponen | tombol submit `disabled` | tidak |
@@ -575,7 +574,8 @@ sequenceDiagram
 - File audio hanya di-`URL.createObjectURL` lokal; **tidak ada unggahan**.
 - `GET /api/demos` **tidak dikonsumsi** oleh UI mana pun (`TERVERIFIKASI` — satu-satunya
   referensi `/api/demos` di kode klien adalah `fetch` POST di `DemoPortal`). Antrean
-  publik yang terlihat pengguna adalah konstanta `SEED_DEMOS` di bundle klien.
+  publik yang dulu tampil di `/submit` **dihapus 16 Okt 2026** — tidak ada lagi UI
+  yang menampilkan entri demo.
 - Karena store proses-lokal, `GET` bergantung pada instance yang melayani request
   (`ASUMSI` Vercel multi-instance → tidak konsisten). `RISK-004`.
 
@@ -733,7 +733,7 @@ yang dieksekusi pada fase DOCS ini.
 | FE-B1 | `/journal` membaca artikel dari Sanity dan merender satu grid 12 kartu (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
 | FE-B2 | `/journal/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
 | FE-C1 | Migrasi `/submit` ke koleksi `DemoSubmissions` + moderasi | ROUTE-008, ROUTE-009 | FE-A2 | Buat → `moderation_status='pending'`; antrean publik hanya `approved` | integrasi + E2E submit |
-| FE-C2 | `DemoPortal`: konsumsi `GET /api/demos` (approved) ganti `SEED_DEMOS` | ROUTE-008 | FE-C1 | Antrean kanan = data server; bukan konstanta klien | Playwright: muat antrean |
+| FE-C2 | **Dibatalkan 16 Okt 2026** — antrean publik dihapus dari `/submit`; tidak ada antrean klien untuk diganti | ROUTE-008 | FE-C1 | — | — |
 | FE-C3 | Persist `contact` sebagai PII + hapus echo di `note` | ROUTE-009 | FE-C1 | Kontak tersimpan terlindungi, tidak publik | uji akses + review |
 | FE-C4 | Unggah audio ke bucket `demo-audio` (cap 25MB) | `DemoPortal` | FE-C1 | Preview tetap; unggahan sukses/gagal tertangani | E2E unggah + cap |
 | FE-D1 | Manajemen fokus `VideoModal` (trap, initial, return) | `VideoModal` | — | Fokus masuk dialog, tidak keluar, kembali ke pemicu | E2E keyboard |
@@ -780,7 +780,7 @@ implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
 | FE-R4 | Client component ikut menyeret dataset besar (mis. seluruh katalog) | `TERVERIFIKASI` (`VideosBrowser` impor `@/lib/catalogue`) | `ADR-0004` menahan katalog di build-time; optimasi kirim-potongan via props sebagai `RENCANA` opsional |
 | FE-R5 | `ACC-002` tertinggal → regresi aksesibilitas permanen | `TERVERIFIKASI` (grep `:focus` = 0) | FE-A3 masuk Fase A; uji keyboard di Definition of Done |
 | FE-R6 | Event `melodi:watch` global tanpa tipe → dua modal bentrok | `TERVERIFIKASI` (satu modal per halaman) | Pertahankan invarian satu `<VideoModal />`/halaman |
-| FE-R7 | `GET /api/demos` tanpa konsumen saat migrasi → antrean tetap palsu | `TERVERIFIKASI` | FE-C2 mengganti `SEED_DEMOS` dengan data server |
+| FE-R7 | `GET /api/demos` tanpa konsumen saat migrasi → antrean tetap palsu | **Dihapus 16 Okt 2026** — antrean publik dihapus dari `/submit`; `GET` tetap tanpa konsumen | — |
 
 ### 13.2 Open Questions (ringkas; detail di akhir dokumen)
 
@@ -788,8 +788,8 @@ implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
   ada `[PERLU VERIFIKASI]`.
 - Apakah `/journal/[slug]` tetap ingin *statis* atau menerima ISR/revalidasi saat
   konten menjadi editable? (`FR-007`/`NFR-001` menuntut keputusan ini.)
-- Apakah antrean publik `/submit` boleh menampilkan entri `approved` dengan
-  `story` penuh, atau perlu dipangkas? (PII vs transparansi.)
+- **Ditutup 16 Okt 2026:** antrean publik dihapus dari `/submit`; pertanyaan
+  pangkas-`story` tidak berlaku lagi.
 
 ---
 
@@ -808,7 +808,8 @@ Front-end dianggap selesai untuk suatu fase bila, secara **observable**:
 4. **Interaksi terkunci** — `DEC-002` dan `DEC-003` tetap ada pada baris video;
    direktori `/pahlawan-kota` sengaja tanpa aksi (grup dihapus atas permintaan).
 5. **Data** — katalog tetap build-time (`ADR-0004`); editorial dari Payload
-   (`ADR-0002`, `ADR-0003`); antrean demo publik hanya `approved` (`ADR-0005`).
+   (`ADR-0002`, `ADR-0003`); moderasi demo tetap (`ADR-0005`), tetapi antrean
+   publik dihapus dari `/submit` (16 Okt 2026).
 6. **Build & test** — `npm run build`, `npm run lint`, `tsc --noEmit` hijau;
    unit + E2E kritis lulus; jumlah halaman statis tidak turun tanpa alasan.
 7. **Konvensi** — nama kelas Tailwind literal; `@source not` lengkap; `next/image`
@@ -857,7 +858,8 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 Pemeriksaan grep yang dijalankan:
 
 - `/api/demos|SEED_DEMOS` (hanya `*.tsx`) → hanya `DemoPortal` (POST), **tidak ada**
-  konsumen `GET`.
+  konsumen `GET`. (**Pembaruan 16 Okt 2026:** `SEED_DEMOS` juga sudah tidak ada di
+  `DemoPortal` — antrean publik dihapus.)
 - `focus-within|:focus|focus-visible` pada `app/globals.css` → **0 hasil**
   (dasar temuan A1 / `ACC-002`).
 
@@ -883,9 +885,8 @@ kontras warna final (dimiliki `DESIGN-SYSTEM.md`).
 3. **Mode render `/journal/[slug]` pasca-CMS.** Tetap sepenuhnya statis, memakai
    ISR, atau on-demand revalidation? Ini keputusan arsitektur yang memengaruhi
    `FR-007`/`NFR-001` dan belum diputuskan.
-4. **Cakupan antrean publik.** Setelah `ADR-0005`, apakah antrean publik
-   menampilkan `story` penuh entri `approved`, atau versi terpangkas? Menyangkut
-   PII/transparansi.
+4. **Cakupan antrean publik.** **Ditutup 16 Okt 2026:** antrean publik dihapus
+   dari `/submit`; pertanyaan pangkas-`story` tidak berlaku lagi.
 5. **Nasib `GET /api/demos`.** Tanpa konsumen hari ini; apakah tetap dipertahankan
    sebagai endpoint kurator, atau diganti server component di migrasi?
 6. **`dynamicParams` pada `/journal/[slug]`.** Dibiarkan default (slug tak dikenal

@@ -92,5 +92,9 @@ Yang mengikat:
   nilai `"NEW SUBMISSION • JUST NOW"`; `contact` tidak pernah disimpan; `BR-002` di PRD
   memang menyebut status awal `IN REVIEW`.
 - `RENCANA`: seluruh keputusan di atas. **Fase ini hanya dokumen.**
+- **Pembaruan 16 Okt 2026** (`TERVERIFIKASI`): antrean publik dihapus dari UI
+  `/submit` — `DemoPortal` kini hanya formulir + banner konfirmasi. Keputusan
+  moderasi (kiriman privat sampai kurator menyetujui) tetap berlaku; untuk saat
+  ini tidak ada permukaan publik yang menampilkan entri `approved`.
 - `[PERLU VERIFIKASI]`: siapa yang meninjau antrean dan seberapa sering. Belum ada
   komitmen operasional dari tim redaksi.
