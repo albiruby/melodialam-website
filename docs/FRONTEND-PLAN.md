@@ -155,7 +155,7 @@ Semua halaman berada di bawah root layout tunggal
 | ROUTE-003 | `/journal/[slug]` | `app/journal/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
 | ROUTE-004 | `/bicara-melodi` | `app/bicara-melodi/page.tsx` | Static | `INTERVIEW_ROWS` (`lib/content`); `videosByIds` (`lib/catalogue`) | `Reveal`, `WatchButton`, `VideoModal` |
 | ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
-| ROUTE-006 | `/pahlawan-kota` | `app/pahlawan-kota/page.tsx` | Static | `GENRE_ROWS` (`lib/content`) | `Reveal`, `WatchButton`, `VideoModal` |
+| ROUTE-006 | `/pahlawan-kota` | `app/pahlawan-kota/page.tsx` | Static | `allPahlawanRows()` (`lib/pahlawan`): Sanity `pahlawanRow`, fallback `GENRE_ROWS` | `Reveal` |
 | ROUTE-007 | `/spaces` | `app/spaces/page.tsx` | Static | `SPACE_ITEMS` (`lib/content`) | `Reveal` |
 | ROUTE-008 | `/submit` | `app/submit/page.tsx` | Static | `SEED_DEMOS`, `DEMO_GENRES`, `DEMO_PROGRAMS` (via `DemoPortal`) | `Reveal`, `DemoPortal` |
 | ROUTE-009 | `/api/demos` | `app/api/demos/route.ts` | Route handler (`GET`, `POST`) | `SEED_DEMOS`, `DEMO_GENRES`, `DEMO_PROGRAMS` (`lib/content`); `queue` in-memory | — |
@@ -217,7 +217,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 | ROUTE-003 `/journal/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
 | ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
 | ROUTE-005 `/videos` | `page.tsx` | `VideosBrowser` (+`WatchLink`) | `Reveal` | `VideoModal`, `WatchButton` |
-| ROUTE-006 `/pahlawan-kota` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
+| ROUTE-006 `/pahlawan-kota` | `page.tsx` | — | `Reveal` | — |
 | ROUTE-007 `/spaces` | `page.tsx` | — | `Reveal` | — |
 | ROUTE-008 `/submit` | `page.tsx` | `DemoPortal` | `Reveal` | — |
 
@@ -687,7 +687,7 @@ Tiga perilaku dikunci pemilik (brief §8). Ketiganya **ADA** di kode, tetapi
 | Locked interaction | Ada? | Implementasi | Dipakai di | Catatan fungsional |
 |---|---|---|---|---|
 | `DEC-002` strip `—` pada hierarchy heading | **Ada** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` | ROUTE-002 (`JournalBrowser`: Home, Journal/kategori aktif, tombol kategori) | Hover-only (A1). Tidak ada di heading lain (mis. home `Latest News`), sesuai cakupan |
-| `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover .video-action-reveal` | ROUTE-001 (video teaser + genre rows), ROUTE-005 (`VideoRow`), ROUTE-006 (genre rows) | Hover-only (A1, A6). **Nilai fungsional bervariasi** — lihat di bawah |
+| `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover .video-action-reveal` | ROUTE-001 (video teaser + genre rows), ROUTE-005 (`VideoRow`) | Hover-only (A1, A6). **Nilai fungsional bervariasi** — lihat di bawah. ROUTE-006 tidak lagi memakai reveal: grup aksi dihapus atas permintaan |
 | Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` (curtain) + `.corner-frame` (bracket), pemicu `.group:hover …` | Curtain: `ArticleCards.CardImage` (ROUTE-002/003) & `FeatureCard` (ROUTE-001). Bracket: juga pada box gambar ROUTE-001 (genre) & ROUTE-006 | Hover-only (A1). Di ROUTE-001 genre & ROUTE-006 bracket muncul **tanpa** curtain (tidak ada `.hover-reveal-curtain` di sana) |
 
 **Temuan fungsional (gap yang harus diperbaiki, `TERVERIFIKASI`):**
@@ -696,21 +696,19 @@ Tiga perilaku dikunci pemilik (brief §8). Ketiganya **ADA** di kode, tetapi
   `<span>`, dan badge `M | Watch ↗` adalah `<div>` — **tidak ada** elemen
   interaktif. Barisnya ber-`cursor-pointer` tetapi tanpa handler/link. Reveal-nya
   **murni dekoratif**; tidak ada tujuan navigasi.
-- **ROUTE-006 `pahlawan-kota`:** objek `target` (`href` + `label`) **dihitung** dari
-  `row.videoId`/`row.articleSlug`, tetapi **hanya `target.label`** yang dipakai
-  (sebagai teks badge — yang tetap `<div>`). **`target.href` tidak pernah
-  diterapkan.** Akibatnya baris dengan artikel (`articleSlug` non-null, mis.
-  "Bandung dan Jakarta") **tidak dapat diklik**; hanya baris dengan `videoId` yang
-  punya tombol `▶` fungsional (`WatchButton`). Badge `M | READ/WATCH ↗` tetap `<div>`.
+- **ROUTE-006 `pahlawan-kota`:** grup aksi (`▶`/`✎`, `—`, badge `M | READ/WATCH ↗`)
+  **dihapus atas permintaan**. Baris kini signpost murni — tidak ada objek `target`,
+  `WatchButton`, maupun `VideoModal`; baris dibaca Sanity-first (`pahlawanRow`).
 - **ROUTE-005 `VideosBrowser`:** ▶ adalah `WatchButton` fungsional dan judul adalah
   `WatchLink`; badge `M | Watch ↗` tetap `<div>`. Ini instance yang paling lengkap.
 - **ROUTE-001 video teaser:** ▶ adalah `WatchButton`, judul adalah `WatchLink`,
   badge `<div>`. Lengkap.
 
 Ringkasan: `DEC-002` **terpenuhi secara visual** (satu permukaan, ROUTE-002);
-`DEC-003` **terpenuhi secara visual** di semua permukaan yang relevan; **curtain +
-bracket terpenuhi** di kartu artikel. Yang **belum**: paritas keyboard
-(`ACC-002`), dan "wiring" navigasi pada baris genre `ROUTE-001`/`ROUTE-006`
+`DEC-003` **terpenuhi secara visual** pada baris video (ROUTE-001/ROUTE-005;
+ROUTE-006 dikecualikan atas permintaan); **curtain + bracket terpenuhi** di kartu
+artikel. Yang **belum**: paritas keyboard
+(`ACC-002`), dan "wiring" navigasi pada baris genre `ROUTE-001`
 (meski ini lebih dekat ke `FR-001`/`FR-004` daripada ke `DEC-002`/`DEC-003`).
 
 ### 10.4 Responsive (`TERVERIFIKASI`, ringkas)
@@ -742,7 +740,7 @@ yang dieksekusi pada fase DOCS ini.
 | FE-C4 | Unggah audio ke bucket `demo-audio` (cap 25MB) | `DemoPortal` | FE-C1 | Preview tetap; unggahan sukses/gagal tertangani | E2E unggah + cap |
 | FE-D1 | Manajemen fokus `VideoModal` (trap, initial, return) | `VideoModal` | — | Fokus masuk dialog, tidak keluar, kembali ke pemicu | E2E keyboard |
 | FE-D2 | Perbaiki label form (`htmlFor`/`id`) & skip-link | `DemoPortal`, layout | — | Setiap input punya nama aksesibel | uji a11y |
-| FE-D3 | Wiring navigasi baris genre (`ROUTE-001`/`ROUTE-006`) | `page.tsx` | — | Baris artikel navigable; `target.href` dipakai | E2E klik |
+| FE-D3 | Wiring navigasi baris genre (`ROUTE-001`) | `page.tsx` | — | Baris genre punya tujuan navigasi nyata | E2E klik |
 | FE-E1 | Verifikasi build/lint/tsc + rute setelah migrasi | semua | FE-B*,FE-C* | Build hijau, tanpa regresi statis | `npm run build`, `lint` |
 
 **Paralelisme:** FE-A3, FE-D1, FE-D2, FE-D3 tidak bergantung pada Payload dan boleh
@@ -759,7 +757,7 @@ Runner target: **Vitest** (unit/logic) + **Playwright** (E2E) — keputusan pemi
 | Level | Sasaran | Contoh kasus |
 |---|---|---|
 | Unit | `viewCount`, `videosByVenue`, hitungan kategori `JournalBrowser` (fungsi murni), pemetaan cap `str()` | parsing "107K"→107000; filter venue; cap 120/80/160 |
-| Unit | Invarian data `lib/content.ts` | setiap `GENRE_ROWS[].videoId` ada di katalog atau `null` |
+| Unit | Invarian data `lib/content.ts` | setiap `INTERVIEW_ROWS[].videoId` ada di katalog |
 | Component | `JournalBrowser`/`VideosBrowser` render + interaksi | filter mengubah daftar; pagination men-`disabled` PREV di hal. 1; empty-state muncul |
 | Component | `DemoPortal` state | `pending` menonaktifkan tombol; `422` menampilkan `role="alert"` per field |
 | Integration | `POST /api/demos` kontrak | `400`, `422` (per-field), `201`; `queue.unshift` |
@@ -809,8 +807,8 @@ Front-end dianggap selesai untuk suatu fase bila, secara **observable**:
 3. **Aksesibilitas** — reduced motion dihormati; **`ACC-002` terpenuhi**
    (reveal dapat dimunculkan via `:focus-within`); dialog mengelola fokus;
    label form terasosiasi; `aria-current` di nav desktop **dan** mobile.
-4. **Interaksi terkunci** — `DEC-002` dan `DEC-003` tetap ada; baris direktori
-   yang punya tujuan benar-benar navigable.
+4. **Interaksi terkunci** — `DEC-002` dan `DEC-003` tetap ada pada baris video;
+   direktori `/pahlawan-kota` sengaja tanpa aksi (grup dihapus atas permintaan).
 5. **Data** — katalog tetap build-time (`ADR-0004`); editorial dari Payload
    (`ADR-0002`, `ADR-0003`); antrean demo publik hanya `approved` (`ADR-0005`).
 6. **Build & test** — `npm run build`, `npm run lint`, `tsc --noEmit` hijau;

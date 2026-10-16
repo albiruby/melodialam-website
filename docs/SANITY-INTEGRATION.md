@@ -4,7 +4,7 @@ Panduan lengkap: apa yang Anda tulis di Studio akan render di halaman mana, lewa
 jalur apa, dan apa yang harus dilakukan saat mengubah model konten.
 
 **Audiens:** editor yang menulis konten, dan developer yang mengubah skema.
-**Status:** artikel dan antrean demo tersambung. Pratinjau draf belum.
+**Status:** artikel, antrean demo, dan direktori Pahlawan Kota tersambung. Pratinjau draf belum.
 
 > Menggantikan `PAYLOAD-INTEGRATION.md`, yang dihapus bersama seluruh kode Payload.
 > Latar belakang keputusan ada di [`adr/0008`](adr/0008-sanity-studio-menggantikan-payload.md).
@@ -68,6 +68,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
 | **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
+| **pahlawanRow** | Konten | `/pahlawan-kota` (direktori kota & skena) | ✅ tersambung |
 | **demoSubmission** | Antrean Demo | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
 | **demoContact** | Antrean Demo | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
 | Gambar artikel | Konten | sampul + gambar inline di dalam isi | ✅ tersambung |
@@ -86,7 +87,7 @@ melodi-alam.sanity.studio  →  Konten  →  Artikel  →  Create new
    ▼
 Sanity (dataset `production`, publik)
    │
-   ├─ webhook  →  POST /api/revalidate  →  revalidateTag("articles", "max")
+   ├─ webhook  →  POST /api/revalidate  →  revalidateTag("articles", "max") + revalidateTag("pahlawan-rows", "max")
    │
    ▼
 lib/articles.ts  ── allArticles() / articleBySlug()
@@ -102,7 +103,7 @@ app/(site)/page.tsx                 →  hero + 3 kartu
 
 1. Sanity menyimpan dokumen dan menaikkan `syncTags` dataset.
 2. Webhook memanggil `POST /api/revalidate` dengan secret bersama.
-3. Route itu memanggil `revalidateTag("articles", "max")`.
+3. Route itu membuang cache `articles` dan `pahlawan-rows` (`revalidateTag(..., "max")`).
 4. Kunjungan berikutnya disajikan versi lama sementara versi baru dimuat di belakang
    layar (stale-while-revalidate) — jadi tidak ada yang menunggu.
 5. Setelah itu semua pembaca melihat versi baru.
@@ -144,6 +145,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
 | `app/(site)/page.tsx` | `allArticles()` | hero = artikel `featured` pertama |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
+| `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
 `generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
@@ -281,7 +283,7 @@ Di sanity.io/manage → project → **API → Webhooks**:
 - **URL**: `https://<domain-anda>/api/revalidate`
 - **Method**: `POST`
 - **Secret**: nilai `SANITY_REVALIDATE_SECRET` yang sama
-- **Filter**: `_type == "article"`
+- **Filter**: `_type == "article" || _type == "pahlawanRow"`
 - **Projection**: `{_type, _id}`
 
 Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka adalah cara mudah
@@ -347,6 +349,10 @@ Diperiksa dengan menjalankan, bukan membaca:
 - `POST /api/revalidate`: tanpa secret / salah / sepanjang benar-tapi-salah → **401**;
   secret tepat → **200** `{revalidated: true}`.
 - Build: lint dan `tsc` bersih, **28 halaman statis**, `/journal` `Revalidate 1m · Expire 1h`.
+- Direktori `pahlawanRow`: 3 dokumen ter-seed; `/pahlawan-kota` (`○ Static · Revalidate 1m`)
+  merender baris dari Sanity — dokumen uji tampil setelah Publish dan hilang setelah
+  dihapus; `POST /api/revalidate` membalas
+  `{revalidated: true, tags: ["articles", "pahlawan-rows"]}`.
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
 secara logika), dan pratinjau draf (belum dibangun).

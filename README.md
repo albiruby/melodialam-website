@@ -7,9 +7,10 @@ Situs ini menyatukan jurnalisme musik (*Stories*), katalog video YouTube
 
 Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara (INFIA Corp).
 
-> Halaman `/pahlawan-kota` dan `/spaces` sudah dihapus atas permintaan; keduanya kini
-> mengembalikan 404. Data pendukungnya (`GENRE_ROWS`, `SPACE_ITEMS`) masih ada di
-> `lib/content.ts` beserta catatan alasannya.
+> Halaman `/spaces` sudah dihapus atas permintaan dan kini mengembalikan 404; data
+> pendukungnya (`SPACE_ITEMS`) masih ada di `lib/content.ts` beserta catatan alasannya.
+> Direktori `/pahlawan-kota` aktif dan barisnya dikelola dari Sanity (`pahlawanRow`),
+> dengan `GENRE_ROWS` di `lib/content.ts` sebagai fallback statis.
 
 ---
 

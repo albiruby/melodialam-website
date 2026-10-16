@@ -187,8 +187,7 @@ Invarian yang murah dan bernilai tinggi:
 | Invarian | Alasan | Test ID |
 |---|---|---|
 | `ARTICLES` berjumlah 12 dan `slug` unik | `generateStaticParams` + route `/journal/[slug]` | `U-11` |
-| Setiap `GENRE_ROWS[].videoId` ada di `VIDEOS` **atau** `null` | Deep-link tidak boleh 404 | `U-12` |
-| Setiap `GENRE_ROWS[].articleSlug` ada di `ARTICLES` **atau** `null` | Idem | `U-12` |
+| Setiap `GENRE_ROWS[].slug` unik | Kunci render baris `/pahlawan-kota` (fallback statis) | `U-12` |
 | `INTERVIEW_ROWS[].videoId` ada di `VIDEOS` | Modal `/bicara-melodi` | `U-12` |
 | `COUNTS.videos === VIDEOS.length`; `sum(COUNTS.byVenue) === COUNTS.videos` | Angka di UI konsisten | `U-13` |
 | Setiap `SEED_DEMOS[].genre ∈ DEMO_GENRES` dan `program ∈ DEMO_PROGRAMS` | Seed harus valid | `U-14` |

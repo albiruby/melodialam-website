@@ -4,9 +4,10 @@
 /**
  * One-off: seed Sanity from this repo's own content files.
  *
- * The source of truth for the twelve articles, the interview rows and the ticker
- * is still `lib/content.ts`; this copies them into the CMS so an editor can take
- * over. Deterministic `_id`s mean re-running updates rather than duplicates.
+ * The source of truth for the twelve articles, the interview rows, the
+ * Pahlawan Kota directory and the ticker is still `lib/content.ts`; this copies
+ * them into the CMS so an editor can take over. Deterministic `_id`s mean
+ * re-running updates rather than duplicates.
  *
  * Run with `npm run seed:sanity`, which compiles `lib/*.ts` to CommonJS first —
  * Node cannot resolve this project's extensionless `./taxonomy` import directly.
@@ -20,7 +21,7 @@ if (!process.argv[2]) {
   process.exit(1);
 }
 
-const { ARTICLES, INTERVIEW_ROWS, TICKER_ITEMS } = require(path.join(BUILD_DIR, "content.js"));
+const { ARTICLES, GENRE_ROWS, INTERVIEW_ROWS, TICKER_ITEMS } = require(path.join(BUILD_DIR, "content.js"));
 const { SITE } = require(path.join(BUILD_DIR, "site.js"));
 const catalogue = require("../lib/catalogue.json");
 
@@ -114,6 +115,18 @@ const interviewDocs = INTERVIEW_ROWS.map((r, i) => ({
   order: i + 1,
 }));
 
+const pahlawanDocs = GENRE_ROWS.map((r, i) => ({
+  _id: `pahlawan-${r.slug}`,
+  _type: "pahlawanRow",
+  title: r.title,
+  slug: { _type: "slug", current: r.slug },
+  artists: r.artists,
+  description: r.description,
+  imagePath: r.image,
+  tags: r.tags,
+  order: i + 1,
+}));
+
 const settingsDoc = {
   _id: "siteSettings",
   _type: "siteSettings",
@@ -135,11 +148,12 @@ const settingsDoc = {
 /* --- send ----------------------------------------------------------------- */
 
 async function main() {
-  const docs = [...articleDocs, ...playlistDocs, ...interviewDocs, settingsDoc];
+  const docs = [...articleDocs, ...playlistDocs, ...interviewDocs, ...pahlawanDocs, settingsDoc];
 
   console.log(`  artikel   : ${articleDocs.length}`);
   console.log(`  playlist  : ${playlistDocs.length}`);
   console.log(`  wawancara : ${interviewDocs.length}`);
+  console.log(`  pahlawan  : ${pahlawanDocs.length}`);
   console.log(`  setelan   : 1`);
   console.log(`  total     : ${docs.length} dokumen\n`);
 
@@ -152,11 +166,19 @@ async function main() {
   const body = await res.text();
   console.log(`  mutasi -> ${res.status}`);
   if (!res.ok) {
-    console.error("  " + body.slice(0, 600));
-    process.exit(1);
+    throw new Error("mutasi gagal: " + body.slice(0, 600));
   }
   const parsed = JSON.parse(body);
   console.log(`  ${parsed.results?.length ?? 0} dokumen ditulis`);
 }
 
-main();
+main()
+  .catch((error) => {
+    console.error(error instanceof Error ? `  ${error.message}` : error);
+    process.exitCode = 1;
+  })
+  .finally(() => {
+    // The tsc output is throwaway; remove it so it cannot confuse a later lint
+    // run (the compiled JS trips no-require-imports).
+    fs.rmSync(BUILD_DIR, { recursive: true, force: true });
+  });

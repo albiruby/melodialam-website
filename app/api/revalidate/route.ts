@@ -2,19 +2,21 @@ import { timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { ARTICLES_TAG } from "@/lib/articles";
+import { PAHLAWAN_TAG } from "@/lib/pahlawan";
 
 /**
  * Sanity publish webhook → Next cache invalidation.
  *
- * Article reads are cached under one tag (`ARTICLES_TAG`). Without this route
- * the site still updates, but only once the cache window lapses; with it,
+ * Cached reads live under tags (`ARTICLES_TAG`, `PAHLAWAN_TAG`). Without this
+ * route the site still updates, but only once the cache window lapses; with it,
  * pressing Publish in the Studio shows the change on the next request.
  *
  * Point a Sanity webhook at POST /api/revalidate with the projection
  * `{_type, _id}` and a secret, then set the same secret as
- * `SANITY_REVALIDATE_SECRET`. Any request that cannot prove it holds the secret
- * is refused — an open revalidation endpoint is a cache-busting denial of
- * service waiting to happen.
+ * `SANITY_REVALIDATE_SECRET`. Filter the webhook on the document types whose
+ * tags this route bumps: `_type == "article" || _type == "pahlawanRow"`. Any
+ * request that cannot prove it holds the secret is refused — an open
+ * revalidation endpoint is a cache-busting denial of service waiting to happen.
  */
 
 function secretsMatch(provided: string, expected: string): boolean {
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
   }
 
   revalidateTag(ARTICLES_TAG, "max");
+  revalidateTag(PAHLAWAN_TAG, "max");
 
-  return NextResponse.json({ revalidated: true, tag: ARTICLES_TAG });
+  return NextResponse.json({ revalidated: true, tags: [ARTICLES_TAG, PAHLAWAN_TAG] });
 }

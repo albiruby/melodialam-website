@@ -309,7 +309,7 @@ Modul target (RENCANA):
   di kepala berkas). Ini batas keamanan yang harus dipertahankan saat pindah ke CMS.
 - **Antarmuka.** Named const + tipe; lihat §5.
 - **Strategi pengujian.** Unit test murni atas invarian data (mis. setiap
-  `GENRE_ROWS[].videoId` ada di katalog atau `null`).
+  `INTERVIEW_ROWS[].videoId` ada di katalog).
 
 ### MOD-002 / MOD-003 — katalog (TERVERIFIKASI)
 

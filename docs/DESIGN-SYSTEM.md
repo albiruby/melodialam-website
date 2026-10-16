@@ -227,7 +227,7 @@ Ini diminta secara eksplisit dan **tidak boleh** diganti dengan perilaku generik
 | Aturan | Perilaku | Status |
 |---|---|---|
 | `DEC-002` | Tajuk hierarki dan strip kategori: state awal teks murni tanpa `—`; `—` muncul menggeser teks saat hover | Terimplementasi (`dash-reveal-*`) |
-| `DEC-003` | Baris video dan direktori: state awal `Gambar — Headline — Deskripsi`; hover memunculkan `[ ▶ ] — [ M \| WATCH/EXPLORE ↗ ]` | Terimplementasi (`video-action-reveal`) |
+| `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan `[ ▶ ] — [ M \| WATCH/EXPLORE ↗ ]` | Terimplementasi pada baris video (`video-action-reveal`); baris direktori `/pahlawan-kota` dikecualikan atas permintaan (grup aksi dihapus) |
 | Seksi 9.3C | Hover thumbnail artikel: tirai gelap naik dari bawah + bingkai siku di sudut | Terimplementasi (`hover-reveal-curtain` + `corner-frame`) |
 
 ### 6.1 Gap aksesibilitas yang harus ditutup (`ACC-002`)

@@ -379,12 +379,14 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
 /* -------------------------------------------------------------------------
    Pahlawan Musik Kota — genre directory rows.
 
-   UNUSED: the request that removed the "Pahlawan Musik Kota" and "Instruments &
-   Space" sections took the home-page blocks, the /pahlawan-kota and /spaces
-   routes, the nav entries and the sitemap rows with it, and that removal is
-   committed. So this is a deliberate archive now, not a backup for uncommitted
-   work. Reinstating the section is one import away; delete this block (and
-   SPACE_ITEMS below) once you are sure the removal is permanent.
+   The live copy of this directory lives in Sanity (`pahlawanRow`, read through
+   `lib/pahlawan.ts`); these three rows are the offline fallback, under the same
+   rule as the articles above — the CMS wins when it is reachable, this file
+   fills in when it is not.
+
+   The rows used to carry a `videoId` or `articleSlug` for the READ/WATCH
+   action group; that group was removed on request, so the target fields went
+   with it.
 ------------------------------------------------------------------------- */
 
 export interface GenreRow {
@@ -393,9 +395,6 @@ export interface GenreRow {
   artists: string;
   description: string;
   image: string;
-  /** Catalogue video to deep-link, or null when the row maps to an article. */
-  videoId: string | null;
-  articleSlug: string | null;
   tags: string[];
 }
 
@@ -407,8 +406,6 @@ export const GENRE_ROWS: GenreRow[] = [
     description:
       "Dari kehangatan akustik dua dekade di Pamulang hingga band dream-pop kota hujan Bogor yang siap menembus panggung Music Lane Festival Okinawa.",
     image: PHOTO.mosaicFloor,
-    videoId: "irtr9SnyTxM",
-    articleSlug: null,
     tags: ["indie pop", "folk", "dream pop"],
   },
   {
@@ -418,8 +415,6 @@ export const GENRE_ROWS: GenreRow[] = [
     description:
       "Racikan surf rock penuh adrenalin untuk ritual crowd surf hingga punk alternatif yang mengubah gemuruh panggung menjadi solidaritas lumbung pangan.",
     image: PHOTO.redWindow,
-    videoId: null,
-    articleSlug: "melankolia-di-priok-baladagehel-dongker",
     tags: ["surf rock", "punk", "alternative"],
   },
   {
@@ -429,16 +424,14 @@ export const GENRE_ROWS: GenreRow[] = [
     description:
       "Deretan nama yang meramu musik untuk menemani rasa ingin kabur, merenung, hingga menerabas rintangan hidup sehari-hari.",
     image: PHOTO.espresso,
-    videoId: "3lZLc2rRhSY",
-    articleSlug: null,
     tags: ["ska", "britpop", "r&b"],
   },
 ];
 
 /* -------------------------------------------------------------------------
-   Spaces and Instruments — kept for the same reason as GENRE_ROWS above: the
-   showcase section and its /spaces route are gone, and this data is the only
-   copy left.
+   Spaces and Instruments — the showcase section and its /spaces route are
+   gone; this data is the only copy left, kept deliberately until the removal
+   is confirmed permanent.
 ------------------------------------------------------------------------- */
 
 export interface SpaceItem {

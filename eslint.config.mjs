@@ -16,6 +16,9 @@ const eslintConfig = defineConfig([
     ".codegraph/**",
     ".gitnexus/**",
     "lib/catalogue.json",
+    // tsc output from `npm run seed:sanity`; normally removed by the script,
+    // ignored here so an interrupted run cannot fail the next lint.
+    ".seed-build/**",
   ]),
 ]);
 

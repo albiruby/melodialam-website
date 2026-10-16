@@ -97,6 +97,10 @@ Catatan integritas `TERVERIFIKASI`:
 - `dateISO` selalu ada di 12 artikel; tidak ada konsep draft/publish di kode.
 - `CATEGORY_LABELS` memetakan kategori → label tampil ("Fakta Musik & Esai" dst.).
   Itu urusan presentasi, bukan nilai tersimpan (lihat §4.1).
+- Direktori `/pahlawan-kota` kini Sanity-first: baris dibaca dari dokumen
+  `pahlawanRow` lewat `lib/pahlawan.ts`; `GENRE_ROWS` di `lib/content.ts` hanya
+  fallback statis. Field `videoId`/`articleSlug` dihapus bersama grup aksi
+  READ/WATCH (permintaan pemilik).
 
 ### 2.2 `VideoSession` — as stored in `lib/catalogue.json`
 
@@ -308,8 +312,9 @@ Catatan diagram:
 - `demo_submissions — demo_contacts` adalah **1:1 wajib**, dibelah jadi dua tabel
   semata-mata supaya tabel publik tidak punya kolom PII (§6).
 - `video_sessions` **tidak** punya FK ke `articles`. Tidak ada relasi artikel↔video
-  di kode saat ini; `GENRE_ROWS` memakai `articleSlug` **atau** `videoId` sebagai
-  alternatif, bukan keduanya (lihat Open Questions).
+  di kode saat ini; tautan editorial baris direktori (`GENRE_ROWS.articleSlug`/
+  `videoId`) sudah dihapus bersama grup aksi READ/WATCH — direktorinya kini
+  Sanity-first (`pahlawanRow`, lihat `SANITY-INTEGRATION.md`).
 - `users` dikelola Payload (collection auth), bukan domain editorial; nama kolom
   persis `[PERLU VERIFIKASI]`.
 - Penyimpanan objek audio (Supabase Storage) **bukan** tabel, jadi tidak muncul
@@ -597,8 +602,9 @@ Rasional delete behavior:
   invariant aplikasi, bukan DB (§8.2).
 
 Tidak ada relasi `articles ↔ video_sessions` di kode, jadi tidak ada FK — menambah
-satu berarti mengarang. `GENRE_ROWS.articleSlug` dan `GENRE_ROWS.videoId` adalah
-tautan editorial ke **salah satu** target, bukan relasi dua arah (Open Questions).
+satu berarti mengarang. Dulu `GENRE_ROWS.articleSlug`/`videoId` menautkan baris
+direktori ke **salah satu** target (bukan relasi dua arah); tautan itu kini dihapus
+dan direktori dikelola Sanity (`pahlawanRow`).
 
 ---
 
@@ -1057,7 +1063,10 @@ RLS terhadap koneksi Payload — semuanya ditandai `RENCANA` / `[PERLU VERIFIKAS
     sebelum value pertama ditambahkan.
 11. **`INTERVIEW_ROWS`, `GENRE_ROWS`, `TICKER_ITEMS`.** Tiga entitas
     `TERVERIFIKASI` tanpa tabel target. Apakah jadi tabel sendiri, memetakan ke
-    `articles`/`video_sessions`, atau tetap build-time?
+    `articles`/`video_sessions`, atau tetap build-time? **Sebagian terjawab:**
+    pasca ADR-0008 editorialnya hidup di Sanity (`interview`, `pahlawanRow`,
+    `siteSettings`) dengan fallback statis; tabel Postgres untuk ketiganya tidak
+    lagi relevan.
 12. **Angka cap 25 MB.** Keputusan fase ini, bukan angka dari kode. Nilai
     `file_size_limit` harus dikonfirmasi terhadap plan Supabase saat bucket dibuat.
 13. **`price_idr` numerik.** Belum ada kolom harga numerik; apakah kurator butuh
