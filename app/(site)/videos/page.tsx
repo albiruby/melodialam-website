@@ -6,6 +6,7 @@ import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { CHANNEL } from "@/lib/catalogue";
 import { allInterviews } from "@/lib/interviews";
 import { allPlaylists, allVideos } from "@/lib/videos";
+import { getVideosPageCopy } from "@/lib/videos-page";
 
 export const metadata: Metadata = {
   title: "Videos",
@@ -48,10 +49,11 @@ function SectionHead({
 }
 
 export default async function VideosPage() {
-  const [videos, playlists, interviews] = await Promise.all([
+  const [videos, playlists, interviews, copy] = await Promise.all([
     allVideos(),
     allPlaylists(),
     allInterviews(),
+    getVideosPageCopy(),
   ]);
 
   // Two editorial sections, then the whole catalogue.
@@ -63,10 +65,10 @@ export default async function VideosPage() {
       {/* ---------- Bicara Melodi: the curated short list ---------- */}
       <Reveal>
         <SectionHead
-          title="Bicara Melodi"
-          note={`${interviews.length} episode pilihan`}
+          title={copy.bicaraTitle}
+          note={copy.bicaraNote ?? `${interviews.length} episode pilihan`}
           href="/bicara-melodi"
-          linkLabel="Lihat semua episode"
+          linkLabel={copy.bicaraLinkLabel}
         />
         <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
           {interviews.map((interview) => (
@@ -95,10 +97,10 @@ export default async function VideosPage() {
       {/* ---------- Melodi Samsara: the live sessions ---------- */}
       <Reveal>
         <SectionHead
-          title="Melodi Samsara"
-          note={`${samsara.length} sesi panggung`}
+          title={copy.samsaraTitle}
+          note={copy.samsaraNote ?? `${samsara.length} sesi panggung`}
           href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}
-          linkLabel="YouTube Channel"
+          linkLabel={copy.samsaraLinkLabel}
         />
         <div className="divide-y divide-neutral-300 border-b border-ink">
           {samsaraPreview.map((video, i) => (
@@ -110,9 +112,9 @@ export default async function VideosPage() {
       {/* ---------- Playlists ---------- */}
       <Reveal>
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
-          <h2 className="text-3xl tracking-tight sm:text-4xl">Playlists</h2>
+          <h2 className="text-3xl tracking-tight sm:text-4xl">{copy.playlistsTitle}</h2>
           <span className="font-mono text-[11px] text-neutral-500">
-            {playlists.length} playlist publik • {CHANNEL.handle}
+            {copy.playlistsNote ?? `${playlists.length} playlist publik • ${CHANNEL.handle}`}
           </span>
         </div>
 

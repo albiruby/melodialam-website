@@ -68,6 +68,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
 | **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
+| **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Bicara Melodi / Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
 | **pahlawanRow** | Konten | `/pahlawan-kota` (direktori kota & skena) | ✅ tersambung |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
@@ -157,6 +158,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
+| `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage` (catatan kosong = dihitung otomatis) |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
 `generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
@@ -370,6 +372,12 @@ Diperiksa dengan menjalankan, bukan membaca:
   di HTML setelah jendela cache lewat (request pertama masih stale, request berikutnya
   bersih) — judul katalog lama lenyap dari halaman, jadi Sanity benar-benar menggantikan
   entri katalog. Penghitung "292 video" dan "101 sesi panggung" tidak berubah.
+- Singleton `videosPage`: ter-seed dengan judul + label tautan, ketiga catatan dibiarkan
+  kosong → `/videos` tetap merender hitungan hidup ("9 episode pilihan",
+  "101 sesi panggung", "5 playlist publik • melodialam"). Mengubah `bicaraNote` ke penanda
+  uji menggantikan catatan itu di HTML setelah jendela cache lewat; mengosongkannya
+  mengembalikan hitungan otomatis. Studio ter-deploy ulang dengan menu konten yang sama,
+  kini termasuk **Halaman Videos** (singleton).
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
 secara logika), dan pratinjau draf (belum dibangun).
