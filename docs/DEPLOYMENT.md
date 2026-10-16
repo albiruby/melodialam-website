@@ -146,7 +146,7 @@ Angka **terukur** yang harus dipakai sebagai baseline (bukan estimasi):
 | `/apple-icon.png` | `○` Static | Rute metadata otomatis dari `app/apple-icon.png` |
 | `/icon.png` | `○` Static | Rute metadata otomatis dari `app/icon.png` |
 | `/bicara-melodi` | `○` Static | |
-| `/journal` | `○` Static | Filter/search client-side |
+| `/journal` | `○` Static | Grid 12 kartu (Stories); tanpa filter/search |
 | `/journal/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug; **2 slug** statis penuh (`dua-dekade-endah-n-rhesa`, `melankolia-di-priok-baladagehel-dongker`), **10 slug** `◐` Partial Prerender |
 | `/pahlawan-kota` | `○` Static | |
 | `/spaces` | `○` Static | |
@@ -633,7 +633,7 @@ Dijalankan pada URL Preview **dan** Production. Semua ruta berasal dari output b
 | # | Cek | Rute |
 |---|---|---|
 | 1 | Landing memuat, stylesheet terpasang (bukan halaman tanpa gaya) | `/` |
-| 2 | Journal memuat; filter & search client-side bekerja | `/journal` |
+| 2 | Stories memuat; satu grid 12 kartu, tanpa filter/search | `/journal` |
 | 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/journal/<slug>` (uji ≥2, termasuk `dua-dekade-endah-n-rhesa`) |
 | 4 | Interview index memuat | `/bicara-melodi` |
 | 5 | Katalog video memuat; modal putar membuka `[role="dialog"]` | `/videos` |

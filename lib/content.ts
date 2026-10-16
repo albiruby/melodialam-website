@@ -36,7 +36,6 @@ export interface Article {
   excerpt: string;
   image: string;
   body: string[];
-  featured?: boolean;
 }
 
 /** Words per minute the read-time rule assumes. */
@@ -105,7 +104,6 @@ export const ARTICLES: Article[] = [
     excerpt:
       "Satu album mungkin baru langkah awal, tapi melahirkan album-album selanjutnya adalah ujian stamina dan mental yang sesungguhnya di tengah patokan angka views.",
     image: PHOTO.liveStage,
-    featured: true,
     body: [
       "Bagi Endah N Rhesa, tantangan musisi era sekarang bukan cuma soal seberapa gampang mengunggah lagu ke platform digital, tetapi bagaimana mematangkan aransemen dan menjaga kesehatan mental dari patokan angka views.",
       "Di panggung Melodi Samsara Bogor, pasangan musisi kebanggaan Pamulang ini membawakan Baby It's You, When You Love Someone, serta Liburan Indie dengan momen bermain satu gitar berdua yang hangat.",
@@ -122,7 +120,6 @@ export const ARTICLES: Article[] = [
     excerpt:
       "Lewat pengumpulan lumbung pangan dan refleksi sejarah, gemuruh musik bertransformasi menjadi solidaritas warga.",
     image: PHOTO.neonSign,
-    featured: true,
     body: [
       "Melankolia di Priok menjadi saksi bagaimana gemuruh musik bertransformasi menjadi wadah perlawanan terhadap ketidakadilan.",
       "Lewat pengumpulan lumbung pangan dan refleksi sejarah kelam, Baladagehel memosisikan diri jauh dari sekadar komunitas musik yang regularly tampil di panggung besar.",
@@ -139,7 +136,6 @@ export const ARTICLES: Article[] = [
     excerpt:
       "Unit indie-pop kota hujan resmi menembus Music Lane Festival Okinawa 2027 dan tur panggung Tokyo.",
     image: PHOTO.archHall,
-    featured: true,
     body: [
       "Langkah unit indie-pop Starrducc untuk menembus pasar internasional resmi terwujud lewat penampilan mereka di Music Lane Festival Okinawa 2027 mendatang.",
       "Awal kiprah di Tokyo bermula dari sebuah record shop kecil di Records and Books. Dari sana, impresi personal mulai menjangkau Asia Tenggara.",
@@ -156,7 +152,6 @@ export const ARTICLES: Article[] = [
     excerpt:
       'Energi ketangguhan yang diterjemahkan secara apik melalui eksplorasi aransemen baru di EP "Constant Changes".',
     image: PHOTO.recordGrid,
-    featured: true,
     body: [
       "Memiliki ikatan sejarah yang erat sejak Festival Melodi Alam 2017 di Gunung Pancar, Float kembali hadir lewat EP Constant Changes.",
       "Di EP ini, Float membiarkan dirinya kehilangan gitar akustik yang menjadi tanda tangan mereka, dan memindahkan seluruh energi ke synth serta drum machine.",
@@ -518,7 +513,7 @@ export const TICKER_ITEMS: { label: string; href: string | null }[] = [
     href: "/bicara-melodi",
   },
   {
-    label: "JOURNAL & STORIES — ESAI, LIPUTAN, DAN CATATAN SKENA",
+    label: "STORIES — ESAI, LIPUTAN, DAN CATATAN SKENA",
     href: "/journal",
   },
   {

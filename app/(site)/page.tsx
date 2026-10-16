@@ -28,7 +28,8 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   // Sanity when it is configured, the static file otherwise.
   const articles = await allArticles();
-  const [hero, ...rest] = articles.filter((a) => a.featured);
+  // "Latest News" is simply the four newest; `allArticles()` is newest-first.
+  const [hero, ...rest] = articles;
   const subFeatures = rest.slice(0, 3);
 
   // Sanity first, the build-time catalogue behind it.

@@ -151,7 +151,7 @@ Semua halaman berada di bawah root layout tunggal
 | Route ID | Path | Berkas | Mode render | Data yang dibaca | Client component yang di-mount |
 |---|---|---|---|---|---|
 | ROUTE-001 | `/` | `app/page.tsx` | Static (server component) | `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`, `SPACE_ITEMS` (`lib/content`); `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS` (`lib/catalogue`) | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage`, `WatchButton`, `WatchLink`, `VideoModal` |
-| ROUTE-002 | `/journal` | `app/journal/page.tsx` | Static | tidak ada langsung — `JournalBrowser` membaca `ARTICLES` | `Reveal`, `JournalBrowser` |
+| ROUTE-002 | `/journal` (Stories) | `app/journal/page.tsx` | Static | `allArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
 | ROUTE-003 | `/journal/[slug]` | `app/journal/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
 | ROUTE-004 | `/bicara-melodi` | `app/bicara-melodi/page.tsx` | Static | `INTERVIEW_ROWS` (`lib/content`); `videosByIds` (`lib/catalogue`) | `Reveal`, `WatchButton`, `VideoModal` |
 | ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
@@ -171,7 +171,7 @@ metadata/ikon yang dihasilkan Next `[PERLU VERIFIKASI: komposisi 26 angka persis
 | Route | Parameter | Akses | Fallback |
 |---|---|---|---|
 | ROUTE-003 | path `slug` (12 nilai dari `ARTICLES`) | publik | `ALL.find` gagal → `notFound()` → `app/not-found.tsx`. `dynamicParams` dibiarkan default; slug tak dikenal dirender on-demand lalu 404 (`TERVERIFIKASI` membaca kode) |
-| ROUTE-002 | — | publik | `JournalBrowser` menampilkan empty-state + tombol "Reset Filter" saat hasil filter kosong |
+| ROUTE-002 | — | publik | — grid selalu memuat 12 kartu; tanpa filter/pencarian (disederhanakan 16 Okt 2026) |
 | ROUTE-005 | state filter/page/query di memori (bukan URL) | publik | `VideoRow` kosong → pesan "Tidak ada video yang cocok."; `safePage` dijepit ke rentang valid |
 | ROUTE-009 | — | publik (tidak ada auth) | `400` body bukan JSON; `422` validasi gagal; `201` sukses |
 
@@ -213,7 +213,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 | Route | Server (page) | Composite/Pattern | Motion | Video affordance |
 |---|---|---|---|---|
 | ROUTE-001 `/` | `page.tsx` | `ArticleCards`(Hero/Feature), `WatchLink` | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage` | `VideoModal`, `WatchButton` |
-| ROUTE-002 `/journal` | `page.tsx` | `JournalBrowser` (+`ArticleCards.ArticleCard`) | `Reveal` | — |
+| ROUTE-002 `/journal` | `page.tsx` | `ArticleCards.ArticleCard` (grid 12 kartu) | `Reveal` | — |
 | ROUTE-003 `/journal/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
 | ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
 | ROUTE-005 `/videos` | `page.tsx` | `VideosBrowser` (+`WatchLink`) | `Reveal` | `VideoModal`, `WatchButton` |
@@ -223,9 +223,9 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 
 ### 4.2 Batas server/client (`TERVERIFIKASI`, dibaca dari directive)
 
-**13 berkas `"use client"`** di `components/`:
+**12 berkas `"use client"`** di `components/`:
 
-`SiteHeader`, `ScrollProgress`, `Reveal`, `JournalBrowser`, `VideosBrowser`,
+`SiteHeader`, `ScrollProgress`, `Reveal`, `VideosBrowser`,
 `VideoModal`, `WatchLink`, `DemoPortal`, `motion/MotionRoot`, `motion/RevealText`,
 `motion/ParallaxImage`, `motion/CountUp`, `motion/MarqueeTape`.
 
@@ -242,10 +242,9 @@ graph LR
     AC["ArticleCards"]
     BM["MelodiAlamLockup"]
   end
-  subgraph client["Client boundary (13)"]
+  subgraph client["Client boundary (12)"]
     HD["SiteHeader"]
     RB["Reveal"]
-    JB["JournalBrowser"]
     VB["VideosBrowser"]
     VM["VideoModal + WatchButton"]
     WL["WatchLink"]
@@ -257,7 +256,7 @@ graph LR
   PG --> AC
   AC --> M
   TI --> M
-  PG --> RB --> JB
+  PG --> RB
   PG --> VB
   PG --> VM
   PG --> WL
@@ -307,7 +306,6 @@ memakai `aria-current="page"` via `isActive()`; badge nav (`YT`) dirender bila a
 
 | Komponen | Lapisan | Server/Client | Mengapa | Props | Dipakai di |
 |---|---|---|---|---|---|
-| `JournalBrowser` | Composite | **Client** | filter kategori + live search + `useMemo` | — (mengimpor `ARTICLES` langsung) | ROUTE-002 |
 | `VideosBrowser` | Composite | **Client** | filter venue + search + pagination | — (mengimpor `@/lib/catalogue`) | ROUTE-005 |
 | `DemoPortal` | Composite | **Client** | form, preview audio lokal, `fetch` POST | — | ROUTE-008 |
 | `VideoModal` | Composite | **Client** | state modal + listener `CustomEvent` + Escape | — | ROUTE-001,004,005,006 |
@@ -358,10 +356,10 @@ wordmark, atau aset Samsara di halaman.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
-**`JournalBrowser`.** `options` = "All Articles" + `ARTICLE_CATEGORIES` dengan
-`CATEGORY_LABELS` dan hitungan per kategori. Tombol kategori memakai
-`aria-pressed`. Header hierarki memakai tiga `dash-reveal-item` (Home, Journal,
-kategori aktif). Empty-state menampilkan query dan tombol "Reset Filter".
+**`/journal` (Stories).** Satu grid 12 kartu `ArticleCard` dirender langsung oleh
+server component — tanpa filter, pencarian, hitungan, atau header hierarki.
+`JournalBrowser` dihapus 16 Oktober 2026; pola `titleFirst` ganjil/genap tetap
+dipertahankan di grid (`BR-003`).
 
 **`VideosBrowser`.** `PAGE_SIZE = 12`; `type Filter = Venue | "all"` dari
 `VENUES`. `reset(fn)` mengatur ulang `page` ke 0 saat filter/search berubah.
@@ -476,9 +474,6 @@ dua paruh identik.
 
 | State ID | State | Kategori | Pemilik | Sumber kebenaran | Konsumen | Persistence |
 |---|---|---|---|---|---|---|
-| ST-01 | `category` (`ArticleCategory \| "all"`) | Local UI | `JournalBrowser` | komponen | daftar + hitungan | tidak |
-| ST-02 | `query` (search) | Local UI | `JournalBrowser` | komponen | `filtered` | tidak |
-| ST-03 | `counts` / `filtered` | Derived (`useMemo`) | `JournalBrowser` | diturunkan dari `ARTICLES` + ST-01/02 | render grid | — |
 | ST-04 | `filter` (Venue \| "all") | Local UI | `VideosBrowser` | komponen | `all` | tidak |
 | ST-05 | `query` | Local UI | `VideosBrowser` | komponen | `matches` | tidak |
 | ST-06 | `page` (0-based) | Local UI | `VideosBrowser` | komponen | `safePage`,`rows` | tidak |
@@ -494,6 +489,9 @@ dua paruh identik.
 | ST-16 | `visible` | Local UI | `Reveal` | `IntersectionObserver` | kelas `is-visible` | tidak |
 | ST-17 | `armed` / `shown` | Local UI | `RevealText` | rect read | mask | tidak |
 | ST-18 | `queue` (server) | Server | `app/api/demos` | array modul | **tidak ada konsumen** | proses-lokal, reset saat restart |
+
+> `ST-01`–`ST-03` (state `JournalBrowser`) dihapus 16 Oktober 2026 — `/journal`
+> kini dirender server tanpa state klien.
 
 **Tidak ada** application state, URL state, atau persistent client state.
 Redux/Zustand/Context global **tidak** diperlukan dan tidak dipakai
@@ -653,8 +651,8 @@ front-end.
 | Nama tombol video | `aria-label={`Putar ${title}`}` | `WatchButton` |
 | Drawer | `aria-expanded` + `aria-controls="mobile-nav"`; `hidden` saat tertutup; label tombol berganti "Tutup ✕"/"Menu ☰" | `SiteHeader` |
 | Nav aktif | `aria-current="page"` | `SiteHeader` (nav desktop) |
-| Filter | `aria-pressed` | `JournalBrowser`, `VideosBrowser` |
-| Search | `<label htmlFor>` + `sr-only` | `JournalBrowser`, `VideosBrowser` |
+| Filter | `aria-pressed` | `VideosBrowser` |
+| Search | `<label htmlFor>` + `sr-only` | `VideosBrowser` |
 | Feedback form | `role="alert"` (per-field), `role="status"` (banner) | `DemoPortal` |
 | Dialog video | `role="dialog"`, `aria-modal="true"`, `aria-label`, tutup via `Escape`/backdrop, `title` iframe | `VideoModal` |
 | Alt text | Artikel/genre/space → `article.title`/`row.title`; thumbnail video → `alt=""` (dekoratif, tombol memberi nama); footer wordmark `alt=""` karena salinan menamai venue | lihat `MelodiAlamLockup`, `ArticleCards`, halaman |
@@ -686,7 +684,7 @@ Tiga perilaku dikunci pemilik (brief §8). Ketiganya **ADA** di kode, tetapi
 
 | Locked interaction | Ada? | Implementasi | Dipakai di | Catatan fungsional |
 |---|---|---|---|---|
-| `DEC-002` strip `—` pada hierarchy heading | **Ada** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` | ROUTE-002 (`JournalBrowser`: Home, Journal/kategori aktif, tombol kategori) | Hover-only (A1). Tidak ada di heading lain (mis. home `Latest News`), sesuai cakupan |
+| `DEC-002` strip `—` pada hierarchy heading | **Ada di CSS, tanpa pemakaian** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` | — (satu-satunya pemakainya, `JournalBrowser`, dihapus 16 Okt 2026) | Hover-only (A1). Utilitas dibiarkan di `globals.css` untuk heading hierarki berikutnya |
 | `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover .video-action-reveal` | ROUTE-001 (video teaser + genre rows), ROUTE-005 (`VideoRow`) | Hover-only (A1, A6). **Nilai fungsional bervariasi** — lihat di bawah. ROUTE-006 tidak lagi memakai reveal: grup aksi dihapus atas permintaan |
 | Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` (curtain) + `.corner-frame` (bracket), pemicu `.group:hover …` | Curtain: `ArticleCards.CardImage` (ROUTE-002/003) & `FeatureCard` (ROUTE-001). Bracket: juga pada box gambar ROUTE-001 (genre) & ROUTE-006 | Hover-only (A1). Di ROUTE-001 genre & ROUTE-006 bracket muncul **tanpa** curtain (tidak ada `.hover-reveal-curtain` di sana) |
 
@@ -732,7 +730,7 @@ yang dieksekusi pada fase DOCS ini.
 | FE-A1 | Bekukan `lib/content.ts` sebagai read-only selama migrasi | `lib/content.ts` | — | Tidak ada tulis simbolis; pembaca berhenti memodifikasi | lint + review diff |
 | FE-A2 | Tambah lapisan akses server-only `lib/cms/*` (di atas Payload) | baru | Payload terpasang | Client tidak pernah mengimpor `lib/cms` (R7) | aturan lint/boundary |
 | FE-A3 | Tambah pasangan `:focus-within` untuk seluruh utilitas reveal | `globals.css` | — | Semua `.group:hover` punya pasangan `:focus-within` | uji keyboard manual/E2E (`ACC-002`) |
-| FE-B1 | `/journal` + `JournalBrowser` membaca artikel via props | ROUTE-002 | FE-A2 | Filter/search/pagination tetap; data dari server | Playwright: filter + search + empty-state |
+| FE-B1 | `/journal` membaca artikel dari Sanity dan merender satu grid 12 kartu (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
 | FE-B2 | `/journal/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
 | FE-C1 | Migrasi `/submit` ke koleksi `DemoSubmissions` + moderasi | ROUTE-008, ROUTE-009 | FE-A2 | Buat → `moderation_status='pending'`; antrean publik hanya `approved` | integrasi + E2E submit |
 | FE-C2 | `DemoPortal`: konsumsi `GET /api/demos` (approved) ganti `SEED_DEMOS` | ROUTE-008 | FE-C1 | Antrean kanan = data server; bukan konstanta klien | Playwright: muat antrean |
@@ -756,9 +754,9 @@ Runner target: **Vitest** (unit/logic) + **Playwright** (E2E) — keputusan pemi
 
 | Level | Sasaran | Contoh kasus |
 |---|---|---|
-| Unit | `viewCount`, `videosByVenue`, hitungan kategori `JournalBrowser` (fungsi murni), pemetaan cap `str()` | parsing "107K"→107000; filter venue; cap 120/80/160 |
+| Unit | `viewCount`, `videosByVenue`, pemetaan cap `str()` | parsing "107K"→107000; filter venue; cap 120/80/160 |
 | Unit | Invarian data `lib/content.ts` | setiap `INTERVIEW_ROWS[].videoId` ada di katalog |
-| Component | `JournalBrowser`/`VideosBrowser` render + interaksi | filter mengubah daftar; pagination men-`disabled` PREV di hal. 1; empty-state muncul |
+| Component | `VideosBrowser` render + interaksi | filter mengubah daftar; pagination men-`disabled` PREV di hal. 1; empty-state muncul |
 | Component | `DemoPortal` state | `pending` menonaktifkan tombol; `422` menampilkan `role="alert"` per field |
 | Integration | `POST /api/demos` kontrak | `400`, `422` (per-field), `201`; `queue.unshift` |
 | E2E | Journey kritis | buka artikel dari kartu → `/journal/[slug]`; buka modal via `WatchButton` → tutup `Escape`; submit demo sukses |
@@ -829,7 +827,8 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `app/page.tsx` (ROUTE-001) — konsumsi `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`,
   `SPACE_ITEMS`, `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS`; pemakaian
   `RevealText`/`CountUp`/`ParallaxImage`/`WatchButton`/`WatchLink`/`VideoModal`.
-- `app/journal/page.tsx` — hanya `Reveal` + `JournalBrowser`.
+- `app/journal/page.tsx` — `Reveal` + grid `ArticleCard` (12 kartu, `allArticles()`);
+  `JournalBrowser` dihapus 16 Oktober 2026.
 - `app/journal/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`,
   `notFound()`, `ArticleCard`, drop cap; **tidak ada `Reveal`**.
 - `app/bicara-melodi/page.tsx` — `INTERVIEW_ROWS` + `videosByIds` + `WatchButton`
@@ -845,7 +844,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `app/globals.css` (seluruh 373 baris) — `@source not` ×3, `@theme`, seluruh
   `@utility`, selektor `.group:hover`, blok `prefers-reduced-motion`.
 - `components/SiteHeader.tsx`, `SiteFooter.tsx`, `Ticker.tsx`, `ScrollProgress.tsx`,
-  `Reveal.tsx`, `ArticleCards.tsx`, `JournalBrowser.tsx`, `VideosBrowser.tsx`,
+  `Reveal.tsx`, `ArticleCards.tsx`, `VideosBrowser.tsx`,
   `VideoModal.tsx`, `WatchLink.tsx`, `DemoPortal.tsx`, `MelodiAlamLockup.tsx`.
 - `components/motion/MotionRoot.tsx`, `RevealText.tsx`, `ParallaxImage.tsx`,
   `CountUp.tsx`, `MarqueeTape.tsx`.

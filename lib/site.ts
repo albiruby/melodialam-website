@@ -28,7 +28,7 @@ export interface NavItem {
 
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Latest News" },
-  { href: "/journal", label: "Journal & Stories" },
+  { href: "/journal", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Videos", badge: "YT" },
   { href: "/pahlawan-kota", label: "Pahlawan Kota" },

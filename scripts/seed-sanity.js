@@ -93,7 +93,6 @@ const articleDocs = ARTICLES.map((a) => ({
   excerpt: a.excerpt,
   imagePath: a.image,
   body: portableText(a.body),
-  featured: a.featured === true,
 }));
 
 const playlistDocs = catalogue.playlists.map((p, i) => ({

@@ -132,7 +132,7 @@ Piramida sehat: banyak unit, sedikit E2E. Semua tooling berstatus `RENCANA`.
 | Static | Type, lint, konvensi | `tsc --noEmit`, `eslint`, cek regex kustom | Dev | `next build`; larangan `aspect-[${...}]`; `@source not` lengkap |
 | Unit | Logika murni, invarian data | **Vitest** | Dev | `viewCount`, `videosByVenue`, `topVideos`, invarian katalog |
 | Integration | Route handler dengan `Request`/`Response` nyata | **Vitest** (import `POST`/`GET` langsung) | Dev | Matriks `POST /api/demos` (§4.3) |
-| Component | Interaksi komponen klien terisolasi | **Vitest + jsdom + React Testing Library** | Dev | Filter `JournalBrowser`, state `DemoPortal` |
+| Component | Interaksi komponen klien terisolasi | **Vitest + jsdom + React Testing Library** | Dev | Filter/paginasi `VideosBrowser`, state `DemoPortal` |
 | E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | QA/Dev | Buka artikel; modal video; submit demo |
 | Non-fungsional | Aksesibilitas, performa | Playwright (emulasi) + axe (`RENCANA`) | QA | `ACC-001`…`ACC-003`, `P-01` |
 | Manual/eksploratif | Kualitas visual, rasa editorial | — | Owner/QA | Estetika, copy |
@@ -249,7 +249,7 @@ Tabel batas yang wajib ditulis sebagai test (`I-01`…`I-12`):
 
 ## 5. Playwright — Journey Kritis (E2E)
 
-Turunan dari UI nyata (`JournalBrowser`, `VideosBrowser`, `VideoModal`, `DemoPortal`,
+Turunan dari UI nyata (`VideosBrowser`, `VideoModal`, `DemoPortal`,
 `WatchLink`). `baseURL = http://localhost:3100` (port dev/start brief §2). Semua `RENCANA`.
 
 ### 5.1 Journal (Stories, `FR-001`)
@@ -258,8 +258,8 @@ Turunan dari UI nyata (`JournalBrowser`, `VideosBrowser`, `VideoModal`, `DemoPor
 |---|---|---|
 | `E-01` | Buka `/journal`, klik kartu artikel | URL menjadi `/journal/<slug>`; `<h1>` = judul artikel |
 | `E-02` | Kunjungi `/journal/<slug>` langsung; lalu `/journal/slug-tidak-ada` | Artikel render; slug tak dikenal → 404 (`app/not-found.tsx`) |
-| `E-03` | Klik tombol kategori (mis. "Fakta Musik & Esai") | Daftar menyempit; `aria-pressed="true"` pada tombol aktif |
-| `E-04` | Ketik query tak ada hasil di `#journal-search`; klik "Reset Filter" | Empty state tampil (menyebut query); reset → daftar penuh lagi |
+| `E-03` | Buka `/journal` (Stories) | Satu grid tanpa kontrol: tepat 12 kartu; **tidak ada** filter, pencarian, hitungan, atau header hierarki |
+| `E-04` | Cek elemen `#journal-search` & tombol kategori | Tidak ada satu pun di DOM — kontrol dihapus 16 Okt 2026 (penyederhanaan Stories) |
 
 ### 5.2 Videos (`FR-002`) & Bicara Melodi
 
@@ -590,8 +590,8 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `VENUE_COUNTS`, `thumbnailFor`.
 - `components/DemoPortal.tsx` — `useState(SEED_DEMOS)`, submit ke `/api/demos`,
   `role="status"`/`role="alert"`, reset form, revoke audio.
-- `components/JournalBrowser.tsx` — filter kategori + `#journal-search`, `aria-pressed`,
-  empty state + reset.
+- `app/journal/page.tsx` — grid 12 kartu `ArticleCard`, server component; tanpa
+  state klien (penyederhanaan Stories, 16 Oktober 2026).
 - `components/VideosBrowser.tsx` — `PAGE_SIZE = 12`, tab venue, search, pagination,
   `disabled` PREV di halaman 1, empty state.
 - `components/VideoModal.tsx` — event `melodi:watch`, `role="dialog"`, `aria-modal`,

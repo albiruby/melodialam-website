@@ -83,7 +83,7 @@ tidak menjadi host terpisah; ia menempel pada App Router yang sudah ada.
 | Situs publik statis dan cepat | 26 halaman statis pada build (`TERVERIFIKASI` via brief) |
 | Pembaruan konten tanpa deploy | Kebutuhan CMS — `RENCANA` |
 | Pipeline demo submission yang dimoderasi | `OQ-001`, `FR-005`, `FR-006` |
-| Pencarian/filter client-side | `/journal`, `/videos` (`TERVERIFIKASI`) |
+| Pencarian/filter client-side (katalog video) | `/videos` (`TERVERIFIKASI`) |
 | Metadata & SEO per artikel | `app/journal/[slug]/page.tsx` → `generateMetadata` (`TERVERIFIKASI`) |
 | Aksesibilitas dan reduced motion | `ACC-001`…`ACC-003`; `globals.css` + `Reveal` |
 | Keamanan input demo | `SECURITY-PRIVACY.md`, `FR-005` |
@@ -236,7 +236,7 @@ graph TB
   subgraph comp["components/ (client & presentational)"]
     header["SiteHeader, SiteFooter, Ticker (client)"]
     reveal["Reveal (client)"]
-    browsers["JournalBrowser, VideosBrowser (client)"]
+    browsers["VideosBrowser (client)"]
     vmodal["VideoModal, WatchLink (client)"]
     demo["DemoPortal (client)"]
     cards["ArticleCards (presentational)"]
@@ -335,18 +335,17 @@ Modul target (RENCANA):
   MOD-001/MOD-003/MOD-004, dan penyusunan komponen client.
 - **Bukan tanggung jawab.** Tidak menyimpan state interaktif; tidak menulis data.
 - **Pola.** Halaman tetap **server component**; interaktivitas diekstrak ke
-  MOD-006 (mis. `app/journal/page.tsx` merender `<JournalBrowser />`).
+  MOD-006 (mis. `app/videos/page.tsx` merender `<VideosBrowser />`).
 
 ### MOD-006 — komponen client (TERVERIFIKASI)
 
-13 komponen ber-directive `"use client"` (dibaca langsung dari `components/`):
+12 komponen ber-directive `"use client"` (dibaca langsung dari `components/`):
 
 | Komponen | Mengapa harus client |
 |---|---|
 | `SiteHeader` | Drawer mobile + state toggle |
 | `ScrollProgress` | Listener scroll |
 | `Reveal` | `IntersectionObserver` |
-| `JournalBrowser` | Filter kategori + live search + state |
 | `VideosBrowser` | Filter venue + search + pagination + state |
 | `VideoModal` | Modal + listener `CustomEvent("melodi:watch")` + Escape |
 | `WatchLink` | Click handler dengan `href` asli sebagai progressive enhancement |
@@ -489,7 +488,7 @@ Temuan struktural pada jalur ini (`TERVERIFIKASI`):
 
 | Jenis state | Tempat | Catatan |
 |---|---|---|
-| UI state filter/search/pagination | Lokal di `JournalBrowser` / `VideosBrowser` | tidak di URL |
+| UI state filter/search/pagination | Lokal di `VideosBrowser` | tidak di URL |
 | State modal video | `VideoModal` via `CustomEvent` | tanpa URL — keputusan terkunci |
 | Queue demo (server) | `array` modul di route handler | proses-lokal, reset saat restart |
 | Konten | Build-time, tidak ada runtime state | — |
@@ -574,14 +573,14 @@ melodi-alam/
 │   ├── icon.png / apple-icon.png / favicon.ico   (generated, MOD-008)
 │   ├── not-found.tsx         404
 │   ├── api/demos/route.ts    GET + POST queue demo (MOD-007)
-│   ├── journal/page.tsx              index + JournalBrowser
+│   ├── journal/page.tsx              index Stories (grid 12 kartu)
 │   ├── journal/[slug]/page.tsx       artikel statis + generateMetadata
 │   ├── bicara-melodi/page.tsx        interview index
 │   ├── videos/page.tsx               katalog + playlists
 │   ├── pahlawan-kota/page.tsx        direktori genre/kota
 │   ├── spaces/page.tsx               spaces & instruments
 │   └── submit/page.tsx               form + queue
-├── components/               (13 client component + presentational)
+├── components/               (12 client component + presentational)
 │   └── motion/               MotionRoot, RevealText, ParallaxImage, CountUp, MarqueeTape
 ├── lib/
 │   ├── content.ts            MOD-001

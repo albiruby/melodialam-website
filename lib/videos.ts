@@ -34,7 +34,6 @@ export interface SiteVideo {
   featuring: string[];
   venue: string;
   url: string;
-  featured?: boolean;
   source: "cms" | "catalogue";
 }
 
@@ -164,7 +163,6 @@ interface CmsVideoDoc {
   views?: number;
   venue?: string;
   featuring?: string[];
-  featured?: boolean;
 }
 
 function fromCms(doc: CmsVideoDoc, now: Date): SiteVideo | null {
@@ -184,7 +182,6 @@ function fromCms(doc: CmsVideoDoc, now: Date): SiteVideo | null {
     featuring: Array.isArray(doc.featuring) ? doc.featuring : [],
     venue: doc.venue ?? "Arsip & Lainnya",
     url: `https://www.youtube.com/watch?v=${doc.youtubeId}`,
-    featured: doc.featured === true,
     source: "cms",
   };
 }
@@ -196,8 +193,7 @@ const VIDEO_FIELDS = /* groq */ `{
   durationSeconds,
   views,
   venue,
-  featuring,
-  featured
+  featuring
 }`;
 
 const ALL_VIDEOS_QUERY = /* groq */ `*[_type == "video" && defined(youtubeId)] | order(publishedAt desc) ${VIDEO_FIELDS}`;

@@ -337,7 +337,7 @@ kebutuhan jelas justru menambah permukaan yang harus dijaga.
 
 | # | Temuan | Dampak |
 |---|---|---|
-| 1 | **`editorial-paper` dipakai 5 kali tetapi tidak pernah didefinisikan.** Muncul di `app/page.tsx:69`, `app/bicara-melodi/page.tsx:21`, `components/JournalBrowser.tsx:103`, dan `components/DemoPortal.tsx:151,215` | Kelas mati. Maksud desain aslinya (kemungkinan latar kertas atau tekstur) hilang tanpa error. Perlu diputuskan: didefinisikan atau dihapus dari kelima tempat |
+| 1 | **`editorial-paper` dipakai 4 kali tetapi tidak pernah didefinisikan.** Muncul di `app/page.tsx:69`, `app/bicara-melodi/page.tsx:21`, dan `components/DemoPortal.tsx:151,215` | Kelas mati. Maksud desain aslinya (kemungkinan latar kertas atau tekstur) hilang tanpa error. Perlu diputuskan: didefinisikan atau dihapus dari keempat tempat |
 | 2 | **Nol selektor `:focus*`** di `globals.css` | `ACC-002` merah. Seluruh reveal hanya hover |
 | 3 | `text-green-400` dipakai 8 kali | Warna di luar palet. Butuh keputusan merek |
 | 4 | `#0d0d0d` / `#1b3b2b` masih berupa literal di beberapa nilai arbitrary | Duplikasi token → risiko drift saat token berubah |

@@ -114,7 +114,7 @@ Build produksi menghasilkan **27 halaman statis**.
 | Route | Isi |
 |---|---|
 | `/` | Beranda: artikel utama, teaser tiap seksi |
-| `/journal` | Seluruh artikel, filter kategori, pencarian |
+| `/journal` | **Stories** — 12 artikel, satu grid (tanpa filter/pencarian) |
 | `/journal/[slug]` | Satu artikel — 12 statis dari repo, sisanya dari CMS |
 | `/bicara-melodi` | Indeks wawancara |
 | `/videos` | Katalog penuh 292 video, filter, pencarian, paginasi |

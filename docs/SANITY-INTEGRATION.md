@@ -69,19 +69,19 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 |---|---|---|---|
 | **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
 | **pahlawanRow** | Konten | `/pahlawan-kota` (direktori kota & skena) | ✅ tersambung |
-| **demoSubmission** | Antrean Demo | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
-| **demoContact** | Antrean Demo | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
+| **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
+| **demoContact** | Submit Karya | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
 | Gambar artikel | Konten | sampul + gambar inline di dalam isi | ✅ tersambung |
-| Sesi video | — | — | ⛔ belum (katalog video tetap build-time, ADR-0004) |
+| **video** · **playlist** · **interview** | Konten | `/videos`, `/bicara-melodi`, teaser beranda | ✅ tersambung (katalog build-time tetap back catalogue, ADR-0004) |
 
 ---
 
 ## 4. Alur satu artikel, dari ketik sampai tampil
 
 ```
-melodi-alam.sanity.studio  →  Konten  →  Artikel  →  Create new
+melodi-alam.sanity.studio  →  Konten  →  Stories  →  Create new
    │
-   ├─ Judul, Slug, Rubrik, Tanggal, Ringkasan, Sampul, Isi (rich text), Headline
+   ├─ Judul, Slug, Rubrik, Tanggal, Ringkasan, Sampul, Isi (rich text)
    ├─ Publish                            ← tombol kanan bawah
    │
    ▼
@@ -94,9 +94,9 @@ lib/articles.ts  ── allArticles() / articleBySlug()
    │   "use cache" + cacheTag("articles") + cacheLife("minutes")
    │
    ▼
-app/(site)/journal/page.tsx         →  <JournalBrowser articles={…} />
+app/(site)/journal/page.tsx         →  grid 12 kartu <ArticleCard> (server)
 app/(site)/journal/[slug]/page.tsx  →  <ArticleBody rich={…} />
-app/(site)/page.tsx                 →  hero + 3 kartu
+app/(site)/page.tsx                 →  hero + 3 kartu (4 artikel terbaru)
 ```
 
 ### Yang terjadi saat Anda klik Publish
@@ -117,7 +117,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 1. Buka **https://melodi-alam.sanity.studio** (atau `npm run dev` di repo
    `melodialam-sanity`, lalu **http://localhost:3333**) dan masuk dengan akun Sanity.
-2. Pilih workspace **Konten** → **Artikel** → **Create new**.
+2. Pilih workspace **Konten** → **Stories** → **Create new**.
 3. Isi:
    - **Judul** — judul penuh.
    - **Slug** — **menjadi alamat URL**. `judul-artikel-baru` → `/journal/judul-artikel-baru`.
@@ -128,7 +128,8 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
    - **Ringkasan** — dipakai di kartu, meta description, dan JSON-LD.
    - **Sampul** — unggah langsung; ada *hotspot* supaya pemotongan tidak memenggal wajah.
    - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline didukung.
-   - **Jadikan headline beranda** — centang untuk menjadikannya hero di beranda.
+   - **Beranda** — blok `Latest News` selalu memuat **4 artikel terbaru** (urutan
+     tanggal); tidak ada lagi pilihan headline.
 4. **Publish**.
 5. Buka `/journal/<slug>`. Langsung tampil.
 
@@ -141,9 +142,9 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/journal/page.tsx` | `allArticles()` | diteruskan ke `JournalBrowser` sebagai prop, karena itu client component |
+| `app/(site)/journal/page.tsx` | `allArticles()` | dirender langsung sebagai grid 12 kartu; server component, tanpa filter |
 | `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
-| `app/(site)/page.tsx` | `allArticles()` | hero = artikel `featured` pertama |
+| `app/(site)/page.tsx` | `allArticles()` | hero + 3 kartu = **4 artikel terbaru** |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
@@ -311,7 +312,7 @@ Sengaja, bukan lupa:
 |---|---|
 | **Pratinjau draf** | Publikasi langsung terlihat, tetapi menyunting draf belum bisa dipratinjau di situs. Butuh `next-sanity` (`defineLive`) plus route draft-mode — sengaja tidak dipasang selama Studio belum butuh. |
 | **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`). |
-| **UI kurator demo** | Status diubah dari Studio (workspace **Antrean Demo**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
+| **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
 
@@ -327,7 +328,7 @@ Sengaja, bukan lupa:
 | Build gagal "Cannot find name 'PageProps'" | `.next` dibersihkan | jalankan `npm run build` untuk regenerate |
 | Publish tidak muncul | webhook belum dipasang | tunggu jendela cache (1 menit), atau pasang webhook |
 | Artikel 404 padahal ada di Studio | belum di-**Publish** | draf tidak terlihat publik |
-| Kiriman demo tidak muncul di antrean | status masih `IN REVIEW` | ubah status di workspace Antrean Demo |
+| Kiriman demo tidak muncul di antrean | status masih `IN REVIEW` | ubah status di workspace Submit Karya |
 | Gambar artikel tidak tampil | `cdn.sanity.io` tidak terdaftar | cek `images.remotePatterns` di `next.config.ts` |
 | Kontak musisi terlihat publik | dokumen salah dataset | pindahkan ke `submissions`; itu satu-satunya dataset privat |
 | Perubahan skema tidak muncul di Studio | belum di-deploy | `npm run deploy` dari repo `melodialam-sanity` |

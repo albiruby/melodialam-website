@@ -32,7 +32,14 @@ export interface SiteArticle extends Article {
   source: "static" | "cms";
 }
 
-const STATIC: SiteArticle[] = ARTICLES.map((a) => ({ ...a, source: "static" as const }));
+/**
+ * Newest first, matching the CMS query's `order(date desc)` — the home page
+ * slices the head of this list for "Latest News", so both sources keep the
+ * same order.
+ */
+const STATIC: SiteArticle[] = [...ARTICLES]
+  .sort((a, b) => b.dateISO.localeCompare(a.dateISO))
+  .map((a) => ({ ...a, source: "static" as const }));
 
 /** Fallback art when an article has no cover of its own. */
 const PLACEHOLDER_IMAGE = "/photos/dsc09408.webp";
@@ -52,8 +59,7 @@ const ARTICLE_FIELDS = /* groq */ `{
   excerpt,
   image,
   imagePath,
-  body,
-  featured
+  body
 }`;
 
 const ALL_ARTICLES_QUERY = /* groq */ `*[_type == "article" && defined(slug.current)] | order(date desc) ${ARTICLE_FIELDS}`;
@@ -69,7 +75,6 @@ interface CmsArticleDoc {
   image?: unknown;
   imagePath?: string;
   body?: unknown[];
-  featured?: boolean;
 }
 
 /** Pulls the readable text out of Portable Text, for reading time and search. */
@@ -141,7 +146,6 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
     // then the shared placeholder.
     image: imageUrl(doc.image, { width: 1600 }) ?? doc.imagePath ?? PLACEHOLDER_IMAGE,
     body: portableTextToParagraphs(doc.body),
-    featured: doc.featured === true,
     richBody: Array.isArray(doc.body) ? doc.body : undefined,
     source: "cms",
   };

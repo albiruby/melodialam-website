@@ -51,7 +51,6 @@ Postgres + Storage). ADR-0002 (Payload CMS 3 in-app + Supabase) dirujuk sesuai
 | `app/api/demos/route.ts` | 103 (penuh) | Satu-satunya batas server; menangani input tak tepercaya |
 | `components/DemoPortal.tsx` | 317 (penuh) | Form, pratinjau audio lokal, render antrean ke DOM |
 | `components/VideosBrowser.tsx` | 216 (penuh) | Input pencarian pengguna → DOM + `<img>` remote |
-| `components/JournalBrowser.tsx` | 128 (penuh) | Input pencarian pengguna → DOM |
 | `components/VideoModal.tsx` | 135 (penuh) | Konstruksi URL embed YouTube + iframe |
 | `next.config.ts` | 32 (penuh) | `images.remotePatterns`; ketiadaan `headers()` |
 | `app/layout.tsx` | 92 (penuh) | Metadata, font, kerangka HTML |
@@ -414,7 +413,7 @@ Beberapa di bawah ini adalah temuan yang biasanya dicari; jawabannya penting.
 |---|---|---|
 | `dangerouslySetInnerHTML` di repo | **Tidak ada** (0 hasil) | Pencarian lintas repo |
 | XSS dari `artist`/`city`/`title`/`genre`/`story` | **Aman** — React auto-escape | `DemoPortal.tsx:244-256` (semua JSX text) |
-| XSS dari input pencarian | **Aman** — di-escape; hanya difilter lokal | `JournalBrowser.tsx:91,105`; `VideosBrowser.tsx:83,23-25` — tidak pernah ke server |
+| XSS dari input pencarian | **Aman** — di-escape; hanya difilter lokal | `VideosBrowser.tsx:83,23-25` — tidak pernah ke server; `JournalBrowser` dihapus 16 Okt 2026 |
 | `javascript:`/`data:` via `link` | **Aman** — ditolak `422` oleh regex skema | `route.ts:64` |
 | PII (`contact`) at rest | **Tidak ada PII tersimpan** | `route.ts:77-88` — `entry` tanpa `contact` |
 | Berkas audio diunggah | **Tidak** — hanya blob lokal peramban | `DemoPortal.tsx:30`; JSON bukan multipart |
@@ -752,8 +751,6 @@ dipanggil, tidak ada paket dipasang, tidak ada file lain diubah.
 - `components/VideosBrowser.tsx` (**216 baris, penuh**) — filter/pencarian
   client-side atas katalog statis; input tidak pernah ke server (`:18-30`,
   `:83`); `<img src=https://i.ytimg.com/vi/...>` mentah (`:166-172`).
-- `components/JournalBrowser.tsx` (**128 baris, penuh**) — `{query}` dirender
-  sebagai teks JSX, ter-escape (`:105`).
 - `components/VideoModal.tsx` (**135 baris, penuh**) — `state.id` dari
   `CustomEvent` (`:22-27`); embed `https://www.youtube.com/embed/${state.id}?autoplay=1`
   (`:75`); `WatchButton` mengirim `id` dari katalog statis (`:110-134`).
