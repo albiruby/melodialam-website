@@ -45,7 +45,10 @@ export default async function KurasiPage() {
           </span>
           {readPillars.map((pillar) => (
             <section key={pillar.key} id={pillar.key} className="scroll-mt-24 pt-6">
-              <PillarHead label={pillar.label} note={`${pillar.pool.length} post kurasi`} />
+              <PillarHead
+                label={pillar.label}
+                note={`${Math.min(pillar.pool.length, PILLAR_LIMIT)} post kurasi`}
+              />
               <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
                 {pillar.pool.slice(0, PILLAR_LIMIT).map((post) => (
                   <PillarCard key={post.id} post={post} />
@@ -63,7 +66,10 @@ export default async function KurasiPage() {
           </span>
           {watchPillars.map((pillar) => (
             <section key={pillar.key} id={pillar.key} className="scroll-mt-24 pt-6">
-              <PillarHead label={pillar.label} note={`${pillar.pool.length} post kurasi`} />
+              <PillarHead
+                label={pillar.label}
+                note={`${Math.min(pillar.pool.length, PILLAR_LIMIT)} post kurasi`}
+              />
               <div className="divide-y divide-neutral-300 border-b border-ink">
                 {pillar.pool.slice(0, PILLAR_LIMIT).map((post, i) => (
                   <PillarRow key={post.id} post={post} index={i} />
