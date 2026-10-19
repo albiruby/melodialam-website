@@ -69,6 +69,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 |---|---|---|---|
 | **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
 | **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Bicara Melodi / Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
+| **pillarPost** | Konten | section "Dari Feed" di `/journal` (pillar foto: Fakta Musik, Lirik, Trivia, Kutipan) dan `/videos` (pillar reel: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
 | **pahlawanRow** | Konten | `/pahlawan-kota` (direktori kota & skena) | ✅ tersambung |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
@@ -152,13 +153,13 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/journal/page.tsx` | `allArticles()` | dirender langsung sebagai grid 12 kartu; server component, tanpa filter |
+| `app/(site)/journal/page.tsx` | `allArticles()` + `allPillarPosts()` | grid 12 kartu + section "Dari Feed" (pillar foto; 6 post per pillar) |
 | `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
 | `app/(site)/page.tsx` | `allArticles()` | hero + 3 kartu = **4 artikel terbaru** |
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
-| `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage` (catatan kosong = dihitung otomatis) |
+| `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` + `allPillarPosts()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; section "Dari Feed" (pillar reel) |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
 `generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
@@ -378,6 +379,12 @@ Diperiksa dengan menjalankan, bukan membaca:
   uji menggantikan catatan itu di HTML setelah jendela cache lewat; mengosongkannya
   mengembalikan hitungan otomatis. Studio ter-deploy ulang dengan menu konten yang sama,
   kini termasuk **Halaman Videos** (singleton).
+- `pillarPost`: 55 post kurasi tim ter-seed (7 pillar), gambar cover di-upload sebagai asset
+  Sanity (`image-*`) — 25 feed foto + 30 reel (tipe diverifikasi satu per satu dari
+  Instagram lewat browser login). `/journal` merender pillar foto (Fakta Musik 16, Lirik 3,
+  Trivia 2, Kutipan 6; 6 post per section) dan `/videos` merender pillar reel (Clipper 17,
+  Rekomendasi 8, Ulas 3); semua kartu membuka post aslinya di Instagram. Menu Studio baru:
+  **Konten Pillar**.
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
 secara logika), dan pratinjau draf (belum dibangun).
