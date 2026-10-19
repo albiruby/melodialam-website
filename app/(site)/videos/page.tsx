@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
-import { PillarHead, PillarRow } from "@/components/PillarCards";
 import { VideoRow } from "@/components/VideosBrowser";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { CHANNEL } from "@/lib/catalogue";
 import { allInterviews } from "@/lib/interviews";
-import { allPillarPosts, PILLAR_LABELS, REEL_PILLARS } from "@/lib/pillars";
 import { allPlaylists, allVideos } from "@/lib/videos";
 import { getVideosPageCopy } from "@/lib/videos-page";
 
@@ -18,9 +17,6 @@ export const metadata: Metadata = {
 
 /** The live sessions shown before the archive takes over — nine, to match the Bicara Melodi grid. */
 const SAMSARA_PREVIEW = 9;
-
-/** How many curated posts each "Dari Feed" pillar shows; the rest lives on Instagram. */
-const PILLAR_LIMIT = 6;
 
 function SectionHead({
   title,
@@ -54,24 +50,16 @@ function SectionHead({
 }
 
 export default async function VideosPage() {
-  const [videos, playlists, interviews, copy, feed] = await Promise.all([
+  const [videos, playlists, interviews, copy] = await Promise.all([
     allVideos(),
     allPlaylists(),
     allInterviews(),
     getVideosPageCopy(),
-    allPillarPosts(),
   ]);
 
   // Two editorial sections, then the whole catalogue.
   const samsara = videos.filter((v) => v.venue === "Melodi Samsara");
   const samsaraPreview = samsara.slice(0, SAMSARA_PREVIEW);
-
-  // The reel pillars ride with Videos; photo pillars live on /journal.
-  const reelPillars = REEL_PILLARS.map((key) => ({
-    key,
-    label: PILLAR_LABELS[key] ?? key,
-    pool: feed.filter((post) => post.pillar === key),
-  })).filter((pillar) => pillar.pool.length > 0);
 
   return (
     <>
@@ -152,24 +140,16 @@ export default async function VideosPage() {
         </div>
       </Reveal>
 
-      {/* ---------- Dari Feed: the reel pillars ---------- */}
-      {reelPillars.length > 0 ? (
-        <Reveal>
-          <span className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-500">
-            Dari Feed @melodi.alam — kurasi tim
-          </span>
-          {reelPillars.map((pillar) => (
-            <section key={pillar.key} className="pt-8">
-              <PillarHead label={pillar.label} note={`${pillar.pool.length} post kurasi`} />
-              <div className="divide-y divide-neutral-300 border-b border-ink">
-                {pillar.pool.slice(0, PILLAR_LIMIT).map((post, i) => (
-                  <PillarRow key={post.id} post={post} index={i} />
-                ))}
-              </div>
-            </section>
-          ))}
-        </Reveal>
-      ) : null}
+      {/* ---------- Dari Feed → Kurasi ---------- */}
+      <div className="flex items-center justify-between font-mono text-xs text-neutral-500">
+        <span>Konten kurasi dari feed @melodi.alam</span>
+        <Link
+          href="/kurasi"
+          className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
+        >
+          Kurasi ↗
+        </Link>
+      </div>
 
       <VideoModal />
     </>
