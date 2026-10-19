@@ -10,9 +10,8 @@ import { pillarDate, type PillarPost } from "@/lib/pillars";
  */
 
 export function PillarCard({ post }: { post: PillarPost }) {
-  // One uniform 4:5 frame for every card, with the image contained — the
-  // format stays even across the grid and no artwork gets cropped; the spare
-  // space sits in the page colour inside the frame.
+  // One uniform 4:5 frame for every card. The covers are the posts' own 4:5
+  // slides, so `object-cover` fills the frame exactly — no crop, no gaps.
   return (
     <a href={post.igUrl} target="_blank" rel="noreferrer" className="group flex flex-col">
       <div className="relative aspect-[4/5] w-full overflow-hidden border border-ink bg-paper">
@@ -22,7 +21,7 @@ export function PillarCard({ post }: { post: PillarPost }) {
             alt={post.title}
             fill
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-            className="object-contain"
+            className="object-cover"
           />
         ) : null}
         {post.mediaType === "reel" ? (
