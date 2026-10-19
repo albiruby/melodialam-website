@@ -38,6 +38,9 @@ export interface PillarPost {
   igUrl: string;
   /** Sanity CDN URL, or null when no image was uploaded. */
   image: string | null;
+  /** Intrinsic image dimensions, so cards can show the full frame (no crop). */
+  imageWidth: number | null;
+  imageHeight: number | null;
 }
 
 const PILLAR_QUERY = /* groq */ `*[_type == "pillarPost" && defined(igUrl) && defined(title)]
@@ -48,7 +51,9 @@ const PILLAR_QUERY = /* groq */ `*[_type == "pillarPost" && defined(igUrl) && de
   mediaType,
   date,
   igUrl,
-  image
+  image,
+  "imageWidth": image.asset->metadata.dimensions.width,
+  "imageHeight": image.asset->metadata.dimensions.height
 }`;
 
 interface PillarDoc {
@@ -59,6 +64,8 @@ interface PillarDoc {
   date?: string;
   igUrl?: string;
   image?: unknown;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export async function allPillarPosts(): Promise<PillarPost[]> {
@@ -81,6 +88,8 @@ export async function allPillarPosts(): Promise<PillarPost[]> {
         date: typeof d.date === "string" && d.date ? d.date.slice(0, 10) : null,
         igUrl: d.igUrl,
         image: imageUrl(d.image, { width: 900 }),
+        imageWidth: typeof d.imageWidth === "number" ? d.imageWidth : null,
+        imageHeight: typeof d.imageHeight === "number" ? d.imageHeight : null,
       }));
   } catch {
     // Sections simply do not render when the pool is unreachable.

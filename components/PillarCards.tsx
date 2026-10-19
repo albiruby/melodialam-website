@@ -10,10 +10,32 @@ import { pillarDate, type PillarPost } from "@/lib/pillars";
  */
 
 export function PillarCard({ post }: { post: PillarPost }) {
+  // Natural ratio when the asset carries dimensions — the full frame shows,
+  // exactly like the feed post. Without dimensions it falls back to a square.
+  const dims =
+    post.image && post.imageWidth && post.imageHeight
+      ? { w: post.imageWidth, h: post.imageHeight }
+      : null;
+
   return (
     <a href={post.igUrl} target="_blank" rel="noreferrer" className="group flex flex-col">
-      <div className="relative aspect-square w-full overflow-hidden border border-ink bg-neutral-900">
-        {post.image ? (
+      <div
+        className={
+          dims
+            ? "relative"
+            : "relative aspect-square w-full overflow-hidden border border-ink bg-neutral-900"
+        }
+      >
+        {post.image && dims ? (
+          <Image
+            src={post.image}
+            alt={post.title}
+            width={dims.w}
+            height={dims.h}
+            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+            className="h-auto w-full border border-ink"
+          />
+        ) : post.image ? (
           <Image
             src={post.image}
             alt={post.title}
@@ -40,6 +62,10 @@ export function PillarCard({ post }: { post: PillarPost }) {
 }
 
 export function PillarRow({ post, index }: { post: PillarPost; index: number }) {
+  // The thumb frame follows the image's own ratio, so nothing is cropped.
+  const ratio =
+    post.imageWidth && post.imageHeight ? `${post.imageWidth} / ${post.imageHeight}` : "9 / 16";
+
   return (
     <a
       href={post.igUrl}
@@ -50,13 +76,16 @@ export function PillarRow({ post, index }: { post: PillarPost; index: number }) 
       <span className="text-outline-muted w-8 shrink-0 font-mono text-2xl font-bold">
         {String(index + 1).padStart(2, "0")}
       </span>
-      <div className="relative h-24 w-16 shrink-0 overflow-hidden border border-ink bg-neutral-900 sm:h-28 sm:w-20">
+      <div
+        className="relative h-24 shrink-0 overflow-hidden border border-ink bg-neutral-900 sm:h-28"
+        style={{ aspectRatio: ratio }}
+      >
         {post.image ? (
           <Image
             src={post.image}
             alt={post.title}
             fill
-            sizes="80px"
+            sizes="120px"
             className="editorial-img object-cover"
           />
         ) : null}
