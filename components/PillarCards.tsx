@@ -10,38 +10,19 @@ import { pillarDate, type PillarPost } from "@/lib/pillars";
  */
 
 export function PillarCard({ post }: { post: PillarPost }) {
-  // Natural ratio when the asset carries dimensions — the full frame shows,
-  // exactly like the feed post. Without dimensions it falls back to a square.
-  const dims =
-    post.image && post.imageWidth && post.imageHeight
-      ? { w: post.imageWidth, h: post.imageHeight }
-      : null;
-
+  // One uniform 4:5 frame for every card, with the image contained — the
+  // format stays even across the grid and no artwork gets cropped; the spare
+  // space sits in the page colour inside the frame.
   return (
     <a href={post.igUrl} target="_blank" rel="noreferrer" className="group flex flex-col">
-      <div
-        className={
-          dims
-            ? "relative"
-            : "relative aspect-square w-full overflow-hidden border border-ink bg-neutral-900"
-        }
-      >
-        {post.image && dims ? (
-          <Image
-            src={post.image}
-            alt={post.title}
-            width={dims.w}
-            height={dims.h}
-            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-            className="h-auto w-full border border-ink"
-          />
-        ) : post.image ? (
+      <div className="relative aspect-[4/5] w-full overflow-hidden border border-ink bg-paper">
+        {post.image ? (
           <Image
             src={post.image}
             alt={post.title}
             fill
             sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
-            className="editorial-img object-cover"
+            className="object-contain"
           />
         ) : null}
         {post.mediaType === "reel" ? (
