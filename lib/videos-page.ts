@@ -9,24 +9,25 @@ import { contentClient } from "./sanity";
  * editor has filled the document in — and keeps rendering if Sanity is
  * unreachable.
  *
- * The small notes are nullable on purpose: an empty note means "compute it",
- * and the page keeps rendering the live counts ("9 episode pilihan", "101 sesi
- * panggung") that would otherwise go stale the moment a video is added.
+ * The small notes have three states, not two: a note that was never filled in
+ * means "compute it" (the page renders the live counts, e.g. "9 episode
+ * pilihan"), an empty note means the editor cleared it and wants no note at
+ * all, and any other text is shown as written.
  */
 
 export const VIDEOS_PAGE_TAG = "videosPage";
 
 export interface VideosPageCopy {
   bicaraTitle: string;
-  /** null = let the page compute the live count note. */
+  /** null = let the page compute the live count note; "" = show nothing. */
   bicaraNote: string | null;
   bicaraLinkLabel: string;
   samsaraTitle: string;
-  /** null = let the page compute the live count note. */
+  /** null = let the page compute the live count note; "" = show nothing. */
   samsaraNote: string | null;
   samsaraLinkLabel: string;
   playlistsTitle: string;
-  /** null = let the page compute the live count note. */
+  /** null = let the page compute the live count note; "" = show nothing. */
   playlistsNote: string | null;
   /** Where the values came from, for debugging. */
   source: "cms" | "static";
@@ -66,9 +67,11 @@ function or(value: string | undefined, fallback: string): string {
   return value && value.trim() ? value : fallback;
 }
 
-/** An empty note means "compute the live count" — never an empty string. */
-function note(value: string | undefined): string | null {
-  return value && value.trim() ? value : null;
+/** An empty note means "show nothing"; a note that was never set means "compute". */
+function note(value: string | null | undefined): string | null {
+  if (value === null || value === undefined) return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : "";
 }
 
 export async function getVideosPageCopy(): Promise<VideosPageCopy> {

@@ -1,5 +1,10 @@
 # DEPLOYMENT.md — CI/CD, Environments, dan Rollback Melodi Alam
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 > **Status fase: DOCS ONLY.** Tidak ada berkas CI yang dibuat, tidak ada dependensi yang
 > dipasang, tidak ada `.env` yang dibuat, tidak ada konfigurasi hosting yang ditambahkan.
 > Satu-satunya perintah yang dijalankan pada fase ini adalah `npm run build` (untuk

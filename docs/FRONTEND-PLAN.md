@@ -1,5 +1,10 @@
 # FRONTEND-PLAN — Melodi Alam Web Platform
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 Dokumen ini merinci **front-end yang benar-benar ada** di repo `melodi-alam/` dan
 **rencana integrasinya** saat artikel/video berpindah ke Payload CMS 3 + Supabase.
 Isi dipisah eksplisit, mengikuti konvensi `docs/ARCHITECTURE.md`:
@@ -151,7 +156,7 @@ Semua halaman berada di bawah root layout tunggal
 | Route ID | Path | Berkas | Mode render | Data yang dibaca | Client component yang di-mount |
 |---|---|---|---|---|---|
 | ROUTE-001 | `/` | `app/page.tsx` | Static (server component) | `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`, `SPACE_ITEMS` (`lib/content`); `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS` (`lib/catalogue`) | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage`, `WatchButton`, `WatchLink`, `VideoModal` |
-| ROUTE-002 | `/journal` (Stories) | `app/journal/page.tsx` | Static | `allArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
+| ROUTE-002 | `/journal` (Stories) | `app/journal/page.tsx` | Static | `feedArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
 | ROUTE-003 | `/journal/[slug]` | `app/journal/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
 | ROUTE-004 | `/bicara-melodi` | `app/bicara-melodi/page.tsx` | Static | `INTERVIEW_ROWS` (`lib/content`); `videosByIds` (`lib/catalogue`) | `Reveal`, `WatchButton`, `VideoModal` |
 | ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
@@ -212,7 +217,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 
 | Route | Server (page) | Composite/Pattern | Motion | Video affordance |
 |---|---|---|---|---|
-| ROUTE-001 `/` | `page.tsx` | `ArticleCards`(Hero/Feature), `WatchLink` | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage` | `VideoModal`, `WatchButton` |
+| ROUTE-001 `/` | `page.tsx` | `ArticleCards.FrontCard`, `WatchLink` | `Reveal`, `RevealText`, `CountUp`, | `VideoModal`, `WatchButton` |
 | ROUTE-002 `/journal` | `page.tsx` | `ArticleCards.ArticleCard` (grid 12 kartu) | `Reveal` | — |
 | ROUTE-003 `/journal/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
 | ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
@@ -309,20 +314,19 @@ memakai `aria-current="page"` via `isActive()`; badge nav (`YT`) dirender bila a
 | `VideosBrowser` | Composite | **Client** | filter venue + search + pagination | — (mengimpor `@/lib/catalogue`) | ROUTE-005 |
 | `DemoPortal` | Composite | **Client** | form, preview audio lokal, `fetch` POST | — | ROUTE-008 |
 | `VideoModal` | Composite | **Client** | state modal + listener `CustomEvent` + Escape | — | ROUTE-001,004,005,006 |
-| `ArticleCards` | Composite (server) | **Server** | presentasional; mengekspor 3 komponen | lihat §5.3 | ROUTE-001,002,003 |
+| `ArticleCards` | Composite (server) | **Server** | presentasional; mengekspor 2 komponen | lihat §5.3 | ROUTE-001,002,003 |
 
-`ArticleCards` mengekspor: `ArticleCard`, `HeroArticle`, `FeatureCard` (+ helper
-internal `CardImage` dan konstanta `FRAME_SHAPE`). Alasan `FRAME_SHAPE` (objek
-literal, bukan interpolasi) didokumentasikan di kode: `aspect-[${x}]` tidak
-terlihat scanner Tailwind dan pernah meruntuhkan frame kartu (brief §9 temuan #6).
+`ArticleCards` mengekspor: `ArticleCard` (Stories), `FrontCard` (beranda) (+
+helper internal `CardImage` dan konstanta `COVER_FRAME`). Setiap kartu adalah
+**satu** `<Link>` yang membungkus seluruh kartu — pola `after:absolute inset-0`
+yang lama tidak menangkap klik di area teks, jadi diganti anchor sungguhan.
 
 ### 5.3 Presentational / pattern / primitive
 
 | Komponen | Lapisan | Server/Client | Props | Dipakai di |
 |---|---|---|---|---|
 | `ArticleCard` | Composite/Server | Server | `article: Article`, `titleFirst?: boolean`, `index?: number` | ROUTE-002 (via browser), ROUTE-003 |
-| `HeroArticle` | Composite/Server | Server | `article: Article` | ROUTE-001 |
-| `FeatureCard` | Composite/Server | Server | `article: Article`, `note: string` | ROUTE-001 |
+| `FrontCard` | Composite/Server | Server | `article: Article`, `lead?: boolean` | ROUTE-001 (grid 2×2) |
 | `CardImage` (internal) | Primitive | Server | `article`, `readLabel`, `noteCta` (frame 4:5) | di dalam `ArticleCard` |
 | `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,004,005,006 |
 | `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
@@ -356,7 +360,7 @@ wordmark, atau aset Samsara di halaman.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
-**`/journal` (Stories).** Satu grid 12 kartu `ArticleCard` dirender langsung oleh
+**`/journal` (Stories).** Satu grid kartu `ArticleCard` (6 feed foto) dirender langsung oleh
 server component — tanpa filter, pencarian, hitungan, atau header hierarki.
 `JournalBrowser` dihapus 16 Oktober 2026; pola `titleFirst` ganjil/genap tetap
 dipertahankan di grid (`BR-003`).
@@ -686,7 +690,7 @@ Tiga perilaku dikunci pemilik (brief §8). Ketiganya **ADA** di kode, tetapi
 |---|---|---|---|---|
 | `DEC-002` strip `—` pada hierarchy heading | **Ada di CSS, tanpa pemakaian** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` | — (satu-satunya pemakainya, `JournalBrowser`, dihapus 16 Okt 2026) | Hover-only (A1). Utilitas dibiarkan di `globals.css` untuk heading hierarki berikutnya |
 | `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover .video-action-reveal` | ROUTE-001 (video teaser + genre rows), ROUTE-005 (`VideoRow`) | Hover-only (A1, A6). **Nilai fungsional bervariasi** — lihat di bawah. ROUTE-006 tidak lagi memakai reveal: grup aksi dihapus atas permintaan |
-| Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` (curtain) + `.corner-frame` (bracket), pemicu `.group:hover …` | Curtain: `ArticleCards.CardImage` (ROUTE-002/003) & `FeatureCard` (ROUTE-001). Bracket: juga pada box gambar ROUTE-001 (genre) & ROUTE-006 | Hover-only (A1). Di ROUTE-001 genre & ROUTE-006 bracket muncul **tanpa** curtain (tidak ada `.hover-reveal-curtain` di sana) |
+| Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` (curtain) + `.corner-frame` (bracket), pemicu `.group:hover …` | Curtain: `ArticleCards.CardImage` (ROUTE-002/003) & `FrontCard` (ROUTE-001). Bracket: juga pada box gambar ROUTE-001 (genre) & ROUTE-006 | Hover-only (A1). Di ROUTE-001 genre & ROUTE-006 bracket muncul **tanpa** curtain (tidak ada `.hover-reveal-curtain` di sana) |
 
 **Temuan fungsional (gap yang harus diperbaiki, `TERVERIFIKASI`):**
 
@@ -828,7 +832,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `app/page.tsx` (ROUTE-001) — konsumsi `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`,
   `SPACE_ITEMS`, `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS`; pemakaian
   `RevealText`/`CountUp`/`ParallaxImage`/`WatchButton`/`WatchLink`/`VideoModal`.
-- `app/journal/page.tsx` — `Reveal` + grid `ArticleCard` (12 kartu, `allArticles()`);
+- `app/journal/page.tsx` — `Reveal` + grid `ArticleCard` (6 kartu, `feedArticles()`);
   `JournalBrowser` dihapus 16 Oktober 2026.
 - `app/journal/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`,
   `notFound()`, `ArticleCard`, drop cap; **tidak ada `Reveal`**.

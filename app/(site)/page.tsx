@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
-import { FeatureCard, HeroArticle } from "@/components/ArticleCards";
+import { FrontCard } from "@/components/ArticleCards";
 import { feedArticles } from "@/lib/articles";
 import { allVideos } from "@/lib/videos";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -23,9 +23,8 @@ export const metadata: Metadata = {
 export default async function HomePage() {
   // Sanity when it is configured, the static file otherwise.
   const articles = await feedArticles();
-  // "Latest News" is simply the four newest; `feedArticles()` is newest-first.
-  const [hero, ...rest] = articles;
-  const subFeatures = rest.slice(0, 3);
+  // "Latest News" is the four newest; `feedArticles()` is newest-first.
+  const latest = articles.slice(0, 4);
 
   // Sanity first, the build-time catalogue behind it. Only the counts line
   // reads `videos` now — the interview and video teasers were removed on
@@ -45,20 +44,13 @@ export default async function HomePage() {
           </span>
         </div>
 
-        <div className="border-t-2 border-b border-ink">
-          <HeroArticle article={hero} />
-
-          <div className="grid grid-cols-1 divide-y divide-ink md:grid-cols-3 md:divide-x md:divide-y-0">
-            {subFeatures.map((article) => (
-              <div key={article.slug} className="relative">
-                <FeatureCard
-                  article={article}
-                  note={settings.cardCurtain.featureLabel}
-                  ctaLabel={settings.cardCurtain.featureCta}
-                />
-              </div>
-            ))}
-          </div>
+        {/* Four stories, two per row. A single full-width cover story made the
+            page open with one enormous picture; the four now carry the same
+            weight and the first screen already shows two of them. */}
+        <div className="grid grid-cols-1 gap-x-10 border-t-2 border-ink sm:grid-cols-2">
+          {latest.map((article, i) => (
+            <FrontCard key={article.slug} article={article} lead={i === 0} />
+          ))}
         </div>
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">

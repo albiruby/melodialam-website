@@ -1,5 +1,10 @@
 # ARCHITECTURE — Melodi Alam Web Platform
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 Dokumen ini menetapkan batas modul, kepemilikan data, arah dependensi, dan alur
 data platform web **Melodi Alam**. Isi dibagi menjadi dua keadaan yang dipisahkan
 secara eksplisit:

@@ -9,8 +9,8 @@ Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara (INFIA
 
 > Halaman `/spaces` sudah dihapus atas permintaan dan kini mengembalikan 404; data
 > pendukungnya (`SPACE_ITEMS`) masih ada di `lib/content.ts` beserta catatan alasannya.
-> Direktori `/pahlawan-kota` aktif dan barisnya dikelola dari Sanity (`pahlawanRow`),
-> dengan `GENRE_ROWS` di `lib/content.ts` sebagai fallback statis.
+> Direktori `/pahlawan-kota` sudah dihapus (baris `pahlawanRow` disimpan sebagai arsip
+> di Sanity); `GENRE_ROWS` di `lib/content.ts` ikut diarsipkan, bukan lagi fallback.
 
 ---
 

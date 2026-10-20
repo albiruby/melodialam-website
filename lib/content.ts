@@ -386,12 +386,12 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
 ];
 
 /* -------------------------------------------------------------------------
-   Pahlawan Musik Kota — genre directory rows.
+   Pahlawan Musik Kota — genre directory rows. ARCHIVED.
 
-   The live copy of this directory lives in Sanity (`pahlawanRow`, read through
-   `lib/pahlawan.ts`); these three rows are the offline fallback, under the same
-   rule as the articles above — the CMS wins when it is reachable, this file
-   fills in when it is not.
+   The /pahlawan-kota page was removed on request, and `lib/pahlawan.ts` with
+   it. The rows stay here as the archive — same treatment as `SPACE_ITEMS` —
+   because the copy and the tags are still the only record of how the directory
+   read. The Sanity documents (`pahlawanRow`) are untouched.
 
    The rows used to carry a `videoId` or `articleSlug` for the READ/WATCH
    action group; that group was removed on request, so the target fields went

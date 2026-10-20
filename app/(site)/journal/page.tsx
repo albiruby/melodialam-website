@@ -42,14 +42,14 @@ export default async function JournalPage() {
         ))}
       </div>
 
-      {/* ---------- Dari Feed → Kurasi ---------- */}
+      {/* ---------- Dari Feed → Curated News ---------- */}
       <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-500">
         <span>Konten kurasi dari feed @melodi.alam</span>
         <Link
           href="/kurasi"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Kurasi ↗
+          Curated News ↗
         </Link>
       </div>
     </Reveal>

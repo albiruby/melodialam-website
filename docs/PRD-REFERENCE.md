@@ -1,5 +1,10 @@
 # PRD Reference — Ketertelusuran Requirement
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 Dokumen ini adalah **indeks ketertelusuran** untuk PRD *Melodi Alam Digital Editorial &
 Music Ecosystem Platform* v1.0.0 (14 Oktober 2026). Ia bukan salinan PRD.
 

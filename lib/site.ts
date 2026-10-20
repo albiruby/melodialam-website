@@ -31,8 +31,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/journal", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Videos", badge: "YT" },
-  { href: "/kurasi", label: "Kurasi" },
-  { href: "/pahlawan-kota", label: "Pahlawan Kota" },
+  { href: "/kurasi", label: "Curated News" },
 ];
 
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };

@@ -1,5 +1,10 @@
 # Design System — Melodi Alam
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 Spesifikasi *design system* yang berlaku di repositori ini, ditulis terhadap kode yang
 benar-benar ada. Setiap token dan utility di bawah dapat dibaca di `app/globals.css`
 kecuali yang ditandai lain.

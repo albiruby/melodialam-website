@@ -36,7 +36,10 @@ function SectionHead({
         <h2 className="font-display text-4xl font-black uppercase leading-none tracking-tight sm:text-5xl">
           {title}
         </h2>
-        <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
+        {/* An empty note is a request to say nothing, not to show an empty gap. */}
+        {note ? (
+          <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
+        ) : null}
       </div>
       {href && linkLabel ? (
         <a
@@ -154,14 +157,14 @@ export default async function VideosPage() {
         </div>
       </Reveal>
 
-      {/* ---------- Dari Feed → Kurasi ---------- */}
+      {/* ---------- Dari Feed → Curated News ---------- */}
       <div className="flex items-center justify-between font-mono text-xs text-neutral-500">
         <span>Konten kurasi dari feed @melodi.alam</span>
         <Link
           href="/kurasi"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Kurasi ↗
+          Curated News ↗
         </Link>
       </div>
 

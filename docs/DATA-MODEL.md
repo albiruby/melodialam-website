@@ -1,5 +1,10 @@
 # DATA-MODEL — Melodi Alam Web Platform
 
+> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
+> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
+> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
+> direktori tersebut adalah catatan historis.
+
 Dokumen ini mendefinisikan model data platform web **Melodi Alam**: bentuk entitas
 yang ada hari ini, skema relasional target di balik Payload CMS 3 + Supabase,
 aturan integritas, indeks, Row Level Security, storage, dan jalur migrasi.

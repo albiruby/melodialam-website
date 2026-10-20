@@ -86,6 +86,21 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               TikTok ↗
             </a>
           </div>
+
+          <p className="pt-4 text-neutral-700">
+            <strong>Contact for partnership:</strong>
+            <br />
+            <a
+              href="mailto:melodialam.ip@gmail.com"
+              className="underline transition-colors hover:text-forest"
+            >
+              melodialam.ip@gmail.com
+            </a>
+            {" / "}
+            <a href="mailto:helfan@infia.co" className="underline transition-colors hover:text-forest">
+              helfan@infia.co
+            </a>
+          </p>
         </div>
       </div>
 

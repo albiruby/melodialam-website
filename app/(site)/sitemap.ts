@@ -19,7 +19,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/videos/arsip", priority: 0.6, changeFrequency: "weekly" },
     { path: "/kurasi", priority: 0.8, changeFrequency: "weekly" },
     { path: "/bicara-melodi", priority: 0.7, changeFrequency: "weekly" },
-    { path: "/pahlawan-kota", priority: 0.7, changeFrequency: "weekly" },
     { path: "/submit", priority: 0.6, changeFrequency: "monthly" },
   ];
 
