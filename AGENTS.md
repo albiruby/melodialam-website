@@ -136,9 +136,12 @@ generic behaviour. See `docs/DESIGN-SYSTEM.md`.
 ## Accessibility obligations
 
 `prefers-reduced-motion` must be honoured by every new animation. Hover-revealed
-affordances must also work on keyboard focus (`ACC-002`). **This is currently a real
-gap — there are zero `:focus*` selectors in `app/globals.css`.** Do not add more; close
-it if you touch that code.
+affordances must also work on keyboard focus (`ACC-002`). **That gap is closed:**
+`app/globals.css` carries a `:focus-visible` outline, and every hover-revealed
+affordance (`hover-reveal-curtain`, `hover-reveal-tag`, `corner-frame`,
+`video-action-reveal`, `text-outline-muted`, `editorial-img`) has a
+`:focus-within` twin. Keep it that way: a new hover-only affordance needs its
+focus twin in the same change.
 
 ## Decided but not yet built
 

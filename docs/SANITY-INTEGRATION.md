@@ -161,6 +161,8 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/pahlawan-kota/page.tsx` | `allPahlawanRows()` | baris Sanity menggantikan `GENRE_ROWS` statis saat ada |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; tautan kecil ke `/kurasi` |
+| `app/(site)/videos/arsip/page.tsx` | `allVideos()` | arsip seluruh katalog: filter venue + pencarian + halaman (292 video) |
+| `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
 `generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
@@ -232,11 +234,16 @@ Ini bagian yang paling mudah salah.
 | `lib/sanity.ts` | **tidak** | mana saja, termasuk komponen |
 | `lib/sanity-project.ts` | **tidak** | mana saja |
 | `lib/sanity-server.ts` | **ya** | kode server saja |
+| `lib/sanity-preview.ts` | **ya** | kode server saja |
 
 `lib/sanity-server.ts` memegang `SANITY_API_READ_TOKEN`, yang memberi akses baca ke
 dataset privat **dan** hak tulis ke antrean demo. Kalau berkas itu sampai diimpor
 komponen klien, token ikut ke bundel peramban — dan bersamanya seluruh nomor kontak
 musisi.
+
+`lib/sanity-preview.ts` memegang token yang sama untuk satu keperluan lain: membaca
+**draf yang belum terbit** (perspective `drafts`) di dataset publik untuk halaman
+pratinjau. Perlakukan sama seperti `lib/sanity-server.ts`: server saja.
 
 Kalau ragu: cek apakah berkas pemanggilnya punya `"use client"` di baris pertama.
 Kalau ya, jangan impor `lib/sanity-server.ts`.
@@ -298,11 +305,32 @@ Di sanity.io/manage → project → **API → Webhooks**:
 - **URL**: `https://<domain-anda>/api/revalidate`
 - **Method**: `POST`
 - **Secret**: nilai `SANITY_REVALIDATE_SECRET` yang sama
-- **Filter**: `_type == "article" || _type == "pahlawanRow"`
+- **Filter**: `_type in ["article", "pahlawanRow", "pillarPost", "interview", "siteSettings", "video", "playlist", "videosPage"]`
 - **Projection**: `{_type, _id}`
 
-Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka adalah cara mudah
-menjadikan cache sebagai sasaran serangan.
+Header yang dikirim Sanity adalah `x-webhook-secret` (route juga menerima `?secret=`
+sebagai cadangan). Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka
+adalah cara mudah menjadikan cache sebagai sasaran serangan.
+
+Route membuang **tujuh** tag cache sekaligus: `articles`, `pahlawan-rows`,
+`pillar-posts`, `interviews`, `siteSettings`, `videos`, `videosPage`. Kalau Anda menambah
+jenis dokumen baru yang punya tag sendiri, tambahkan tag itu ke `CONTENT_TAGS` di
+`app/api/revalidate/route.ts` — kalau tidak, publish terasa lambatnya satu jendela cache.
+
+### Pratinjau draf
+
+`/preview/<type>/<slug>?secret=…` menampilkan versi **belum terbit** dari satu dokumen
+di tata letak situs:
+
+- `/preview/journal/<slug-artikel>?secret=…`
+- `/preview/kurasi/<kode-post-ig>?secret=…` (mis. `DeY9hGEib-w`)
+
+`secret` diambil dari `SANITY_PREVIEW_SECRET`; kalau env itu kosong, route memakai
+`SANITY_REVALIDATE_SECRET`. Tanpa secret yang cocok, route menjawab 404 — halaman ini
+`noindex`, dan draf bukan untuk dibaca publik.
+
+Halaman ini membaca lewat `lib/sanity-preview.ts` (perspective `drafts`, dengan token),
+jadi ia butuh `SANITY_API_READ_TOKEN` di server.
 
 ### Deploy Studio
 
@@ -324,8 +352,8 @@ Sengaja, bukan lupa:
 
 | | Kenapa |
 |---|---|
-| **Pratinjau draf** | Publikasi langsung terlihat, tetapi menyunting draf belum bisa dipratinjau di situs. Butuh `next-sanity` (`defineLive`) plus route draft-mode — sengaja tidak dipasang selama Studio belum butuh. |
-| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`); hanya seleksi tampil yang hidup sebagai dokumen `video` — 9 sesi Samsara ter-seed lewat `npm run seed:videos`. |
+| **Pratinjau draf di Studio** | Halaman `/preview/...` sudah ada (lihat §11), tetapi belum ada tombol "Buka pratinjau" di dalam Studio — editor harus menyalin tautan manual. `next-sanity` (`defineLive`) plus route draft-mode masih belum dipasang. |
+| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`); hanya seleksi tampil yang hidup sebagai dokumen `video` — 9 sesi Samsara ter-seed lewat `npm run seed:videos`. Catalog-nya sendiri kini bisa dicari di `/videos/arsip`. |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
