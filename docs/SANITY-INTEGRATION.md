@@ -176,7 +176,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/journal/page.tsx` | `allArticles()` | grid 12 kartu; tautan kecil "Dari Feed → Kurasi" |
 | `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | section per pillar (6 post per pillar; anchor `#fakta-musik` dst) |
 | `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
-| `app/(site)/page.tsx` | `feedArticles()` | 4 artikel feed-foto terbaru, grid 2×2 (satu kartu `Cover Story`) |
+| `app/(site)/page.tsx` | `feedArticles()` + `allPillarPosts()` | 4 artikel feed-foto terbaru (grid 2×2) + strip **Curated News** 4 kartu feed |
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; tautan kecil ke `/kurasi` |

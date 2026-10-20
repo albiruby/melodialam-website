@@ -1,15 +1,23 @@
 import Image from "next/image";
-import { pillarDate, type PillarPost } from "@/lib/pillars";
+import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars";
 
 /**
  * Cards for the "Dari Feed" sections — curated Instagram posts.
  *
- * `PillarCard` is the photo-pillar card (square art, Stories side);
- * `PillarRow` is the reel-pillar row (vertical thumb, Videos side). Both open
- * the original post on Instagram — the slides and the video live there.
+ * `PillarCard` is the photo-pillar card (4:5 art, Stories side and the home
+ * teaser); `PillarRow` is the reel-pillar row (vertical thumb, Videos side).
+ * Both open the original post on Instagram — the slides and the video live
+ * there.
  */
 
-export function PillarCard({ post }: { post: PillarPost }) {
+export function PillarCard({
+  post,
+  showPillar = false,
+}: {
+  post: PillarPost;
+  /** Name the pillar on the card — useful where cards from several pillars mix. */
+  showPillar?: boolean;
+}) {
   // One uniform 4:5 frame for every card. The covers are the posts' own 4:5
   // slides, so `object-cover` fills the frame exactly — no crop, no gaps.
   return (
@@ -20,7 +28,7 @@ export function PillarCard({ post }: { post: PillarPost }) {
             src={post.image}
             alt={post.title}
             fill
-            sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 100vw"
             className="object-cover"
           />
         ) : null}
@@ -30,7 +38,14 @@ export function PillarCard({ post }: { post: PillarPost }) {
           </span>
         ) : null}
       </div>
-      <h4 className="mt-3 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest">
+      {showPillar ? (
+        <span className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-forest">
+          {PILLAR_LABELS[post.pillar] ?? post.pillar}
+        </span>
+      ) : null}
+      <h4
+        className={`${showPillar ? "mt-1" : "mt-3"} text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest`}
+      >
         {post.title}
       </h4>
       <div className="mt-1.5 flex items-center justify-between font-mono text-[10px] uppercase text-neutral-500">
