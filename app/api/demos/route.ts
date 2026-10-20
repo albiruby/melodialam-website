@@ -209,31 +209,42 @@ export async function POST(request: Request) {
     );
   }
 
-  const created = await submissionsClient.create({
-    _type: "demoSubmission",
-    artist,
-    city,
-    title,
-    // Validated against the enums above, so these narrow exactly.
-    ...(genre ? { genre } : {}),
-    ...(program ? { program } : {}),
-    link,
-    story,
-    status: DEMO_INITIAL_STATUS,
-    submittedAt,
-    ...(audioName ? { audioName } : {}),
-  });
+  let createdId = "";
+  try {
+    const created = await submissionsClient.create({
+      _type: "demoSubmission",
+      artist,
+      city,
+      title,
+      // Validated against the enums above, so these narrow exactly.
+      ...(genre ? { genre } : {}),
+      ...(program ? { program } : {}),
+      link,
+      story,
+      status: DEMO_INITIAL_STATUS,
+      submittedAt,
+      ...(audioName ? { audioName } : {}),
+    });
 
-  // The contact lives in its own document, in the same private dataset, so it
-  // can never appear in a query that selects submission fields.
-  await submissionsClient.create({
-    _type: "demoContact",
-    submission: { _type: "reference", _ref: created._id },
-    contact,
-  });
+    // The contact lives in its own document, in the same private dataset, so it
+    // can never appear in a query that selects submission fields.
+    await submissionsClient.create({
+      _type: "demoContact",
+      submission: { _type: "reference", _ref: created._id },
+      contact,
+    });
+    createdId = created._id;
+  } catch (error) {
+    // A broken token or an unreachable dataset must not crash the public form.
+    console.error("[api/demos] gagal menyimpan ke Sanity:", error);
+    return NextResponse.json(
+      { error: "Pengiriman demo sedang tidak bisa disimpan. Coba lagi nanti." },
+      { status: 503 },
+    );
+  }
 
   const entry = toPublicRow({
-    id: created._id,
+    id: createdId,
     artist,
     city,
     title,
@@ -245,11 +256,16 @@ export async function POST(request: Request) {
     submittedAt,
   });
 
-  const approvedCount = await submissionsClient.fetch<number>(
-    APPROVED_COUNT_QUERY,
-    { approved: [...DEMO_APPROVED_STATUSES] },
-    { cache: "no-store" },
-  );
+  let approvedCount = 0;
+  try {
+    approvedCount = await submissionsClient.fetch<number>(
+      APPROVED_COUNT_QUERY,
+      { approved: [...DEMO_APPROVED_STATUSES] },
+      { cache: "no-store" },
+    );
+  } catch {
+    // The submission is already stored; a failed count must not fail the request.
+  }
 
   return NextResponse.json(
     {
