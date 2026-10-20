@@ -108,6 +108,19 @@ export default async function VideosPage() {
             <VideoRow key={video.id} video={video} index={i} />
           ))}
         </div>
+
+        {/* The front door shows a short list; the rest lives in the archive. */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink py-4">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500">
+            {videos.length - samsaraPreview.length} sesi lain di arsip
+          </span>
+          <Link
+            href="/videos/arsip"
+            className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
+          >
+            Arsip lengkap ↗
+          </Link>
+        </div>
       </Reveal>
 
       {/* ---------- Playlists ---------- */}

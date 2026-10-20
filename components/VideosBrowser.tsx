@@ -15,7 +15,17 @@ type Filter = (typeof VENUES)[number] | "all";
  * (with `lib/catalogue.json` as the back catalogue) on the server, and this is a
  * client component.
  */
-export function VideosBrowser({ videos }: { videos: SiteVideo[] }) {
+export function VideosBrowser({
+  videos,
+  heading = "Videos",
+  note = "melodi samsara & melodi taman",
+  headingLevel = "h2",
+}: {
+  videos: SiteVideo[];
+  heading?: string;
+  note?: string;
+  headingLevel?: "h1" | "h2";
+}) {
   const [filter, setFilter] = useState<Filter>("all");
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
@@ -60,12 +70,16 @@ export function VideosBrowser({ videos }: { videos: SiteVideo[] }) {
       {/* Filter bar */}
       <div className="flex flex-wrap items-baseline justify-between gap-4 border-b-2 border-ink pb-3">
         <div className="flex items-baseline gap-4">
-          <h2 className="font-display text-5xl font-black uppercase leading-none tracking-tight sm:text-7xl">
-            Videos
-          </h2>
-          <span className="font-serif text-base italic text-neutral-600 sm:text-lg">
-            (melodi samsara &amp; melodi taman)
-          </span>
+          {headingLevel === "h1" ? (
+            <h1 className="font-display text-5xl font-black uppercase leading-none tracking-tight sm:text-7xl">
+              {heading}
+            </h1>
+          ) : (
+            <h2 className="font-display text-5xl font-black uppercase leading-none tracking-tight sm:text-7xl">
+              {heading}
+            </h2>
+          )}
+          <span className="font-serif text-base italic text-neutral-600 sm:text-lg">({note})</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold uppercase">
