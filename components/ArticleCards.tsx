@@ -38,12 +38,12 @@ export function ArticleCard({
                 {article.title}
               </Link>
             </h3>
-            <CardImage article={article} ratio="4/3" readLabel={readLabel} noteCta={noteCta} />
+            <CardImage article={article} readLabel={readLabel} noteCta={noteCta} />
             <p className="mb-4 text-xs leading-relaxed text-neutral-600">{article.excerpt}</p>
           </>
         ) : (
           <>
-            <CardImage article={article} ratio="square" readLabel={readLabel} noteCta={noteCta} />
+            <CardImage article={article} readLabel={readLabel} noteCta={noteCta} />
             <h3 className="mb-2 text-xl font-medium leading-snug transition-colors duration-300 group-hover:text-forest">
               <Link href={`/journal/${article.slug}`} className="after:absolute after:inset-0">
                 {article.title}
@@ -67,31 +67,29 @@ export function ArticleCard({
 }
 
 /**
- * Both shapes must appear as complete literals in this file. An interpolated
- * `aspect-[${ratio}]` never matches Tailwind's scanner, and `aspect-[square]`
- * is not a valid value either — so the frame came out with no aspect ratio at
- * all and collapsed to zero height, which next/image reported as "fill and a
- * height value of 0".
+ * One frame for every cover: 4:5, the ratio an Instagram feed post uses.
+ *
+ * The covers are the posts' own slides, so the frame matches the art exactly
+ * and `object-cover` fills it without cutting a single line of the caption
+ * baked into the card. The class has to be a complete literal — an
+ * interpolated `aspect-[${ratio}]` never matches Tailwind's scanner, and
+ * `aspect-[square]` is not a valid value either, so the frame came out with
+ * no aspect ratio at all and collapsed to zero height.
  */
-const FRAME_SHAPE = {
-  square: "aspect-square",
-  "4/3": "aspect-[4/3]",
-} as const;
+const COVER_FRAME = "aspect-[4/5]";
 
 function CardImage({
   article,
-  ratio,
   readLabel,
   noteCta,
 }: {
   article: Article;
-  ratio: "4/3" | "square";
   readLabel: string;
   noteCta: string;
 }) {
   return (
     <div
-      className={`hover-reveal-box corner-frame mb-4 ${FRAME_SHAPE[ratio]} border border-ink bg-neutral-900`}
+      className={`hover-reveal-box corner-frame mb-4 ${COVER_FRAME} border border-ink bg-neutral-900`}
     >
       <Image
         src={article.image}
@@ -120,27 +118,28 @@ function CardImage({
 /**
  * Cover story for the top of the home page.
  *
- * The art is square — the 1:1 frame Instagram feed posts use — so covers cut
- * for @melodi.alam drop in without being re-cropped. On wide screens the
- * caption sits beside the image; on phones it stacks under it.
+ * The art is 4:5 — the frame an Instagram feed post uses — so the cover drops
+ * in without being re-cropped and the caption baked into the card stays
+ * readable. On wide screens the caption sits beside the image; on phones it
+ * stacks under it.
  */
 export function HeroArticle({ article }: { article: Article }) {
   return (
     <article className="group relative border-b border-ink">
       <div className="grid grid-cols-1 lg:grid-cols-12">
-        <div className="lg:col-span-7">
+        <div className="lg:col-span-5">
           <ParallaxImage
             src={article.image}
             alt={article.title}
-            className="aspect-square w-full bg-neutral-900"
+            className="aspect-[4/5] w-full bg-neutral-900"
             imageClassName="object-cover"
-            sizes="(min-width: 1024px) 775px, 100vw"
+            sizes="(min-width: 1024px) 550px, 100vw"
             distance={48}
             preload
           />
         </div>
 
-        <div className="flex flex-col justify-center gap-3 border-t border-ink p-5 lg:col-span-5 lg:border-l lg:border-t-0 lg:p-8">
+        <div className="flex flex-col justify-center gap-3 border-t border-ink p-5 lg:col-span-7 lg:border-l lg:border-t-0 lg:p-8">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-widest text-neutral-500">
             <span className="bg-forest px-2 py-0.5 text-white">COVER STORY</span>
             <span aria-hidden>•</span>
@@ -186,7 +185,7 @@ export function FeatureCard({
   return (
     <article className="group flex cursor-pointer flex-col justify-between p-4 transition-colors duration-300 hover:bg-paper sm:p-5">
       <div>
-        <div className="hover-reveal-box corner-frame mb-3 aspect-square border border-ink bg-neutral-900">
+        <div className="hover-reveal-box corner-frame mb-3 aspect-[4/5] border border-ink bg-neutral-900">
           <Image
             src={article.image}
             alt={article.title}

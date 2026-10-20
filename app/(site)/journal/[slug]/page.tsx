@@ -133,14 +133,19 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
         `absolute inset-0` resolves against the nearest positioned ancestor.
         Without it the cover stretched to the viewport instead of the frame,
         leaving most of the frame showing its own grey background.
+
+        The frame is 4:5 — the ratio an Instagram feed post uses — so the cover
+        is the card itself, whole, with its own caption readable. It is
+        centred and width-capped so the portrait does not run the full width of
+        the article column.
       */}
-      <div className="relative my-8 aspect-[16/9] w-full overflow-hidden border border-ink bg-neutral-200">
+      <div className="relative mx-auto my-8 aspect-[4/5] w-full max-w-md overflow-hidden border border-ink bg-neutral-200">
         <Image
           src={article.image}
           alt={article.title}
           fill
           preload
-          sizes="(min-width: 1360px) 1328px, 100vw"
+          sizes="(min-width: 448px) 448px, 100vw"
           className="object-cover"
         />
       </div>

@@ -143,14 +143,18 @@ kotaknya, bukan skalanya.
 
 ```tsx
 // BENAR — Tailwind dapat melihat kedua string ini
-const shape = ratio === "square" ? "aspect-square" : "aspect-[4/3]";
+const shape = ratio === "feed" ? "aspect-[4/5]" : "aspect-square";
 <div className={shape} />
 
-// SALAH — scanner tidak pernah melihat `aspect-[4/3]`
+// SALAH — scanner tidak pernah melihat `aspect-[4/5]`
 <div className={`aspect-[${ratio}]`} />
 ```
 
 Kelas yang dibangun lewat interpolasi menghasilkan nol aturan CSS, tanpa error.
+
+Rasio **4:5** adalah rasio feed Instagram, dan semua sampul artikel adalah kartu
+feed asli — memakai rasio itu membuat kartunya tampil utuh, tanpa teks yang
+terpotong.
 
 ### Jangan sembunyikan konten di HTML server-rendered
 

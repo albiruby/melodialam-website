@@ -323,7 +323,7 @@ terlihat scanner Tailwind dan pernah meruntuhkan frame kartu (brief §9 temuan #
 | `ArticleCard` | Composite/Server | Server | `article: Article`, `titleFirst?: boolean`, `index?: number` | ROUTE-002 (via browser), ROUTE-003 |
 | `HeroArticle` | Composite/Server | Server | `article: Article` | ROUTE-001 |
 | `FeatureCard` | Composite/Server | Server | `article: Article`, `note: string` | ROUTE-001 |
-| `CardImage` (internal) | Primitive | Server | `article`, `ratio: "4/3"\|"square"` | di dalam `ArticleCard` |
+| `CardImage` (internal) | Primitive | Server | `article`, `readLabel`, `noteCta` (frame 4:5) | di dalam `ArticleCard` |
 | `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,004,005,006 |
 | `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
 | `SubmitLink` (dari `Ticker`) | Pattern | Server | `className?` | `SiteHeader` (nav desktop) |
