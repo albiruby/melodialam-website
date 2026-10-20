@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { FeatureCard, HeroArticle } from "@/components/ArticleCards";
-import { allArticles } from "@/lib/articles";
+import { feedArticles } from "@/lib/articles";
 import { allVideos } from "@/lib/videos";
 import { getSiteSettings } from "@/lib/site-settings";
 import { CountUp } from "@/components/motion/CountUp";
@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   // Sanity when it is configured, the static file otherwise.
-  const articles = await allArticles();
-  // "Latest News" is simply the four newest; `allArticles()` is newest-first.
+  const articles = await feedArticles();
+  // "Latest News" is simply the four newest; `feedArticles()` is newest-first.
   const [hero, ...rest] = articles;
   const subFeatures = rest.slice(0, 3);
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/ArticleCards";
 import { Reveal } from "@/components/Reveal";
-import { allArticles } from "@/lib/articles";
+import { feedArticles } from "@/lib/articles";
 import { getSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
@@ -13,8 +13,10 @@ export const metadata: Metadata = {
 };
 
 export default async function JournalPage() {
-  // Sanity when it is configured, the static file otherwise.
-  const [articles, settings] = await Promise.all([allArticles(), getSiteSettings()]);
+  // Sanity when it is configured, the static file otherwise. Only the stories
+  // that came from a feed photo take a slot here; a reel story waits in the
+  // CMS until it has a photo of its own.
+  const [articles, settings] = await Promise.all([feedArticles(), getSiteSettings()]);
 
   return (
     <Reveal>

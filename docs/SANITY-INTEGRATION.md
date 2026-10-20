@@ -77,10 +77,30 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | Gambar artikel | Konten | sampul + gambar inline di dalam isi | ✅ tersambung |
 | **video** · **playlist** · **interview** | Konten | `/videos`, `/bicara-melodi`, teaser beranda | ✅ tersambung (katalog build-time tetap back catalogue, ADR-0004) |
 
+### Aturan: Latest News dan Stories hanya dari feed foto
+
+Dua bagian terbesar situs — "Latest News" (beranda) dan "Stories" (`/journal`) —
+hanya boleh memuat berita yang sumbernya **post feed foto** di Instagram. Post reel
+punya sampul berupa bingkai video, dan bingkai itu tidak bisa jadi kartu headline.
+
+Mekanismenya satu field di dokumen `article`:
+
+| Field | Nilai | Arti |
+|---|---|---|
+| `mediaType` | `foto` (bawaan) | berita dari post feed foto — tampil di Latest News & Stories |
+| `mediaType` | `reel` | berita dari reel — **tidak** tampil di kedua bagian |
+
+`feedArticles()` di `lib/articles.ts` menerapkan aturan itu: beranda dan `/journal`
+memanggilnya, jadi begitu field di Studio diganti dari `Reel` ke `Foto`, artikelnya
+langsung masuk slot headline tanpa menyentuh kode. Artikel bertanda reel tetap
+punya URL sendiri (`/journal/<slug>` masih hidup) dan tetap ada di Sanity — ia
+menunggu padanan post fotonya, dan tim yang menandainya.
+
+Sitemap ikut aturan yang sama: yang diiklankan hanya artikel `foto`.
+
 ---
 
 ## 4. Alur satu artikel, dari ketik sampai tampil
-
 ```
 melodi-alam.sanity.studio  →  Konten  →  Stories  →  Create new
    │

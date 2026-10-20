@@ -30,7 +30,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: page.changeFrequency,
       priority: page.priority,
     })),
-    ...ARTICLES.map((article) => ({
+    // Only the feed-photo stories are advertised: they are the ones the
+    // sections carry. A reel story keeps its URL but is not offered here.
+    ...ARTICLES.filter((article) => article.mediaType !== "reel").map((article) => ({
       url: `${SITE.url}/journal/${article.slug}`,
       lastModified: article.dateISO,
       changeFrequency: "monthly" as const,

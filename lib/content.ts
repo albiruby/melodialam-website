@@ -37,6 +37,12 @@ export interface Article {
   /** Teaser for the green hover curtain; `excerpt` is used when absent. */
   note?: string;
   image: string;
+  /**
+   * Where the story came from: a feed photo (`foto`) or a reel (`reel`).
+   * Missing means `foto` — the rule is "Latest News and Stories only carry
+   * feed photos", so a reel story is the exception that has to be marked.
+   */
+  mediaType?: "foto" | "reel";
   body: string[];
 }
 
@@ -103,6 +109,7 @@ export const ARTICLES: Article[] = [
     category: "Bicara Melodi",
     date: "10 Oktober 2026",
     dateISO: "2026-10-10",
+    mediaType: "reel",
     excerpt:
       "Satu album mungkin baru langkah awal, tapi melahirkan album-album selanjutnya adalah ujian stamina dan mental yang sesungguhnya di tengah patokan angka views.",
     image: PHOTO.liveStage,
@@ -167,6 +174,7 @@ export const ARTICLES: Article[] = [
     category: "Rekomendasi Melodi",
     date: "14 Oktober 2026",
     dateISO: "2026-10-14",
+    mediaType: "reel",
     excerpt:
       "Tim Melodi Alam membedah katalog Alex Turner dkk. Lagu mana yang menurut Sobat Melolam paling underrated dan overrated?",
     image: PHOTO.vinylShelf,
@@ -199,6 +207,7 @@ export const ARTICLES: Article[] = [
     category: "Rekomendasi Melodi",
     date: "07 Oktober 2026",
     dateISO: "2026-10-07",
+    mediaType: "reel",
     excerpt:
       "White Shoes and The Couples Company tak pernah gagal menghipnotis pendengar lewat warna vokal yang jernih dan retro.",
     image: PHOTO.stainedGlass,
@@ -214,6 +223,7 @@ export const ARTICLES: Article[] = [
     category: "Bicara Melodi",
     date: "05 Oktober 2026",
     dateISO: "2026-10-05",
+    mediaType: "reel",
     excerpt:
       "Membuka kembali cerita lama lewat warna vokal yang lebih lembut dan sendu di panggung Melodi Samsara.",
     image: PHOTO.loungeGreen,
@@ -229,6 +239,7 @@ export const ARTICLES: Article[] = [
     category: "Liputan Panggung",
     date: "02 Oktober 2026",
     dateISO: "2026-10-02",
+    mediaType: "reel",
     excerpt:
       "Bukti bahwa band asal Yogyakarta ini masih relevan dan mampu menciptakan anthem baru yang langsung bikin candu.",
     image: PHOTO.communalTable,
@@ -275,6 +286,7 @@ export const ARTICLES: Article[] = [
     category: "Liputan Panggung",
     date: "20 September 2026",
     dateISO: "2026-09-20",
+    mediaType: "reel",
     excerpt:
       "Refleks teringat zaman paket malam dan billing lumba-lumba saat M. Shadows dkk menyapa ribuan admirer.",
     image: PHOTO.readingRoom,

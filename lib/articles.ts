@@ -30,6 +30,11 @@ export interface SiteArticle extends Article {
   richBody?: unknown[];
   /** Where this article came from. Handy in the UI and when debugging. */
   source: "static" | "cms";
+  /**
+   * Feed photo (`foto`) or reel (`reel`). The site's rule: Latest News and
+   * Stories only carry feed photos, so a reel story is marked and held back.
+   */
+  mediaType: "foto" | "reel";
 }
 
 /**
@@ -39,7 +44,11 @@ export interface SiteArticle extends Article {
  */
 const STATIC: SiteArticle[] = [...ARTICLES]
   .sort((a, b) => b.dateISO.localeCompare(a.dateISO))
-  .map((a) => ({ ...a, source: "static" as const }));
+  .map((a) => ({
+    ...a,
+    source: "static" as const,
+    mediaType: a.mediaType === "reel" ? ("reel" as const) : ("foto" as const),
+  }));
 
 /** Fallback art when an article has no cover of its own. */
 const PLACEHOLDER_IMAGE = "/photos/dsc09408.webp";
@@ -58,6 +67,7 @@ const ARTICLE_FIELDS = /* groq */ `{
   date,
   excerpt,
   note,
+  mediaType,
   image,
   imagePath,
   body
@@ -74,6 +84,7 @@ interface CmsArticleDoc {
   date?: string;
   excerpt?: string;
   note?: string;
+  mediaType?: string;
   image?: unknown;
   imagePath?: string;
   body?: unknown[];
@@ -150,6 +161,9 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
     // An uploaded cover wins; then the carried-over local path from the import;
     // then the shared placeholder.
     image: imageUrl(doc.image, { width: 1600 }) ?? doc.imagePath ?? PLACEHOLDER_IMAGE,
+    // A reel story is the exception to the feed-photo rule; anything the editor
+    // has not marked counts as a feed photo.
+    mediaType: doc.mediaType === "reel" ? ("reel" as const) : ("foto" as const),
     body: portableTextToParagraphs(doc.body),
     richBody: Array.isArray(doc.body) ? doc.body : undefined,
     source: "cms",
@@ -177,6 +191,19 @@ export async function allArticles(): Promise<SiteArticle[]> {
     // Sanity unreachable mid-request: the site keeps working from the file.
     return STATIC;
   }
+}
+
+/**
+ * The feed-photo articles, newest first.
+ *
+ * The house rule: Latest News (home) and Stories (/journal) only carry stories
+ * that came from a feed photo on Instagram. A reel story stays in the CMS — and
+ * its own URL keeps working — but it does not take a slot in either section
+ * until an editor gives it a photo of its own.
+ */
+export async function feedArticles(): Promise<SiteArticle[]> {
+  const articles = await allArticles();
+  return articles.filter((a) => a.mediaType !== "reel");
 }
 
 export async function articleBySlug(slug: string): Promise<SiteArticle | null> {
