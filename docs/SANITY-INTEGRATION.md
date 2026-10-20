@@ -180,7 +180,6 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; tautan kecil ke `/kurasi` |
-| `app/(site)/videos/arsip/page.tsx` | `allVideos()` | arsip seluruh katalog: filter venue + pencarian + halaman (292 video) |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
 
@@ -310,6 +309,7 @@ Validasi keanggotaan enum pakai `rule.custom(...)`, bukan `rule.valid(...)`.
 
 ```bash
 cp .env.example .env      # isi SANITY_API_READ_TOKEN (dan SANITY_REVALIDATE_SECRET)
+# opsional: BLOB_READ_WRITE_TOKEN (audio demo), RESEND_API_KEY (notifikasi email)
 npm install
 npm run dev               # http://localhost:3100
 ```
@@ -372,7 +372,7 @@ Sengaja, bukan lupa:
 | | Kenapa |
 |---|---|
 | **Pratinjau draf di Studio** | Halaman `/preview/...` sudah ada (lihat §11), tetapi belum ada tombol "Buka pratinjau" di dalam Studio — editor harus menyalin tautan manual. `next-sanity` (`defineLive`) plus route draft-mode masih belum dipasang. |
-| **Sesi video** | Katalog 292 video tetap artefak build-time (`ADR-0004`); hanya seleksi tampil yang hidup sebagai dokumen `video` — 9 sesi Samsara ter-seed lewat `npm run seed:videos`. Catalog-nya sendiri kini bisa dicari di `/videos/arsip`. |
+| **Sesi video** | Katalog tetap artefak build-time (`ADR-0004`) dan **tidak** ditampilkan sebagai daftar: situs hanya menampilkan seleksi yang hidup sebagai dokumen `video` (9 sesi Samsara lewat `npm run seed:videos`). Tidak ada halaman arsip 292 video. |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |

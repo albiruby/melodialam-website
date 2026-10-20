@@ -48,6 +48,7 @@ interface DemoBody {
   story?: unknown;
   audioName?: unknown;
   audioSize?: unknown;
+  audioUrl?: unknown;
 }
 
 function str(value: unknown, max = MAX_FIELD): string {
@@ -139,6 +140,8 @@ async function notifyNewSubmission(entry: {
   link: string;
   contact: string;
   story: string;
+  audioName: string;
+  audioUrl: string;
 }): Promise<void> {
   const key = process.env.RESEND_API_KEY;
   if (!key) return;
@@ -157,6 +160,7 @@ async function notifyNewSubmission(entry: {
     entry.program ? `Program   : ${entry.program}` : "",
     `Link      : ${entry.link}`,
     `Kontak    : ${entry.contact}`,
+    entry.audioUrl ? `Audio     : ${entry.audioName} — ${entry.audioUrl}` : "",
     "",
     entry.story,
   ]
@@ -209,6 +213,7 @@ export async function POST(request: Request) {
   const story = str(body.story, 2000);
   const audioName = str(body.audioName, 200);
   const audioSize = typeof body.audioSize === "number" ? body.audioSize : 0;
+  const audioUrl = str(body.audioUrl, 500);
 
   const errors: Record<string, string> = {};
   if (!artist) errors.artist = "Nama band atau solois wajib diisi.";
@@ -235,6 +240,17 @@ export async function POST(request: Request) {
     }
     if (audioSize > DEMO_AUDIO_MAX_BYTES) {
       errors.audioName = "Ukuran berkas melebihi batas 25 MB.";
+    }
+  }
+
+  // The file is uploaded straight to Blob storage; the submission only carries
+  // its URL. Reject anything that is not an https link to one of the formats
+  // the form accepts, so a crafted body cannot point the desk at another host.
+  if (audioUrl) {
+    const path = audioUrl.split("?")[0].toLowerCase();
+    const allowed = DEMO_AUDIO_EXTENSIONS.some((ext) => path.endsWith(ext));
+    if (!/^https:\/\//i.test(audioUrl) || !allowed) {
+      errors.audioUrl = "Tautan audio tidak dikenal.";
     }
   }
 
@@ -289,6 +305,7 @@ export async function POST(request: Request) {
       status: DEMO_INITIAL_STATUS,
       submittedAt,
       ...(audioName ? { audioName } : {}),
+      ...(audioUrl ? { audioUrl } : {}),
     });
 
     // The contact lives in its own document, in the same private dataset, so it
@@ -309,7 +326,18 @@ export async function POST(request: Request) {
   }
 
   // The row is stored; tell the desk. A failure here never changes the answer.
-  await notifyNewSubmission({ artist, city, title, genre, program, link, contact, story });
+  await notifyNewSubmission({
+    artist,
+    city,
+    title,
+    genre,
+    program,
+    link,
+    contact,
+    story,
+    audioName,
+    audioUrl,
+  });
 
   const entry = toPublicRow({
     id: createdId,

@@ -1,5 +1,6 @@
 "use client";
 
+import { upload } from "@vercel/blob/client";
 import { useEffect, useRef, useState } from "react";
 import {
   DEMO_AUDIO_EXTENSIONS,
@@ -22,6 +23,7 @@ export function DemoPortal() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const audioUrl = useRef<string | null>(null);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioName, setAudioName] = useState<string | null>(null);
   const [audioSize, setAudioSize] = useState(0);
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
@@ -42,6 +44,7 @@ export function DemoPortal() {
   function clearAudio() {
     if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
     audioUrl.current = null;
+    setAudioFile(null);
     setAudioName(null);
     setAudioSize(0);
     setAudioSrc(null);
@@ -83,6 +86,7 @@ export function DemoPortal() {
     if (audioUrl.current) URL.revokeObjectURL(audioUrl.current);
     const url = URL.createObjectURL(file);
     audioUrl.current = url;
+    setAudioFile(file);
     setAudioName(file.name);
     setAudioSize(file.size);
     setAudioSrc(url);
@@ -95,9 +99,30 @@ export function DemoPortal() {
     setBanner(null);
 
     const form = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(form.entries());
+    const payload: Record<string, string> = Object.fromEntries(
+      [...form.entries()].filter(([, value]) => typeof value === "string"),
+    ) as Record<string, string>;
 
     try {
+      // The file goes straight to Vercel Blob, not through this request: a
+      // 25 MB body would never clear the function's limit. The submission then
+      // carries the URL, so the desk can play it from the Studio.
+      if (audioFile) {
+        try {
+          const blob = await upload(`demo-audio/${Date.now()}-${audioFile.name}`, audioFile, {
+            access: "public",
+            handleUploadUrl: "/api/demo-audio",
+          });
+          payload.audioUrl = blob.url;
+          payload.audioName = audioFile.name;
+          payload.audioSize = String(audioFile.size);
+        } catch {
+          setBannerIsError(true);
+          setBanner("Audio gagal diunggah. Coba lagi, atau hapus berkasnya lalu kirim tanpa audio.");
+          return;
+        }
+      }
+
       const res = await fetch("/api/demos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -258,11 +283,10 @@ export function DemoPortal() {
                 {audioName ? `File dipilih: ${audioName}` : "Pilih file audio dari perangkat ini"}
               </span>
               <span className="mt-1 font-serif text-xs italic text-neutral-600">
-                Berkas hanya diputar di peramban Anda. Tidak ada berkas yang diunggah.
+                Berkas ini ikut terkirim ke redaksi dan hanya dibaca kurator.
               </span>
               <input
                 id="demo-audio"
-                name="audioName"
                 type="file"
                 accept=".mp3,.wav,.ogg,audio/mpeg,audio/wav,audio/ogg"
                 className="sr-only"

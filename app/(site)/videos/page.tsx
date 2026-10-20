@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
-import { VideoRow } from "@/components/VideosBrowser";
+import { VideoRow } from "@/components/VideoRow";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { CHANNEL } from "@/lib/catalogue";
@@ -113,17 +113,20 @@ export default async function VideosPage() {
           ))}
         </div>
 
-        {/* The front door shows a short list; the rest lives in the archive. */}
+        {/* The rest of the sessions stay on the channel; the site shows a
+            selection, not the whole catalogue. */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink py-4">
           <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500">
-            {videos.length - samsaraPreview.length} sesi lain di arsip
+            Sesi lainnya ada di kanal YouTube
           </span>
-          <Link
-            href="/videos/arsip"
+          <a
+            href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}
+            target="_blank"
+            rel="noreferrer"
             className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
           >
-            Arsip lengkap ↗
-          </Link>
+            YouTube ↗
+          </a>
         </div>
       </Reveal>
 

@@ -29,13 +29,16 @@ export default async function HomePage() {
   const latest = articles.slice(0, 4);
 
   // Sanity first, the build-time catalogue behind it. The counts line reads
-  // `videos`; the curated strip below the news reads the pillar pool, newest
-  // first, and only the photo posts — the reel ones are video rows, not cards.
+  // only the videos the team curated into the CMS: the site shows a selection,
+  // never the whole catalogue. The strip below the news reads the pillar pool,
+  // newest first, and only the photo posts — the reel ones are video rows.
   const [videos, settings, feed] = await Promise.all([
     allVideos(),
     getSiteSettings(),
     allPillarPosts(),
   ]);
+
+  const curatedVideos = videos.filter((video) => video.source === "cms").length;
 
   const curated = feed
     .filter((post) => post.mediaType === "foto")
@@ -66,8 +69,8 @@ export default async function HomePage() {
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
-            <CountUp to={articles.length} /> artikel di journal • <CountUp to={videos.length} />{" "}
-            video
+            <CountUp to={articles.length} /> artikel di journal • <CountUp to={curatedVideos} />{" "}
+            sesi panggung
           </span>
           <Link
             href="/journal"
