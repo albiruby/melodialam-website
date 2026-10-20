@@ -17,6 +17,7 @@ export const metadata: Metadata = {
    */
   description:
     "Melodi Alam: jurnalisme musik, catatan wawancara, dan katalog video sesi panggung.",
+  alternates: { canonical: "/" },
 };
 
 export default async function HomePage() {

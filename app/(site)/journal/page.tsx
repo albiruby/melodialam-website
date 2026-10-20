@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Stories",
   description:
     "Catatan redaksi Melodi Alam: esai skena musik, rekomendasi melodi, catatan wawancara Bicara Melodi, dan liputan panggung.",
+  alternates: { canonical: "/journal" },
 };
 
 export default async function JournalPage() {

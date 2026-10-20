@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Pahlawan Musik Kota & Skena",
   description:
     "Direktori Pahlawan Musik Kota: peta skena musik Indonesia dari indie folk Bogor, surf rock dan melankolia radikal, hingga pendatang baru AMI.",
+  alternates: { canonical: "/pahlawan-kota" },
 };
 
 export default async function PahlawanKotaPage() {

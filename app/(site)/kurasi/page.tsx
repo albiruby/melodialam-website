@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Kurasi",
   description:
     "Kurasi tim Melodi Alam dari feed Instagram: fakta musik, lirik, trivia, kutipan, rekomendasi melodi, ulas melodi, dan clipper.",
+  alternates: { canonical: "/kurasi" },
 };
 
 /** How many curated posts each pillar shows; the rest lives on Instagram. */

@@ -61,11 +61,22 @@ export const metadata: Metadata = {
     siteName: SITE.name,
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
+    // The social card, for the pages that have no photo of their own. A page
+    // that does have one (an article cover) overrides this with its own.
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: `${SITE.name} — ${SITE.tagline}`,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
+    images: ["/og.png"],
   },
 };
 

@@ -115,8 +115,9 @@ These are measured regressions, not style preferences. Full detail in
    `app/globals.css`.** Tailwind's content scan walked `.codegraph/`, hit a locked SQLite
    file, and made Turbopack panic — silently producing an empty stylesheet.
 7. **Never hand-edit generated artefacts**: `lib/catalogue.json`, `public/brand/*`,
-   `public/photos/*`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`. Note that
-   ESLint already ignores `.codegraph/**`, `.gitnexus/**`, and `lib/catalogue.json`.
+   `public/photos/*`, `public/og.png`, `app/icon.png`, `app/apple-icon.png`,
+   `app/favicon.ico`. Note that ESLint already ignores `.codegraph/**`, `.gitnexus/**`, and
+   `lib/catalogue.json`.
 8. **Next 16 deprecated `priority` on `next/image`** in favour of `preload`, and changed
    the default `qualities` to `[75]`. The Next.js docs are in `node_modules/next/dist/docs/`.
 9. **`lib/sanity-server.ts` is server-only.** It holds `SANITY_API_READ_TOKEN`, which reads

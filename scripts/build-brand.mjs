@@ -201,3 +201,74 @@ async function emit(name, pipeline, note) {
 }
 
 console.log(`\nwritten to public/brand/`);
+
+// ---------------------------------------------------------------------------
+// 3. The social card — public/og.png (1200x630).
+//    A link shared from the site needs a picture, and the pages that have no
+//    photo of their own (home, /kurasi, /pahlawan-kota, /videos) had none.
+//    Ink ground, paper lockup, the dash strip from DEC-002 — the site's own
+//    shapes, not a picture of a concert.
+// ---------------------------------------------------------------------------
+{
+  const abs = path.join(ROOT, "LOGO2", "Melodi Alam Text Logo - White.png");
+  const { width, height, data, channels } = await measure(abs);
+
+  let minX = width,
+    maxX = -1,
+    minY = height,
+    maxY = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (data[(y * width + x) * channels + 3] > ALPHA_MIN) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+
+  const box = { left: minX, top: minY, width: maxX - minX + 1, height: maxY - minY + 1 };
+  const logoWidth = 860;
+  const logoHeight = Math.round((logoWidth * box.height) / box.width);
+
+  // Five dashes, the DEC-002 strip, in paper on ink.
+  const dashStrip = Buffer.from(
+    `<svg width="${logoWidth}" height="10" xmlns="http://www.w3.org/2000/svg">` +
+      Array.from({ length: 5 }, (_, i) => {
+        const x = i * 56;
+        return `<rect x="${x}" y="0" width="44" height="4" fill="#F6F5F2"/>`;
+      }).join("") +
+      `</svg>`,
+  );
+
+  const canvas = sharp({
+    create: {
+      width: 1200,
+      height: 630,
+      channels: 4,
+      background: { r: 0x0d, g: 0x0d, b: 0x0d, alpha: 1 },
+    },
+  });
+
+  const logo = await sharp(abs)
+    .extract(box)
+    .resize({ width: logoWidth, height: logoHeight, fit: "fill" })
+    .png()
+    .toBuffer();
+
+  const file = path.join(import.meta.dirname, "..", "public", "og.png");
+  await canvas
+    .composite([
+      { input: dashStrip, left: (1200 - logoWidth) / 2, top: 252 },
+      { input: logo, left: (1200 - logoWidth) / 2, top: 300 },
+    ])
+    .png({ compressionLevel: 9, palette: false })
+    .toFile(file);
+
+  console.log(
+    `\npublic/og.png                                    1200x630  ${(
+      fs.statSync(file).size / 1024
+    ).toFixed(1)} KB  (social card)`,
+  );
+}

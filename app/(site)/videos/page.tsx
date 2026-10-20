@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Videos",
   description:
     "Katalog video Melodi Alam: live session Melodi Samsara dan Melodi Taman, serta wawancara Bicara Melodi.",
+  alternates: { canonical: "/videos" },
 };
 
 /** The live sessions shown before the archive takes over — nine, to match the Bicara Melodi grid. */

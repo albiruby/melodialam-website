@@ -6,6 +6,7 @@ export const metadata: Metadata = {
   title: "Submit Karya",
   description:
     "Kirim demo lagu band atau solois kamu ke redaksi Melodi Alam untuk review artikel, rekomendasi Instagram, atau tampil di panggung Melodi Samsara.",
+  alternates: { canonical: "/submit" },
 };
 
 export default function SubmitPage() {

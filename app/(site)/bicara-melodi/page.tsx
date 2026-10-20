@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Bicara Melodi",
   description:
     "Wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
+  alternates: { canonical: "/bicara-melodi" },
 };
 
 export default async function BicaraMelodiPage() {
