@@ -3,21 +3,40 @@ import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { ARTICLES_TAG } from "@/lib/articles";
 import { PAHLAWAN_TAG } from "@/lib/pahlawan";
+import { PILLARS_TAG } from "@/lib/pillars";
+import { INTERVIEWS_TAG } from "@/lib/interviews";
+import { SETTINGS_TAG } from "@/lib/site-settings";
+import { VIDEOS_PAGE_TAG } from "@/lib/videos-page";
+import { VIDEOS_TAG } from "@/lib/videos";
 
 /**
  * Sanity publish webhook → Next cache invalidation.
  *
- * Cached reads live under tags (`ARTICLES_TAG`, `PAHLAWAN_TAG`). Without this
- * route the site still updates, but only once the cache window lapses; with it,
- * pressing Publish in the Studio shows the change on the next request.
+ * Cached reads live under tags (`ARTICLES_TAG`, `PAHLAWAN_TAG`, `PILLARS_TAG`,
+ * `INTERVIEWS_TAG`, `SETTINGS_TAG`, `VIDEOS_TAG`, `VIDEOS_PAGE_TAG`). Without
+ * this route the site still updates, but only once the cache window lapses;
+ * with it, pressing Publish in the Studio shows the change on the next
+ * request.
  *
  * Point a Sanity webhook at POST /api/revalidate with the projection
  * `{_type, _id}` and a secret, then set the same secret as
  * `SANITY_REVALIDATE_SECRET`. Filter the webhook on the document types whose
- * tags this route bumps: `_type == "article" || _type == "pahlawanRow"`. Any
- * request that cannot prove it holds the secret is refused — an open
- * revalidation endpoint is a cache-busting denial of service waiting to happen.
+ * tags this route bumps: `article`, `pahlawanRow`, `pillarPost`, `interview`,
+ * `siteSettings`, `video`, `playlist`, `videosPage`. Any request that cannot
+ * prove it holds the secret is refused — an open revalidation endpoint is a
+ * cache-busting denial of service waiting to happen.
  */
+
+/** Every cache tag a publish in the Studio can invalidate. */
+const CONTENT_TAGS = [
+  ARTICLES_TAG,
+  PAHLAWAN_TAG,
+  PILLARS_TAG,
+  INTERVIEWS_TAG,
+  SETTINGS_TAG,
+  VIDEOS_TAG,
+  VIDEOS_PAGE_TAG,
+];
 
 function secretsMatch(provided: string, expected: string): boolean {
   const a = Buffer.from(provided);
@@ -46,8 +65,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Secret tidak cocok." }, { status: 401 });
   }
 
-  revalidateTag(ARTICLES_TAG, "max");
-  revalidateTag(PAHLAWAN_TAG, "max");
+  for (const tag of CONTENT_TAGS) revalidateTag(tag, "max");
 
-  return NextResponse.json({ revalidated: true, tags: [ARTICLES_TAG, PAHLAWAN_TAG] });
+  return NextResponse.json({ revalidated: true, tags: CONTENT_TAGS });
 }
