@@ -41,6 +41,7 @@ export const FOOTER_RUBRIKS: NavItem[] = [
   { href: "/bicara-melodi", label: "Bicara Melodi Podcast (Season 3)" },
   { href: "/videos", label: "Melodi Samsara Live Session" },
   { href: "/videos", label: "Melodi Taman Outdoor Session" },
+  { href: "/tentang", label: "Tentang & Kontak" },
   { href: "/submit", label: "Submit Karya" },
 ];
 

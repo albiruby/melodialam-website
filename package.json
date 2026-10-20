@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start -p 3100",
     "lint": "eslint",
+    "test": "vitest run",
     "catalogue": "node scripts/build-catalogue.mjs",
     "brand": "node scripts/build-brand.mjs",
     "photos": "node scripts/copy-photos.mjs",
@@ -17,6 +18,7 @@
     "@portabletext/react": "^8.0.1",
     "@sanity/client": "^8.9.0",
     "@sanity/image-url": "^2.1.1",
+    "@vercel/analytics": "^2.0.1",
     "motion": "^14.2.0",
     "next": "16.4.0",
     "react": "19.3.0",
@@ -31,6 +33,7 @@
     "eslint-config-next": "16.4.0",
     "sharp": "^0.35.5",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }

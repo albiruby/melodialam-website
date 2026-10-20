@@ -6,7 +6,8 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Ticker } from "@/components/Ticker";
 import { MotionRoot } from "@/components/motion/MotionRoot";
-import { SITE } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
+import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 import { getSiteSettings } from "@/lib/site-settings";
 
 /**
@@ -81,6 +82,39 @@ export const metadata: Metadata = {
 };
 
 /**
+ * Site-level structured data: what this site is and who publishes it. Rendered
+ * once in the body; a page may add its own graph next to it (an article adds
+ * Article + BreadcrumbList).
+ */
+const siteJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${SITE.url}/#website`,
+      url: SITE.url,
+      name: SITE.name,
+      description: SITE.description,
+      inLanguage: "id-ID",
+      publisher: { "@id": `${SITE.url}/#organization` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${SITE.url}/#organization`,
+      name: SITE.name,
+      url: SITE.url,
+      logo: { "@type": "ImageObject", url: `${SITE.url}/icon.png` },
+      // The venue has its own address block in the footer; these are the
+      // channels that speak for the publication itself.
+      sameAs: EXTERNAL_LINKS.filter((link) => link.label !== "Samsara Bogor").map(
+        (link) => link.href,
+      ),
+    },
+  ],
+  // `<` is escaped so the payload can never terminate the script element early.
+}).replace(/</g, "\\u003c");
+
+/**
  * The site is light-only, so `colorScheme` is pinned rather than left to the OS.
  * That is what keeps form controls and scrollbars from rendering dark on a
  * machine set to dark mode. `themeColor` matches the paper surface.
@@ -106,6 +140,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     >
       <body className="antialiased">
         <MotionRoot>
+          {/* The site's own identity, once per page: a WebSite and the
+              Organization that publishes it. Article pages add their own
+              Article/Breadcrumb graph on top. */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: siteJsonLd }}
+          />
+          {/* RSS auto-discovery, for readers that look for it. */}
+          <link rel="alternate" type="application/rss+xml" title="Melodi Alam" href="/rss.xml" />
           {/* First tab stop on every page, so a keyboard user can skip the
               ticker, masthead and nav instead of walking through all of them. */}
           <a
@@ -133,6 +176,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </main>
           <SiteFooter settings={settings} />
         </MotionRoot>
+        {/* Cookieless page views, from Vercel. Nothing is shown until Web
+            Analytics is switched on for the project in the dashboard. */}
+        <Analytics />
       </body>
     </html>
   );

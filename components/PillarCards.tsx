@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars";
+import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars-shared";
 
 /**
  * Cards for the "Dari Feed" sections — curated Instagram posts.

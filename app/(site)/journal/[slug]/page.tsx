@@ -45,7 +45,9 @@ export async function generateMetadata(props: PageProps<"/journal/[slug]">): Pro
     openGraph: {
       title: article.title,
       description: article.excerpt,
-      images: [{ url: article.image }],
+      // The image comes from `opengraph-image.tsx` next to this page: a 1200×630
+      // card. Pointing at the 4:5 cover here would only hand the timeline a
+      // crop of it.
       type: "article",
       publishedTime: article.dateISO,
       url: path,
@@ -68,21 +70,37 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
 
   const readMinutes = articleReadingTime(article);
 
+  const url = `${SITE.url}/journal/${article.slug}`;
+
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
-    "@type": "Article",
-    headline: article.title,
-    description: article.excerpt,
-    image: [article.image.startsWith("http") ? article.image : `${SITE.url}${article.image}`],
-    datePublished: article.dateISO,
-    articleSection: CATEGORY_LABELS[article.category],
-    author: { "@type": "Organization", name: "Tim Redaksi Melodi Alam" },
-    publisher: {
-      "@type": "Organization",
-      name: SITE.name,
-      logo: { "@type": "ImageObject", url: `${SITE.url}/icon.png` },
-    },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `${SITE.url}/journal/${article.slug}` },
+    "@graph": [
+      {
+        "@type": "Article",
+        "@id": `${url}#article`,
+        headline: article.title,
+        description: article.excerpt,
+        image: [article.image.startsWith("http") ? article.image : `${SITE.url}${article.image}`],
+        datePublished: article.dateISO,
+        articleSection: CATEGORY_LABELS[article.category],
+        author: { "@type": "Organization", name: "Tim Redaksi Melodi Alam" },
+        publisher: {
+          "@type": "Organization",
+          name: SITE.name,
+          logo: { "@type": "ImageObject", url: `${SITE.url}/icon.png` },
+        },
+        mainEntityOfPage: { "@type": "WebPage", "@id": url },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Latest News", item: SITE.url },
+          { "@type": "ListItem", position: 2, name: "Stories", item: `${SITE.url}/journal` },
+          { "@type": "ListItem", position: 3, name: article.title, item: url },
+        ],
+      },
+    ],
     // `<` is escaped so the payload can never terminate the script element early.
   }).replace(/</g, "\\u003c");
 

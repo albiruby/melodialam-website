@@ -121,6 +121,71 @@ export async function GET() {
   }
 }
 
+/**
+ * Optional email notification for a new submission.
+ *
+ * Inert until `RESEND_API_KEY` exists. The form must never fail because a
+ * notification could not go out, so the call is awaited (a serverless function
+ * may stop the moment it responds) and every error is logged and swallowed.
+ * Destination defaults to the two partnership addresses; override with
+ * `DEMO_NOTIFY_TO`, sender with `DEMO_NOTIFY_FROM`.
+ */
+async function notifyNewSubmission(entry: {
+  artist: string;
+  city: string;
+  title: string;
+  genre: string;
+  program: string;
+  link: string;
+  contact: string;
+  story: string;
+}): Promise<void> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return;
+
+  const to = (process.env.DEMO_NOTIFY_TO ?? "melodialam.ip@gmail.com,helfan@infia.co")
+    .split(",")
+    .map((address) => address.trim())
+    .filter(Boolean);
+  const from = process.env.DEMO_NOTIFY_FROM ?? "Melodi Alam <onboarding@resend.dev>";
+
+  const text = [
+    `Artis     : ${entry.artist}`,
+    `Kota      : ${entry.city}`,
+    `Judul     : ${entry.title}`,
+    entry.genre ? `Genre     : ${entry.genre}` : "",
+    entry.program ? `Program   : ${entry.program}` : "",
+    `Link      : ${entry.link}`,
+    `Kontak    : ${entry.contact}`,
+    "",
+    entry.story,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from,
+        to,
+        subject: `Demo baru: ${entry.artist} — ${entry.title}`,
+        text,
+      }),
+    });
+    if (!response.ok) {
+      console.error(
+        "[api/demos] notifikasi email gagal:",
+        response.status,
+        (await response.text()).slice(0, 200),
+      );
+    }
+  } catch (error) {
+    console.error("[api/demos] notifikasi email gagal:", error);
+  }
+}
+
 export async function POST(request: Request) {
   const raw = await request.text();
   if (raw.length > MAX_BODY_BYTES) {
@@ -242,6 +307,9 @@ export async function POST(request: Request) {
       { status: 503 },
     );
   }
+
+  // The row is stored; tell the desk. A failure here never changes the answer.
+  await notifyNewSubmission({ artist, city, title, genre, program, link, contact, story });
 
   const entry = toPublicRow({
     id: createdId,
