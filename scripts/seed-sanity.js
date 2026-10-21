@@ -21,7 +21,7 @@ if (!process.argv[2]) {
   process.exit(1);
 }
 
-const { ARTICLES, GENRE_ROWS, INTERVIEW_ROWS, TICKER_ITEMS } = require(path.join(BUILD_DIR, "content.js"));
+const { ARTICLES, INTERVIEW_ROWS, TICKER_ITEMS } = require(path.join(BUILD_DIR, "content.js"));
 const { SITE } = require(path.join(BUILD_DIR, "site.js"));
 const catalogue = require("../lib/catalogue.json");
 
@@ -114,18 +114,6 @@ const interviewDocs = INTERVIEW_ROWS.map((r, i) => ({
   order: i + 1,
 }));
 
-const pahlawanDocs = GENRE_ROWS.map((r, i) => ({
-  _id: `pahlawan-${r.slug}`,
-  _type: "pahlawanRow",
-  title: r.title,
-  slug: { _type: "slug", current: r.slug },
-  artists: r.artists,
-  description: r.description,
-  imagePath: r.image,
-  tags: r.tags,
-  order: i + 1,
-}));
-
 const settingsDoc = {
   _id: "siteSettings",
   _type: "siteSettings",
@@ -147,12 +135,11 @@ const settingsDoc = {
 /* --- send ----------------------------------------------------------------- */
 
 async function main() {
-  const docs = [...articleDocs, ...playlistDocs, ...interviewDocs, ...pahlawanDocs, settingsDoc];
+  const docs = [...articleDocs, ...playlistDocs, ...interviewDocs, settingsDoc];
 
   console.log(`  artikel   : ${articleDocs.length}`);
   console.log(`  playlist  : ${playlistDocs.length}`);
   console.log(`  wawancara : ${interviewDocs.length}`);
-  console.log(`  pahlawan  : ${pahlawanDocs.length}`);
   console.log(`  setelan   : 1`);
   console.log(`  total     : ${docs.length} dokumen\n`);
 
