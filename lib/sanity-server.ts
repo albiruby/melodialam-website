@@ -32,5 +32,3 @@ export const submissionsClient = token
     })
   : null;
 
-/** True when the demo queue is backed by Sanity rather than process memory. */
-export const demoStoreConfigured = submissionsClient !== null;

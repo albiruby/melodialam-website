@@ -92,14 +92,7 @@ export function getVideo(id: string): CatalogueVideo | undefined {
   return VIDEOS.find((v) => v.id === id);
 }
 
-export function videosByIds(ids: string[]): CatalogueVideo[] {
-  return ids.map(getVideo).filter((v): v is CatalogueVideo => Boolean(v));
-}
 
-/** Newest first, matching how the channel itself orders its Videos tab. */
-export function videosByVenue(venue: string | "all"): CatalogueVideo[] {
-  return venue === "all" ? VIDEOS : VIDEOS.filter((v) => v.venue === venue);
-}
 
 export function topVideos(n: number): CatalogueVideo[] {
   return [...VIDEOS].sort((a, b) => viewCount(b.views) - viewCount(a.views)).slice(0, n);

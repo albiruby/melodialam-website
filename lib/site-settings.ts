@@ -33,10 +33,6 @@ export interface CardCurtainCopy {
   articleLabel: string;
   /** Bottom "open the note" CTA on a Stories-page card. */
   articleCta: string;
-  /** Small top-right label on a home-page feature card. */
-  featureLabel: string;
-  /** Bottom CTA on a home-page feature card. */
-  featureCta: string;
 }
 
 export interface SiteSettings {
@@ -65,8 +61,6 @@ const STATIC: SiteSettings = {
   cardCurtain: {
     articleLabel: "READ STORY",
     articleCta: "Buka Catatan Redaksi",
-    featureLabel: "READ",
-    featureCta: "Baca Artikel Penuh",
   },
   tickerItems: TICKER_ITEMS.map((item) => ({ label: item.label, href: item.href })),
   source: "static",
@@ -80,7 +74,7 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   est,
   description,
   curationNote,
-  cardCurtain{ articleLabel, articleCta, featureLabel, featureCta },
+  cardCurtain{ articleLabel, articleCta },
   tickerItems[]{ label, href }
 }`;
 
@@ -95,8 +89,6 @@ interface SettingsDoc {
   cardCurtain?: {
     articleLabel?: string;
     articleCta?: string;
-    featureLabel?: string;
-    featureCta?: string;
   };
   tickerItems?: { label?: string; href?: string }[];
 }
@@ -135,8 +127,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     cardCurtain: {
       articleLabel: or(doc.cardCurtain?.articleLabel, STATIC.cardCurtain.articleLabel),
       articleCta: or(doc.cardCurtain?.articleCta, STATIC.cardCurtain.articleCta),
-      featureLabel: or(doc.cardCurtain?.featureLabel, STATIC.cardCurtain.featureLabel),
-      featureCta: or(doc.cardCurtain?.featureCta, STATIC.cardCurtain.featureCta),
     },
     tickerItems: tickerItems.length > 0 ? tickerItems : STATIC.tickerItems,
     source: "cms",

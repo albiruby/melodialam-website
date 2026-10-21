@@ -104,8 +104,3 @@ export const DEMO_PROGRAMS = [
   "Live at Melodi Samsara",
   "Tamu Podcast Bicara Melodi",
 ] as const;
-
-/** The list shape Sanity's `options.list` wants, from a readonly tuple. */
-export function asOptions(values: readonly string[]): { title: string; value: string }[] {
-  return values.map((value) => ({ title: value, value }));
-}

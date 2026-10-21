@@ -27,8 +27,6 @@ export const draftClient = token
     })
   : null;
 
-/** True when draft previews can be rendered at all. */
-export const draftPreviewConfigured = draftClient !== null;
 
 /**
  * The secret a preview link has to carry.
