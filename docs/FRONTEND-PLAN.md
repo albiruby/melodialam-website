@@ -1,5 +1,9 @@
 # FRONTEND-PLAN — Melodi Alam Web Platform
 
+> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
+> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
+> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
+
 > **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
 > dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
 > di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
@@ -176,7 +180,7 @@ metadata/ikon yang dihasilkan Next `[PERLU VERIFIKASI: komposisi 26 angka persis
 | Route | Parameter | Akses | Fallback |
 |---|---|---|---|
 | ROUTE-003 | path `slug` (12 nilai dari `ARTICLES`) | publik | `ALL.find` gagal → `notFound()` → `app/not-found.tsx`. `dynamicParams` dibiarkan default; slug tak dikenal dirender on-demand lalu 404 (`TERVERIFIKASI` membaca kode) |
-| ROUTE-002 | — | publik | — grid selalu memuat 12 kartu; tanpa filter/pencarian (disederhanakan 16 Okt 2026) |
+| ROUTE-002 | — | publik | — grid selalu memuat 6 kartu feed foto; tanpa filter/pencarian (disederhanakan 16 Okt 2026) |
 | ROUTE-005 | state filter/page/query di memori (bukan URL) | publik | `VideoRow` kosong → pesan "Tidak ada video yang cocok."; `safePage` dijepit ke rentang valid |
 | ROUTE-009 | — | publik (tidak ada auth) | `400` body bukan JSON; `422` validasi gagal; `201` sukses |
 
@@ -218,7 +222,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 | Route | Server (page) | Composite/Pattern | Motion | Video affordance |
 |---|---|---|---|---|
 | ROUTE-001 `/` | `page.tsx` | `ArticleCards.FrontCard`, `WatchLink` | `Reveal`, `RevealText`, `CountUp`, | `VideoModal`, `WatchButton` |
-| ROUTE-002 `/journal` | `page.tsx` | `ArticleCards.ArticleCard` (grid 12 kartu) | `Reveal` | — |
+| ROUTE-002 `/journal` | `page.tsx` | `ArticleCards.ArticleCard` (grid 6 kartu) | `Reveal` | — |
 | ROUTE-003 `/journal/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
 | ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
 | ROUTE-005 `/videos` | `page.tsx` | `VideosBrowser` (+`WatchLink`) | `Reveal` | `VideoModal`, `WatchButton` |
@@ -485,7 +489,7 @@ dua paruh identik.
 | ST-09 | `errors` (per-field) | Local UI | `DemoPortal` | respons `422` | `Field` | tidak |
 | ST-10 | `banner` (status/error) | Local UI | `DemoPortal` | respons server / `catch` | `role="status"` | tidak |
 | ST-11 | `pending` | Local UI | `DemoPortal` | komponen | tombol submit `disabled` | tidak |
-| ST-12 | `audioName`/`audioSrc` | Local UI | `DemoPortal` | `File` yang dipilih | preview `<audio>` | object URL (revoked) |
+| ST-12 | `audioFile`/`audioSrc` | Local UI + Blob | `DemoPortal` | `File` yang dipilih | preview `<audio>` + unggah ke Vercel Blob saat submit (route `/api/demo-audio`) | URL hasil unggah masuk `audioUrl` |
 | ST-13 | `drawerOpen` | Local UI | `SiteHeader` | komponen | drawer `hidden` | tidak |
 | ST-14 | video modal `{id,title} \| null` | Local UI | `VideoModal` | event `melodi:watch` | dialog | tidak |
 | ST-15 | `pct` (progress) | Local UI | `ScrollProgress` | `scrollY` | lebar bar | tidak |
@@ -734,7 +738,7 @@ yang dieksekusi pada fase DOCS ini.
 | FE-A1 | Bekukan `lib/content.ts` sebagai read-only selama migrasi | `lib/content.ts` | — | Tidak ada tulis simbolis; pembaca berhenti memodifikasi | lint + review diff |
 | FE-A2 | Tambah lapisan akses server-only `lib/cms/*` (di atas Payload) | baru | Payload terpasang | Client tidak pernah mengimpor `lib/cms` (R7) | aturan lint/boundary |
 | FE-A3 | Tambah pasangan `:focus-within` untuk seluruh utilitas reveal | `globals.css` | — | Semua `.group:hover` punya pasangan `:focus-within` | uji keyboard manual/E2E (`ACC-002`) |
-| FE-B1 | `/journal` membaca artikel dari Sanity dan merender satu grid 12 kartu (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
+| FE-B1 | `/journal` membaca artikel dari Sanity dan merender satu grid 6 kartu feed foto (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
 | FE-B2 | `/journal/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
 | FE-C1 | Migrasi `/submit` ke koleksi `DemoSubmissions` + moderasi | ROUTE-008, ROUTE-009 | FE-A2 | Buat → `moderation_status='pending'`; antrean publik hanya `approved` | integrasi + E2E submit |
 | FE-C2 | **Dibatalkan 16 Okt 2026** — antrean publik dihapus dari `/submit`; tidak ada antrean klien untuk diganti | ROUTE-008 | FE-C1 | — | — |

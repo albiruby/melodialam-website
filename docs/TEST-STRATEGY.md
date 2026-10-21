@@ -1,11 +1,15 @@
 # TEST-STRATEGY.md — Strategi Pengujian Melodi Alam
 
+> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
+> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
+> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
+
 > Status fase: **DOCS ONLY.** Tidak ada dependensi yang dipasang, tidak ada berkas test
 > yang dibuat, tidak ada perubahan kode. Seluruh referensi test di dokumen ini adalah
 > `RENCANA` kecuali dinyatakan `TERVERIFIKASI`.
 
 Stack keputusan (brief §7, `ADR-0006`): **Vitest** untuk unit/logika, **Playwright** untuk
-E2E, deploy ke **Vercel**. Keduanya **belum terpasang** (lihat §1). Cara membaca label:
+E2E, deploy ke **Vercel**. Vitest **sudah terpasang** (`npm test`, 9 kasus); Playwright belum (lihat §1). Cara membaca label:
 
 | Label | Arti |
 |---|---|
@@ -35,13 +39,13 @@ E2E, deploy ke **Vercel**. Keduanya **belum terpasang** (lihat §1). Cara membac
 
 Bukti yang dibaca langsung:
 
-- `package.json` (`TERVERIFIKASI`) hanya mendefinisikan 7 skrip: `dev`, `build`, `start`,
+- `package.json` (`TERVERIFIKASI`) mendefinisikan 10 skrip (termasuk `test`): `dev`, `build`, `start`,
   `lint`, `catalogue`, `brand`, `photos`. **Tidak ada** skrip `test`, `test:e2e`, atau
   sejenisnya.
 - `devDependencies` (`TERVERIFIKASI`): `@tailwindcss/turbopack`, `@types/node`,
   `@types/react`, `@types/react-dom`, `eslint`, `eslint-config-next`, `sharp`,
   `tailwindcss`, `typescript`. `dependencies`: `motion`, `next`, `react`, `react-dom`.
-  **Tidak ada `vitest`, `playwright`, `jest`, `cypress`, atau testing-library.**
+  **Vitest sudah terpasang** (`npm test`, `vitest.config.ts`, 9 kasus di `lib/content.test.ts`). Playwright, jest, cypress dan testing-library belum ada.
 - `package-lock.json` memuat `"@playwright/test": "^1.51.1"` **hanya** sebagai
   `peerDependencies` opsional milik paket `next` (`peerDependenciesMeta.optional = true`).
   Itu bukan instalasi dan bukan dependensi proyek (`TERVERIFIKASI`).
@@ -258,7 +262,7 @@ Turunan dari UI nyata (`VideosBrowser`, `VideoModal`, `DemoPortal`,
 |---|---|---|
 | `E-01` | Buka `/journal`, klik kartu artikel | URL menjadi `/journal/<slug>`; `<h1>` = judul artikel |
 | `E-02` | Kunjungi `/journal/<slug>` langsung; lalu `/journal/slug-tidak-ada` | Artikel render; slug tak dikenal → 404 (`app/not-found.tsx`) |
-| `E-03` | Buka `/journal` (Stories) | Satu grid tanpa kontrol: tepat 12 kartu; **tidak ada** filter, pencarian, hitungan, atau header hierarki |
+| `E-03` | Buka `/journal` (Stories) | Satu grid tanpa kontrol: tepat 6 kartu feed foto; **tidak ada** filter, pencarian, hitungan, atau header hierarki |
 | `E-04` | Cek elemen `#journal-search` & tombol kategori | Tidak ada satu pun di DOM — kontrol dihapus 16 Okt 2026 (penyederhanaan Stories) |
 
 ### 5.2 Videos (`FR-002`) & Bicara Melodi
@@ -575,8 +579,8 @@ Sebuah fase/rilis diterima bila, secara **observable**:
 Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 `D:\Project Website Melodi Alam\melodi-alam\`):
 
-- `package.json` — 7 skrip (`dev`, `build`, `start`, `lint`, `catalogue`, `brand`,
-  `photos`); dependensi persis seperti §1.1; **tanpa** test runner.
+- `package.json` — 10 skrip (`dev`, `build`, `start`, `lint`, `test`, `catalogue`, `brand`,
+  `photos`, `seed:sanity`, `seed:videos`); Vitest terpasang (`test`), Playwright belum.
 - `package-lock.json` (baris ~5365–5379) — `@playwright/test` hanya `peerDependencies`
   opsional milik `next`, bukan instalasi.
 - `app/api/demos/route.ts` — `GET`/`POST`, `str()`, cap per field, regex `link`, enum

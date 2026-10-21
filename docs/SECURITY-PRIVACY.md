@@ -1,5 +1,9 @@
 # SECURITY-PRIVACY — Melodi Alam Web Platform
 
+> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
+> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
+> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
+
 Dokumen ini adalah **tinjauan defensif** atas kode platform web **Melodi Alam**
 sebagaimana adanya hari ini, ditambah **kontrol yang dibutuhkan fase target**.
 Fokusnya: penanganan input, data pribadi (PII), dan kontrol penyalahgunaan.

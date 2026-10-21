@@ -1,5 +1,9 @@
 # ARCHITECTURE — Melodi Alam Web Platform
 
+> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
+> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
+> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
+
 > **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
 > dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
 > di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
@@ -100,7 +104,7 @@ tidak menjadi host terpisah; ia menempel pada App Router yang sudah ada.
 - **Port dev 3100**, bukan 3000 (`package.json`: `next dev -p 3100`).
 - **Skrip npm yang ada hanya enam:** `dev`, `build`, `start`, `lint`,
   `catalogue`, `brand`, `photos`. Tidak ada skrip test (`[PERLU VERIFIKASI]` untuk
-  Vitest/Playwright — belum terpasang).
+  Vitest terpasang (npm test); Playwright belum).
 - **Tidak ada env var** yang dibaca; tidak ada `.env`.
 - **`next.config.ts`** mengaktifkan `cacheComponents: true` dan
   `partialPrefetching: true`, dan hanya mengizinkan satu remote image host:
@@ -578,7 +582,7 @@ melodi-alam/
 │   ├── icon.png / apple-icon.png / favicon.ico   (generated, MOD-008)
 │   ├── not-found.tsx         404
 │   ├── api/demos/route.ts    GET + POST queue demo (MOD-007)
-│   ├── journal/page.tsx              index Stories (grid 12 kartu)
+│   ├── journal/page.tsx              index Stories (grid 6 kartu feed foto)
 │   ├── journal/[slug]/page.tsx       artikel statis + generateMetadata
 │   ├── bicara-melodi/page.tsx        interview index
 │   ├── videos/page.tsx               katalog + playlists
@@ -633,7 +637,7 @@ melodi-alam/
 | Konfigurasi/env | — | `TERVERIFIKASI` — tidak ada env var hari ini | Env baru ditambahkan fase berikutnya: koneksi DB, `PAYLOAD_SECRET`, kunci Storage |
 | Metadata/SEO | MOD-005 | `TERVERIFIKASI` — `metadata`/`generateMetadata` | Dipertahankan; jaga konsistensi nama brand (§13) |
 | Aksesibilitas | `globals.css` + komponen | `TERVERIFIKASI` — `prefers-reduced-motion` dihormati | `ACC-001`…`ACC-003` |
-| Testing | — | Tidak ada runner test (`[PERLU VERIFIKASI]`) | Vitest + Playwright (`RENCANA`) |
+| Testing | — | Vitest terpasang (`npm test`, 9 kasus); Playwright belum (`[PERLU VERIFIKASI]`) | Vitest + Playwright (`RENCANA`) |
 | Build/deploy | `next.config.ts` | `TERVERIFIKASI` — build statis | Vercel (`RENCANA`) |
 | Observability | — | Tidak ada | `RENCANA` |
 
@@ -832,7 +836,7 @@ DOCS ONLY dipatuhi.
    `[PERLU VERIFIKASI]` — perlu diverifikasi saat implementasi.
 5. **Env var baru.** Tidak ada env var hari ini; `DATABASE_URI`, `PAYLOAD_SECRET`,
    dan kredensial Storage adalah tambahan fase berikutnya, bukan asumsi sekarang.
-6. **Testing runner.** Tidak ada skrip test/Vitest/Playwright di `package.json`
+6. **Testing runner.** `npm test` menjalankan Vitest (9 kasus); Playwright belum dipasang
    (`TERVERIFIKASI`); keputusan pemilik menargetkan keduanya (`RENCANA`).
 7. **Konsistensi `GET /api/demos` di multi-instance.** Perilaku pada deployment
    Vercel multi-instance belum diuji (`ASUMSI`).

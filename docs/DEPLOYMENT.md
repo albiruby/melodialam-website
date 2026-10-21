@@ -69,7 +69,7 @@ Pilihan 3100 **tidak boleh** dianggap konfigurasi produksi.
 
 ### 1.2 Skrip yang benar-benar ada (`TERVERIFIKASI`)
 
-Hanya 7 skrip di `package.json`. Tidak ada skrip `test`, `typecheck`, atau `deploy`.
+`package.json` punya 10 skrip, termasuk `test` (Vitest). Tidak ada skrip `typecheck` atau `deploy`.
 
 | Command | Isi |
 |---|---|
@@ -137,7 +137,7 @@ Angka **terukur** yang harus dipakai sebagai baseline (bukan estimasi):
 | Halaman statis yang di-generate | **26** |
 | Waktu compile | **665 ms** |
 | Waktu TypeScript | **1754 ms** |
-| Waktu generate static pages | **1359 ms** (26/26) |
+| Waktu generate static pages | **~8 s** (32/32) |
 | Worker paralel | **11** |
 | Muat `next.config.ts` | **37 ms** |
 
@@ -147,16 +147,20 @@ Angka **terukur** yang harus dipakai sebagai baseline (bukan estimasi):
 |---|---|---|
 | `/` | `○` Static | Landing |
 | `/_not-found` | `○` Static | `app/not-found.tsx` |
-| `/api/demos` | `ƒ` **Dynamic** | **Route handler** (`GET`, `POST`); bukan halaman |
+| `/api/demos` | `ƒ` **Dynamic** | **Route handler** (`GET`, `POST`; 503 kalau Sanity gagal) |
+| `/api/demo-audio` | `ƒ` **Dynamic** | Token unggah audio ke Vercel Blob (maks 25 MB) |
+| `/api/revalidate` | `ƒ` **Dynamic** | Webhook Sanity → 6 tag cache |
+| `/journal/[slug]/opengraph-image` · `twitter-image` | `ƒ` **Dynamic** | Kartu sosial 1200×630 per artikel |
 | `/apple-icon.png` | `○` Static | Rute metadata otomatis dari `app/apple-icon.png` |
 | `/icon.png` | `○` Static | Rute metadata otomatis dari `app/icon.png` |
 | `/bicara-melodi` | `○` Static | |
-| `/journal` | `○` Static | Grid 12 kartu (Stories); tanpa filter/search |
-| `/journal/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug; **2 slug** statis penuh (`dua-dekade-endah-n-rhesa`, `melankolia-di-priok-baladagehel-dongker`), **10 slug** `◐` Partial Prerender |
-| `/pahlawan-kota` | `○` Static | |
-| `/spaces` | `○` Static | |
+| /journal | Static | Grid 6 kartu (Stories, hanya feed foto); tanpa filter/search |
+| `/journal/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug statis; artikel baru dari CMS dirender sesuai permintaan |
+| `/tentang` | `○` Static | Profil, ekosistem, kontak & partnership |
+| `/rss.xml` | `○` Static | RSS 2.0 dari artikel feed foto |
+| `/preview/[type]/[slug]` | `◐` Partial Prerender | Pratinjau draf; butuh `?secret=` |
 | `/submit` | `○` Static | Form POST ke `/api/demos` |
-| `/videos` | `○` Static | Filter/search/pagination client-side |
+| `/videos` | `○` Static | Seleksi 9 sesi Samsara + Bicara Melodi + playlists; **tidak** ada daftar katalog 292 video |
 
 **Kenapa ada `◐` Partial Prerender.** `next.config.ts` mengaktifkan
 **Cache Components** dan **Partial Prefetching** (`TERVERIFIKASI`):
@@ -349,7 +353,7 @@ paralel dengan job test. `RENCANA` — belum ada integrasi yang dikonfigurasi.
 | Perf `P-01` | dalam suite E2E | **Warning** di PR, blokir di rilis | Flaky-prone di runner bersama |
 | Coverage % | `vitest run --coverage` | **Warning** | Diagnostik, bukan sasaran |
 
-Skrip `vitest`/`playwright` **belum ada** hari ini (`package.json` hanya 7 skrip). Skrip
+Skrip `test` (Vitest) **sudah ada** hari ini — `npm test`, 9 kasus di `lib/content.test.ts`; Playwright belum (`package.json` kini 10 skrip, termasuk `test`). Skrip
 yang diusulkan ada di `docs/TEST-STRATEGY.md` §9.1 (`test`, `test:watch`, `test:e2e`,
 `test:e2e:report`).
 
@@ -392,7 +396,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build          # build + typecheck
-      - run: npx vitest run         # RENCANA: belum terpasang
+      - run: npx vitest run         # Vitest sudah terpasang
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test    # RENCANA: belum terpasang
 ```
@@ -638,7 +642,7 @@ Dijalankan pada URL Preview **dan** Production. Semua ruta berasal dari output b
 | # | Cek | Rute |
 |---|---|---|
 | 1 | Landing memuat, stylesheet terpasang (bukan halaman tanpa gaya) | `/` |
-| 2 | Stories memuat; satu grid 12 kartu, tanpa filter/search | `/journal` |
+| 2 | Stories memuat; satu grid 6 kartu feed foto, tanpa filter/search | `/journal` |
 | 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/journal/<slug>` (uji ≥2, termasuk `dua-dekade-endah-n-rhesa`) |
 | 4 | Interview index memuat | `/bicara-melodi` |
 | 5 | Katalog video memuat; modal putar membuka `[role="dialog"]` | `/videos` |
@@ -752,7 +756,7 @@ clean checkout. Ini bahaya deploy paling nyata saat ini.
 Berkas dan sistem yang dibaca/dijalankan **langsung** pada fase ini (semua relatif ke
 `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
 
-- `package.json` — 7 skrip persis seperti §1.2; dependensi dan devDependencies seperti
+- `package.json` — 10 skrip persis seperti §1.2; dependensi dan devDependencies seperti
   §1.1; **tanpa** skrip/test runner.
 - `next.config.ts` — `cacheComponents: true`, `partialPrefetching: true`,
   `images.remotePatterns` hanya `i.ytimg.com` (`/vi/**`), rule Turbopack

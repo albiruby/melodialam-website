@@ -118,6 +118,9 @@ Konvensi di §2.1–§2.3 berlaku hari ini (`TERVERIFIKASI`). §2.4–§2.8 adal
 | `link` | 500 | Ya |
 | `contact` | 160 | Ya |
 | `story` | 2000 | Ya |
+| `audioUrl` | 500 | Tidak — harus `https://…` + ekstensi audio |
+| `audioName` | 200 | Tidak |
+| `audioSize` | angka | Tidak |
 
 Pemotongan **diam-diam** (tanpa error): nilai lebih panjang dipotong, bukan
 ditolak. Cap ini dijalankan **sebelum** validasi wajib, sehingga field 700
@@ -131,11 +134,13 @@ karakter yang valid tetap lolos.
 | `201` | `POST` sukses | `{ ok, entry, queueLength, note }` |
 | `400` | Body `POST` bukan JSON valid | `{ error }` |
 | `422` | Validasi field gagal | `{ error, errors }` |
+| `413` | Body > 16 KB | `{ error }` |
+| `503` | Penyimpanan Sanity gagal | `{ error }` — form menampilkan pesan, bukan stack |
 
 Untuk `PUT`/`DELETE`/`PATCH` pada `/api/demos` (tidak diekspor): `ASUMSI` —
 Next.js mengembalikan `405` secara otomatis, tetapi **body dan `Allow`-header
 tidak dikendalikan oleh kode ini**; tidak diklaim di sini (`[PERLU VERIFIKASI]`).
-Tidak ada penanganan error tak terduga (`500`) eksplisit di route.
+Error tak terduga saat menulis ke Sanity ditangkap eksplisit: **503** dengan pesan ramah, dan detailnya dicatat di log server.
 
 ### 2.4 Format data target (`RENCANA`)
 
@@ -401,7 +406,7 @@ Field respons sukses:
 2. **Tidak ada autentikasi** pada operasi tulis publik.
 3. **Tidak ada rate limiting** — `RISK-001` (`ASUMSI`: spam flood membanjiri array).
 4. **Tidak ada idempotensi** — retry jaringan menghasilkan duplikat.
-5. **File audio tidak pernah dikirim ke server.** `DemoPortal.onPickAudio` hanya
+5. **File audio sekarang diunggah** ke Vercel Blob lewat `POST /api/demo-audio`, lalu `POST /api/demos` menerima `audioUrl`. `DemoPortal.onPickAudio` hanya
    `URL.createObjectURL(file)`; `POST` mengirim JSON teks, bukan `multipart`.
    Tidak ada unggahan, tidak ada validasi ukuran/tipe di server (target:
    `API-03` + §8, `BR-001`).
@@ -440,7 +445,7 @@ Rute eksak Payload (`API-09`…`API-11`) adalah `[PERLU VERIFIKASI]`.
 }
 ```
 
-**Prasyarat unggahan audio (`RENCANA`, `BR-001`).** Karena file tidak dapat
+**Unggahan audio (`TERVERIFIKASI` sejak 20 Okt 2026).** Karena file tidak dapat
 dikirim sebagai JSON, ditetapkan salah satu (keputusan terbuka, Open Questions):
 
 - `POST /api/demos/uploads` → keluarkan signed upload URL Supabase, diikuti

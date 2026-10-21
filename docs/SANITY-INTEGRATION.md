@@ -70,7 +70,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
 | **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Bicara Melodi / Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **pillarPost** | Konten | halaman `/kurasi` — section per pillar (Baca: Fakta Musik, Lirik, Trivia, Kutipan; Tonton: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
-| **article** | Konten | `/journal`, `/journal/[slug]`, hero + kartu beranda | ✅ tersambung |
+| **article** | Konten | `/journal`, `/journal/[slug]`, 4 kartu beranda (grid 2×2) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
 | **demoContact** | Submit Karya | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
@@ -117,9 +117,9 @@ lib/articles.ts  ── allArticles() / articleBySlug()
    │   "use cache" + cacheTag("articles") + cacheLife("minutes")
    │
    ▼
-app/(site)/journal/page.tsx         →  grid 12 kartu <ArticleCard> (server)
+app/(site)/journal/page.tsx         →  grid 6 kartu <ArticleCard> (feed foto)
 app/(site)/journal/[slug]/page.tsx  →  <ArticleBody rich={…} />
-app/(site)/page.tsx                 →  hero + 3 kartu (4 artikel terbaru)
+app/(site)/page.tsx                 →  grid 2×2 <FrontCard> (4 artikel terbaru) + strip Curated News
 ```
 
 ### Yang terjadi saat Anda klik Publish
@@ -173,15 +173,18 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/journal/page.tsx` | `allArticles()` | grid 12 kartu; tautan kecil "Dari Feed → Kurasi" |
-| `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | section per pillar (6 post per pillar; anchor `#fakta-musik` dst) |
-| `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `allArticles()` | yang kedua untuk blok "More …" |
+| `app/(site)/journal/page.tsx` | `feedArticles()` | grid 6 kartu (hanya feed foto); tautan kecil "Dari Feed → Curated News" |
+| `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated News**: section per pillar (6 post/pillar), kotak cari + chip pillar (cari membuka seluruh pool 55 post) |
+| `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `feedArticles()` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
 | `app/(site)/page.tsx` | `feedArticles()` + `allPillarPosts()` | 4 artikel feed-foto terbaru (grid 2×2) + strip **Curated News** 4 kartu feed |
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; tautan kecil ke `/kurasi` |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
+| `app/(site)/tentang/page.tsx` | — | profil, ekosistem, kanal, kontak & partnership (statis) |
+| `app/(site)/sitemap.ts` · `app/rss.xml/route.ts` | `feedArticles()` | sitemap & RSS ikut artikel yang diterbitkan dari Studio |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang cache |
+| `app/api/demo-audio/route.ts` | `@vercel/blob/client` `handleUpload` | token unggah audio demo (maks 25 MB, hanya audio) |
 
 `generateStaticParams` hanya mengembalikan 12 slug statis. Slug yang hanya ada di
 Sanity dirender saat diminta (`dynamicParams` default `true`) — **tanpa rebuild**.
@@ -325,6 +328,7 @@ Di sanity.io/manage → project → **API → Webhooks**:
 - **Method**: `POST`
 - **Secret**: nilai `SANITY_REVALIDATE_SECRET` yang sama
 - **Filter**: `_type in ["article", "pillarPost", "interview", "siteSettings", "video", "playlist", "videosPage"]`
+- **Trigger on**: **Create** + **Update** — publish hasil edit adalah update; tanpa centang ini, menyunting artikel tidak memicu webhook
 - **Projection**: `{_type, _id}`
 
 Header yang dikirim Sanity adalah `x-webhook-secret` (route juga menerima `?secret=`
@@ -374,7 +378,7 @@ Sengaja, bukan lupa:
 | **Pratinjau draf di Studio** | Halaman `/preview/...` sudah ada (lihat §11), tetapi belum ada tombol "Buka pratinjau" di dalam Studio — editor harus menyalin tautan manual. `next-sanity` (`defineLive`) plus route draft-mode masih belum dipasang. |
 | **Sesi video** | Katalog tetap artefak build-time (`ADR-0004`) dan **tidak** ditampilkan sebagai daftar: situs hanya menampilkan seleksi yang hidup sebagai dokumen `video` (9 sesi Samsara lewat `npm run seed:videos`). Tidak ada halaman arsip 292 video. |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
-| **Audio demo ke Sanity** | Kolom `audioName` hanya menyimpan metadata (BR-001); berkasnya belum disimpan. |
+| **Audio demo** | Sudah tersambung: berkas diunggah langsung ke Vercel Blob (`POST /api/demo-audio` membuat token), dokumen menyimpan `audioUrl` + `audioName`; butuh `BLOB_READ_WRITE_TOKEN` di Vercel. |
 | **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
 
 ---
@@ -419,7 +423,7 @@ Diperiksa dengan menjalankan, bukan membaca:
   "YouTube Channel". Mengubah `title` satu dokumen di Sanity menggantikan baris katalognya
   di HTML setelah jendela cache lewat (request pertama masih stale, request berikutnya
   bersih) — judul katalog lama lenyap dari halaman, jadi Sanity benar-benar menggantikan
-  entri katalog. Penghitung "292 video" dan "101 sesi panggung" tidak berubah.
+Penghitung di beranda kini memakai sesi yang dikurasi (9), bukan ukuran katalog.
 - Singleton `videosPage`: ter-seed dengan judul + label tautan, ketiga catatan dibiarkan
   kosong → `/videos` tetap merender hitungan hidup ("9 episode pilihan",
   "101 sesi panggung", "5 playlist publik • melodialam"). Mengubah `bicaraNote` ke penanda

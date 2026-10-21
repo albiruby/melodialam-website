@@ -256,7 +256,7 @@ const queue: DemoSubmission[] = [...SEED_DEMOS];   // module-level array
 ```
 
 Jadi hari ini **tidak ada PII at rest** — tetapi juga **tidak ada cara kurator
-menghubungi artis**. File audio adalah preview lokal (`URL.createObjectURL`) dan
+menghubungi artis**. File audio diputar sebagai preview lokal (`URL.createObjectURL`) **dan** diunggah ke Vercel Blob saat submit;
 **tidak diunggah** ke mana pun.
 
 ---
@@ -518,6 +518,7 @@ create table ecosystem_items (
 | `published_at` | date | no | — | — | Tanggal sortir + SEO |
 | `excerpt` | text | no | — | — | Ringkasan kartu + `<meta>` |
 | `hero_image` | text | no | — | — | Path gambar hero |
+| `media_type` | text | no | `'foto'` | check in ('foto','reel') | Sumber cerita; `reel` tidak tampil di Latest News/Stories |
 | `body_paragraphs` | text[] | no | `'{}'` | — | Paragraf artikel |
 | `featured` | boolean | no | `false` | partial index §7 | Penanda hero landing |
 

@@ -46,7 +46,7 @@ pemetaan di dokumen lain dapat diverifikasi alih-alih diasumsikan.
 
 | ID | Isi mengikat (ringkas) | Status | Bukti / catatan |
 |---|---|---|---|
-| `FR-001` | 1 artikel hero penuh + 3 artikel sub-grid, dipisah garis `1px solid #0D0D0D`, tanpa radius | `SEBAGIAN` | Hero + grid 3 kolom ada di `app/page.tsx` (`HeroArticle`, `FeatureCard`). **Kekurangan:** PRD meminta *thumbnail* sub-grid rasio `16:9`; kode memakai `aspect-[16/10]` di `FeatureCard` |
+| `FR-001` | ~~1 artikel hero penuh + 3 artikel sub-grid~~ → **4 kartu grid 2×2** (keputusan 20 Okt 2026) | `BERTENTANGAN` |
 | `FR-002` | Grid artikel 4 kolom berselang-seling (kolom ganjil gambar-dulu, genap judul-dulu), filter kategori, pencarian real-time, *empty state* + `Reset Filter` | `BERTENTANGAN` | Grid 4 kolom + pola berselang-seling (`ArticleCard` `titleFirst`) **ada dan terverifikasi** (16 Okt 2026). **Filter/pencarian/empty-state dihapus atas permintaan** pada tanggal yang sama (penyederhanaan Stories) — PRD lama tidak lagi diikuti pada bagian itu; lihat `docs/FRONTEND-PLAN.md` |
 | `FR-003` | Pembaca artikel penuh: rubrik, kota, tanggal, estimasi waktu baca, penulis, gambar, seluruh paragraf, tautan YouTube, tutup via `✕` / backdrop / `Escape`, *scroll-lock* | `BERTENTANGAN` | Artikel adalah **route** `/journal/[slug]`, bukan drawer (ADR-0001). Karena itu tidak ada `✕`, backdrop, `Escape`, atau scroll-lock — navigasi browser yang menggantikannya. **Estimasi waktu baca belum ada** |
 | `FR-004` | Indeks wawancara tipografi kontras: nama artis *Serif*, judul *Bold Uppercase Sans*, tag miring berkurung di bawah kanan foto | `SEBAGIAN` | `app/bicara-melodi/page.tsx` menampilkan nama artis dan judul dengan kontras tersebut. **Perlu diverifikasi:** keberadaan tag berkurung `(bicara melodi s3)` / `(profile)` |
@@ -80,7 +80,7 @@ menghapus perilaku hover-nya.
 | ID | Requirement | Status |
 |---|---|---|
 | `ACC-001` | Kontras teks utama `#0D0D0D` di atas `#FFFFFF` / `#F6F5F2` ≥ 15:1 | `TERVERIFIKASI-ADA` menurut nilai warna; **belum ada pengukuran otomatis** |
-| `ACC-002` | Elemen hover-reveal wajib setara lewat keyboard (`:focus-within` berperilaku seperti `:hover`) | `BERTENTANGAN` — **nol selektor `:focus*` di `app/globals.css`**. Seluruh reveal adalah hover-only. Ini gap aksesibilitas nyata, bukan teoretis |
+| `ACC-002` | Elemen hover-reveal wajib setara lewat keyboard (`:focus-within`) | `SESUAI` — `app/globals.css` punya `:focus-visible` + kembaran `:focus-within` untuk setiap affordance hover |
 | `ACC-003` | Mendukung `@media (prefers-reduced-motion: reduce)` | `TERVERIFIKASI-ADA` — blok global di `globals.css` + `MotionConfig reducedMotion="user"` di `components/motion/MotionRoot.tsx` |
 
 ## 5. Non-Functional Requirements (`NFR`)
