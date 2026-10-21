@@ -50,6 +50,7 @@ melewati tahap rencana. Yang benar hari ini:
 | [`DATA-MODEL.md`](DATA-MODEL.md) | Engineer backend | Entitas saat ini, skema Postgres target, RLS, migrasi |
 | [`API-CONTRACTS.md`](API-CONTRACTS.md) | Engineer, integrator | Kontrak endpoint hari ini dan target, model error, OpenAPI |
 | [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) | Engineer, pemilik produk | Temuan keamanan, penanganan PII, kontrol anti-penyalahgunaan |
+| [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026 |
 
 ### Implementasi
 

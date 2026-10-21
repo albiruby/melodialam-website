@@ -145,7 +145,7 @@ kurator `RENCANA` (`ADR-0005`); pihak ketiga YouTube (embed + thumbnail).
 | T6 | MIME sniffing / kebocoran Referer | Seluruh situs | **Tidak ada** `X-Content-Type-Options`/`Referrer-Policy` | **Rendah** |
 | T7 | Kebocoran PII kontak | `route.ts` | `contact` **tidak pernah** dipersistensi | **Rendah** hari ini |
 | T8 | Kontrol iframe embed dibajak | `VideoModal` | `id` dari katalog statis; origin tetap | **Info** |
-| T9 | Path traversal / eksekusi berkas audio | `DemoPortal` | Tidak ada unggahan (hanya blob lokal) | **N/A** hari ini |
+| T9 | Path traversal / eksekusi berkas audio | `DemoPortal` | Unggahan ke Vercel Blob; key objek dibentuk di peramban dari nama file asli | **TERVERIFIKASI 21 Okt 2026** - belum ada allowlist host/key di sisi server (`app/api/demo-audio/route.ts:26-30`) ||
 
 ---
 
@@ -415,9 +415,9 @@ Beberapa di bawah ini adalah temuan yang biasanya dicari; jawabannya penting.
 | `dangerouslySetInnerHTML` di repo | **Tidak ada** (0 hasil) | Pencarian lintas repo |
 | XSS dari `artist`/`city`/`title`/`genre`/`story` | **Aman** — React auto-escape | `DemoPortal.tsx:244-256` (semua JSX text) |
 | XSS dari input pencarian | **Aman** — di-escape; hanya difilter lokal | `VideosBrowser.tsx:83,23-25` — tidak pernah ke server; `JournalBrowser` dihapus 16 Okt 2026 |
-| `javascript:`/`data:` via `link` | **Aman** — ditolak `422` oleh regex skema | `route.ts:64` |
-| PII (`contact`) at rest | **Tidak ada PII tersimpan** | `route.ts:77-88` — `entry` tanpa `contact` |
-| Berkas audio diunggah | **Tidak** — hanya blob lokal peramban | `DemoPortal.tsx:30`; JSON bukan multipart |
+| `javascript:`/`data:` via `link` | **Aman** — ditolak `422` oleh regex skema | `route.ts:225` |
+| PII (`contact`) at rest | **Tersimpan** di dokumen `demoContact` (dataset privat) | `app/api/demos/route.ts:313-317`; `route.ts:77-88` hanya memproyeksikan `entry` tanpa `contact` ke antrean publik. Tidak ada jalur hapus (`SEC-F07`) |
+| Berkas audio diunggah | **Ya** — ke Vercel Blob lewat `POST /api/demo-audio` | `components/DemoPortal.tsx:112-115`; `access: "public"` dan nama file asli ikut ke key objek. Retensi 90 hari masih `RENCANA` |
 | `note` dibaca pihak ketiga / dirender | **Tidak** — hanya di respons pengirim; `DemoPortal` mengabaikan `note` | `route.ts:99`; `DemoPortal.tsx:51-64` |
 | Allow-list gambar remote | **Ketat** — hanya `i.ytimg.com/vi/**` via HTTPS | `next.config.ts:13-19` |
 | Origin iframe embed | **Tetap** — `www.youtube.com` dari katalog statis | `VideoModal.tsx:75` |
@@ -435,7 +435,7 @@ terverifikasi.
 | ID | Severity | Kategori | Lokasi (berkas:baris) | Requirement |
 |---|---|---|---|---|
 | SEC-F01 | **Medium** | Security misconfiguration | `next.config.ts` (tidak ada `headers()`) | `NFR-003`, `NFR-004` |
-| SEC-F02 | **Medium** | Abuse / availability | `app/api/demos/route.ts:36-102` | `RISK-001` |
+| SEC-F02 | **High** (eskalasi 21 Okt 2026: baris sudah persisten + audio tersimpan) | Abuse / availability | `app/api/demos/route.ts:36-102` | `RISK-001` - hanya batas body yang ada; rate limit/Turnstile/Idempotency-Key belum |
 | SEC-F03 | **Medium** | Upload control | `components/DemoPortal.tsx:27-34,159-165` | `BR-001` |
 | SEC-F04 | **Low** | URL handling / abuse | `route.ts:64`; `DemoPortal.tsx:257-264` | `RISK-001` |
 | SEC-F05 | **Low** | Privacy / truthfulness | `route.ts:94-102` | `RISK-002` |
@@ -461,7 +461,7 @@ bukan karena pengerasan yang sudah dilakukan.
 |---|---|---|---|---|
 | `artist`, `city`, `title`, `genre`, `program`, `link`, `story` | — | Publik (karya) | Memori proses (`queue`) | Sampai proses restart |
 | `contact` | `manager@example.test` | **Pribadi (PII)** | **Tidak disimpan** — hanya di string `note` | Tidak ada |
-| Berkas audio | `demo.mp3` | Terbatas | Tidak diunggah; blob lokal peramban | Hilang saat tab ditutup |
+| Berkas audio | `demo.mp3` | Terbatas (25 MB, tipe audio) | Diunggah ke Blob storage; URL disimpan di dokumen kiriman | Tidak dihapus otomatis (retensi 90 hari `RENCANA`) |
 | IP pengirim, User-Agent | — | Pribadi | Tidak ditangani kode; mungkin dicatat platform | `[PERLU VERIFIKASI]` |
 | Header/metadata submission | timestamp `submittedAt` | Internal | Memori proses | Sampai restart |
 

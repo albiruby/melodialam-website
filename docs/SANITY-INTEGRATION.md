@@ -379,7 +379,7 @@ Sengaja, bukan lupa:
 | **Sesi video** | Katalog tetap artefak build-time (`ADR-0004`) dan **tidak** ditampilkan sebagai daftar: situs hanya menampilkan seleksi yang hidup sebagai dokumen `video` (9 sesi Samsara lewat `npm run seed:videos`). Tidak ada halaman arsip 292 video. |
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Audio demo** | Sudah tersambung: berkas diunggah langsung ke Vercel Blob (`POST /api/demo-audio` membuat token), dokumen menyimpan `audioUrl` + `audioName`; butuh `BLOB_READ_WRITE_TOKEN` di Vercel. |
-| **Notifikasi email** | Belum ada. Kiriman demo tidak mengirim email ke siapa pun. |
+| **Notifikasi email** | Kode ada (`app/api/demos/route.ts:134-191`) tapi **inert** sampai `RESEND_API_KEY` diset; alamat tujuan default adalah dua alamat partnership (`DEMO_NOTIFY_TO`). |
 
 ---
 
