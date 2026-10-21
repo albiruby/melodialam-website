@@ -25,6 +25,9 @@ const SAFE_CSP = ["base-uri 'self'", "object-src 'none'", "frame-ancestors 'self
  *
  * `media-src` must allow `blob:` because the demo form previews a picked file
  * from an object URL, and `frame-src` must allow YouTube for the watch modal.
+ * `connect-src` must allow Vercel Blob's storage hosts: the browser uploads the
+ * demo audio straight to Blob, so without it the upload is blocked the moment
+ * this policy is enforced.
  */
 const REPORT_ONLY_CSP = [
   "default-src 'self'",
@@ -38,7 +41,7 @@ const REPORT_ONLY_CSP = [
   "font-src 'self' data: https://*.sanity.io",
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "connect-src 'self' https://*.api.sanity.io https://*.apicdn.sanity.io wss://*.api.sanity.io",
+  "connect-src 'self' https://*.api.sanity.io https://*.apicdn.sanity.io wss://*.api.sanity.io https://*.public.blob.vercel-storage.com https://*.blob.vercel-storage.com",
   "worker-src 'self' blob:",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
 ].join("; ");

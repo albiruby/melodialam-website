@@ -55,6 +55,37 @@ function str(value: unknown, max = MAX_FIELD): string {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+/**
+ * The size of the uploaded audio, in bytes.
+ *
+ * The form sends a number, but a crafted body may send the same figure as a
+ * string. Both are read, because a size that silently arrives as zero would
+ * turn the 25 MB check below into a check that never fires.
+ */
+function bytes(value: unknown): number {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && /^\d+$/.test(value.trim())) return Number(value.trim());
+  return 0;
+}
+
+/**
+ * Whether a URL points at a file in our own Vercel Blob store.
+ *
+ * The browser uploads the demo audio straight to Blob, so the only legitimate
+ * host is the one Blob hands back. Both the public and the private store
+ * hostname end in `.blob.vercel-storage.com`.
+ */
+function isOwnBlobUrl(value: string): boolean {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    return false;
+  }
+  if (url.protocol !== "https:") return false;
+  return url.hostname.endsWith(".blob.vercel-storage.com");
+}
+
 function id(): string {
   return `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
@@ -198,7 +229,13 @@ export async function POST(request: Request) {
 
   let body: DemoBody;
   try {
-    body = JSON.parse(raw) as DemoBody;
+    const parsed: unknown = JSON.parse(raw);
+    // `JSON.parse("null")` succeeds and hands back null, so a body of `null`
+    // would reach the field reads below and crash the request.
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return NextResponse.json({ error: "Body harus berupa objek JSON." }, { status: 400 });
+    }
+    body = parsed as DemoBody;
   } catch {
     return NextResponse.json({ error: "Body harus berupa JSON." }, { status: 400 });
   }
@@ -212,7 +249,7 @@ export async function POST(request: Request) {
   const contact = str(body.contact, 160);
   const story = str(body.story, 2000);
   const audioName = str(body.audioName, 200);
-  const audioSize = typeof body.audioSize === "number" ? body.audioSize : 0;
+  const audioSize = bytes(body.audioSize);
   const audioUrl = str(body.audioUrl, 500);
 
   const errors: Record<string, string> = {};
@@ -244,12 +281,13 @@ export async function POST(request: Request) {
   }
 
   // The file is uploaded straight to Blob storage; the submission only carries
-  // its URL. Reject anything that is not an https link to one of the formats
-  // the form accepts, so a crafted body cannot point the desk at another host.
+  // its URL. The URL has to point at our own Blob store, not merely at any
+  // https address that ends in .mp3 — otherwise a crafted body could hand the
+  // desk a link to somebody else's server and have it look like our upload.
   if (audioUrl) {
     const path = audioUrl.split("?")[0].toLowerCase();
     const allowed = DEMO_AUDIO_EXTENSIONS.some((ext) => path.endsWith(ext));
-    if (!/^https:\/\//i.test(audioUrl) || !allowed) {
+    if (!allowed || !isOwnBlobUrl(audioUrl)) {
       errors.audioUrl = "Tautan audio tidak dikenal.";
     }
   }

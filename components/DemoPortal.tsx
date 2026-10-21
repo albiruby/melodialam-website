@@ -99,9 +99,12 @@ export function DemoPortal() {
     setBanner(null);
 
     const form = new FormData(event.currentTarget);
-    const payload: Record<string, string> = Object.fromEntries(
+    // The audio size is a number, not a string: the server reads it as a byte
+    // count, and a size that arrives as "26214400" instead of 26214400 would
+    // never be compared against the 25 MB limit.
+    const payload: Record<string, string | number> = Object.fromEntries(
       [...form.entries()].filter(([, value]) => typeof value === "string"),
-    ) as Record<string, string>;
+    ) as Record<string, string | number>;
 
     try {
       // The file goes straight to Vercel Blob, not through this request: a
@@ -115,7 +118,7 @@ export function DemoPortal() {
           });
           payload.audioUrl = blob.url;
           payload.audioName = audioFile.name;
-          payload.audioSize = String(audioFile.size);
+          payload.audioSize = audioFile.size;
         } catch {
           setBannerIsError(true);
           setBanner("Audio gagal diunggah. Coba lagi, atau hapus berkasnya lalu kirim tanpa audio.");
