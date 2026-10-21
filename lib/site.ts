@@ -30,7 +30,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Latest News" },
   { href: "/journal", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
-  { href: "/videos", label: "Videos", badge: "YT" },
+  { href: "/videos", label: "Melodi Samsara", badge: "YT" },
   { href: "/kurasi", label: "Curated News" },
 ];
 
@@ -40,7 +40,10 @@ export const FOOTER_RUBRIKS: NavItem[] = [
   { href: "/journal", label: "#FaktaMusik & Esai Skena" },
   { href: "/bicara-melodi", label: "Bicara Melodi Podcast (Season 3)" },
   { href: "/videos", label: "Melodi Samsara Live Session" },
-  { href: "/videos", label: "Melodi Taman Outdoor Session" },
+  {
+    href: "https://www.youtube.com/playlist?list=PL3hstHxZXaodgPZhIreiGMzKZYbinho9J",
+    label: "Melodi Taman Outdoor Session",
+  },
   { href: "/tentang", label: "Tentang & Kontak" },
   { href: "/submit", label: "Submit Karya" },
 ];

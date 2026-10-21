@@ -2,26 +2,25 @@ import { cacheLife, cacheTag } from "next/cache";
 import { contentClient } from "./sanity";
 
 /**
- * Copy for the /videos page's three section heads.
+ * Copy for the /videos page's section heads.
  *
  * Reads the `videosPage` singleton from Sanity and falls back to the strings
  * the page hard-coded before the CMS owned them, so the page renders before an
  * editor has filled the document in — and keeps rendering if Sanity is
  * unreachable.
  *
+ * The interview episodes have their own page, so the copy for that section is
+ * gone: there is no second set of headings to keep in step.
+ *
  * The small notes have three states, not two: a note that was never filled in
- * means "compute it" (the page renders the live counts, e.g. "9 episode
- * pilihan"), an empty note means the editor cleared it and wants no note at
+ * means "compute it" (the page renders the live counts, e.g. "101 sesi
+ * panggung"), an empty note means the editor cleared it and wants no note at
  * all, and any other text is shown as written.
  */
 
 export const VIDEOS_PAGE_TAG = "videosPage";
 
 export interface VideosPageCopy {
-  bicaraTitle: string;
-  /** null = let the page compute the live count note; "" = show nothing. */
-  bicaraNote: string | null;
-  bicaraLinkLabel: string;
   samsaraTitle: string;
   /** null = let the page compute the live count note; "" = show nothing. */
   samsaraNote: string | null;
@@ -34,9 +33,6 @@ export interface VideosPageCopy {
 }
 
 const STATIC: VideosPageCopy = {
-  bicaraTitle: "Bicara Melodi",
-  bicaraNote: null,
-  bicaraLinkLabel: "Lihat semua episode",
   samsaraTitle: "Melodi Samsara",
   samsaraNote: null,
   samsaraLinkLabel: "YouTube Channel",
@@ -46,15 +42,11 @@ const STATIC: VideosPageCopy = {
 };
 
 const PAGE_QUERY = /* groq */ `*[_type == "videosPage"][0]{
-  bicaraTitle, bicaraNote, bicaraLinkLabel,
   samsaraTitle, samsaraNote, samsaraLinkLabel,
   playlistsTitle, playlistsNote
 }`;
 
 interface PageDoc {
-  bicaraTitle?: string;
-  bicaraNote?: string;
-  bicaraLinkLabel?: string;
   samsaraTitle?: string;
   samsaraNote?: string;
   samsaraLinkLabel?: string;
@@ -89,9 +81,6 @@ export async function getVideosPageCopy(): Promise<VideosPageCopy> {
   if (!doc) return STATIC;
 
   return {
-    bicaraTitle: or(doc.bicaraTitle, STATIC.bicaraTitle),
-    bicaraNote: note(doc.bicaraNote),
-    bicaraLinkLabel: or(doc.bicaraLinkLabel, STATIC.bicaraLinkLabel),
     samsaraTitle: or(doc.samsaraTitle, STATIC.samsaraTitle),
     samsaraNote: note(doc.samsaraNote),
     samsaraLinkLabel: or(doc.samsaraLinkLabel, STATIC.samsaraLinkLabel),

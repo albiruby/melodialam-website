@@ -201,6 +201,25 @@ export async function allArticles(): Promise<SiteArticle[]> {
  * its own URL keeps working — but it does not take a slot in either section
  * until an editor gives it a photo of its own.
  */
+/**
+ * The shared story list.
+ *
+ * Feed-photo stories first (newest first), then the reel stories (newest
+ * first). The headline slots are always picture-led, and a reel story waits at
+ * the end of the list - it still has a page and still belongs in the archive,
+ * but it never takes a headline away from a story we have a photograph of.
+ *
+ * One pool for every listing: the home page shows the first four of it, the
+ * Stories page shows eight, the sitemap and the feed list the same eight, so
+ * the numbers can never disagree between pages.
+ */
+export async function latestStories(count = 8): Promise<SiteArticle[]> {
+  const articles = await allArticles();
+  const photo = articles.filter((a) => a.mediaType !== "reel");
+  const reel = articles.filter((a) => a.mediaType === "reel");
+  return [...photo, ...reel].slice(0, count);
+}
+
 export async function feedArticles(): Promise<SiteArticle[]> {
   const articles = await allArticles();
   return articles.filter((a) => a.mediaType !== "reel");

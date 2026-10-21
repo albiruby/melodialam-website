@@ -1,17 +1,18 @@
 import type { MetadataRoute } from "next";
-import { feedArticles } from "@/lib/articles";
+import { latestStories } from "@/lib/articles";
 import { SITE } from "@/lib/site";
 
 /**
  * Only routes that are real URLs appear here. The video player is a modal with
  * no address of its own (ADR-0001), so there is nothing to list for it.
  *
- * The article list is read through `feedArticles()` rather than the static
+ * The article list is read through `latestStories()` rather than the static
  * `ARTICLES` array: an article an editor publishes in the Studio has a real
- * URL, and a sitemap built from the file would never mention it.
+ * URL, and a sitemap built from the file would never mention it. The same
+ * eight stories the Stories page lists are the eight listed here.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const articles = await feedArticles();
+  const articles = await latestStories(8);
   const lastArticle = articles[0]?.dateISO ?? new Date().toISOString().slice(0, 10);
 
   const pages: { path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" }[] = [
@@ -31,8 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: page.changeFrequency,
       priority: page.priority,
     })),
-    // Only the feed-photo stories are advertised: they are the ones the
-    // sections carry. A reel story keeps its URL but is not offered here.
+    // The same eight stories the Stories page lists.
     ...articles.map((article) => ({
       url: `${SITE.url}/journal/${article.slug}`,
       lastModified: article.dateISO,

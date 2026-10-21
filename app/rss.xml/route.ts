@@ -1,11 +1,12 @@
-import { feedArticles } from "@/lib/articles";
+import { latestStories } from "@/lib/articles";
 import { SITE } from "@/lib/site";
 
 /**
  * RSS 2.0 for the Stories.
  *
- * Same pool as the page: the feed-photo articles only, newest first. A reader
- * that subscribes gets what the home page would show, not the whole drawer.
+ * Same pool as the page: the eight stories the Stories page lists, in the same
+ * order. A reader that subscribes gets what the home page opens with, not the
+ * whole drawer.
  */
 
 const FEED_TITLE = `${SITE.name} — ${SITE.tagline}`;
@@ -25,7 +26,7 @@ function rfc822(iso: string): string {
 }
 
 export async function GET() {
-  const articles = await feedArticles();
+  const articles = await latestStories(8);
   const latest = articles[0]?.dateISO ?? new Date().toISOString().slice(0, 10);
 
   const items = articles

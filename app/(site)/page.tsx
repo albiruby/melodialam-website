@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { FrontCard } from "@/components/ArticleCards";
 import { PillarCard } from "@/components/PillarCards";
-import { feedArticles } from "@/lib/articles";
+import { latestStories } from "@/lib/articles";
 import { allPillarPosts } from "@/lib/pillars";
 import { allVideos } from "@/lib/videos";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -23,10 +23,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  // Sanity when it is configured, the static file otherwise.
-  const articles = await feedArticles();
-  // "Latest News" is the four newest; `feedArticles()` is newest-first.
-  const latest = articles.slice(0, 4);
+  // One shared list: the four newest feed-photo stories open the page, and the
+  // same list fills the Stories page, the sitemap and the feed.
+  const stories = await latestStories(8);
+  const latest = stories.slice(0, 4);
 
   // Sanity first, the build-time catalogue behind it. The counts line reads
   // only the videos the team curated into the CMS: the site shows a selection,
@@ -69,7 +69,7 @@ export default async function HomePage() {
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
-            <CountUp to={articles.length} /> artikel di journal • <CountUp to={curatedVideos} />{" "}
+            <CountUp to={stories.length} /> artikel di journal • <CountUp to={curatedVideos} />{" "}
             sesi panggung
           </span>
           <Link

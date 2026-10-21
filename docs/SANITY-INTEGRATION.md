@@ -68,7 +68,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
 | **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
-| **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Bicara Melodi / Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
+| **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **pillarPost** | Konten | halaman `/kurasi` — section per pillar (Baca: Fakta Musik, Lirik, Trivia, Kutipan; Tonton: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/journal`, `/journal/[slug]`, 4 kartu beranda (grid 2×2) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
@@ -179,7 +179,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/page.tsx` | `feedArticles()` + `allPillarPosts()` | 4 artikel feed-foto terbaru (grid 2×2) + strip **Curated News** 4 kartu feed |
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
-| `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `allInterviews()` + `getVideosPageCopy()` | seleksi Samsara hidup sebagai dokumen `video`; kepala bagian dari singleton `videosPage`; tautan kecil ke `/kurasi` |
+| `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` | halaman **Melodi Samsara**: 9 sesi Samsara + 5 playlist; judul bagian dari singleton `videosPage`; tautan kecil ke `/kurasi`. Episode wawancara tidak diulang di sini — punya halamannya sendiri (`/bicara-melodi`) |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/(site)/tentang/page.tsx` | — | profil, ekosistem, kanal, kontak & partnership (statis) |
 | `app/(site)/sitemap.ts` · `app/rss.xml/route.ts` | `feedArticles()` | sitemap & RSS ikut artikel yang diterbitkan dari Studio |

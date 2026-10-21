@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content";
-import { articleBySlug, feedArticles, staticArticleSlugs } from "@/lib/articles";
+import { articleBySlug, latestStories, staticArticleSlugs } from "@/lib/articles";
 import { SITE } from "@/lib/site";
 import { getSiteSettings } from "@/lib/site-settings";
 import { ArticleBody } from "@/components/ArticleBody";
@@ -63,7 +63,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
   // Same desk first, then topped up from the rest of the journal, so a category
   // with only one other article still fills the three-column grid. Only feed
   // photos are offered — the sections carry feed photos only.
-  const [every, settings] = await Promise.all([feedArticles(), getSiteSettings()]);
+  const [every, settings] = await Promise.all([latestStories(8), getSiteSettings()]);
   const sameDesk = every.filter((a) => a.slug !== article.slug && a.category === article.category);
   const otherDesks = every.filter((a) => a.slug !== article.slug && a.category !== article.category);
   const fallbacks = [...sameDesk, ...otherDesks].slice(0, 3);

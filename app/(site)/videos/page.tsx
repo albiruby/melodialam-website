@@ -2,21 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/Reveal";
 import { VideoRow } from "@/components/VideoRow";
-import { VideoModal, WatchButton } from "@/components/VideoModal";
-import { YoutubeThumb } from "@/components/YoutubeThumb";
+import { VideoModal } from "@/components/VideoModal";
 import { CHANNEL } from "@/lib/catalogue";
-import { allInterviews } from "@/lib/interviews";
 import { allPlaylists, allVideos } from "@/lib/videos";
 import { getVideosPageCopy } from "@/lib/videos-page";
 
 export const metadata: Metadata = {
-  title: "Videos",
+  title: "Melodi Samsara",
   description:
-    "Katalog video Melodi Alam: live session Melodi Samsara dan Melodi Taman, serta wawancara Bicara Melodi.",
+    "Sesi panggung Melodi Samsara di Bogor: live session intim bersama musisi Indonesia, plus playlist resmi Melodi Alam di YouTube.",
   alternates: { canonical: "/videos" },
 };
 
-/** The live sessions shown before the archive takes over — nine, to match the Bicara Melodi grid. */
+/** The live sessions shown before the rest stay on the channel — nine of them. */
 const SAMSARA_PREVIEW = 9;
 
 function SectionHead({
@@ -24,18 +22,22 @@ function SectionHead({
   note,
   href,
   linkLabel,
+  level = "h2",
 }: {
   title: string;
   note: string;
   href?: string;
   linkLabel?: string;
+  /** The first section on the page is the page's own heading. */
+  level?: "h1" | "h2";
 }) {
+  const Heading = level;
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
       <div className="flex items-baseline gap-4">
-        <h2 className="font-display text-4xl font-black uppercase leading-none tracking-tight sm:text-5xl">
+        <Heading className="font-display text-4xl font-black uppercase leading-none tracking-tight sm:text-5xl">
           {title}
-        </h2>
+        </Heading>
         {/* An empty note is a request to say nothing, not to show an empty gap. */}
         {note ? (
           <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
@@ -54,57 +56,23 @@ function SectionHead({
 }
 
 export default async function VideosPage() {
-  const [videos, playlists, interviews, copy] = await Promise.all([
+  const [videos, playlists, copy] = await Promise.all([
     allVideos(),
     allPlaylists(),
-    allInterviews(),
     getVideosPageCopy(),
   ]);
 
-  // Two editorial sections, then the whole catalogue.
+  // Melodi Samsara, the live sessions. The interview episodes live on their own
+  // page, so they are not repeated here.
   const samsara = videos.filter((v) => v.venue === "Melodi Samsara");
   const samsaraPreview = samsara.slice(0, SAMSARA_PREVIEW);
 
   return (
     <>
-      {/* ---------- Bicara Melodi: the curated short list ---------- */}
-      <Reveal>
-        <SectionHead
-          title={copy.bicaraTitle}
-          note={copy.bicaraNote ?? `${interviews.length} episode pilihan`}
-          href="/bicara-melodi"
-          linkLabel={copy.bicaraLinkLabel}
-        />
-        <div className="grid grid-cols-1 gap-6 border-b border-ink py-6 sm:grid-cols-2 lg:grid-cols-3">
-          {interviews.map((interview) => (
-            <article key={interview.slug} className="group">
-              <WatchButton
-                id={interview.videoId}
-                title={`${interview.artist} — ${interview.headline}`}
-                className="block aspect-video w-full overflow-hidden border border-ink bg-neutral-900"
-              >
-                <YoutubeThumb
-                  id={interview.videoId}
-                  className="editorial-img h-full w-full object-cover"
-                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
-                  width={1280}
-                  height={720}
-                />
-              </WatchButton>
-              <h3 className="mt-3 font-display text-2xl leading-none tracking-tight">
-                {interview.artist}
-              </h3>
-              <p className="mt-1 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest">
-                {interview.headline}
-              </p>
-            </article>
-          ))}
-        </div>
-      </Reveal>
-
       {/* ---------- Melodi Samsara: the live sessions ---------- */}
       <Reveal>
         <SectionHead
+          level="h1"
           title={copy.samsaraTitle}
           note={copy.samsaraNote ?? `${samsara.length} sesi panggung`}
           href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}

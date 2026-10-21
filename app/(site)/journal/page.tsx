@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/ArticleCards";
 import { Reveal } from "@/components/Reveal";
-import { feedArticles } from "@/lib/articles";
+import { latestStories } from "@/lib/articles";
 import { getSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
@@ -13,10 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function JournalPage() {
-  // Sanity when it is configured, the static file otherwise. Only the stories
-  // that came from a feed photo take a slot here; a reel story waits in the
-  // CMS until it has a photo of its own.
-  const [articles, settings] = await Promise.all([feedArticles(), getSiteSettings()]);
+  // The same list the home page opens with, extended to eight so the grid
+  // closes as two full rows of four.
+  const [articles, settings] = await Promise.all([latestStories(8), getSiteSettings()]);
 
   return (
     <Reveal>

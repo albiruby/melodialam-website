@@ -68,7 +68,14 @@ export function ArticleCard({
       </div>
 
       <div className="flex justify-between border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
-        <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
+        <span className="flex items-center gap-2">
+          <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
+          {article.mediaType === "reel" ? (
+            <span className="border border-ink px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider">
+              Reel
+            </span>
+          ) : null}
+        </span>
         <span className="flex items-center gap-2">
           <span>{articleReadingTime(article)} menit</span>
           <span aria-hidden>•</span>
