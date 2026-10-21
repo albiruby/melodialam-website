@@ -196,7 +196,7 @@ export async function allArticles(): Promise<SiteArticle[]> {
 /**
  * The feed-photo articles, newest first.
  *
- * The house rule: Latest News (home) and Stories (/journal) only carry stories
+ * The house rule: Latest News (home) and Stories (/stories) only carry stories
  * that came from a feed photo on Instagram. A reel story stays in the CMS — and
  * its own URL keeps working — but it does not take a slot in either section
  * until an editor gives it a photo of its own.

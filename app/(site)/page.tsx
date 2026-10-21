@@ -73,7 +73,7 @@ export default async function HomePage() {
             sesi panggung
           </span>
           <Link
-            href="/journal"
+            href="/stories"
             className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
           >
             Semua artikel ↗

@@ -160,8 +160,8 @@ Semua halaman berada di bawah root layout tunggal
 | Route ID | Path | Berkas | Mode render | Data yang dibaca | Client component yang di-mount |
 |---|---|---|---|---|---|
 | ROUTE-001 | `/` | `app/page.tsx` | Static (server component) | `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`, `SPACE_ITEMS` (`lib/content`); `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS` (`lib/catalogue`) | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage`, `WatchButton`, `WatchLink`, `VideoModal` |
-| ROUTE-002 | `/journal` (Stories) | `app/journal/page.tsx` | Static | `feedArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
-| ROUTE-003 | `/journal/[slug]` | `app/journal/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
+| ROUTE-002 | `/stories` (Stories) | `app/stories/page.tsx` | Static | `feedArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
+| ROUTE-003 | `/stories/[slug]` | `app/stories/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
 | ROUTE-004 | `/bicara-melodi` | `app/bicara-melodi/page.tsx` | Static | `INTERVIEW_ROWS` (`lib/content`); `videosByIds` (`lib/catalogue`) | `Reveal`, `WatchButton`, `VideoModal` |
 | ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
 | ROUTE-006 | `/pahlawan-kota` | `app/pahlawan-kota/page.tsx` | Static | `allPahlawanRows()` (`lib/pahlawan`): Sanity `pahlawanRow`, fallback `GENRE_ROWS` | `Reveal` |
@@ -222,8 +222,8 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 | Route | Server (page) | Composite/Pattern | Motion | Video affordance |
 |---|---|---|---|---|
 | ROUTE-001 `/` | `page.tsx` | `ArticleCards.FrontCard`, `WatchLink` | `Reveal`, `RevealText`, `CountUp`, | `VideoModal`, `WatchButton` |
-| ROUTE-002 `/journal` | `page.tsx` | `ArticleCards.ArticleCard` (grid 6 kartu) | `Reveal` | — |
-| ROUTE-003 `/journal/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
+| ROUTE-002 `/stories` | `page.tsx` | `ArticleCards.ArticleCard` (grid 6 kartu) | `Reveal` | — |
+| ROUTE-003 `/stories/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
 | ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
 | ROUTE-005 `/videos` | `page.tsx` | `VideosBrowser` (+`WatchLink`) | `Reveal` | `VideoModal`, `WatchButton` |
 | ROUTE-006 `/pahlawan-kota` | `page.tsx` | — | `Reveal` | — |
@@ -364,7 +364,7 @@ wordmark, atau aset Samsara di halaman.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
-**`/journal` (Stories).** Satu grid kartu `ArticleCard` (6 feed foto) dirender langsung oleh
+**`/stories` (Stories).** Satu grid kartu `ArticleCard` (6 feed foto) dirender langsung oleh
 server component — tanpa filter, pencarian, hitungan, atau header hierarki.
 `JournalBrowser` dihapus 16 Oktober 2026; pola `titleFirst` ganjil/genap tetap
 dipertahankan di grid (`BR-003`).
@@ -497,7 +497,7 @@ dua paruh identik.
 | ST-17 | `armed` / `shown` | Local UI | `RevealText` | rect read | mask | tidak |
 | ST-18 | `queue` (server) | Server | `app/api/demos` | array modul | **tidak ada konsumen** | proses-lokal, reset saat restart |
 
-> `ST-01`–`ST-03` (state `JournalBrowser`) dihapus 16 Oktober 2026 — `/journal`
+> `ST-01`–`ST-03` (state `JournalBrowser`) dihapus 16 Oktober 2026 — `/stories`
 > kini dirender server tanpa state klien.
 
 **Tidak ada** application state, URL state, atau persistent client state.
@@ -628,10 +628,10 @@ sequenceDiagram
 
 | Area | Initial | Loading | Empty | Error | Sukses | Catatan |
 |---|---|---|---|---|---|---|
-| `/journal` | daftar penuh | — (data statis) | empty-state + "Reset Filter" | — | — | `RENCANA`: tambah loading/error bila data lewat Payload |
+| `/stories` | daftar penuh | — (data statis) | empty-state + "Reset Filter" | — | — | `RENCANA`: tambah loading/error bila data lewat Payload |
 | `/videos` | hal. 1 dari 12 | — | "Tidak ada video yang cocok." | — | — | pagination `safePage` |
 | `/submit` | form bersih, queue = seed | `pending` → tombol "Mengirim…" | — | banner + `role="alert"` per field | banner `role="status"` | `400/422/fetch-fail` punya pesan |
-| `/journal/[slug]` | artikel | — | — | slug tak dikenal → `notFound()` | — | `RENCANA`: bila Slug hilang di Payload → 404 |
+| `/stories/[slug]` | artikel | — | — | slug tak dikenal → `notFound()` | — | `RENCANA`: bila Slug hilang di Payload → 404 |
 | Modal video | tertutup | — | — | — | — | **tidak ada** state error bila embed gagal (`[PERLU VERIFIKASI]` perlu ditambah?) |
 
 ### 9.2 Perilaku form submit (sudah ada, pertahankan)
@@ -721,7 +721,7 @@ artikel. Yang **belum**: paritas keyboard
 
 Breakpoint Tailwind (`sm`/`md`/`lg`) mengemudi: masthead 3 kolom di `md+` (wordmark
 span penuh di bawah `md`); nav desktop `lg:flex`, drawer `lg:hidden`; grid kartu
-1→2→4 kolom (`/journal`) dan 1→2→5 (`/spaces`, playlists); baris video
+1→2→4 kolom (`/stories`) dan 1→2→5 (`/spaces`, playlists); baris video
 `flex-wrap` → `md:flex-nowrap`; `DemoPortal` `lg:grid-cols-12` (8+4).
 `body { overflow-x: hidden }` dipasang global. Tap target tombol play bulat
 `h-11 w-11` (44px) — sesuai batas minimum.
@@ -738,8 +738,8 @@ yang dieksekusi pada fase DOCS ini.
 | FE-A1 | Bekukan `lib/content.ts` sebagai read-only selama migrasi | `lib/content.ts` | — | Tidak ada tulis simbolis; pembaca berhenti memodifikasi | lint + review diff |
 | FE-A2 | Tambah lapisan akses server-only `lib/cms/*` (di atas Payload) | baru | Payload terpasang | Client tidak pernah mengimpor `lib/cms` (R7) | aturan lint/boundary |
 | FE-A3 | Tambah pasangan `:focus-within` untuk seluruh utilitas reveal | `globals.css` | — | Semua `.group:hover` punya pasangan `:focus-within` | uji keyboard manual/E2E (`ACC-002`) |
-| FE-B1 | `/journal` membaca artikel dari Sanity dan merender satu grid 6 kartu feed foto (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
-| FE-B2 | `/journal/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
+| FE-B1 | `/stories` membaca artikel dari Sanity dan merender satu grid 6 kartu feed foto (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
+| FE-B2 | `/stories/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
 | FE-C1 | Migrasi `/submit` ke koleksi `DemoSubmissions` + moderasi | ROUTE-008, ROUTE-009 | FE-A2 | Buat → `moderation_status='pending'`; antrean publik hanya `approved` | integrasi + E2E submit |
 | FE-C2 | **Dibatalkan 16 Okt 2026** — antrean publik dihapus dari `/submit`; tidak ada antrean klien untuk diganti | ROUTE-008 | FE-C1 | — | — |
 | FE-C3 | Persist `contact` sebagai PII + hapus echo di `note` | ROUTE-009 | FE-C1 | Kontak tersimpan terlindungi, tidak publik | uji akses + review |
@@ -767,7 +767,7 @@ Runner target: **Vitest** (unit/logic) + **Playwright** (E2E) — keputusan pemi
 | Component | `VideosBrowser` render + interaksi | filter mengubah daftar; pagination men-`disabled` PREV di hal. 1; empty-state muncul |
 | Component | `DemoPortal` state | `pending` menonaktifkan tombol; `422` menampilkan `role="alert"` per field |
 | Integration | `POST /api/demos` kontrak | `400`, `422` (per-field), `201`; `queue.unshift` |
-| E2E | Journey kritis | buka artikel dari kartu → `/journal/[slug]`; buka modal via `WatchButton` → tutup `Escape`; submit demo sukses |
+| E2E | Journey kritis | buka artikel dari kartu → `/stories/[slug]`; buka modal via `WatchButton` → tutup `Escape`; submit demo sukses |
 | E2E | Keyboard/`ACC-002` | Tab ke tombol play → reveal terlihat; Tab masuk dialog → fokus terperangkap |
 | Build | `npm run build` + `npm run lint` + `tsc --noEmit` | hijau, jumlah halaman statis terverifikasi |
 
@@ -794,7 +794,7 @@ implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
 
 - Nama ADR `ADR-0002`…`ADR-0005` dipakai lintas dokumen, tetapi `docs/adr/` belum
   ada `[PERLU VERIFIKASI]`.
-- Apakah `/journal/[slug]` tetap ingin *statis* atau menerima ISR/revalidasi saat
+- Apakah `/stories/[slug]` tetap ingin *statis* atau menerima ISR/revalidasi saat
   konten menjadi editable? (`FR-007`/`NFR-001` menuntut keputusan ini.)
 - **Ditutup 16 Okt 2026:** antrean publik dihapus dari `/submit`; pertanyaan
   pangkas-`story` tidak berlaku lagi.
@@ -836,9 +836,9 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `app/page.tsx` (ROUTE-001) — konsumsi `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`,
   `SPACE_ITEMS`, `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS`; pemakaian
   `RevealText`/`CountUp`/`ParallaxImage`/`WatchButton`/`WatchLink`/`VideoModal`.
-- `app/journal/page.tsx` — `Reveal` + grid `ArticleCard` (6 kartu, `feedArticles()`);
+- `app/stories/page.tsx` — `Reveal` + grid `ArticleCard` (6 kartu, `feedArticles()`);
   `JournalBrowser` dihapus 16 Oktober 2026.
-- `app/journal/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`,
+- `app/stories/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`,
   `notFound()`, `ArticleCard`, drop cap; **tidak ada `Reveal`**.
 - `app/bicara-melodi/page.tsx` — `INTERVIEW_ROWS` + `videosByIds` + `WatchButton`
   + `VideoModal`.
@@ -890,14 +890,14 @@ kontras warna final (dimiliki `DESIGN-SYSTEM.md`).
    dengan `docs/PRD-REFERENCE.md`.
 2. **Berkas ADR.** `ADR-0002`…`ADR-0005` diacu lintas dokumen, tetapi
    `docs/adr/000N-*.md` belum ada. Perlu dibuat agar rujukan tidak menggantung.
-3. **Mode render `/journal/[slug]` pasca-CMS.** Tetap sepenuhnya statis, memakai
+3. **Mode render `/stories/[slug]` pasca-CMS.** Tetap sepenuhnya statis, memakai
    ISR, atau on-demand revalidation? Ini keputusan arsitektur yang memengaruhi
    `FR-007`/`NFR-001` dan belum diputuskan.
 4. **Cakupan antrean publik.** **Ditutup 16 Okt 2026:** antrean publik dihapus
    dari `/submit`; pertanyaan pangkas-`story` tidak berlaku lagi.
 5. **Nasib `GET /api/demos`.** Tanpa konsumen hari ini; apakah tetap dipertahankan
    sebagai endpoint kurator, atau diganti server component di migrasi?
-6. **`dynamicParams` pada `/journal/[slug]`.** Dibiarkan default (slug tak dikenal
+6. **`dynamicParams` pada `/stories/[slug]`.** Dibiarkan default (slug tak dikenal
    dirender on-demand lalu 404). Perlu dikonfirmasi apakah pemilik menginginkan
    `dynamicParams = false` untuk build yang lebih ketat.
 7. **Kontras warna.** `text-neutral-500`/`neutral-400` pada latar putih berpotensi

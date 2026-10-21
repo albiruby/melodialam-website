@@ -31,7 +31,7 @@ export async function GET() {
 
   const items = articles
     .map((article) => {
-      const url = `${SITE.url}/journal/${article.slug}`;
+      const url = `${SITE.url}/stories/${article.slug}`;
       const absoluteImage = article.image.startsWith("http")
         ? article.image
         : `${SITE.url}${article.image}`;

@@ -511,7 +511,7 @@ create table ecosystem_items (
 | Field | Type | Null | Default | Constraints | Purpose |
 |---|---|---|---|---|---|
 | `id` | uuid | no | `gen_random_uuid()` | PK | Identitas internal |
-| `slug` | text | no | — | unique | Route `/journal/[slug]` |
+| `slug` | text | no | — | unique | Route `/stories/[slug]` |
 | `title` | text | no | — | — | Judul artikel |
 | `category` | text | no | — | CHECK 4 nilai | Rubrik (`ArticleCategory`) |
 | `date_label` | text | no | — | — | Tanggal display |
@@ -621,9 +621,9 @@ sudah terbukti dibaca. "Query" = jalur akses bernama, bukan tebakan.
 
 | # | Query (sumber) | Index | Kolom | Justifikasi |
 |---|---|---|---|---|
-| 1 | Ambil artikel by slug (`/journal/[slug]`) | unique | `articles (slug)` | `generateStaticParams` per slug |
-| 2 | Filter kategori + urut tanggal (`/journal`) | btree | `articles (category, published_at desc)` | `JournalBrowser` filter `category` |
-| 3 | Cari judul/excerpt (`/journal`) | GIN trigram | `((title \|\| ' ' \|\| excerpt)) gin_trgm_ops` | `includes()` substring → `ILIKE` |
+| 1 | Ambil artikel by slug (`/stories/[slug]`) | unique | `articles (slug)` | `generateStaticParams` per slug |
+| 2 | Filter kategori + urut tanggal (`/stories`) | btree | `articles (category, published_at desc)` | `JournalBrowser` filter `category` |
+| 3 | Cari judul/excerpt (`/stories`) | GIN trigram | `((title \|\| ' ' \|\| excerpt)) gin_trgm_ops` | `includes()` substring → `ILIKE` |
 | 4 | Artikel unggulan (landing hero) | btree partial | `articles (published_at desc) where featured` | `ARTICLES.filter(featured)` |
 | 5 | Ambil video by id | unique | `video_sessions (source_video_id)` | `getVideo()` |
 | 6 | Filter venue + urut populer (`/videos`) | btree | `video_sessions (venue, view_count desc)` | `videosByVenue` + `topVideos` |

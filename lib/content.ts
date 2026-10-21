@@ -389,7 +389,7 @@ export const TICKER_ITEMS: { label: string; href: string | null }[] = [
   },
   {
     label: "STORIES — ESAI, LIPUTAN, DAN CATATAN SKENA",
-    href: "/journal",
+    href: "/stories",
   },
   {
     label: "OPEN SUBMISSION: KIRIM KARYA BAND KAMU UNTUK DIKURASI",

@@ -67,7 +67,7 @@ disengaja: dokumen ini **tidak** menyiratkan adanya coverage.
 
 - Logika murni `lib/catalogue.ts` dan invarian data `lib/content.ts` (§4).
 - Kontrak `app/api/demos/route.ts` (`GET`, `POST`) (§4.3).
-- Journey UI kritis pada rute `/`, `/journal`, `/journal/[slug]`, `/bicara-melodi`,
+- Journey UI kritis pada rute `/`, `/stories`, `/stories/[slug]`, `/bicara-melodi`,
   `/videos`, `/submit`, 404 (§5).
 - Aksesibilitas keyboard/reduced-motion (§5.4, §8).
 - Regresi performa yang sudah pernah terjadi (§3, §6.4).
@@ -190,7 +190,7 @@ Invarian yang murah dan bernilai tinggi:
 
 | Invarian | Alasan | Test ID |
 |---|---|---|
-| `ARTICLES` berjumlah 12 dan `slug` unik | `generateStaticParams` + route `/journal/[slug]` | `U-11` |
+| `ARTICLES` berjumlah 12 dan `slug` unik | `generateStaticParams` + route `/stories/[slug]` | `U-11` |
 | Setiap `GENRE_ROWS[].slug` unik | Kunci render baris `/pahlawan-kota` (fallback statis) | `U-12` |
 | `INTERVIEW_ROWS[].videoId` ada di `VIDEOS` | Modal `/bicara-melodi` | `U-12` |
 | `COUNTS.videos === VIDEOS.length`; `sum(COUNTS.byVenue) === COUNTS.videos` | Angka di UI konsisten | `U-13` |
@@ -201,7 +201,7 @@ Invarian yang murah dan bernilai tinggi:
 `*.json`): tidak ada simbol `readTime`, `readingTime`, atau perhitungan kata/menit;
 satu-satunya `Math.ceil` di kode adalah paginasi di `VideosBrowser.tsx`
 (`Math.ceil(matches.length / PAGE_SIZE)`), yang tidak berkaitan dengan read-time.
-Halaman artikel (`app/journal/[slug]/page.tsx`) menampilkan kategori, tanggal,
+Halaman artikel (`app/stories/[slug]/page.tsx`) menampilkan kategori, tanggal,
 `SUMBER`, dan jumlah artikel — **tidak ada** estimasi waktu baca. Jadi tidak ada
 fungsi untuk diuji hari ini. Test `U-15` adalah `RENCANA` dan hanya bisa ditulis
 setelah aturan diimplementasikan.
@@ -260,9 +260,9 @@ Turunan dari UI nyata (`VideosBrowser`, `VideoModal`, `DemoPortal`,
 
 | ID | Skenario | Harapan |
 |---|---|---|
-| `E-01` | Buka `/journal`, klik kartu artikel | URL menjadi `/journal/<slug>`; `<h1>` = judul artikel |
-| `E-02` | Kunjungi `/journal/<slug>` langsung; lalu `/journal/slug-tidak-ada` | Artikel render; slug tak dikenal → 404 (`app/not-found.tsx`) |
-| `E-03` | Buka `/journal` (Stories) | Satu grid tanpa kontrol: tepat 6 kartu feed foto; **tidak ada** filter, pencarian, hitungan, atau header hierarki |
+| `E-01` | Buka `/stories`, klik kartu artikel | URL menjadi `/stories/<slug>`; `<h1>` = judul artikel |
+| `E-02` | Kunjungi `/stories/<slug>` langsung; lalu `/stories/slug-tidak-ada` | Artikel render; slug tak dikenal → 404 (`app/not-found.tsx`) |
+| `E-03` | Buka `/stories` (Stories) | Satu grid tanpa kontrol: tepat 6 kartu feed foto; **tidak ada** filter, pencarian, hitungan, atau header hierarki |
 | `E-04` | Cek elemen `#journal-search` & tombol kategori | Tidak ada satu pun di DOM — kontrol dihapus 16 Okt 2026 (penyederhanaan Stories) |
 
 ### 5.2 Videos (`FR-002`) & Bicara Melodi
@@ -388,9 +388,9 @@ Then `entry.story.length === 2000` (dan `artist` 121→120, dst.).
 ### 7.2 Journey E2E
 
 **`E-01`.**
-Given buka `/journal`;
+Given buka `/stories`;
 When klik tautan judul pada kartu pertama;
-Then URL = `/journal/<slug-nya>`, `<h1>` memuat teks `article.title`.
+Then URL = `/stories/<slug-nya>`, `<h1>` memuat teks `article.title`.
 
 **`E-05`.**
 Given buka `/videos`;
@@ -594,7 +594,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `VENUE_COUNTS`, `thumbnailFor`.
 - `components/DemoPortal.tsx` — submit ke `/api/demos`, `role="status"`/`role="alert"`,
   reset form, revoke audio (antrean `useState(SEED_DEMOS)` dihapus 16 Okt 2026).
-- `app/journal/page.tsx` — grid 12 kartu `ArticleCard`, server component; tanpa
+- `app/stories/page.tsx` — grid 12 kartu `ArticleCard`, server component; tanpa
   state klien (penyederhanaan Stories, 16 Oktober 2026).
 - `components/VideosBrowser.tsx` — `PAGE_SIZE = 12`, tab venue, search, pagination,
   `disabled` PREV di halaman 1, empty state.
@@ -603,7 +603,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `components/WatchLink.tsx` — `href` nyata + dispatch modal (progressive enhancement).
 - `components/ArticleCards.tsx` — `FRAME_SHAPE` literal (pelajaran `R5`), `fill` +
   `hover-reveal-*`/`corner-frame`.
-- `app/journal/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`; **tanpa**
+- `app/stories/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`; **tanpa**
   indikasi read-time (`BR-004`).
 - `app/submit/page.tsx` — memasang `DemoPortal`.
 - `app/globals.css` — `@source not` (`../.codegraph`, `../.gitnexus`, `../.next`);

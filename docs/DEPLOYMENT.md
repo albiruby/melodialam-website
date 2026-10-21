@@ -114,11 +114,11 @@ Route (app)
 ├ ○ /apple-icon.png
 ├ ○ /bicara-melodi
 ├ ○ /icon.png
-├ ○ /journal
-├   /journal/[slug]
-│ ├ ◐ /journal/[slug]
-│ ├ ○ /journal/dua-dekade-endah-n-rhesa
-│ ├ ○ /journal/melankolia-di-priok-baladagehel-dongker
+├ ○ /stories
+├   /stories/[slug]
+│ ├ ◐ /stories/[slug]
+│ ├ ○ /stories/dua-dekade-endah-n-rhesa
+│ ├ ○ /stories/melankolia-di-priok-baladagehel-dongker
 │ └ ◐ [+10 more paths]
 ├ ○ /pahlawan-kota
 ├ ○ /spaces
@@ -150,12 +150,12 @@ Angka **terukur** yang harus dipakai sebagai baseline (bukan estimasi):
 | `/api/demos` | `ƒ` **Dynamic** | **Route handler** (`GET`, `POST`; 503 kalau Sanity gagal) |
 | `/api/demo-audio` | `ƒ` **Dynamic** | Token unggah audio ke Vercel Blob (maks 25 MB) |
 | `/api/revalidate` | `ƒ` **Dynamic** | Webhook Sanity → 6 tag cache |
-| `/journal/[slug]/opengraph-image` · `twitter-image` | `ƒ` **Dynamic** | Kartu sosial 1200×630 per artikel |
+| `/stories/[slug]/opengraph-image` · `twitter-image` | `ƒ` **Dynamic** | Kartu sosial 1200×630 per artikel |
 | `/apple-icon.png` | `○` Static | Rute metadata otomatis dari `app/apple-icon.png` |
 | `/icon.png` | `○` Static | Rute metadata otomatis dari `app/icon.png` |
 | `/bicara-melodi` | `○` Static | |
-| /journal | Static | Grid 6 kartu (Stories, hanya feed foto); tanpa filter/search |
-| `/journal/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug statis; artikel baru dari CMS dirender sesuai permintaan |
+| /stories | Static | Grid 6 kartu (Stories, hanya feed foto); tanpa filter/search |
+| `/stories/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug statis; artikel baru dari CMS dirender sesuai permintaan |
 | `/tentang` | `○` Static | Profil, ekosistem, kontak & partnership |
 | `/rss.xml` | `○` Static | RSS 2.0 dari artikel feed foto |
 | `/preview/[type]/[slug]` | `◐` Partial Prerender | Pratinjau draf; butuh `?secret=` |
@@ -642,8 +642,8 @@ Dijalankan pada URL Preview **dan** Production. Semua ruta berasal dari output b
 | # | Cek | Rute |
 |---|---|---|
 | 1 | Landing memuat, stylesheet terpasang (bukan halaman tanpa gaya) | `/` |
-| 2 | Stories memuat; satu grid 6 kartu feed foto, tanpa filter/search | `/journal` |
-| 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/journal/<slug>` (uji ≥2, termasuk `dua-dekade-endah-n-rhesa`) |
+| 2 | Stories memuat; satu grid 6 kartu feed foto, tanpa filter/search | `/stories` |
+| 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/stories/<slug>` (uji ≥2, termasuk `dua-dekade-endah-n-rhesa`) |
 | 4 | Interview index memuat | `/bicara-melodi` |
 | 5 | Katalog video memuat; modal putar membuka `[role="dialog"]` | `/videos` |
 | 6 | Directory genre/kota memuat | `/pahlawan-kota` |

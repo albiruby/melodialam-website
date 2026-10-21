@@ -26,9 +26,9 @@ media:
 
 Kedua jenis konten diperlakukan berbeda, mengikuti sifatnya masing-masing:
 
-- **Artikel → route nyata.** Setiap artikel dilayani di `/journal/[slug]`, di-*render*
+- **Artikel → route nyata.** Setiap artikel dilayani di `/stories/[slug]`, di-*render*
   statis lewat `generateStaticParams`, dengan metadata per-artikel. Ini yang
-  terimplementasi pada `app/journal/[slug]/page.tsx`.
+  terimplementasi pada `app/stories/[slug]/page.tsx`.
 - **Video → modal bersama tanpa URL.** Pemutar tetap satu komponen client tunggal
   (`components/VideoModal.tsx`) yang dibuka lewat *custom event* `melodi:watch` dan
   *embed* YouTube di dalam modal. Tidak ada route per-video.
@@ -63,13 +63,13 @@ berfungsi tanpa JavaScript, lalu ditingkatkan oleh JavaScript menjadi pembukaan 
 
 ## Referensi
 
-- `app/journal/[slug]/page.tsx`, `components/VideoModal.tsx`, `components/WatchLink.tsx`
+- `app/stories/[slug]/page.tsx`, `components/VideoModal.tsx`, `components/WatchLink.tsx`
 - `docs/FRONTEND-PLAN.md` — inventaris route dan komponen
 - `docs/ARCHITECTURE.md` — alur data dan batas server/client
 
 ## Catatan Verifikasi
 
-- `TERVERIFIKASI`: route `/journal/[slug]` ada dan membangun 12 halaman; `VideoModal`
+- `TERVERIFIKASI`: route `/stories/[slug]` ada dan membangun 12 halaman; `VideoModal`
   dan `WatchLink` ada dan dipakai; `next build` melaporkan halaman artikel sebagai
   *prerendered*.
 - Tidak diverifikasi: perilaku *crawl* Google secara nyata (butuh deploy publik).

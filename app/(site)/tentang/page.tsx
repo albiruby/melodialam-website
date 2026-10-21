@@ -15,7 +15,7 @@ const PILLARS = [
     title: "Stories",
     note: "Jurnalisme musik",
     body: "Esai skena, liputan panggung, catatan wawancara, dan rekomendasi yang ditulis redaksi — sumbernya post feed @melodi.alam.",
-    href: "/journal",
+    href: "/stories",
     cta: "Baca Stories",
   },
   {
@@ -63,7 +63,7 @@ export default function TentangPage() {
 
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
-              href="/journal"
+              href="/stories"
               className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               Stories ↗

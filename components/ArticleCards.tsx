@@ -19,7 +19,7 @@ import { articleReadingTime, CATEGORY_LABELS, type Article } from "@/lib/content
 const COVER_FRAME = "aspect-[4/5]";
 
 /**
- * Staggered editorial card used on /journal.
+ * Staggered editorial card used on /stories.
  *
  * `titleFirst` flips the layout so every other column leads with the headline —
  * the alternation that produced the source page's staggered rhythm.
@@ -42,7 +42,7 @@ export function ArticleCard({
 }) {
   return (
     <Link
-      href={`/journal/${article.slug}`}
+      href={`/stories/${article.slug}`}
       aria-label={article.title}
       style={{ animationDelay: `${index * 75}ms` }}
       className="stagger-item group -m-2 flex flex-col justify-between p-2 transition-colors duration-300 hover:bg-paper"
@@ -134,7 +134,7 @@ function CardImage({
 export function FrontCard({ article, lead = false }: { article: Article; lead?: boolean }) {
   return (
     <Link
-      href={`/journal/${article.slug}`}
+      href={`/stories/${article.slug}`}
       aria-label={article.title}
       className="group flex gap-4 border-b border-ink py-5 pr-2 transition-colors duration-300 hover:bg-paper sm:gap-5"
     >

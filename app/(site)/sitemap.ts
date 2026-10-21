@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const pages: { path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" }[] = [
     { path: "", priority: 1, changeFrequency: "daily" },
-    { path: "/journal", priority: 0.9, changeFrequency: "daily" },
+    { path: "/stories", priority: 0.9, changeFrequency: "daily" },
     { path: "/videos", priority: 0.8, changeFrequency: "weekly" },
     { path: "/kurasi", priority: 0.8, changeFrequency: "weekly" },
     { path: "/bicara-melodi", priority: 0.7, changeFrequency: "weekly" },
@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
     // The same eight stories the Stories page lists.
     ...articles.map((article) => ({
-      url: `${SITE.url}/journal/${article.slug}`,
+      url: `${SITE.url}/stories/${article.slug}`,
       lastModified: article.dateISO,
       changeFrequency: "monthly" as const,
       priority: 0.7,

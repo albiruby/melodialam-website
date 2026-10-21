@@ -12,7 +12,7 @@ import { ArticleCard } from "@/components/ArticleCards";
 /**
  * The twelve articles in `lib/content.ts` are prerendered here. Articles that
  * live only in Sanity are rendered on demand — `dynamicParams` defaults to
- * true, so publishing in the Studio shows up at /journal/<slug> without a
+ * true, so publishing in the Studio shows up at /stories/<slug> without a
  * rebuild and without touching this list.
  */
 export function generateStaticParams() {
@@ -29,12 +29,12 @@ export function generateStaticParams() {
  */
 export const instant = false;
 
-export async function generateMetadata(props: PageProps<"/journal/[slug]">): Promise<Metadata> {
+export async function generateMetadata(props: PageProps<"/stories/[slug]">): Promise<Metadata> {
   const { slug } = await props.params;
   const article = await articleBySlug(slug);
   if (!article) return {};
 
-  const path = `/journal/${article.slug}`;
+  const path = `/stories/${article.slug}`;
 
   return {
     title: article.title,
@@ -55,7 +55,7 @@ export async function generateMetadata(props: PageProps<"/journal/[slug]">): Pro
   };
 }
 
-export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
+export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
   const { slug } = await props.params;
   const article = await articleBySlug(slug);
   if (!article) notFound();
@@ -70,7 +70,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
 
   const readMinutes = articleReadingTime(article);
 
-  const url = `${SITE.url}/journal/${article.slug}`;
+  const url = `${SITE.url}/stories/${article.slug}`;
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
@@ -96,7 +96,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
         "@id": `${url}#breadcrumb`,
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Latest News", item: SITE.url },
-          { "@type": "ListItem", position: 2, name: "Stories", item: `${SITE.url}/journal` },
+          { "@type": "ListItem", position: 2, name: "Stories", item: `${SITE.url}/stories` },
           { "@type": "ListItem", position: 3, name: article.title, item: url },
         ],
       },
@@ -111,10 +111,10 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
       {/* Header */}
       <header className="border-b border-ink pb-6">
         <Link
-          href="/journal"
+          href="/stories"
           className="nav-link-anim font-mono text-[11px] uppercase tracking-widest transition-colors hover:text-forest"
         >
-          ← Kembali ke Journal
+          ← Kembali ke Stories
         </Link>
 
         <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-500">
@@ -191,7 +191,7 @@ export default async function ArticlePage(props: PageProps<"/journal/[slug]">) {
             More {CATEGORY_LABELS[article.category]}
           </h2>
           <Link
-            href="/journal"
+            href="/stories"
             className="nav-link-anim text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
           >
             Semua Artikel ↗

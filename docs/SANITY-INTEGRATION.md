@@ -70,7 +70,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 | **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
 | **videosPage** | Konten | judul, catatan kecil, dan label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **pillarPost** | Konten | halaman `/kurasi` — section per pillar (Baca: Fakta Musik, Lirik, Trivia, Kutipan; Tonton: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
-| **article** | Konten | `/journal`, `/journal/[slug]`, 4 kartu beranda (grid 2×2) | ✅ tersambung |
+| **article** | Konten | `/stories`, `/stories/[slug]`, 4 kartu beranda (grid 2×2) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya yang disetujui) | ✅ tersambung |
 | **demoContact** | Submit Karya | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
@@ -79,7 +79,7 @@ dibaca siapa pun yang tahu project id, jadi PII tidak boleh berada di sana.
 
 ### Aturan: Latest News dan Stories hanya dari feed foto
 
-Dua bagian terbesar situs — "Latest News" (beranda) dan "Stories" (`/journal`) —
+Dua bagian terbesar situs — "Latest News" (beranda) dan "Stories" (`/stories`) —
 hanya boleh memuat berita yang sumbernya **post feed foto** di Instagram. Post reel
 punya sampul berupa bingkai video, dan bingkai itu tidak bisa jadi kartu headline.
 
@@ -90,10 +90,10 @@ Mekanismenya satu field di dokumen `article`:
 | `mediaType` | `foto` (bawaan) | berita dari post feed foto — tampil di Latest News & Stories |
 | `mediaType` | `reel` | berita dari reel — **tidak** tampil di kedua bagian |
 
-`feedArticles()` di `lib/articles.ts` menerapkan aturan itu: beranda dan `/journal`
+`feedArticles()` di `lib/articles.ts` menerapkan aturan itu: beranda dan `/stories`
 memanggilnya, jadi begitu field di Studio diganti dari `Reel` ke `Foto`, artikelnya
 langsung masuk slot headline tanpa menyentuh kode. Artikel bertanda reel tetap
-punya URL sendiri (`/journal/<slug>` masih hidup) dan tetap ada di Sanity — ia
+punya URL sendiri (`/stories/<slug>` masih hidup) dan tetap ada di Sanity — ia
 menunggu padanan post fotonya, dan tim yang menandainya.
 
 Sitemap ikut aturan yang sama: yang diiklankan hanya artikel `foto`.
@@ -117,8 +117,8 @@ lib/articles.ts  ── allArticles() / articleBySlug()
    │   "use cache" + cacheTag("articles") + cacheLife("minutes")
    │
    ▼
-app/(site)/journal/page.tsx         →  grid 6 kartu <ArticleCard> (feed foto)
-app/(site)/journal/[slug]/page.tsx  →  <ArticleBody rich={…} />
+app/(site)/stories/page.tsx         →  grid 6 kartu <ArticleCard> (feed foto)
+app/(site)/stories/[slug]/page.tsx  →  <ArticleBody rich={…} />
 app/(site)/page.tsx                 →  grid 2×2 <FrontCard> (4 artikel terbaru) + strip Curated News
 ```
 
@@ -143,7 +143,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 2. Pilih workspace **Konten** → **Stories** → **Create new**.
 3. Isi:
    - **Judul** — judul penuh.
-   - **Slug** — **menjadi alamat URL**. `judul-artikel-baru` → `/journal/judul-artikel-baru`.
+   - **Slug** — **menjadi alamat URL**. `judul-artikel-baru` → `/stories/judul-artikel-baru`.
      Tombol *Generate* mengisinya dari judul. Huruf kecil, tanda hubung, tanpa spasi.
    - **Rubrik** — salah satu dari empat (Fakta Musik, Rekomendasi Melodi, Bicara
      Melodi, Liputan Panggung).
@@ -156,7 +156,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
    - **Beranda** — blok `Latest News` selalu memuat **4 artikel terbaru** (urutan
      tanggal); tidak ada lagi pilihan headline.
 4. **Publish**.
-5. Buka `/journal/<slug>`. Langsung tampil.
+5. Buka `/stories/<slug>`. Langsung tampil.
 
 > **Panel hijau pada kartu.** Saat kartu artikel di-hover, muncul panel hijau berisi
 > label rubrik, label kecil kanan atas, teaser, dan tombol "buka catatan". Teaser-nya
@@ -173,9 +173,9 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/journal/page.tsx` | `feedArticles()` | grid 6 kartu (hanya feed foto); tautan kecil "Dari Feed → Curated News" |
+| `app/(site)/stories/page.tsx` | `feedArticles()` | grid 6 kartu (hanya feed foto); tautan kecil "Dari Feed → Curated News" |
 | `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated News**: section per pillar (6 post/pillar), kotak cari + chip pillar (cari membuka seluruh pool 55 post) |
-| `app/(site)/journal/[slug]/page.tsx` | `articleBySlug(slug)` + `feedArticles()` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
+| `app/(site)/stories/[slug]/page.tsx` | `articleBySlug(slug)` + `feedArticles()` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
 | `app/(site)/page.tsx` | `feedArticles()` + `allPillarPosts()` | 4 artikel feed-foto terbaru (grid 2×2) + strip **Curated News** 4 kartu feed |
 | `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status disetujui yang publik |
@@ -345,7 +345,7 @@ jenis dokumen baru yang punya tag sendiri, tambahkan tag itu ke `CONTENT_TAGS` d
 `/preview/<type>/<slug>?secret=…` menampilkan versi **belum terbit** dari satu dokumen
 di tata letak situs:
 
-- `/preview/journal/<slug-artikel>?secret=…`
+- `/preview/stories/<slug-artikel>?secret=…`
 - `/preview/kurasi/<kode-post-ig>?secret=…` (mis. `DeY9hGEib-w`)
 
 `secret` diambil dari `SANITY_PREVIEW_SECRET`; kalau env itu kosong, route memakai
@@ -404,7 +404,7 @@ Sengaja, bukan lupa:
 
 Diperiksa dengan menjalankan, bukan membaca:
 
-- `/journal/uji-coba-sanity` → **200**. Urutan blok `.article-prose`:
+- `/stories/uji-coba-sanity` → **200**. Urutan blok `.article-prose`:
   `p, h2, p, ul, blockquote, p`. `<h2>` = "Subjudul dari rich text", dua `<li>` terisi,
   `<blockquote>` terisi, drop cap `60px` `rgb(27, 59, 43)`, penanda "dari CMS" muncul,
   meta "Fakta Musik · 15 Oktober 2026 · 1 menit baca".
@@ -414,7 +414,7 @@ Diperiksa dengan menjalankan, bukan membaca:
   `GET /api/demos` → `count 0`.
 - `POST /api/revalidate`: tanpa secret / salah / sepanjang benar-tapi-salah → **401**;
   secret tepat → **200** `{revalidated: true}`.
-- Build: lint dan `tsc` bersih, **30 halaman statis**, `/journal` `Revalidate 1m · Expire 1h`.
+- Build: lint dan `tsc` bersih, **30 halaman statis**, `/stories` `Revalidate 1m · Expire 1h`.
 - Direktori `pahlawanRow`: 3 dokumen tinggal di Sanity sebagai arsip; halaman
   `/pahlawan-kota` sudah dihapus (404). `POST /api/revalidate` membalas
   `{revalidated: true, tags: ["articles", "pillar-posts", "interviews", "siteSettings", "videos", "videosPage"]}`.
@@ -433,7 +433,7 @@ Penghitung di beranda kini memakai sesi yang dikurasi (9), bukan ukuran katalog.
 - `pillarPost`: 55 post kurasi tim ter-seed (7 pillar), gambar cover di-upload sebagai asset
   Sanity (`image-*`) — 25 feed foto + 30 reel (tipe diverifikasi satu per satu dari
   Instagram lewat browser login). Semua pillar kini tampil di halaman **`/kurasi`** (section per
-  pillar; 6 post per section; anchor `#fakta-musik` dst), sementara `/journal` dan `/videos`
+  pillar; 6 post per section; anchor `#fakta-musik` dst), sementara `/stories` dan `/videos`
   kembali compact dengan tautan kecil ke `/kurasi`; semua kartu membuka post aslinya di
   Instagram. Menu Studio baru: **Konten Pillar**.
 

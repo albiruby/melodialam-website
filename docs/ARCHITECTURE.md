@@ -70,7 +70,7 @@ tidak menjadi host terpisah; ia menempel pada App Router yang sudah ada.
 | `OQ-002` | Backend & CMS | Payload CMS 3 di dalam app ini + Supabase (Postgres + Storage) |
 | `OQ-001` | Moderasi demo | Moderated queue — submission privat sampai kurator menyetujui |
 | — | Test & hosting | Vitest (unit/logic) + Playwright (E2E), deploy ke Vercel |
-| — | Artikel | Route nyata `/journal/[slug]`; pemutar video tetap modal tanpa URL |
+| — | Artikel | Route nyata `/stories/[slug]`; pemutar video tetap modal tanpa URL |
 | — | Tipografi | Inter + Red Hat Display + Instrument Serif + JetBrains Mono |
 
 **Constraint arsitektural yang membentuk struktur:**
@@ -93,7 +93,7 @@ tidak menjadi host terpisah; ia menempel pada App Router yang sudah ada.
 | Pembaruan konten tanpa deploy | Kebutuhan CMS — `RENCANA` |
 | Pipeline demo submission yang dimoderasi | `OQ-001`, `FR-005`, `FR-006` |
 | Pencarian/filter client-side (katalog video) | `/videos` (`TERVERIFIKASI`) |
-| Metadata & SEO per artikel | `app/journal/[slug]/page.tsx` → `generateMetadata` (`TERVERIFIKASI`) |
+| Metadata & SEO per artikel | `app/stories/[slug]/page.tsx` → `generateMetadata` (`TERVERIFIKASI`) |
 | Aksesibilitas dan reduced motion | `ACC-001`…`ACC-003`; `globals.css` + `Reveal` |
 | Keamanan input demo | `SECURITY-PRIVACY.md`, `FR-005` |
 
@@ -237,7 +237,7 @@ graph TB
 
   subgraph app["app/ (App Router)"]
     layout["layout.tsx (server)"]
-    pages["page.tsx, journal/, videos/,<br/>bicara-melodi/, pahlawan-kota/, spaces/<br/>(server components)"]
+    pages["page.tsx, stories/, videos/,<br/>bicara-melodi/, tentang/, spaces/<br/>(server components)"]
     demos["api/demos/route.ts<br/>GET + POST"]
     notfound["not-found.tsx"]
   end
@@ -582,8 +582,8 @@ melodi-alam/
 │   ├── icon.png / apple-icon.png / favicon.ico   (generated, MOD-008)
 │   ├── not-found.tsx         404
 │   ├── api/demos/route.ts    GET + POST queue demo (MOD-007)
-│   ├── journal/page.tsx              index Stories (grid 6 kartu feed foto)
-│   ├── journal/[slug]/page.tsx       artikel statis + generateMetadata
+│   ├── stories/page.tsx              index Stories (grid 8 kartu)
+│   ├── stories/[slug]/page.tsx       artikel statis + generateMetadata
 │   ├── bicara-melodi/page.tsx        interview index
 │   ├── videos/page.tsx               katalog + playlists
 │   ├── pahlawan-kota/page.tsx        direktori genre/kota
@@ -688,7 +688,7 @@ dari doc set). Ringkasannya yang relevan dengan arsitektur:
 ### ADR-005 — Artikel sebagai route nyata, video tetap modal
 
 - **Context.** Sudah dikunci pemilik.
-- **Decision.** `/journal/[slug]` crawlable; pemutar video modal tanpa URL.
+- **Decision.** `/stories/[slug]` crawlable; pemutar video modal tanpa URL.
 - **Consequences.** SEO artikel; biaya: video tak dapat di-deeplink.
 - **Status.** `TERVERIFIKASI` (terimplementasi).
 
@@ -746,8 +746,8 @@ struktur:
    `Articles` & `DemoSubmissions`, mount admin. `lib/*` belum disentuh.
 3. **Migrasi demo + moderasi (`RENCANA`).** Pindahkan `MOD-007` ke koleksi Payload;
    terapkan alur approve (`OQ-001`); simpan `contact` sebagai PII terlindungi.
-4. **Migrasi artikel per-slug (`RENCANA`).** Pindahkan `/journal` dan
-   `/journal/[slug]` membaca dari Payload; bekukan `lib/content.ts`.
+4. **Migrasi artikel per-slug (`RENCANA`).** Pindahkan `/stories` dan
+   `/stories/[slug]` membaca dari Payload; bekukan `lib/content.ts`.
 5. **Pembersihan (`RENCANA`).** Hapus jalur statis yang tak lagi dipakai.
 
 Rollback: setiap langkah menambah pembaca baru tanpa menghapus sumber lama sampai
@@ -800,8 +800,8 @@ Berkas yang dibaca langsung untuk dokumen ini:
   `venueFor`, `toSeconds`, `ageBucket`, penulisan `lib/catalogue.json`.
 - `melodi-alam/scripts/copy-photos.mjs` — sumber/`public/photos`, 33 berkas.
 - `melodi-alam/scripts/build-brand.mjs` (50 baris pertama) — output `public/brand`.
-- `melodi-alam/app/videos/page.tsx`, `app/journal/page.tsx`,
-  `app/journal/[slug]/page.tsx`, `app/submit/page.tsx` — pola server component.
+- `melodi-alam/app/videos/page.tsx`, `app/stories/page.tsx`,
+  `app/stories/[slug]/page.tsx`, `app/submit/page.tsx` — pola server component.
 - `melodi-alam/components/VideosBrowser.tsx`, `VideoModal.tsx`, `DemoPortal.tsx`
   (bagian awal) — batas client.
 - `melodi-alam/tsconfig.json` — alias `@/*`.

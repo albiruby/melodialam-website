@@ -28,7 +28,7 @@ export interface NavItem {
 
 export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Latest News" },
-  { href: "/journal", label: "Stories" },
+  { href: "/stories", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Melodi Samsara", badge: "YT" },
   { href: "/kurasi", label: "Curated News" },
@@ -37,7 +37,7 @@ export const PRIMARY_NAV: NavItem[] = [
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };
 
 export const FOOTER_RUBRIKS: NavItem[] = [
-  { href: "/journal", label: "#FaktaMusik & Esai Skena" },
+  { href: "/stories", label: "#FaktaMusik & Esai Skena" },
   { href: "/bicara-melodi", label: "Bicara Melodi Podcast (Season 3)" },
   { href: "/videos", label: "Melodi Samsara Live Session" },
   {

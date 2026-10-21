@@ -13,7 +13,7 @@
 ADR-0002 memilih Payload CMS 3 berjalan di dalam aplikasi Next.js ini, dengan Supabase
 sebagai Postgres dan object storage. Implementasinya selesai: enam koleksi, satu migrasi
 yang diterapkan, panel admin yang berfungsi, dan artikel CMS yang sudah render di
-`/journal`.
+`/stories`.
 
 Setelah dipakai, pemilik produk memutuskan untuk menggantinya dengan Sanity Studio.
 Alasan yang dicatat di sini adalah alasan yang benar-benar muncul saat implementasi,
@@ -114,7 +114,7 @@ Konsekuensi yang mengikat:
 
 Diperiksa dengan menjalankan, bukan membaca:
 
-- **Artikel CMS render.** `/journal/uji-coba-sanity` → 200, dengan urutan blok
+- **Artikel CMS render.** `/stories/uji-coba-sanity` → 200, dengan urutan blok
   `p, h2, p, ul, blockquote, p`; `<h2>` berbunyi "Subjudul dari rich text", dua `<li>`
   terisi, `<blockquote>` terisi, drop cap `60px` warna `rgb(27, 59, 43)`, dan penanda
   "dari CMS" muncul.
@@ -129,7 +129,7 @@ Diperiksa dengan menjalankan, bukan membaca:
   (`03sgar5q`) dan menampilkan halaman masuk Sanity.
 - **Build.** `npm run lint` dan `npx tsc --noEmit` bersih; `npm run build` menghasilkan
   **28 halaman statis** dengan tabel rute menunjukkan `Revalidate 1m · Expire 1h` untuk
-  `/journal`.
+  `/stories`.
 - **Payload benar-benar hilang.** Tidak ada paket `payload*`, `pg`, `graphql`, atau
   `sass` di `package.json`; tidak ada `payload.config.ts`, `payload-types.ts`,
   `collections/`, `migrations/`, `app/(payload)/`, atau `lib/payload.ts`.
