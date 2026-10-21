@@ -1,5 +1,4 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { thumbnailFor } from "./catalogue";
 import { INTERVIEW_ROWS } from "./content";
 import { contentClient } from "./sanity";
 
@@ -7,9 +6,10 @@ import { contentClient } from "./sanity";
  * The curated Bicara Melodi index.
  *
  * This is the editor's short list of episodes worth featuring, not a mirror of
- * the catalogue. The card artwork is the episode's YouTube thumbnail, derived
- * from `youtubeId` — which is why this type has no image field: a stored cover
- * would be a second thing to keep in sync with the video it points at.
+ * the catalogue. The card artwork is the episode's YouTube thumbnail, drawn by
+ * `YoutubeThumb` from `youtubeId` — which is why this type has no image field:
+ * a stored cover would be a second thing to keep in sync with the video it
+ * points at.
  */
 
 export const INTERVIEWS_TAG = "interviews";
@@ -20,8 +20,6 @@ export interface SiteInterview {
   headline: string;
   videoId: string;
   caption: string;
-  /** YouTube thumbnail, not a stored file. */
-  image: string;
   source: "cms" | "static";
 }
 
@@ -31,7 +29,6 @@ const STATIC: SiteInterview[] = INTERVIEW_ROWS.map((row) => ({
   headline: row.headline,
   videoId: row.videoId,
   caption: row.caption,
-  image: thumbnailFor(row.videoId),
   source: "static",
 }));
 
@@ -82,7 +79,6 @@ export async function allInterviews(): Promise<SiteInterview[]> {
         headline: d.headline,
         videoId: d.youtubeId,
         caption: d.caption ?? "",
-        image: thumbnailFor(d.youtubeId),
         source: "cms" as const,
       }));
 

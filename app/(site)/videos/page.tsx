@@ -86,6 +86,9 @@ export default async function VideosPage() {
                 <YoutubeThumb
                   id={interview.videoId}
                   className="editorial-img h-full w-full object-cover"
+                  sizes="(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"
+                  width={1280}
+                  height={720}
                 />
               </WatchButton>
               <h3 className="mt-3 font-display text-2xl leading-none tracking-tight">

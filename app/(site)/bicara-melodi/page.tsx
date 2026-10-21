@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import { Reveal } from "@/components/Reveal";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
+import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { allInterviews } from "@/lib/interviews";
 import { allVideos, videoById } from "@/lib/videos";
 
@@ -64,12 +64,12 @@ export default async function BicaraMelodiPage() {
                 title={`${row.artist} — ${row.headline}`}
                 className="h-28 w-40 overflow-hidden border border-ink bg-neutral-300 transition-all duration-500 group-hover:shadow-[5px_5px_0px_#0D0D0D] md:h-28 md:w-40"
               >
-                <Image
-                  src={row.image}
-                  alt={row.artist}
-                  fill
+                <YoutubeThumb
+                  id={row.videoId}
+                  className="editorial-img h-full w-full object-cover"
                   sizes="160px"
-                  className="editorial-img object-cover"
+                  width={480}
+                  height={270}
                 />
               </WatchButton>
               <span className="mt-1.5 font-serif text-sm italic text-neutral-600 transition-colors group-hover:text-forest">
