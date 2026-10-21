@@ -100,13 +100,15 @@ Konsekuensi yang mengikat:
   alat editorial. Mitigasinya adalah dataset privat, dan sudah diuji: kueri tanpa token
   mengembalikan `null` untuk dokumen yang kueri sama kembalikan dengan token.
 - **Pratinjau draf belum dibangun.** Publikasi langsung terlihat; menyunting draf
-  belum dapat dipratinjau di situs.
+  belum dapat dipratinjau di situs. — *Sudah dibangun pada 21 Okt 2026; lihat Catatan
+  Verifikasi.*
 
 ## Referensi
 
 - [`../SANITY-INTEGRATION.md`](../SANITY-INTEGRATION.md) — panduan integrasi lengkap
 - `lib/sanity.ts`, `lib/sanity-server.ts`, `lib/articles.ts`
-- `sanity.config.ts`, `sanity/schemaTypes/`
+- `melodialam-sanity/sanity.config.ts`, `melodialam-sanity/sanity/schemaTypes/`
+  (repo terpisah)
 - `app/api/demos/route.ts`, `app/api/revalidate/route.ts`
 - ADR-0005 (antrean demo dimoderasi) — masih berlaku, hanya tempat simpannya berubah
 
@@ -135,3 +137,12 @@ Diperiksa dengan menjalankan, bukan membaca:
   `collections/`, `migrations/`, `app/(payload)/`, atau `lib/payload.ts`.
 - `[PERLU VERIFIKASI]`: perilaku Sanity saat layanan tidak dapat dijangkau di produksi
   (fallback statis diuji secara logika, bukan dengan memutus jaringan).
+- **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): prasyarat draf yang tercatat di atas
+  sudah dipenuhi — rute `/preview/<type>/<slug>?secret=…` membaca perspektif
+  `drafts` lewat `lib/sanity-preview.ts`, bertanda `noindex`, dan membalas 404 bila
+  secret salah. Secret pratinjau memakai `SANITY_PREVIEW_SECRET`; selama variabel itu
+  belum diset, ia jatuh ke `SANITY_REVALIDATE_SECRET`, jadi kedua secret itu belum
+  terpisah. Dataset `production` kini memuat tujuh tipe dokumen
+  (`siteSettings`, `article`, `interview`, `video`, `playlist`, `pillarPost`,
+  `videosPage`), dan `submissions` memuat `demoSubmission` serta `demoContact`.
+  Build terbaru menghasilkan **33 halaman statis**.

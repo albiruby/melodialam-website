@@ -79,7 +79,8 @@ terpisah yang merujuk `youtubeId`**, bukan memindahkan seluruh katalog ke databa
 ## Referensi
 
 - `scripts/build-catalogue.mjs`, `lib/catalogue.ts`, `lib/catalogue.json`
-- `app/videos/page.tsx`, `components/VideosBrowser.tsx`
+- `app/(site)/videos/page.tsx`, `components/VideoRow.tsx`, `components/YoutubeThumb.tsx`
+  — `components/VideosBrowser.tsx` sudah dihapus bersama arsip `/videos/arsip`
 - `docs/DEPLOYMENT.md` — ketergantungan di luar repo sebagai hazard deploy
 - ADR-0002, ADR-0003
 

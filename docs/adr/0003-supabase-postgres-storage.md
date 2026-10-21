@@ -2,7 +2,7 @@
 
 | Atribut | Nilai |
 |---|---|
-| **Status** | `DITERIMA` — belum diimplementasikan |
+| **Status** | `DITERIMA` — **digantikan ADR-0008** (dokumen ini sejarah) |
 | **Tanggal** | 14 Oktober 2026 |
 | **Pengambil keputusan** | Product Owner (Tim Produk Melodi Alam) |
 | **Terkait** | `OQ-002`, `FR-006`, `BR-001`, `RISK-002`, `NFR-002` |
@@ -90,3 +90,8 @@ Yang mengikat dari keputusan ini:
   Supabase dibuat dan tidak ada migrasi dijalankan.
 - `[PERLU VERIFIKASI]`: tingkat layanan dan kuota Supabase yang sesuai untuk
   perkiraan volume demo; belum ada data historis.
+- **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): project Supabase pernah hidup dan
+  sengaja dibiarkan menyala, tetapi tidak lagi dipanggil kode mana pun. Antrean demo
+  sekarang tinggal di dataset privat `submissions` milik Sanity (ADR-0008), dan berkas
+  audio demo diunggah ke Vercel Blob. Migrasi, RLS, dan rencana *rollback* Postgres
+  yang dibahas di dokumen ini tidak pernah dipakai dan tidak lagi relevan.

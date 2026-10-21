@@ -51,7 +51,8 @@ berfungsi tanpa JavaScript, lalu ditingkatkan oleh JavaScript menjadi pembukaan 
 
 - 12 artikel ter-*prerender* dan terindeks; masing-masing punya metadata sendiri.
 - Pemutar video hanya satu komponen, sehingga perbaikan *player* berlaku di semua
-  tempat yang memutarnya (`/`, `/videos`, `/bicara-melodi`, `/pahlawan-kota`).
+  tempat yang memutarnya (`/`, `/videos`, `/bicara-melodi` — `/pahlawan-kota` sudah
+  dihapus).
 - `WatchLink` memberi *fallback* `href` nyata ketika JavaScript gagal.
 
 **Negatif / utang**

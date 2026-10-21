@@ -2,7 +2,7 @@
 
 | Atribut | Nilai |
 |---|---|
-| **Status** | `DITERIMA` — belum diimplementasikan |
+| **Status** | `DITERIMA` — **digantikan ADR-0008** (dokumen ini sejarah) |
 | **Tanggal** | 14 Oktober 2026 |
 | **Pengambil keputusan** | Product Owner (Tim Produk Melodi Alam) |
 | **Terkait** | `OQ-002`, `FR-001`…`FR-007`, `OBJ-001`, `OBJ-003`, `USR-003` |
@@ -90,3 +90,9 @@ Konsekuensi arsitektural yang mengikat:
 - `[PERLU VERIFIKASI]`: dukungan resmi Payload 3 pada Next.js `16.4.0` secara spesifik,
   dan apakah panel adminnya bertabrakan dengan route handler `/api/demos` yang sudah
   ada (lihat Open Questions di `docs/API-CONTRACTS.md`).
+- **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): Payload CMS 3 sempat diimplementasikan
+  lengkap — enam koleksi, satu migrasi, dan panel admin yang berfungsi — lalu
+  **digantikan Sanity Studio** (ADR-0008). Tidak ada paket `payload*`, `pg`, atau
+  `graphql` yang tersisa di `package.json`, dan tidak ada `payload.config.ts`,
+  `collections/`, `migrations/`, `app/(payload)/`, atau `lib/payload.ts`. Keputusan
+  dalam dokumen ini sudah tidak berlaku dan kini dibaca sebagai catatan sejarah.

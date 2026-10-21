@@ -1,811 +1,633 @@
 # SECURITY-PRIVACY — Melodi Alam Web Platform
 
-> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
-> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
-> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
-
-Dokumen ini adalah **tinjauan defensif** atas kode platform web **Melodi Alam**
-sebagaimana adanya hari ini, ditambah **kontrol yang dibutuhkan fase target**.
-Fokusnya: penanganan input, data pribadi (PII), dan kontrol penyalahgunaan.
-
-Dua keadaan dipisahkan eksplisit, mengikuti `docs/ARCHITECTURE.md`,
-`docs/DATA-MODEL.md`, dan `docs/API-CONTRACTS.md`:
-
-- **Current State — `TERVERIFIKASI`.** Setiap temuan di §4 dibaca langsung dari
-  sumber di repo `melodi-alam/`, disertai rujukan `berkas:baris`.
-- **Target State — `RENCANA`.** Kontrol yang dibutuhkan fase berikutnya
-  (moderated queue `ADR-0005`, Supabase Postgres + Storage `ADR-0003`). Belum
-  diimplementasikan; fase ini **DOCS ONLY**.
-
-Label status: `TERVERIFIKASI` (dibaca di kode), `RENCANA` (direncanakan),
-`ASUMSI` (diasumsikan), `[PERLU VERIFIKASI]` (tidak dapat dikonfirmasi dari
-sumber statis).
-
-Acuan keputusan: **ADR-0005** (moderated demo queue), **ADR-0003** (Supabase =
-Postgres + Storage). ADR-0002 (Payload CMS 3 in-app + Supabase) dirujuk sesuai
-`docs/API-CONTRACTS.md` §1. Acuan requirement: `BR-001` (batas audio + tipe),
-`RISK-001` (kontrol penyalahgunaan/abuse), `RISK-002` (retensi), serta
-`NFR-001`…`NFR-004`.
-
-> **Catatan cakupan.** Saat dokumen ini ditulis hanya ada **satu** route handler di
-> repo, `app/api/demos/route.ts` (`GET`, `POST`), tanpa environment variable dan tanpa
-> autentikasi. Sejak itu bertambah `app/api/revalidate/route.ts` dan variabel lingkungan
-> Sanity. Klaim di bawah mengacu pada keadaan **saat itu**; yang menyangkut CMS sudah
-> usang — lihat banner di atas.
-
-> **⚠️ Digantikan sebagian — baca ini dulu.**
-> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
-> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
-> dihapus.
+> **Status dokumen: 21 Oktober 2026.** Ditulis ulang agar cocok dengan kode yang
+> ada sekarang (Next.js 16.4 + Sanity Studio). Versi sebelumnya dokumen ini
+> ditulis saat backend direncanakan memakai **Payload CMS 3 + Supabase**; kode
+> Payload sudah dihapus dan seluruh bagian yang menyangkut PostGIS/RLS/Storage di
+> dokumen lama tidak lagi berlaku. Riwayat keputusan ada di
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md).
 >
-> Bagian yang tidak lagi berlaku di dokumen ini: penanganan PII di Postgres, kontrol akses
-> koleksi, dan RLS. Lihat
-> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
-> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
-> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+> **Audit 21 Okt 2026.** Laporan audit lengkap (keamanan + codebase + integrasi
+> Sanity/Vercel + SEO) ada di [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md).
+> Dokumen ini mengikutinya dan meringkas; salinan artefak audit lengkap ada di
+> `D:\DOCS Project Samsara - Melodi Alam\Melodi Alam Website\Audit Keamanan 2026-10-21\`.
+
+Dokumen ini adalah **tinjauan defensif** atas platform web **Melodi Alam**
+sebagaimana adanya hari ini: penanganan input, data pribadi (PII), kontrol
+penyalahgunaan, dan status temuan audit yang masih terbuka.
+
+Label status yang dipakai:
+
+| Label | Arti |
+|---|---|
+| `TERVERIFIKASI` | Dibaca langsung di kode, atau dijalankan dan hasilnya diamati |
+| `RENCANA` | Belum ada; target yang akan dibangun |
+| `ASUMSI` | Diperkirakan, belum dikonfirmasi |
+| `[PERLU VERIFIKASI]` | Secara eksplisit belum diperiksa dan butuh konfirmasi |
 
 ---
 
-## 1. Ruang Lingkup dan Metode
+## 0. Ringkasan eksekutif
+
+Hari ini situs **menyimpan data pribadi sungguhan**. Form demo `/submit` menulis
+nama band, kota, judul, genre, program, tautan streaming/EPK, dan cerita
+singkat ke dokumen `demoSubmission` di dataset Sanity **privat** `submissions`;
+kontak manajer (WhatsApp/email) ditulis ke dokumen terpisah `demoContact`; dan
+berkas audio — bila dilampirkan — benar-benar diunggah ke **Vercel Blob** dan
+alamatnya disimpan di field `audioUrl`.
+
+Dokumen versi lama menyatakan sebaliknya ("`contact` tidak pernah dipersistensi",
+"audio tidak diunggah"). **Pernyataan itu sudah tidak benar.** Yang benar sekarang
+adalah: datanya disimpan, dan justru karena itu kontrol yang kita butuhkan.
+
+Empat hal yang paling penting:
+
+1. **Satu temuan sudah tertutup; sisanya masih terbuka.** Pada laporan audit
+   21 Okt 2026, kesepuluh temuan F01–F10 tercatat terbuka. **F01 ditutup** lewat
+   allow-list host Blob (lihat §4.1); F02–F10 belum disentuh.
+2. **Audit berjalan tanpa sandbox OS**, jadi tidak ada satu pun kode target yang
+   dieksekusi. Semua temuan berstatus `needs_validation` — **belum terkonfirmasi**,
+   bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
+   terkonfirmasi*.
+3. **`SANITY_REVALIDATE_SECRET` pernah terekspos di log percakapan** di luar repo.
+   Nilai itu harus dianggap bocor dan **wajib dirotasi**. Selama
+   `SANITY_PREVIEW_SECRET` belum diset, pratinjau draf jatuh ke
+   `SANITY_REVALIDATE_SECRET` yang sama (F03).
+4. **PII dan audio tidak pernah keluar ke jalur baca publik.** Kueri antrean
+   hanya membaca status yang disetujui dan hanya memproyeksikan field tertentu
+   (`app/api/demos/route.ts:122-133`). Yang bocor ke pihak ketiga adalah **email
+   notifikasi redaksi** — isinya memuat kontak manajer dan `audioUrl` (F01).
+
+### Data yang disimpan, dan di mana
+
+| Data | Klasifikasi | Disimpan di | Terakhir dikirim ke |
+|---|---|---|---|
+| nama band/solois, kota, judul, genre, program, tautan, cerita | karya, quasi-publik | dokumen `demoSubmission` (dataset privat `submissions`) | antrean publik **hanya** untuk status `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)` |
+| **kontak manajer** (WhatsApp/email) | **PII** | dokumen `demoContact` (dataset privat `submissions`, field `contact`) | email notifikasi redaksi (bila `RESEND_API_KEY` diset) |
+| **berkas audio demo** | data pribadi/karya | **Vercel Blob**, `access: "public"`, key `demo-audio/<timestamp>-<nama-asli>` | URL-nya disimpan di `demoSubmission.audioUrl` dan ikut ke email redaksi |
+| IP pengirim, User-Agent | PII | tidak ditangani kode | `[PERLU VERIFIKASI]` — mungkin dicatat platform |
+
+---
+
+## 1. Ruang lingkup dan metode
 
 ### 1.1 Yang ditinjau
 
-| Artefak | Baris | Alasan |
----|---|---|
-| `app/api/demos/route.ts` | 103 (penuh) | Satu-satunya batas server; menangani input tak tepercaya |
-| `components/DemoPortal.tsx` | 317 (penuh) | Form, pratinjau audio lokal, render antrean ke DOM |
-| `components/VideosBrowser.tsx` | 216 (penuh) | Input pencarian pengguna → DOM + `<img>` remote |
-| `components/VideoModal.tsx` | 135 (penuh) | Konstruksi URL embed YouTube + iframe |
-| `next.config.ts` | 32 (penuh) | `images.remotePatterns`; ketiadaan `headers()` |
-| `app/layout.tsx` | 92 (penuh) | Metadata, font, kerangka HTML |
-| `lib/content.ts` | kutipan | `DemoSubmission`, `DEMO_GENRES`, `DEMO_PROGRAMS`, `SEED_DEMOS` |
+| Artefak | Isi yang dibaca |
+|---|---|
+| `app/api/demos/route.ts` | Validasi, batas body, penyimpanan ke Sanity, notifikasi email, jalur fallback |
+| `app/api/demo-audio/route.ts` | Penerbitan token unggah Blob (`handleUpload`) |
+| `app/api/revalidate/route.ts` | Autentikasi webhook, pembuangan tag cache |
+| `app/(site)/preview/[type]/[slug]/page.tsx` | Secret pratinjau, perspektif `drafts`, `noindex` |
+| `lib/sanity.ts` · `lib/sanity-server.ts` · `lib/sanity-preview.ts` | Klien(token), dataset, perspektif, fallback secret |
+| `lib/taxonomy.ts` · `lib/content.ts` | Enum demo, batas audio, artikel statis |
+| `components/DemoPortal.tsx` | Form, unggah audio, object URL |
+| `components/VideoModal.tsx` | Embed YouTube |
+| `next.config.ts` | Header keamanan, `images.remotePatterns`, `poweredByHeader` |
+| `app/(site)/layout.tsx` · `app/robots.ts` | Metadata, JSON-LD, aturan robots |
+| `melodialam-sanity/sanity/schemaTypes/*` | Skema `demoSubmission`, `demoContact`, `article`, `siteSettings`, dan pemisahan dataset |
 
 ### 1.2 Metode
 
-- **Pembacaan statis.** Tidak ada server yang dijalankan, tidak ada endpoint
-  yang dipanggil, tidak ada exploit yang dicoba, tidak ada paket yang dipasang.
-- **Pencarian lintas repo** untuk `dangerouslySetInnerHTML` (0 hasil),
-  `headers|Content-Security-Policy|X-Frame-Options|process.env` di `*.ts`
-  (0 hasil), `use server|server-only` (0 hasil), dan `rel="noreferrer"|noopener`
-  (15 hasil, semua `noreferrer`).
-- **Severity** mengikuti skala baku: Critical / High / Medium / Low /
-  Informational (§8 skill), dinilai dari *exploitability realistis × dampak*
-  untuk dataset ini — bukan dari pola umum semata.
+- **Pembacaan statis** dari sumber di kedua repo. Tidak ada server yang
+  dijalankan, tidak ada endpoint produksi yang dipanggil, tidak ada exploit yang
+  dicoba.
+- **Audit terpisah** (skill `security-audit`, mode audit penuh) juga berjalan
+  source-level dan tidak mengeksekusi kode target — lihat
+  [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md) §1.
+- **Severity** mengikuti skala Critical / High / Medium / Low / Informational,
+  dinilai dari *exploitability realistis × dampak* untuk data yang ada.
 
 ### 1.3 Yang **tidak** ditinjau
 
 - **Sistem yang berjalan.** Tidak ada bukti runtime. Klaim yang butuh sistem
   hidup ditandai `[PERLU VERIFIKASI]`.
-- **Hosting/Vercel.** Header yang mungkin ditambahkan platform (mis. HSTS di
-  domain Vercel) tidak dapat dikonfirmasi dari repo — `[PERLU VERIFIKASI]`.
-- **Kode fase target.** Payload CMS 3, Supabase, RLS, Storage, Turnstile belum
-  ada; §6 mendeskripsikan target, bukan mengklaim implementasi.
-- **Penetration test dan kepatuhan hukum.** Di luar cakupan (§11).
-- **Dependensi (supply chain).** Tidak ada `npm audit` yang dijalankan pada fase
-  ini; lihat §11.
+- **Dashboard Vercel & Sanity.** Status Blob store, Resend, anggota project,
+  Firewall/WAF, dan daftar env per scope tidak bisa dikonfirmasi dari repo.
+- **Kepatuhan hukum.** UU PDP dan lain-lain bukan penilaian dokumen ini.
+- **Supply chain.** `npm audit` tidak dijalankan dalam tinjauan ini.
 
 ---
 
-## 2. Gambaran Sistem dan Batas Kepercayaan
-
-Hari ini situs adalah kumpulan halaman statis plus **satu** route handler
-in-memory. Data editorial berasal dari `lib/content.ts` dan `lib/catalogue.json`
-(keduanya build-time, bukan input pengguna).
+## 2. Gambaran sistem dan batas kepercayaan
 
 ```mermaid
 flowchart LR
   subgraph Browser["Peramban (tak tepercaya)"]
-    Form["DemoPortal form"]
+    Form["Formulir /submit"]
+    Up["upload() ke Vercel Blob"]
   end
 
-  subgraph Next["Next.js 16.4.0 / Vercel"]
-    RH["POST /api/demos"]
-    G["GET /api/demos"]
-    Mem[("queue: DemoSubmission&#91;&#93;<br/>in-memory, proses-lokal")]
-    Cat[("lib/content.ts<br/>lib/catalogue.json")]
+  subgraph Next["Next.js 16.4 / Vercel"]
+    DA["POST /api/demo-audio<br/>menerbitkan token unggah"]
+    RH["POST /api/demos<br/>validasi + tulis"]
+    G["GET /api/demos<br/>hanya status disetujui"]
+    Blob["Vercel Blob store"]
   end
 
-  subgraph Ext["Pihak ketiga"]
-    YT["iframe youtube.com/embed"]
-    IMG["i.ytimg.com/vi/**"]
+  subgraph Sanity["Sanity"]
+    Priv["dataset privat: submissions<br/>demoSubmission + demoContact"]
+    Prod["dataset publik: production<br/>artikel, pillar, video"]
   end
 
-  Form -->|"JSON 8 field (incl. contact)"| RH
-  RH -->|"unshift(entry) tanpa contact"| Mem
-  RH -->|"201 + note (echo contact)"| Form
-  G --> Mem
-  Cat --> YT
-  Cat --> IMG
+  subgraph Mail["Resend"]
+    Email["email notifikasi redaksi"]
+  end
+
+  Form -->|"JSON ≤16 KB"| RH
+  Form --> Up
+  Up -->|"berkas audio"| Blob
+  Up -.->|"token"| DA
+  RH -->|"Buat dokumen"| Priv
+  RH -->|"kirim email (pribadi)"| Email
+  RH -->|"kirim email (pribadi)"| Blob
+  G -->|"hanya approved"| Priv
+  Prod --> G
 ```
 
-**Batas kepercayaan (trust boundaries):**
+**Batas kepercayaan:**
 
 | # | Batas | Arah | Catatan |
 |---|---|---|---|
-| B1 | Peramban → `POST /api/demos` | Tak tepercaya masuk | Satu-satunya input pengguna yang mencapai server |
-| B2 | `route.ts` → memori proses | Internal | Entry disimpan tanpa `contact` (`TERVERIFIKASI`) |
-| B3 | Halaman → `youtube.com/embed` | Keluar | `src` dari katalog statis, bukan input pengguna |
-| B4 | Halaman → `i.ytimg.com/vi/**` | Keluar | Allow-list `next.config.ts` (`TERVERIFIKASI`) |
-| B5 | Peramban → `link` submission | Tak tepercaya keluar | Divalidasi skema `http(s)` di server (`TERVERIFIKASI`) |
+| B1 | Peramban → `POST /api/demos` | tak tepercaya masuk | Input tak tepercaya utama; sudah divalidasi field per field |
+| B2 | Peramban → `POST /api/demo-audio` | tak tepercaya masuk | **Kapabilitas unggah tidak dikunci** ke server (F04/F05) |
+| B3 | Route → dataset `submissions` | internal | PII; hanya terjangkau lewat token server |
+| B4 | Route → Vercel Blob | keluar | Objek **publik**; nama file asli ikut ke key |
+| B5 | Route → Resend | keluar | **PII + `audioUrl`** keluar dari sistem ke penyedia email |
+| B6 | Halaman → `youtube.com/embed` | keluar | `id` dari katalog/CMS, bukan input pengguna |
+| B7 | Halaman → `i.ytimg.com` · `cdn.sanity.io` | keluar | Allow-list persis di `next.config.ts:86-97` |
 
-**Aktor:** pengunjung anonim (satu-satunya aktor yang ada hari ini); calon
-kurator `RENCANA` (`ADR-0005`); pihak ketiga YouTube (embed + thumbnail).
+**Aktor:** pengunjung anonim (satu-satunya aktor yang ada hari ini), kurator
+redaksi (peran Sanity, bukan fitur aplikasi), pihak ketiga YouTube / Vercel Blob /
+Resend / Sanity.
 
 ---
 
-## 3. Ringkasan Threat Model
+## 3. Ringkasan threat model
 
-| # | Ancaman | Komponen | Mitigasi hari ini | Residual |
+| # | Ancaman | Mitigasi hari ini | Residual |
+|---|---|---|---|
+| T1 | Spam submission membanjiri penyimpanan & biaya | Validasi field + enum + batas body 16 KB (`413`) | **Tinggi** — tanpa rate limit, tiap POST = 2 tulis Sanity + 1 email berbayar (F02) |
+| T2 | Konten tak termoderasi tampil publik | Kueri antrean hanya membaca status disetujui | **Rendah** saat token terpasang; **Sedang** pada jalur fallback tanpa token (F06) |
+| T3 | XSS tersimpan dari `artist`/`title`/`story`/`city` | React auto-escape; 1 `dangerouslySetInnerHTML` yang disengaja (JSON-LD, nilainya dibangun server) | **Rendah** |
+| T4 | Injeksi skema URL via `link` | Regex `/^https?:\/\/.+/i` → `422` | **Rendah** |
+| T5 | Clickjacking / framing | `X-Frame-Options: SAMEORIGIN` + `frame-ancestors 'self'` (CSP enforced) | **Rendah** |
+| T6 | MIME sniffing / kebocoran Referer | `X-Content-Type-Options: nosniff` + `Referrer-Policy: strict-origin-when-cross-origin` | **Rendah** |
+| T7 | Kebocoran PII kontak ke publik | PII di dokumen terpisah `demoContact`; kueri publik tidak pernah memintanya | **Rendah** di jalur Sanity; **Sedang** lewat email notifikasi (F01) |
+| T8 | Penyalahgunaan endpoint token unggah | Token tanpa kedaluwarsa/pemakai | **Tinggi** — siapa pun bisa mencetak token tanpa meter (F04/F05) |
+| T9 | Kontrol iframe embed dibajak | `id` dari sumber internal; origin YouTube tetap | **Info** |
+| T10 | Pembukaan cache tanpa otorisasi | `revalidateTag` butuh secret, dibandingkan constant-time | **Sedang** — secret diterima juga lewat `?secret=` dan dipakai ganda (F03) |
+
+---
+
+## 4. Hasil audit 21 Oktober 2026 — F01 s.d. F10
+
+> **Cara membaca tabel ini.** Audit berjalan **tanpa sandbox OS** (tanpa
+> container, tanpa isolasi jaringan), sehingga **tidak ada satu pun kode target
+> yang dieksekusi**. Konsekuensinya: **tidak ada temuan yang bisa dinyatakan
+> `confirmed`** — semuanya `needs_validation` dengan langkah validasi yang
+> jelas. Kolom "Severity" adalah *severity bila terkonfirmasi*, bukan vonis.
+> **Status pada laporan audit: seluruh temuan belum diperbaiki.**
+>
+> Catatan: **F01 sudah ditutup** setelah laporan audit itu dibuat — lihat §4.1.
+> Status lajur "per laporan audit" tetap mengikuti laporan aslinya; perubahan
+> sesudahnya ditandai terpisah.
+
+| # | Temuan | Severity bila terkonfirmasi | Status (per laporan audit) | Perbaikan terkecil |
 |---|---|---|---|---|
-| T1 | Spam submission membanjiri antrean (DoS/reputasi) | `POST /api/demos` | Cap field + validasi enum; **tanpa** rate limit/CAPTCHA/auth | **Sedang** (`RISK-001`) |
-| T2 | Konten submission tak termoderasi tampil publik | `DemoPortal` queue | Tidak ada (`queue.unshift`); klien hanya menampilkan seed + kiriman sendiri | **Sedang** → `ADR-0005` |
-| T3 | XSS tersimpan dari `artist`/`title`/`story`/`city` | `DemoPortal` | React auto-escape; **0** `dangerouslySetInnerHTML` | **Rendah** |
-| T4 | Injeksi skema URL (`javascript:`, `data:`) via `link` | `DemoPortal` `href` | Regex `/^https?:\/\/.+/i` menolak skema lain | **Rendah** |
-| T5 | Clickjacking / framing situs | Seluruh situs | **Tidak ada** `frame-ancestors`/`X-Frame-Options` | **Sedang** |
-| T6 | MIME sniffing / kebocoran Referer | Seluruh situs | **Tidak ada** `X-Content-Type-Options`/`Referrer-Policy` | **Rendah** |
-| T7 | Kebocoran PII kontak | `route.ts` | `contact` **tidak pernah** dipersistensi | **Rendah** hari ini |
-| T8 | Kontrol iframe embed dibajak | `VideoModal` | `id` dari katalog statis; origin tetap | **Info** |
-| T9 | Path traversal / eksekusi berkas audio | `DemoPortal` | Unggahan ke Vercel Blob; key objek dibentuk di peramban dari nama file asli | **TERVERIFIKASI 21 Okt 2026** - belum ada allowlist host/key di sisi server (`app/api/demo-audio/route.ts:26-30`) ||
+| F01 | `audioUrl` diterima dari host mana pun, lalu disimpan ke dokumen yang dikurasi **dan** dikirim ke email redaksi | **High** | `needs_validation` — **ditutup 21 Okt 2026** *(lihat §4.1: host kini dibatasi ke store Blob milik operator)* | bandingkan host dengan store Blob milik operator; tolak selain itu dengan `422` |
+| F02 | `POST /api/demos` tanpa rate limit/quota/CAPTCHA/idempotensi; tiap permintaan = 2 tulis Sanity + 1 email berbayar | **High** | `needs_validation` — belum diperbaiki | rate limit per IP di edge + Turnstile + `Idempotency-Key` |
+| F03 | satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | `needs_validation` — belum diperbaiki | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
+| F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | `needs_validation` — belum diperbaiki | server yang menentukan key + access; bucket privat + signed URL; nama file di-sanitasi |
+| F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | `needs_validation` — belum diperbaiki | grant sekali-pakai dari `/api/demos` + job pembersihan |
+| F06 | tanpa token, antrean fallback dilayani **tanpa** filter status (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
+| F07 | hapus submission di Studio meninggalkan `demoContact` (PII) dan objek audio (publik) hidup selamanya | **Low** | `needs_validation` — belum diperbaiki | aksi hapus kurator yang ikut menghapus kontak + objek; tetapkan tanggal retensi |
+| F08 | `visionTool()` aktif di workspace `submissions` → GROQ bebas atas dataset privat bagi siapa pun yang punya akses workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
+| F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | `needs_validation` — belum diperbaiki | hapus dari `.env`; rotasi password di akun Supabase |
+| F10 | error mentah Sanity ditulis penuh ke log operator tiap kegagalan tulis | **Informational** | `needs_validation` — belum diperbaiki | log ringkas: status, tipe error, id kiriman |
+
+**Rekap severity:** Critical 0 · High 2 · Medium 3 · Low 3 · Informational 1 ·
+operasional 1 (**total 10**).
+
+### 4.1 Catatan per temuan
+
+**F01 — `audioUrl` tidak terikat host.**
+Pada kondisi saat laporan audit ditulis, `app/api/demos/route.ts` hanya memeriksa
+dua hal: prefiks `https://` dan ekstensi yang diizinkan (`.mp3`, `.wav`, `.ogg`).
+**Host-nya tidak diperiksa**, jadi siapa pun yang bisa mengirim POST bisa membuat
+`audioUrl` menunjuk ke host mana saja; nilainya lalu tersimpan di
+`demoSubmission.audioUrl` dan ikut di body email redaksi. Jika `RESEND_API_KEY`
+diset, isi email itu keluar dari sistem. Perbaikan: allow-list host store milik
+operator.
+
+> **Perkembangan (21 Okt 2026, sudah masuk repo).** Allow-list host
+> sudah ditambahkan: `isOwnBlobUrl()` (`app/api/demos/route.ts:78-87`) hanya
+> menerima URL `https:` dengan host berakhiran `.blob.vercel-storage.com`, dan
+> validasi `audioUrl` memanggilnya (`:287-292`). Jadi bagian *"host tidak diikat"*
+> **sudah tertutup**; yang tersisa adalah mengikat store **privat**, menyanitasi
+> nama file, dan membersihkan objek (masih F04/F05), serta host store yang masih
+> `public`. Status F01 berubah dari *terbuka* menjadi **sebagian tertutup** —
+> tetapi belum diverifikasi ulang oleh audit dan belum ada di commit.
+
+**F02 — `POST /api/demos` tanpa rate limit.**
+Tidak ada autentikasi, rate limit, CAPTCHA, honeypot, atau `Idempotency-Key`.
+Batas body 16 KB (`app/api/demos/route.ts:38,226`) membatasi ukuran — bukan
+jumlah. Satu permintaan yang sah = 2 dokumen Sanity (`demoSubmission` +
+`demoContact`) + 1 email. Perbaikan: rate limit per IP di edge (Vercel Firewall
+atau bucket di rute), Turnstile, `Idempotency-Key`.
+
+**F03 — satu secret untuk dua kapabilitas.**
+`lib/sanity-preview.ts:38-40`:
+`process.env.SANITY_PREVIEW_SECRET ?? process.env.SANITY_REVALIDATE_SECRET ?? null`.
+Selama `SANITY_PREVIEW_SECRET` **belum diset**, pratinjau draf memakai nilai yang
+sama dengan secret webhook. `app/api/revalidate/route.ts:57-60` juga menerima
+secret lewat `?secret=` di URL — parameter URL masuk ke log akses dan riwayat
+peramban. Nilai `SANITY_REVALIDATE_SECRET` **pernah terekspos di log percakapan**
+di luar repo (`git log --all -- .env` kosong, jadi bukan kebocoran repo) — tapi
+eksposur di luar repo tetap berarti nilai itu harus dianggap bocor dan
+**dirotasi**. Perbaikan: secret terpisah untuk pratinjau, header saja untuk
+webhook, lalu rotasi nilai lama.
+
+**F04/F05 — kapabilitas unggah Blob tidak terikat server.**
+`app/api/demo-audio/route.ts:23-35` memanggil `handleUpload` tanpa
+pemeriksaan identitas. `onBeforeGenerateToken` mengunci tipe MIME dan ukuran,
+tapi **pathname-nya tetap datang dari peramban** dan `access: "public"` dipilih
+di sisi peramban (`components/DemoPortal.tsx:115-121`), bersama nama file asli
+di dalam key. Token juga bisa dicetak tanpa batas (F05). Perbaikan: server yang
+menentukan key + access, bucket privat + signed URL, grant sekali-pakai, dan job
+pembersihan objek.
+
+**F06 — jalur fallback melewati moderasi.**
+Tanpa `SANITY_API_READ_TOKEN`, `submissionsClient` bernilai `null`
+(`lib/sanity-server.ts:24-33`) dan route memakai array proses-lokal.
+`GET` mengembalikan **seluruh** array tanpa filter status
+(`app/api/demos/route.ts:137-152`), dan `POST` membalas `201`
+(`:282-290`) walau tidak ada yang tersimpan permanen — antrean yang dijanjikan
+hilang saat restart. Perbaikan: filter status di kedua cabang; tanpa store →
+`503` + log.
+
+**F07 — penghapusan tidak berantai.**
+Tidak ada endpoint kurator dan tidak ada hook penghapusan; `demoContact`
+terhubung lewat `reference` yang tidak otomatis ikut terhapus, dan objek audio
+di Blob tidak pernah dibersihkan. Perbaikan: aksi hapus kurator yang menghapus
+kontak + objek, plus tanggal retensi.
+
+**F08 — `visionTool` di workspace privat.**
+`melodialam-sanity/sanity.config.ts:46` mengaktifkan `visionTool()` juga pada
+workspace `submissions`. Siapa pun yang punya akses workspace itu bisa
+menjalankan GROQ bebas atas dataset privat. Perbaikan: matikan di workspace
+privat; audit daftar anggota & peran project.
+
+**F09 — sisa password Supabase di `.env`.**
+`DATABASE_URL` masih ada di `.env` lokal, sementara **0** rujukan kode
+memakainya (`grep DATABASE_URL` di `*.ts|*.tsx|mjs|js` → 0 hasil). Ini sisa
+layanan yang sudah ditinggalkan, tetapi passwordnya masih hidup di file.
+Perbaikan: hapus barisnya dari `.env`, lalu rotasi password di akun Supabase.
+
+**F10 — log error mentah.**
+`app/api/demos/route.ts:359` (`console.error("[api/demos] gagal menyimpan ke Sanity:", error)`)
+dan `app/api/demo-audio/route.ts:39` menulis objek error apa adanya. Perbaikan:
+log ringkas (status, tipe error, id kiriman) — jangan log payload.
+
+### 4.2 Satu kandidat gugur saat verifikasi
+
+Hipotesis stored XSS lewat `href` Portable Text **dibatalkan** oleh verifikasi
+independen: React 19.3 membersihkan `javascript:` di `href` pada render server
+maupun client, dan situs ini tidak punya sesi/cookie/storage yang bisa
+dikompromikan. Diturunkan menjadi catatan hardening: `components/ArticleBody.tsx`
+sebaiknya meng-override `marks.link` dengan allowlist skema (http/https/mailto/tel)
+— aturan `Rule.uri` di Studio hanya berlaku di form, bukan di Content Lake.
+
+### 4.3 Catatan hardening lain (bukan temuan)
+
+- `lib/sanity-server.ts` dan `lib/sanity-preview.ts` memegang token tetapi tidak
+  memakai `import "server-only"`. Graf impor sudah dijaga, jadi risikonya
+  rendah — tapi penanda itu akan menjadikannya jaminan build-time, bukan
+  konvensi saja.
+- `xml()` di `app/rss.xml/route.ts` belum membuang karakter terlarang XML 1.0,
+  jadi satu judul berisi karakter kontrol membuat seluruh feed tidak valid.
+- `fromCms` tidak mem-type-check `imagePath`; satu dokumen rusak bisa menggagalkan
+  seluruh `/rss.xml`.
+- `components/VideoModal.tsx:33` memvalidasi `id` dari event `melodi:watch` hanya
+  dengan cek non-kosong sebelum menyisipkannya ke URL embed YouTube. Hostnya
+  tetap terkunci, jadi dampaknya kecil.
+- ~~`JSON.parse(raw)` bisa mengembalikan `null`~~ → **Ditutup.** Body `null` atau
+  array kini ditolak `400` sebelum field dibaca (`app/api/demos/route.ts:232-237`).
+- Ukuran audio kini dibaca sebagai angka **atau** string angka
+  (`bytes()`, `app/api/demos/route.ts:65-69`), jadi batas 25 MB tidak bisa dilewati
+  dengan mengirim `"0"`.
 
 ---
 
-## 4. Temuan (Findings)
+## 5. Temuan dari tinjauan dokumen ini (SEC-Fxx) — status terhadap kode sekarang
 
-Temuan diberi kode `SEC-Fxx`. Setiap temuan menyertakan lokasi, bukti,
-dampak, remediasi, dan cara verifikasi. Bagian §4.11 mencatat yang **sudah
-aman** secara eksplisit, karena beberapa di antaranya adalah temuan yang biasa
-dicari orang dan jawabannya penting untuk dicatat.
+Tabel ini menggantikan daftar temuan versi lama, yang ditulis saat antrean demo
+masih berupa array proses-lokal. **Baris yang sudah tertutup dicoret; baris yang
+masih terbuka|jadi temuan berjalan.**
 
-### SEC-F01 — Membran keamanan HTTP tidak ada (CSP/HSTS/XCTO/Referrer-Policy/Permissions-Policy)
-
-- **Severity:** Medium · **Kategori:** Security misconfiguration
-- **Lokasi:** `next.config.ts` (seluruh 32 baris; tidak ada `headers()`)
-- **Bukti `TERVERIFIKASI`.** File hanya mendefinisikan `cacheComponents`,
-  `partialPrefetching`, `images.remotePatterns`, dan `turbopack.rules`. Pencarian
-  `headers|Content-Security-Policy|X-Frame-Options` di `*.ts` mengembalikan **0
-  hasil**. Tidak ada `middleware.ts` (glob kosong). Tidak ada `poweredByHeader`.
-- **Dampak.** Tidak ada Content Security Policy sebagai pertahanan berlapis bila
-  kelak muncul sink XSS; situs dapat di-`iframe` (clickjacking, T5); tanpa
-  `X-Content-Type-Options: nosniff` browser boleh menebak MIME (T6); tanpa
-  `Referrer-Policy` URL penuh dapat bocor ke pihak ketiga; tanpa
-  `Permissions-Policy` API perangkat tersedia tanpa batas. Tidak ada temuan XSS
-  hidup hari ini (lihat §4.11), sehingga ini murni pengerasan — bukan eksploit
-  aktif.
-- **Remediasi `RENCANA`** (belum diterapkan; snippet ilustratif): tambahkan
-  `poweredByHeader: false` dan `async headers()` di `next.config.ts`:
-
-  ```ts
-  // RENCANA — belum diterapkan.
-  const CSP = [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "object-src 'none'",
-    "frame-ancestors 'none'",
-    "form-action 'self'",
-    "script-src 'self' 'unsafe-inline'",   // nonce menyusul (§6, target)
-    "style-src 'self' 'unsafe-inline'",    // next/font + motion menulis inline style
-    "img-src 'self' data: blob: https://i.ytimg.com",
-    "font-src 'self' data:",
-    "media-src 'self' blob:",              // pratinjau audio = blob:
-    "connect-src 'self'",
-    "frame-src https://www.youtube.com",   // satu origin, lihat §4.8
-    "manifest-src 'self'",
-    "upgrade-insecure-requests",
-  ].join("; ");
-  ```
-
-  Untuk Next 16 App Router, `'unsafe-inline'` pada `script-src` dibutuhkan karena
-  App Router menyuntik skrip inline (payload RSC/hidrasi) dan tidak ada nonce hari
-  ini. Perketat ke **nonce** lewat `middleware.ts` adalah `RENCANA` lanjutan. Di
-  dev (`next dev` + Turbopack) dibutuhkan `'unsafe-eval'`; pisahkan nilai dev vs
-  prod.
-
-  Header lain (juga `RENCANA`):
-  `Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`,
-  `X-Content-Type-Options: nosniff`,
-  `Referrer-Policy: strict-origin-when-cross-origin`,
-  `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()`,
-  `X-Frame-Options: DENY`.
-
-  `img-src` **wajib** memuat `https://i.ytimg.com` karena
-  `components/VideosBrowser.tsx:168` memakai `<img>` mentah (bukan `next/image`)
-  langsung ke `https://i.ytimg.com/vi/<id>/hqdefault.jpg`. `media-src` **wajib**
-  memuat `blob:` karena pratinjau audio memakai object URL
-  (`components/DemoPortal.tsx:30`).
-- **Verifikasi `[PERLU VERIFIKASI]`.** Setelah deploy, `curl -I` ke URL produksi
-  dan periksa keenam header pada respons HTML dan pada respons `/api/demos`.
-  Platform Vercel mungkin sudah menambahkan sebagian header (mis. HSTS) — konfirmasi
-  respons nyata sebelum mengklaim terpasang.
-
-### SEC-F02 — Permukaan penyalahgunaan tanpa kontrol (tanpa rate limit/CAPTCHA/auth, GET tak terbatas)
-
-- **Severity:** Medium (naik ke **High** saat persistensi + unggahan audio tiba)
-- **Kategori:** Abuse / availability · **Acuan:** `RISK-001`
-- **Lokasi:** `app/api/demos/route.ts:36-38` (`GET`), `:40-102` (`POST`)
-- **Bukti `TERVERIFIKASI`.**
-  - `POST` tidak memeriksa autentikasi, tidak ada rate limit, tidak ada CAPTCHA,
-    tidak ada honeypot, tidak ada `Idempotency-Key` (`:40`).
-  - `GET` mengembalikan **seluruh** array tanpa paginasi:
-    `return NextResponse.json({ queue, count: queue.length });` (`:37`).
-  - Tidak ada batas ukuran body sebelum `await request.json()` (`:43`).
-- **Dampak.** Aktor anonim dapat mengirim ribuan submission dengan `curl`; tidak
-  ada kurasi, sehingga konten tak termoderasi masuk `queue` tanpa babak belur
-  (`queue.unshift(entry)`, `:91`). Karena store hanya array proses-lokal (`:13`),
-  kerusakan **persisten** hari ini terbatas (reset saat restart) — itulah alasan
-  severity hari ini **Medium**, bukan High. Begitu `ADR-0005`/`ADR-0003` membuat
-  baris bertahan dan audio tersimpan, dampaknya menjadi: tabel membengkak, biaya
-  Storage, dan konten sampah yang harus disaring manual → **High**.
-- **Remediasi `RENCANA`** — urutan lapisan (dari dalam ke luar):
-  1. **Batas ukuran body** di route (tolak payload raksasa sebelum parse).
-  2. **Rate limit per-IP** (`POST`: mis. 5/jam, 20/hari; `GET`: 60/menit) →
-     `429` + `Retry-After`. Di Vercel multi-instance, penyimpanan penghitung
-     **tidak boleh** in-memory — pakai Postgres/Redis `[PERLU VERIFIKASI]`.
-  3. **Turnstile** (gerbang manusia) pada form `/submit`.
-  4. **`Idempotency-Key`** agar retry tidak menggandakan baris.
-  5. **Moderated queue** (`ADR-0005`): submission `pending`, publik hanya
-     `approved` — ini menetralkan dampak spam bahkan bila lapisan di atas bocor.
-  6. **Monitoring** jumlah submission per IP/waktu sebagai umpan balik.
-  Detail angka dan penyimpanan ada di `docs/API-CONTRACTS.md` §8.
-- **Verifikasi.** Kirim >5 POST berturut-turut dari satu IP → ekspektasi `429`
-  dengan `Retry-After`; `GET` tanpa param → ekspektasi respons terpaginasi.
-
-### SEC-F03 — Batas audio 25 MB (`BR-001`) tidak ditegakkan di mana pun
-
-- **Severity:** Medium · **Kategori:** Upload control / requirement tidak terpenuhi
-- **Acuan:** `BR-001`
-- **Lokasi:** `components/DemoPortal.tsx:27-34`, `:159-165`
-- **Bukti `TERVERIFIKASI`.** `onPickAudio` hanya memanggil
-  `URL.createObjectURL(file)` (`:30`) — **tidak** ada cek `file.size`. Input
-  memakai `accept="audio/*"` (`:162`), yang tidak membatasi tipe maupun ukuran.
-  Server **tidak pernah** menerima berkas (`POST` mengirim JSON teks, `:46-50`),
-  sehingga tidak ada validasi ukuran/tipe sisi server.
-- **Dampak.** Hari ini murni UX (tidak ada unggahan → tidak ada risiko server).
-  Begitu unggahan nyata dibangun, tanpa penjagaan ini penyerang dapat mengirim
-  berkas raksasa atau tipe non-audio → biaya Storage dan permukaan pemrosesan.
-  Karena `BR-001` adalah **release blocker** yang sudah diputuskan, ini adalah
-  gap nyata terhadap requirement, bukan spekulatif.
-- **Remediasi `RENCANA`.** Tegakkan di **tiga** tempat (`docs/DATA-MODEL.md` §9.2):
-  1. **Klien** — cek `file.size` di `onPickAudio` (UX, bisa dilewati).
-  2. **Server** — cek `file.size` + allowlist MIME sebelum menerbitkan signed
-     upload URL; tolak `413` / `415` (`docs/API-CONTRACTS.md` §5.1).
-  3. **Bucket Storage** — `file_size_limit` 25 MB (`26214400` byte).
-- **Verifikasi.** Pilih berkas 30 MB di form → tolak seketika (kasus klien); `curl`
-  multipart 30 MB langsung ke route → `413` (kasus server); unggah langsung ke
-  bucket melewati aplikasi → ditolak Storage.
-
-### SEC-F04 — `link` submission menampilkan tujuan eksternal arbitrer di domain publik
-
-- **Severity:** Low · **Kategori:** URL handling / abuse
-- **Lokasi:** `app/api/demos/route.ts:64`, `components/DemoPortal.tsx:257-264`
-- **Bukti `TERVERIFIKASI`.** Validasi tunggal:
-  `else if (!/^https?:\/\/.+/i.test(link)) errors.link = ...` (`:64`). Nilai
-  divalidasi hanya pada skema; sisanya bebas (cap 500 char). Link dirender sebagai
-  anchor di queue: `href={demo.link}` (`DemoPortal.tsx:258`).
-- **Analisis skema — ini bagian yang benar.** Karena regex mensyaratkan awalan
-  `http://`/`https://`, skema `javascript:` dan `data:` **ditolak di server**
-  (menghasilkan `422`), dan entri tidak pernah masuk `queue`. Seed demo
-  (`lib/content.ts:487+`) memakai URL `https` hardcoded. Jadi **tidak ada jalur
-  `javascript:`/`data:` ke DOM** — jangan laporkan ini sebagai XSS.
-- **Dampak sisa.** Penyerang dapat mengirim submission berisi tautan apa pun yang
-  lalu tampil sebagai anchor yang dapat diklik di domain Melodi Alam (umpan
-  phishing/misinformasi). Ini bertumpuk dengan tidak adanya moderasi (`SEC-F02`,
-  T2). Severity **Low** karena tidak ada eksekusi skrip, hanya penyalahgunaan
-  tautan.
-- **Remediasi `RENCANA`.** Moderasi (`ADR-0005`) menghilangkan paparan publik
-  sebelum kurator menyetujui. Sebagai pengerasan tambahan: normalisasi URL,
-  tolak tautan ke skema/host yang meragukan bila kebijakan produk menetapkannya,
-  dan pastikan anchor tetap `rel="noopener noreferrer"`.
-- **Verifikasi.** POST `link: "javascript:alert(1)"` → `422`; POST
-  `link: "data:text/html,..."` → `422`; periksa tidak ada anchor ter-render dari
-  kiriman yang di-`422`.
-
-### SEC-F05 — `note` memantulkan `contact` mentah sekaligus mengklaim penyimpanan yang tidak ada
-
-- **Severity:** Low · **Kategori:** Privacy / truthfulness
-- **Lokasi:** `app/api/demos/route.ts:94-102` (khususnya `:99`)
-- **Bukti `TERVERIFIKASI`.** Respons `201` menyisipkan `contact` ke string:
-  `` note: `Kontak manajer (${contact}) dicatat terpisah dan tidak tampil di daftar publik.` ``
-  (`:99`).
-- **Analisis paparan pihak ketiga.** String ini **hanya** berada di badan respons
-  `201` yang dikembalikan ke pengirim (permintaan mereka sendiri). Ia **tidak**
-  ditulis ke `queue` (`entry` tidak punya field `contact`, `:77-88`), **tidak**
-  dikembalikan oleh `GET` (`:37`), dan **tidak** dirender:
-  `DemoPortal.tsx:51-64` hanya membaca `data.errors`, `data.error`, dan
-  `data.entry` — `note` diabaikan sepenuhnya. Jadi tidak ada refleksi ke pihak
-  ketiga. Tidak ada logging di kode. Dengan demikian: **bukan** information
-  disclosure; satu-satunya jalur keluar adalah kembali ke peramban pengirim
-  (dilindungi TLS di produksi) atau bila respons dicatat oleh proxy/log platform
-  (`[PERLU VERIFIKASI]`).
-- **Masalah nyata: klaim palsu.** Teks menyatakan kontak "dicatat terpisah"
-  padahal **tidak ada** penyimpanan terpisah (lihat §4.11 — `contact` tidak
-  dipersistensi). Ini misinformasi privasi kepada pengirim: mereka diberi tahu
-  datanya disimpan privat, padahal tidak. Severity **Low** karena tanpa dampak
-  keamanan langsung, tapi penting untuk integritas janji privasi.
-- **Remediasi `RENCANA`.** Saat `ADR-0005` hadir, `contact` benar-benar disimpan
-  di `demo_contacts` (`docs/DATA-MODEL.md` §8.3) dan `note` boleh tetap
-  informatif. Jangan pernah meng-echo nilai PII mentah dalam pesan; ganti dengan
-  pesan statis tanpa nilai (mis. "Kontak tersimpan privat untuk redaksi.").
-  Pastikan `contact` **tidak** masuk log/observability.
-- **Verifikasi.** POST dengan `contact` mencolok → respons `201` tidak lagi
-  memuat nilai kontak di `note`; grep log akses produksi untuk nilai itu → nihil.
-
-### SEC-F06 — Object URL pratinjau audio tidak di-revoke saat unmount
-
-- **Severity:** Low · **Kategori:** Resource leak
-- **Lokasi:** `components/DemoPortal.tsx:23-34`, `:60-63`
-- **Bukti `TERVERIFIKASI`.** `audioUrl` di-revoke saat memilih berkas baru
-  (`:29`) dan setelah submit sukses (`:60`). Namun **tidak ada** `useEffect`
-  cleanup saat komponen unmount atau saat pengguna meninggalkan `/submit` dengan
-  berkas terpilih tapi belum submit. Blob tetap hidup selama dokumen hidup.
-- **Dampak.** Kebocoran memori peramban terkecil (satu object URL yang tak
-  dilepas). Bukan masalah privasi server: berkas **tidak pernah** meninggalkan
-  peramban. Tidak ada dampak lintas pengguna.
-- **Remediasi `RENCANA`.** Tambahkan `useEffect(() => () => { if (audioUrl.current) URL.revokeObjectURL(audioUrl.current); }, [])`.
-- **Verifikasi.** Pilih berkas, navigasi keluar, periksa `performance.memory`
-  (atau devtools) menunjukkan object URL tidak lagi ditahan — sulit diotomasi;
-  cukup review kode bahwa cleanup ada.
-
-### SEC-F07 — Tidak ada batas ukuran body sebelum `request.json()`
-
-- **Severity:** Low · **Kategori:** DoS hardening
-- **Lokasi:** `app/api/demos/route.ts:43`
-- **Bukti `TERVERIFIKASI`.** `body = (await request.json()) as Payload;` membaca
-  seluruh body tanpa batas ukuran lebih dulu. Baru setelah parse, `str()` memotong
-  per field (`:28-30`).
-- **Dampak.** Payload besar dibaca penuh ke memori sebelum dipotong → konsumsi
-  memori/CPU per permintaan. Hari ini dibatasi tidak langsung oleh batas body
-  default platform (`[PERLU VERIFIKASI]` untuk Vercel), jadi severity **Low**.
-- **Remediasi `RENCANA`.** Periksa `Content-Length` (dan/atau batas byte saat
-  membaca stream) dan tolak `413` sebelum parse. Batas wajar: beberapa ratus KB
-  untuk JSON 8 field.
-- **Verifikasi.** Kirim body 10 MB → ekspektasi `413`, bukan `200`/`422`.
-
-### SEC-F08 — ID video YouTube tidak divalidasi bentuk (defense in depth)
-
-- **Severity:** Low · **Kategori:** Defense in depth
-- **Lokasi:** `components/VideoModal.tsx:22-27`, `:75`, `:87`
-- **Bukti `TERVERIFIKASI`.** `src` dibangun sebagai
-  `` `https://www.youtube.com/embed/${state.id}?autoplay=1` `` (`:75`) dan
-  `state.id` berasal dari `CustomEvent` detail (`:23`), yang dipicu oleh
-  `WatchButton` dengan `id={video.id}` dari katalog statis
-  (`lib/catalogue.json`). **Oleh karena itu `state.id` tidak dapat dikendalikan
-  penyerang hari ini** — ini penting untuk dinyatakan, karena orang mengira ini
-  jalur injeksi.
-- **Dampak.** Nol hari ini. Risiko hipotetis hanya jika kelak `id` berasal dari
-  input/CMS dan disisipkan ke URL tanpa validasi. Severity **Low**
-  (pengerasan).
-- **Remediasi `RENCANA`.** Validasi `id` terhadap pola YouTube
-  (`/^[A-Za-z0-9_-]{11}$/`) sebelum membangun URL; atau `encodeURIComponent`.
-  Origin embed tetap satu host.
-- **Verifikasi.** Grep: setiap pemanggilan `melodi:watch` harus menerima `id`
-  dari sumber statis; tambahkan guard pola bila katalog kelak bisa diedit CMS.
-
-### SEC-F09 — `X-Powered-By` dan versi framework dapat terpapar
-
-- **Severity:** Informational · **Kategori:** Information disclosure
-- **Lokasi:** `next.config.ts` (tidak ada `poweredByHeader: false`)
-- **Bukti `TERVERIFIKASI`.** `next.config.ts` tidak menetapkan `poweredByHeader`.
-  Next.js secara default mengirim `X-Powered-By: Next.js` (`ASUMSI` perilaku
-  framework; `[PERLU VERIFIKASI]` pada 16.4.0).
-- **Dampak.** Memudahkan pemetaan stack. Sangat rendah.
-- **Remediasi.** Set `poweredByHeader: false` (masuk dalam perubahan
-  `SEC-F01`).
-
-### SEC-F10 — `rel="noreferrer"` tanpa `noopener` eksplisit
-
-- **Severity:** Informational · **Kategori:** Hardening
-- **Lokasi:** 15 anchor eksternal `target="_blank"` di `components/*` dan
-  `app/*` (mis. `DemoPortal.tsx:259-260`, `VideosBrowser.tsx:122-123`,
-  `VideoModal.tsx:88-89`)
-- **Bukti `TERVERIFIKASI`.** Semua anchor eksternal memakai `target="_blank"` +
-  `rel="noreferrer"`; **tidak ada** `noopener` eksplisit (pencarian `noopener`
-  → 0 hasil).
-- **Dampak.** Nol pada peramban modern: `noreferrer` menyiratkan `noopener`, dan
-  `target="_blank"` juga menyiratkan `noopener` secara default. Severity
-  **Informational** — ini hanya kejelasan niat, bukan lubang.
-- **Remediasi.** Opsional: tulis `rel="noopener noreferrer"` demi peramban lama
-  dan keterbacaan.
-
-### 4.11 Yang sudah aman — dinyatakan eksplisit
-
-Beberapa di bawah ini adalah temuan yang biasanya dicari; jawabannya penting.
-
-| Cek | Hasil | Bukti |
+| ID | Temuan (versi lama) | Status 21 Okt 2026 |
 |---|---|---|
-| `dangerouslySetInnerHTML` di repo | **Tidak ada** (0 hasil) | Pencarian lintas repo |
-| XSS dari `artist`/`city`/`title`/`genre`/`story` | **Aman** — React auto-escape | `DemoPortal.tsx:244-256` (semua JSX text) |
-| XSS dari input pencarian | **Aman** — di-escape; hanya difilter lokal | `VideosBrowser.tsx:83,23-25` — tidak pernah ke server; `JournalBrowser` dihapus 16 Okt 2026 |
-| `javascript:`/`data:` via `link` | **Aman** — ditolak `422` oleh regex skema | `route.ts:225` |
-| PII (`contact`) at rest | **Tersimpan** di dokumen `demoContact` (dataset privat) | `app/api/demos/route.ts:313-317`; `route.ts:77-88` hanya memproyeksikan `entry` tanpa `contact` ke antrean publik. Tidak ada jalur hapus (`SEC-F07`) |
-| Berkas audio diunggah | **Ya** — ke Vercel Blob lewat `POST /api/demo-audio` | `components/DemoPortal.tsx:112-115`; `access: "public"` dan nama file asli ikut ke key objek. Retensi 90 hari masih `RENCANA` |
-| `note` dibaca pihak ketiga / dirender | **Tidak** — hanya di respons pengirim; `DemoPortal` mengabaikan `note` | `route.ts:99`; `DemoPortal.tsx:51-64` |
-| Allow-list gambar remote | **Ketat** — hanya `i.ytimg.com/vi/**` via HTTPS | `next.config.ts:13-19` |
-| Origin iframe embed | **Tetap** — `www.youtube.com` dari katalog statis | `VideoModal.tsx:75` |
-| Secret / env var di kode | **Tidak ada** — 0 `process.env` | Pencarian di `*.{ts,tsx,mjs}` |
-
-**Kesimpulan XSS:** tidak ada sink injeksi HTML/JS di repo. Satu-satunya sink
-berisiko adalah `href={demo.link}` (URL), yang telah dibatasi ke `http(s)` oleh
-server. Klaim "React meng-escape; tidak ada `dangerouslySetInnerHTML`" benar dan
-terverifikasi.
+| SEC-F01 | Membran keamanan HTTP tidak ada | ~~Terbuka~~ → **Ditutup sebagian.** `next.config.ts:56-78` kini mengirim `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS, CSP **enforced** + CSP **report-only**. Sisa: CSP enforced belum punya `script-src` (`next.config.ts:9-12`), jadi satu-satunya penjaga XSS masih React. `RENCANA` |
+| SEC-F02 | Permukaan penyalahgunaan tanpa kontrol | **Terbuka** — secara teknis bukan lagi "tanpa batas body" (16 KB, `route.ts:38`), tapi **tanpa rate limit/CAPTCHA/idempotensi** = temuan audit **F02** |
+| SEC-F03 | Batas audio 25 MB tidak ditegakkan | ~~Terbuka~~ → **Ditutup.** Tiga lapis: klien (`DemoPortal.tsx:81-84`), token server (`demo-audio/route.ts:28`), dan body's `audioSize` (`demos/route.ts:278-280`). Lapisan ketiga baru benar-benar menyala pada 21 Okt 2026: sebelumnya klien mengirim ukuran sebagai string, sehingga pemeriksaannya tidak pernah dijalankan. Diuji: 30 MB → `422` |
+| SEC-F04 | `link` menampilkan tujuan eksternal arbitrer | **Terbuka (Low)** — skema `http(s)` tetap ditegakkan (`demos/route.ts:262` → `422`); tidak ada allowlist host |
+| SEC-F05 | `note` memantulkan `contact` mentah | ~~Terbuka~~ → **Ditutup.** `note` kini teks statis ("Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.", `demos/route.ts:325,409`) — nilai kontak tidak lagi dipantulkan |
+| SEC-F06 | Object URL pratinjau audio tidak di-revoke | ~~Terbuka~~ → **Ditutup.** `useEffect` cleanup ada (`DemoPortal.tsx:37-42`) |
+| SEC-F07 | Tidak ada batas ukuran body | ~~Terbuka~~ → **Ditutup.** `MAX_BODY_BYTES = 16 * 1024` → `413` (`demos/route.ts:38,226-228`) |
+| SEC-F08 | ID video YouTube tidak divalidasi bentuk | **Terbuka (Low/defense in depth)** — masih hanya cek non-kosong (`VideoModal.tsx:33`) |
+| SEC-F09 | `X-Powered-By` terpapar | ~~Terbuka~~ → **Ditutup.** `poweredByHeader: false` (`next.config.ts:54`) |
+| SEC-F10 | `rel="noreferrer"` tanpa `noopener` eksplisit | **Terbuka (Informational)** — `noreferrer` menyiratkan `noopener` di peramban modern; hanya `VideoModal.tsx:157` yang menulis keduanya eksplisit |
 
 ---
 
-## 5. Tabel Temuan Berdasarkan Severity
-
-| ID | Severity | Kategori | Lokasi (berkas:baris) | Requirement |
-|---|---|---|---|---|
-| SEC-F01 | **Medium** | Security misconfiguration | `next.config.ts` (tidak ada `headers()`) | `NFR-003`, `NFR-004` |
-| SEC-F02 | **High** (eskalasi 21 Okt 2026: baris sudah persisten + audio tersimpan) | Abuse / availability | `app/api/demos/route.ts:36-102` | `RISK-001` - hanya batas body yang ada; rate limit/Turnstile/Idempotency-Key belum |
-| SEC-F03 | **Medium** | Upload control | `components/DemoPortal.tsx:27-34,159-165` | `BR-001` |
-| SEC-F04 | **Low** | URL handling / abuse | `route.ts:64`; `DemoPortal.tsx:257-264` | `RISK-001` |
-| SEC-F05 | **Low** | Privacy / truthfulness | `route.ts:94-102` | `RISK-002` |
-| SEC-F06 | **Low** | Resource leak | `DemoPortal.tsx:23-34,60-63` | — |
-| SEC-F07 | **Low** | DoS hardening | `route.ts:43` | `RISK-001` |
-| SEC-F08 | **Low** | Defense in depth | `VideoModal.tsx:22-27,75` | — |
-| SEC-F09 | **Informational** | Information disclosure | `next.config.ts` | — |
-| SEC-F10 | **Informational** | Hardening | `components/*` (anchor eksternal) | — |
-
-**Rekap:** Critical 0 · High 0 · Medium 3 · Low 5 · Informational 2 (**total 10**).
-
-Tidak ada temuan Critical/High pada kode saat ini. Ini konsisten dengan
-permukaan serang yang sempit (satu route handler in-memory tanpa PII tersimpan),
-bukan karena pengerasan yang sudah dilakukan.
-
----
-
-## 6. Penilaian Privasi (Privacy Assessment)
+## 6. Penilaian privasi
 
 ### 6.1 Inventaris data
 
-| Data | Contoh aman | Klasifikasi | Disimpan di mana hari ini | Retensi hari ini |
-|---|---|---|---|---|
-| `artist`, `city`, `title`, `genre`, `program`, `link`, `story` | — | Publik (karya) | Memori proses (`queue`) | Sampai proses restart |
-| `contact` | `manager@example.test` | **Pribadi (PII)** | **Tidak disimpan** — hanya di string `note` | Tidak ada |
-| Berkas audio | `demo.mp3` | Terbatas (25 MB, tipe audio) | Diunggah ke Blob storage; URL disimpan di dokumen kiriman | Tidak dihapus otomatis (retensi 90 hari `RENCANA`) |
-| IP pengirim, User-Agent | — | Pribadi | Tidak ditangani kode; mungkin dicatat platform | `[PERLU VERIFIKASI]` |
-| Header/metadata submission | timestamp `submittedAt` | Internal | Memori proses | Sampai restart |
+| Data | Klasifikasi | Disimpan di | Retensi hari ini |
+|---|---|---|---|
+| `artist`, `city`, `title`, `genre`, `program`, `link`, `story` | karya / quasi-publik | dokumen `demoSubmission` di dataset privat `submissions` | sampai dihapus manual di Studio |
+| **`contact`** | **PII** | dokumen `demoContact` di dataset privat `submissions` | sampai dihapus manual; **tidak** ikut terhapus bersama submission (F07) |
+| `audioName`, `audioUrl` | data karya | dokumen `demoSubmission` + objek di Vercel Blob (`access: "public"`) | tidak dihapus otomatis; retensi 90 hari masih `RENCANA` |
+| IP pengirim, User-Agent | PII | tidak ditangani kode | `[PERLU VERIFIKASI]` — mungkin dicatat platform |
+| `submittedAt` | internal | dokumen `demoSubmission` | sampai dihapus manual |
 
 **Klasifikasi:** tidak ada data sensitif (kesehatan, keuangan, kredensial).
-Satu-satunya kandidat PII hari ini adalah `contact`, dan ia **tidak berada di
-disk**.
+Kandidat PII ada dan **benar-benar tersimpan**: kontak manajer, nama band, dan
+kota asal.
 
-### 6.2 Risiko privasi
+### 6.2 Yang sudah aman — dinyatakan eksplisit
 
-1. **Safe-by-omission, bukan safe-by-design.** Karena `contact` tidak
-   dipersistensi, hari ini tidak ada PII at rest (`TERVERIFIKASI`). Tetapi
-   konsekuensinya adalah **kurator tidak dapat menghubungi artis** — pipeline
-   intinya cacat. Keadaan ini aman karena datanya tidak dipakai, bukan karena ada
-   kontrol. `ADR-0005` yang benar justru **menciptakan** PII pertama di sistem
-   (`demo_contacts.contact`), jadi kontrol privasi harus lahir bersamanya, bukan
-   setelahnya.
-2. **Klaim privasi palsu** di `note` (SEC-F05).
-3. **Retensi belum ditetapkan.** `docs/DATA-MODEL.md` §11.2 mencatat kebijakan
-   retensi terjadwal belum ada. `RISK-002` menetapkan aturan konkret: arsipkan
-   audio demo setelah 90 hari.
-4. **Yurisdiksi.** Produk beroperasi di Indonesia; kewajiban hukum (mis. UU PDP)
-   harus dipastikan bersama penasihat hukum, bukan diasumsikan dari dokumen ini
-   (§11).
-
----
-
-## 7. Kontrol Fase Target (`RENCANA`)
-
-Semua di §7 belum diimplementasikan. Contoh konfigurasi ilustratif, bukan
-kode yang ada.
-
-### 7.1 Row Level Security untuk jalur baca publik `approved-only` (`ADR-0003`, `ADR-0005`)
-
-Rujuk `docs/DATA-MODEL.md` §10. RLS diaktifkan di semua tabel domain. Inti untuk
-privasi demo:
-
-```sql
--- RENCANA — belum dijalankan.
-alter table demo_submissions enable row level security;
-alter table demo_contacts    enable row level security;
-
--- Publik: hanya baris approved, dan tabel ini TIDAK punya kolom contact.
-create policy demo_public_read on demo_submissions
-  for select to anon, authenticated
-  using (moderation_status = 'approved');
-
--- Kurator: baca seluruh antrean.
-create policy demo_curator_read on demo_submissions
-  for select to authenticated
-  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator');
-
--- PII: tidak ada policy untuk anon; hanya kurator.
-create policy demo_contacts_curator_read on demo_contacts
-  for select to authenticated
-  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator');
-```
-
-Dua catatan kritis yang harus dibaca sebelum mengandalkan RLS:
-- **Payload melewati RLS.** Adapter Postgres Payload lazim tersambung sebagai
-  pemilik tabel; RLS tidak berlaku untuk pemilik kecuali `FORCE ROW LEVEL
-  SECURITY`. Jalur Payload wajib dijaga oleh access control koleksi Payload
-  sendiri. `[PERLU VERIFIKASI]` saat implementasi.
-- **Tidak ada policy `insert` anon.** Submission anonim ditulis **lewat server**,
-  bukan langsung dari peramban ke Supabase. Jangan tambahkan policy insert publik.
-
-### 7.2 Penanganan service-role key
-
-- Hanya di sisi server. **Jangan pernah** memberi prefix `NEXT_PUBLIC_`.
-- Terpisah per environment (Preview vs Production) — lihat `docs/DEPLOYMENT.md`
-  §3.1 dan risiko `D3` (service role bocor = akses penuh DB).
-- Rotasi berkala; jangan pernah masuk log atau bundle klien.
-
-### 7.3 Kebijakan bucket Storage + signed URL untuk audio demo (`ADR-0003`)
-
-- Bucket `demo-audio` **privat**; tidak ada akses baca publik.
-- Akses hanya lewat **signed URL** berumur pendek (mis. 60 detik) yang diterbitkan
-  route kurator setelah cek role.
-- `file_size_limit` = 25 MB (`26214400` byte) di bucket (lapis ketiga `BR-001`,
-  `docs/DATA-MODEL.md` §9.2).
-- Path: `{submission_id}/{uuid}-{sanitized-filename}` — jangan pakai nama asli
-  mentah (path traversal + tabrakan nama).
-- Bucket `media` (gambar editorial Payload) tetap publik — beda kelas data.
-
-### 7.4 Turnstile
-
-- Widget Turnstile pada form `/submit`; verifikasi token **di server** pada
-  `POST /api/demos` sebelum insert. Token satu kali pakai, `[PERLU VERIFIKASI]`
-  endpoint verifikasi terbaru Cloudflare.
-- Jangan jadikan Turnstile satu-satunya kontrol — pasangkan dengan rate limit
-  (§7.5).
-
-### 7.5 Rate limiting
-
-- Kunci per-IP untuk `POST`/`GET` publik; per-user kurator untuk `POST
-  /api/curator/*`.
-- Penyimpanan penghitung **bukan** in-memory (Vercel multi-instance) → Postgres
-  atau Redis `[PERLU VERIFIKASI]`.
-- Respons `429` + `Retry-After`.
-
-### 7.6 Audit logging keputusan kurator
-
-- Setiap transisi status menulis `reviewed_by`, `reviewed_at`, `review_note`
-  (`docs/DATA-MODEL.md` §8.1) — jejak siapa memutuskan apa dan kapan.
-- Pembacaan PII (`GET /api/curator/demos/{id}/contact`) sebaiknya juga dicatat
-  (`ASUMSI`; `docs/API-CONTRACTS.md` Open Questions #8).
-- **Jangan** catat nilai `contact` di log; catat referensi/ID-nya saja.
-
-### 7.7 Urutan gate — apa yang wajib ada sebelum submission nyata pertama diterima
-
-| Gate | Harus ada | Alasan |
+| Cek | Hasil | Bukti |
 |---|---|---|
-| **G0 — sebelum `POST` publik apa pun di produksi** | Persistensi + state moderasi (`ADR-0005`): tulis `pending`, publik baca `approved` saja | Invariant pengendali: tanpa ini, setiap submission langsung publik |
-| **G1** | RLS aktif di `demo_submissions` + `demo_contacts`; policy approved-only; tanpa insert anon | Mencegah kebocoran baris `pending`/`rejected` dan PII lewat key publishable |
-| **G2** | Pemisahan PII (`demo_contacts`); `contact` tidak pernah di jalur baca publik | `contact` adalah PII pertama; jangan biarkan masuk `GET` publik |
-| **G3** | `service_role` server-only + terpisah per environment | Kebocoran key = akses penuh DB |
-| **G4** | Rate limit + batas body + Turnstile pada `POST` | Menetralkan `RISK-001` sebelum data bertahan |
-| **G5** | Pemberitahuan privasi (§8) live di form | Kewajiban saat mengumpulkan data pribadi |
-| **G6** | Audit log keputusan kurator | Akuntabilitas + jejak |
-| **G7 — hanya bila unggahan audio aktif** | Bucket privat + signed URL + `BR-001` di tiga tempat + retensi 90 hari (`RISK-002`) | Audio + Storage menambah kelas data dan biaya |
-| **G8 — independen, boleh lebih awal** | Header keamanan (SEC-F01) | Pengerasan murni; tidak bergantung pada backend |
+| `dangerouslySetInnerHTML` di repo | **1 hasil, disengaja** | JSON-LD `WebSite`/`Organization` di `app/(site)/layout.tsx:146-149`; nilainya dibangun server, bukan input pengguna |
+| XSS dari `artist`/`city`/`title`/`genre`/`story` | **Aman** — React auto-escape | seluruh render form memakai JSX text |
+| XSS dari `href` Portable Text | **Aman** (React 19.3 membersihkan `javascript:`); tetap pengganti allowlist skema = `RENCANA` | `components/ArticleBody.tsx` |
+| `javascript:`/`data:` via `link` | **Aman** — ditolak `422` | `demos/route.ts:262` |
+| PII kontak di jalur baca publik | **Aman** — `GET` hanya memilih field non-PII dan hanya status disetujui | `demos/route.ts:122-133` |
+| PII kontak di email redaksi | **Bocor ke pihak ketiga** — lihat F01 | `demos/route.ts:193-194` |
+| Audio bocor lewat URL | **Bocor** — objek `access: "public"`, nama file asli di key | `DemoPortal.tsx:115-121`; lihat F04 |
+| `contact` dipantulkan di respons | **Aman** — `note` sudah teks statis | `demos/route.ts:325,409` |
+| Allow-list gambar remote | **Ketat** — `i.ytimg.com/vi/**` + `cdn.sanity.io/images/**` via HTTPS | `next.config.ts:86-97` |
+| Origin iframe embed | **Tetap** — `www.youtube.com` / `www.youtube-nocookie.com` | `VideoModal.tsx`, CSP `frame-src` |
+| Secret di dalam repo | **Tidak ada** — `.gitignore` menutup `.env*` (kecuali `.env.example`) | `.gitignore:33-36` |
+| `DATABASE_URL` dipakai kode | **Tidak** — 0 rujukan | `grep` lintas `*.ts,tsx,mjs,js` |
 
-G0–G2 adalah **blocker keras**: menerima submission nyata tanpa pemisahan
-`pending`/`approved` dan tanpa pemisahan PII berarti mempublikasikan data pribadi
-di jalur baca tanpa kontrol.
+### 6.3 Risiko privasi
+
+1. **Data disimpan tanpa pemberitahuan privasi yang jujur.** Form `/submit`
+   belum memuat pemberitahuan privasi (§8.1). Tanpa itu, pengumpul data
+   pribadi tidak memberi Bases yang benar.
+2. **PII keluar lewat email.** `notifyNewSubmission` menyusun teks yang memuat
+   `entry.contact` **dan** `entry.audioUrl` (`demos/route.ts:186-199`). Begitu
+   `RESEND_API_KEY` diset, data pribadi dikirim ke penyedia email pihak ketiga.
+   Saat ini belum diset → **inert**.
+3. **Blob publik.** Audio demo berada di bucket `access: "public"`; siapa pun
+   yang tahu URL-nya bisa mengunduhnya, dan URL itu ikut ke email.
+4. **Retensi belum ditetapkan.** Tidak ada job penghapusan, tidak ada tanggal
+   retensi di kode untuk dokumen `demoSubmission`, `demoContact`, maupun objek
+   Blob.
+5. **Penghapusan tidak berantai.** Menghapus `demoSubmission` di Studio tidak
+   menghapus `demoContact` (PII) maupun objek audio (F07).
+6. **Jalur fallback.** Tanpa token, kiriman "dibuat" hanya di memori proses dan
+   hilang saat restart (F06).
+7. **Yurisdiksi.** Produk beroperasi di Indonesia; kewajiban UU PDP harus
+   dipastikan bersama penasihat hukum, bukan diasumsikan dari dokumen ini.
 
 ---
 
-## 8. Pemberitahuan Privasi dan Retensi
+## 7. Kontrol yang belum ada (`RENCANA`)
 
-### 8.1 Pemberitahuan privasi (draf, `RENCANA`)
+Semua di §7 **belum diimplementasikan**. Tidak ada satu pun yang boleh dibaca
+sebagai klaim keadaan sekarang.
 
-Wajib ada di form `/submit` (dapat diringkas dengan tautan ke halaman penuh).
-Bahasa Indonesia, lugas, tanpa jargon.
-
-> **Pemberitahuan Privasi — Melodi Alam**
->
-> **Apa yang kami kumpulkan.** Saat Anda mengirim demo, kami menyimpan: nama band
-> atau solois, kota asal, judul lagu/EP, genre, tujuan submit, tautan
-> streaming/EPK, dan cerita singkat (`story`). Kami juga menyimpan **kontak
-> manajer** (nomor WhatsApp atau email) yang Anda berikan, dan — bila Anda
-> melampirkan berkas audio — berkas audio tersebut.
->
-> **Siapa yang melihat.** Nama band, kota, judul, genre, program, tautan, dan
-> cerita bersifat **publik** setelah redaksi menyetujui kiriman Anda. **Kontak
-> manajer bersifat privat**: hanya redaksi Melodi Alam dan kurator panggung yang
-> dapat melihatnya, untuk menghubungi Anda. Kontak tidak ditampilkan di antrean
-> publik.
->
-> **Kenapa kami menyimpannya.** Untuk meninjau karya Anda dan menghubungi Anda
-> bila kami memutuskan untuk menampilkannya, mewawancarainya, atau mengundangnya
-> ke panggung.
->
-> **Berapa lama kami menyimpannya.** Berkas audio demo diarsipkan dan dihapus
-> **90 hari** setelah diterima. Kontak manajer dihapus bersama kiriman Anda; bila
-> Anda meminta penghapusan, kami hapus lebih awal.
->
-> **Berbagi dengan pihak lain.** Kami tidak menjual atau membagikan data Anda
-> kepada pihak ketiga untuk pemasaran. Situs memuat embed video YouTube; saat
-> diputar, YouTube dapat menetapkan cookie sesuai kebijakannya sendiri.
->
-> **Hak Anda.** Anda dapat meminta kami menghapus data Anda atau menanyakan data
-> apa yang kami simpan. Hubungi redaksi melalui kanal resmi yang tertera di
-> situs.
->
-> *Catatan internal (bukan untuk publik): nilai retensi 90 hari untuk audio
-> mengikuti `RISK-002`; kebijakan retensi `rejected` dan periode retensi kontak
-> masih perlu ditetapkan (Open Questions).*
-
-`ASUMSI` — teks di atas adalah draf produk, bukan nasihat hukum. Kesesuaian
-dengan UU PDP harus dikonfirmasi penasihat hukum (§11).
-
-### 8.2 Aturan retensi (`RISK-002`)
-
-| Data | Aturan | Status |
+| Kontrol | Kenapa | Status |
 |---|---|---|
-| Berkas audio demo | Arsipkan, lalu hapus setelah **90 hari** dari `submitted_at` | `RENCANA` (`RISK-002`) |
-| `contact` (PII) | Hapus bersama submission (cascade); hapus lebih awal atas permintaan | `RENCANA` |
-| Submission `rejected` | Periode retensi belum ditetapkan → Open Questions | `RENCANA` |
-| Submission `approved` | Selama tampil di antrean publik, kecuali diminta hapus | `RENCANA` |
+| **Rotasi `SANITY_REVALIDATE_SECRET`** | nilai pernah terekspos di log percakapan | `RENCANA` — **P0** |
+| **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | `RENCANA` — **P0** |
+| **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | `RENCANA` |
+| **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
+| **Rate limit + Turnstile + `Idempotency-Key`** | F02 | `RENCANA` |
+| **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | `RENCANA` |
+| **Server menentukan key + access object Blob**; nama file di-sanitasi | F04 | `RENCANA` |
+| **Filter status di jalur fallback**; tanpa store → `503` | F06 | `RENCANA` |
+| **Aksi hapus kurator berantai** (kiriman + kontak + objek) | F07 | `RENCANA` |
+| **Matikan `visionTool` di workspace `submissions`** | F08 | `RENCANA` |
+| **Hapus `DATABASE_URL` + rotasi password Supabase** | F09 | `RENCANA` |
+| **Log ringkas tanpa payload** | F10 | `RENCANA` |
+| **Bucket privat + signed URL berumur pendek** untuk audio | kebocoran lewat URL | `RENCANA` |
+| **Job retensi** (arsip audio 90 hari, hapus kontak bersama kiriman) | retensi | `RENCANA` |
+| **Pemberitahuan privasi live di form `/submit`** | kewajiban saat mengumpulkan PII | `RENCANA` |
+| **Audit log keputusan kurator** (`reviewed_by`, `reviewed_at`, `review_note`) | akuntabilitas | `RENCANA` — status diubah manual di Studio |
+| **Rotasi berkala secret editorial** |Umur secret tak terbatas | `RENCANA` |
+| **`script-src` pada CSP enforced** | satu-satunya penjaga XSS sekarang React | `RENCANA` |
+| **Allowlist skema `marks.link`** | defense in depth | `RENCANA` |
+| **`import "server-only"`** di `lib/sanity-server.ts` + `lib/sanity-preview.ts` | jaminan build-time | `RENCANA` |
+| **Turnstile** pada `/submit` | gerbang manusia | `RENCANA` |
 
-Implementasi retensi `RENCANA`: job terjadwal (Vercel Cron) yang (a) menghapus
-objek Storage `demo-audio` yang lebih tua dari 90 hari dan (b) menghapus baris
-sesuai kebijakan. Hapus objek Storage adalah **langkah terpisah dari transaksi DB**
-(`docs/DATA-MODEL.md` §8.3) — harus idempoten.
-
----
-
-## 9. Prioritas Remediasi
-
-### 9.1 Segera (sebelum `POST` publik menerima data nyata)
-
-1. **SEC-F02 / T2** — moderasi `pending`→`approved` + pemisahan PII (`ADR-0005`,
-   `ADR-0003`); gate G0–G2.
-2. **SEC-F02** — rate limit + batas body + Turnstile (gate G4).
-3. **SEC-F05** — hentikan echo `contact` di `note`; samakan janji privasi dengan
-   perilaku nyata.
-4. **Pemberitahuan privasi** live di form (gate G5).
-
-### 9.2 Near-term (dalam siklus rilis yang sama)
-
-5. **SEC-F01** — seluruh header keamanan + `poweredByHeader: false` (gate G8).
-6. **SEC-F03 / `BR-001`** — 25 MB di tiga tempat sebelum unggahan audio aktif
-   (gate G7).
-7. **SEC-F07** — batas ukuran body di route.
-8. **Audit logging** keputusan kurator (gate G6).
-
-### 9.3 Pengerasan (dapat menyusul)
-
-9. **SEC-F04** — moderasi tautan + normalisasi URL.
-10. **SEC-F06** — revoke object URL saat unmount.
-11. **SEC-F08** — validasi pola ID YouTube.
-12. **SEC-F09 / SEC-F10** — `poweredByHeader: false`; `rel="noopener noreferrer"`.
-13. Ganti `script-src 'unsafe-inline'` dengan **nonce** lewat `middleware.ts`.
-14. `npm audit` + kebijakan pemutakhiran dependensi (§11).
+> **Catatan.**
+> Controller RLS/Postgres, signed-URL bucket Supabase, dan `service_role`
+> seperti yang disebut di versi dokumen ini **tidak ada lagi** — backend-nya
+> Sanity + Vercel Blob, bukan Supabase. Lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md).
 
 ---
 
-## 10. Checklist Keamanan Pra-Rilis
+## 8. Prioritas remediasi
 
-Pemetaan ke blocker rilis PRD. ID yang teks persisnya tidak ada di sumber
-ditandai `[PERLU VERIFIKASI]`.
+### 8.1 P0 — sebelum menyalakan fitur baru
+
+1. **Rotasi `SANITY_REVALIDATE_SECRET`** dan pasang `SANITY_PREVIEW_SECRET`
+   terpisah; hapus penerimaan `?secret=` di kedua rute. (F03)
+2. **Pasang Blob store** di Vercel → `BLOB_READ_WRITE_TOKEN` ikut terpasang,
+   lalu perbaiki `app/api/demo-audio/route.ts` (server menentukan key + access)
+   dan `app/api/demos/route.ts` (tolak `audioUrl` dari host asing — allow-list
+   host **sudah masuk repo**). (F01/F04/F05)
+3. **Tambahkan rate limit** untuk `POST /api/demos` + `POST /api/demo-audio`,
+   plus `Idempotency-Key`. (F02)
+4. **Hapus `DATABASE_URL` dari `.env`** dan rotasi password Supabase-nya. (F09)
+
+### 8.2 P1 — konsistensi & kejujuran
+
+5. **Centang Update** di webhook Sanity; samakan filternya dengan 7 tipe yang
+   punya tag cache. (lihat [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) §11)
+6. **Matikan `visionTool`** di workspace `submissions`; audit daftar anggota. (F08)
+7. **Aksi hapus kurator** yang ikut menghapus `demoContact` + objek audio;
+   tetapkan tanggal retensi. (F07)
+8. **Filter status di jalur fallback**; tanpa store → `503`, bukan `201`. (F06)
+9. **Log ringkas** tanpa payload pada semua kegagalan tulis. (F10)
+10. **Hapus export mati** (`demoStoreConfigured`, `draftPreviewConfigured`,
+    `videosByIds`, `videosByVenue`); cabut `cardCurtain.featureLabel`/`featureCta`
+    dari skema Studio.
+
+### 8.3 P2 — polish
+
+11. **Pasang `RESEND_API_KEY`** → notifikasi email hidup; set `DEMO_NOTIFY_TO`.
+    Periksa dulu apa isi email sebelum menyalakannya (PII keluar, F01).
+12. **Pemberitahuan privasi live di form `/submit`**.
+13. **`script-src` pada CSP enforced**; allowlist skema `marks.link`; `typeof`
+    check untuk `imagePath`; buang karakter terlarang XML di `xml()`.
+14. **`import "server-only"`** di dua berkas Sanity server.
+15. **Aktifkan Vercel Web Analytics** di dashboard.
+16. **Lampirkan domain `melodialam.id`** → semua canonical ikut benar.
+17. `npm audit` + kebijakan pemutakhiran dependensi.
+
+---
+
+## 9. Checklist Keamanan Pra-Rilis
 
 | # | Cek | Acuan | Fase |
 |---|---|---|---|
-| C1 | Submission baru berstatus `pending`; publik hanya membaca `approved` | `ADR-0005`, `OQ-001` | `RENCANA` |
-| C2 | `contact` tersimpan di `demo_contacts`, tidak pernah di jalur baca publik | `ADR-0003`, `RISK-002` | `RENCANA` |
-| C3 | RLS aktif + policy approved-only + tanpa insert anon | `ADR-0003` | `RENCANA` |
-| C4 | `service_role` server-only, tanpa `NEXT_PUBLIC_`, terpisah per env | `D3` (`DEPLOYMENT.md`) | `RENCANA` |
-| C5 | Rate limit `POST`/`GET` + `429`/`Retry-After` | `RISK-001` | `RENCANA` |
-| C6 | Turnstile terpasang & diverifikasi server | `RISK-001` | `RENCANA` |
-| C7 | Batas audio 25 MB di klien + server + bucket | `BR-001` | `RENCANA` |
-| C8 | Allowlist tipe audio; `415` di luar itu | `BR-001` | `RENCANA` |
-| C9 | Bucket `demo-audio` privat + signed URL berumur pendek | `ADR-0003` | `RENCANA` |
-| C10 | Retensi audio 90 hari berjalan | `RISK-002` | `RENCANA` |
-| C11 | Pemberitahuan privasi tampil di form | privasi | `RENCANA` |
-| C12 | Audit log keputusan kurator (`reviewed_by/at/note`) | `ADR-0005` | `RENCANA` |
-| C13 | Header: CSP, HSTS, XCTO, Referrer-Policy, Permissions-Policy | `NFR-003/004` `[PERLU VERIFIKASI]` | `RENCANA` |
-| C14 | `poweredByHeader: false` | — | `RENCANA` |
-| C15 | Nol `dangerouslySetInnerHTML` tetap terjaga (review PR) | XSS | `TERVERIFIKASI` hari ini |
-| C16 | `link` tetap dibatasi skema `http(s)` | `RISK-001` | `TERVERIFIKASI` |
-| C17 | `contact` tidak pernah masuk log/observability | privasi | `RENCANA` |
-| C18 | `npm audit` bersih atau risiko diterima tertulis | supply chain | `[PERLU VERIFIKASI]` |
+| C1 | `SANITY_REVALIDATE_SECRET` sudah dirotasi | F03 | `RENCANA` |
+| C2 | `SANITY_PREVIEW_SECRET` diset & berbeda | F03 | `RENCANA` |
+| C3 | `?secret=` tidak lagi diterima | F03 | `RENCANA` |
+| C4 | `audioUrl` menolak host di luar store operator | F01 | `TERVERIFIKASI` — host asing → `422` |
+| C5 | Rate limit + `429`/`Retry-After` di `POST /api/demos` & `/api/demo-audio` | F02 | `RENCANA` |
+| C6 | `Idempotency-Key` didukung | F02 | `RENCANA` |
+| C7 | Turnstile terpasang & diverifikasi server | F02 | `RENCANA` |
+| C8 | Key objek & `access` ditentukan server; nama file disanitasi | F04 | `RENCANA` |
+| C9 | Grant unggah sekali-pakai + limit | F05 | `RENCANA` |
+| C10 | Jalur fallback memfilter status; tanpa store → `503` | F06 | `RENCANA` |
+| C11 | Hapus berantai: kiriman + kontak + objek audio | F07 | `RENCANA` |
+| C12 | `visionTool` mati di workspace `submissions` | F08 | `RENCANA` |
+| C13 | `DATABASE_URL` dihapus dari `.env`; password Supabase dirotasi | F09 | `RENCANA` |
+| C14 | Log tidak memuat payload kiriman | F10 | `RENCANA` |
+| C15 | Bucket audio privat + signed URL | privasi | `RENCANA` |
+| C16 | Retensi audio 90 hari berjalan | retensi | `RENCANA` |
+| C17 | Pemberitahuan privasi tampil di form | privasi | `RENCANA` |
+| C18 | Audit log keputusan kurator (`reviewed_by/at/note`) | akuntabilitas | `RENCANA` |
+| C19 | Header keamanan lengkap | SEC-F01 | `TERVERIFIKASI` |
+| C20 | `poweredByHeader: false` | SEC-F09 | `TERVERIFIKASI` |
+| C21 | Batas audio 25 MB di klien + server + token | BR-001 | `TERVERIFIKASI` |
+| C22 | Batas ukuran body sebelum parse | SEC-F07 | `TERVERIFIKASI` |
+| C23 | `link` tetap dibatasi skema `http(s)` | SEC-F04 | `TERVERIFIKASI` |
+| C24 | `contact` tidak pernah masuk log/observability | privasi | `TERVERIFIKASI` |
+| C25 | Nol `dangerouslySetInnerHTML` di luar JSON-LD | XSS | `TERVERIFIKASI` |
+| C26 | `npm audit` bersih atau risiko diterima tertulis | supply chain | `[PERLU VERIFIKASI]` |
 
-Blocker yang berdiri sendiri dan wajib lewat sebelum rilis: **C1, C2, C3, C5,
-C6, C11** (atau, bila unggahan audio aktif, tambah **C7–C10**).
+**Blocker yang berdiri sendiri dan wajib lewat sebelum rilis:** C1–C5, C10,
+C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
 
 ---
 
-## 11. Keterbatasan dan Item yang Perlu Review Spesialis
+## 10. Keterbatasan dan item yang perlu review spesialis
 
-- **Bukan penetration test.** Ini review statis. Tidak ada sistem hidup yang
-  diuji; tidak ada exploit yang dicoba. Efektivitas kontrol runtime (rate limit,
-  Turnstile, RLS, header) belum terbukti.
-- **Bukan penilaian kepatuhan.** Kesesuaian dengan UU PDP Indonesia (atau
-  yurisdiksi lain) memerlukan penasihat hukum.
-- **Supply chain belum diperiksa.** Belum ada `npm audit`, pemeriksaan lockfile,
-  atau peninjauan skrip instalasi. `next@16.4.0`, `react@19.3.0`, `motion` —
-  status kerentanan `[PERLU VERIFIKASI]`.
+- **Bukan penetration test.** Semua pemeriksaan bersifat source-level; tidak ada
+  kode target yang dieksekusi (audit dan tinjauan ini). Efektivitas kontrol
+  runtime belum terbukti.
+- **Tidak ada temuan yang terkonfirmasi.** Semua F01–F10 `needs_validation`.
+- **Bukan penilaian kepatuhan.** UU PDP (atau yurisdiksi lain) memerlukan
+  penasihat hukum.
+- **Supply chain belum diperiksa.** `npm audit` tidak dijalankan; status
+  kerentanan `next@16.4.0`, `react@19.3.0`, `motion` `[PERLU VERIFIKASI]`.
 - **Header platform.** Sebagian header mungkin disuntik Vercel; konfirmasi lewat
   respons produksi.
-- **Turunan berisiko.** Temuan sepenuhnya bergantung pada fakta saat ini
-  ("`contact` tidak dipersistensi", "audio tidak diunggah"). Bila salah satu
-  berubah tanpa kontrol §7, tabel severity di §5 **usang** dan harus diperbarui.
+- **Temuan bergantung pada fakta saat ini.** Kalau layout data atau secret
+  berubah, tabel severity harus dihitung ulang.
 - **Rekomendasi khusus.** Sebelum mengumpulkan PII nyata: review legal atas
   pemberitahuan privasi + periode retensi, dan (bila volume tinggi) uji beban
   untuk batas rate limit.
 
 ---
 
-## Verification Notes
+## Catatan Verifikasi (Verification Notes)
 
-Dibaca langsung dari sumber; tidak ada server dijalankan, tidak ada endpoint
-dipanggil, tidak ada paket dipasang, tidak ada file lain diubah.
+**Dibaca langsung dari sumber** (repo `melodi-alam` dan `melodialam-sanity`):
 
-- `app/api/demos/route.ts` (**103 baris, penuh**) — `queue` dari `SEED_DEMOS`
-  (`:13`); `str()` trim+slice (`:28-30`); `GET` mengembalikan seluruh array
-  (`:36-38`); `POST` parse tanpa batas ukuran (`:43`); cap 120/80/160/60/80/500/160/2000
-  (`:48-55`); regex `link` `/^https?:\/\/.+/i` (`:64`); `entry` **tanpa**
-  `contact` (`:77-88`); `queue.unshift` (`:91`); `note` meng-echo `contact`
-  (`:99`).
-- `components/DemoPortal.tsx` (**317 baris, penuh**) — `onPickAudio` +
-  `URL.createObjectURL` tanpa cek ukuran (`:27-34`); `accept="audio/*"`
-  (`:162`); respons hanya membaca `errors`/`error`/`entry`, `note` diabaikan
-  (`:51-64`); revoke pada submit sukses (`:60`) tanpa cleanup unmount; render
-  antrean JSX text `status/city/genre/artist/title/story/program` (`:243-256`);
-  anchor `href={demo.link}` + `target="_blank"` + `rel="noreferrer"`
-  (`:257-264`).
-- `components/VideosBrowser.tsx` (**216 baris, penuh**) — filter/pencarian
-  client-side atas katalog statis; input tidak pernah ke server (`:18-30`,
-  `:83`); `<img src=https://i.ytimg.com/vi/...>` mentah (`:166-172`).
-- `components/VideoModal.tsx` (**135 baris, penuh**) — `state.id` dari
-  `CustomEvent` (`:22-27`); embed `https://www.youtube.com/embed/${state.id}?autoplay=1`
-  (`:75`); `WatchButton` mengirim `id` dari katalog statis (`:110-134`).
-- `next.config.ts` (**32 baris, penuh**) — `images.remotePatterns` hanya
-  `i.ytimg.com` `/vi/**` HTTPS (`:13-19`); **tidak ada** `headers()`,
-  `poweredByHeader`.
-- `app/layout.tsx` (**92 baris, penuh**) — metadata (`:50-69`); tidak terkait
-  header keamanan.
-- Pencarian: `dangerouslySetInnerHTML` (0); `headers|Content-Security-Policy|
-  X-Frame-Options|process.env` di `*.ts` (0); `use server|server-only` (0);
-  `noopener` (0); `rel="noreferrer"` (15). Glob `melodi-alam/{middleware.ts,
-  middleware.js,app/**/route.ts,app/**/route.js,proxy.ts}` → hanya
-  `app/api/demos/route.ts`; hanya ada satu `next.config.*`.
-- `lib/content.ts:459-524` — `DemoSubmission` (tanpa `contact`), `DEMO_GENRES`
-  (6), `DEMO_PROGRAMS` (3), `SEED_DEMOS` (3 entri, membuat `state.id`/`link`
-  katalog tidak dapat dikendalikan penyerang).
-- Dibaca untuk konsistensi: `docs/DATA-MODEL.md` §8–§11 (RLS, bucket, retensi,
-  PII), `docs/API-CONTRACTS.md` §4–§8 (celah `note`, rate limit, audio),
-  `docs/ARCHITECTURE.md` §13.1, `docs/DEPLOYMENT.md` §11.
+- `app/api/demos/route.ts` (**413 baris, penuh**) — `MAX_BODY_BYTES = 16 * 1024`
+  (`:38`); `str()` trim+slice (`:54-56`); `bytes()` menerima ukuran audio sebagai
+  angka **atau** string angka (`:65-69`); `isOwnBlobUrl()` hanya menerima host
+  `*.blob.vercel-storage.com` dengan skema `https:` (`:78-87`); `APPROVED_QUERY`
+  hanya memilih status disetujui dan **tidak** pernah memilih
+  `contact`/`audioUrl`/`audioName` (`:122-133`); `GET` jatuh ke `memoryQueue`
+  **tanpa filter status** bila token absen (`:137-152`); kueri antrean memakai
+  `cache: "no-store"` (`:146`); `notifyNewSubmission` memuat `entry.contact` dan
+  `entry.audioUrl` ke badan email (`:186-199`); early-return `413` sebelum parse
+  (`:226-228`); guard `JSON.parse` untuk `null`/array (`:232-237`); validasi
+  `link` (`:262`); validasi `audioName`/`audioSize` (`:273-281`); validasi
+  `audioUrl` — ekstensi **dan** host store operator (`:287-292`);
+  `memoryContacts.set` + `memoryQueue.unshift` pada jalur fallback (`:317-318`);
+  `note` statis (`:325`, `:409`); dua `submissionsClient.create` (`:334`, `:352`);
+  `console.error` error mentah (`:359`).
+- `app/api/demo-audio/route.ts` (**45 baris, penuh**) — `handleUpload` tanpa
+  pemeriksaan identitas (`:23`); `allowedContentTypes` + `maximumSizeInBytes` +
+  `addRandomSuffix` (`:26-30`); `onUploadCompleted` kosong (`:31-34`); `400` +
+  log error mentah (`:38-43`).
+- `app/api/revalidate/route.ts` (**69 baris, penuh**) — 6 tag di `CONTENT_TAGS`
+  (`:30-37`); `timingSafeEqual` dengan cek panjang (`:39-45`); secret dibaca dari
+  header `x-webhook-secret` **atau** `?secret=` (`:57-60`); `401` kalau tidak
+  cocok (`:62-64`).
+- `app/(site)/preview/[type]/[slug]/page.tsx` (**202 baris, penuh**) — `robots:
+  { index: false, follow: false }` (`:22`); `instant = false` (`:31`); 404 kalau
+  secret tidak cocok (`:106`); perspektif `drafts` lewat `draftClient`; tipe
+  `journal` dan `kurasi`.
+- `lib/sanity-preview.ts` (**51 baris, penuh**) — `SANITY_PREVIEW_SECRET ??
+  SANITY_REVALIDATE_SECRET ?? null` (`:38-40`); `secretMatches` constant-time
+  (`:43-50`).
+- `lib/sanity-server.ts` (**34 baris, penuh**) — `submissionsClient` bernilai
+  `null` tanpa token (`:24-33`); `useCdn: false`; `perspective: "published"`.
+- `lib/sanity.ts` (**70 baris, penuh**) — `contentClient` **tanpa token**,
+  `perspective: "published"` (`:30-41`); `SANITY_API_VERSION = "2026-05-19"`.
+- `lib/taxonomy.ts` — `DEMO_INITIAL_STATUS = "IN REVIEW"` (`:63`);
+  `DEMO_APPROVED_STATUSES` (`:69`); `DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024`
+  (`:76`); `DEMO_AUDIO_TYPES` (`:77`); `DEMO_AUDIO_EXTENSIONS` (`:78`).
+- `components/DemoPortal.tsx` (**401 baris**) — `useEffect` revoke object URL
+  (`:37-42`); cek ekstensi + tipe + ukuran 25 MB di klien (`:63-84`);
+  `payload` bertipe `Record<string, string \| number>` karena ukuran audio dikirim
+  sebagai angka (`:105-107`); `upload()` dengan `access: "public"`,
+  `handleUploadUrl: "/api/demo-audio"`, key
+  `demo-audio/${Date.now()}-${audioFile.name}` (`:115-121`).
+- `components/VideoModal.tsx` — `id` dari `CustomEvent`, hanya cek non-kosong
+  (`:32-33`); `rel="noopener noreferrer"` (`:157`).
+- `next.config.ts` (**110 baris, penuh**) — CSP enforced 4 direktif (`:9-12`);
+  CSP report-only lengkap dengan `script-src` dan host Blob di `connect-src`
+  (`:29-47`); `poweredByHeader: false` (`:54`); `headers()` (`:56-78`);
+  `images.remotePatterns` 2 host (`:86-97`).
+- `app/(site)/layout.tsx` — metadata + `metadataBase` (`:52-82`); JSON-LD lewat
+  `dangerouslySetInnerHTML` (`:146-149`); `<Analytics />` (`:181`).
+- `app/robots.ts` — `allow: "/"`, `disallow: "/api/"`; `/preview` **tidak**
+  ditutup (agar `noindex`-nya terbaca crawler).
+- `melodialam-sanity/sanity/schemaTypes/` — `demoSubmission` (12 field,
+  termasuk `audioName`/`audioUrl` `readOnly`) dan `demoContact` (`submission`
+  reference + `contact`); `article.mediaType` `foto`/`reel` dengan
+  `initialValue: "foto"`; `siteSettings.cardCurtain` hanya `articleLabel` +
+  `articleCta`; `sanity.config.ts:37,46` — `visionTool()` aktif di **kedua**
+  workspace.
 
-Tidak diverifikasi (karena itu tidak diklaim): perilaku header runtime Vercel,
-perilaku `X-Powered-By` persis pada Next 16.4.0, `[PERLU VERIFIKASI]` angka
-25 MB (`BR-001` — keputusan fase, bukan angka di kode), endpoint verifikasi
-Turnstile, dukungan `FORCE ROW LEVEL SECURITY` pada implementasi Payload,
-status kerentanan dependensi, dan apakah `contact` tercatat di log platform.
+**Diverifikasi dengan menjalankan:** `npm test` → 9/9 lulus (`lib/content.test.ts`,
+Vitest 3.2.7); `npm run build` → lulus, **33 halaman statis** (`Next.js 16.4.0`,
+Turbopack).
+
+**Tidak diperiksa (butuh akses akun):** status Blob store & Resend di Vercel,
+daftar env per scope, daftar anggota & peran Sanity, apakah Firewall/WAF aktif,
+apakah `melodialam.id` sudah diarahkan, dan apakah nilai `DATABASE_URL` masih
+hidup.
+
+**Tidak dieksekusi:** seluruh kode target — audit dan tinjauan ini keduanya
+source-level. Karena itu tidak ada temuan berstatus `confirmed`.
 
 ---
 
 ## Open Questions
 
-1. **Penomoran `RISK-` bertabrakan.** `docs/ARCHITECTURE.md` §13.1 memakai
-   `RISK-001` = Tailwind content scan dan `RISK-002` = batas server/client —
-   **berbeda** dari pemakaian di dokumen ini (`RISK-001` = penyalahgunaan,
-   `RISK-002` = retensi) dan dari `docs/API-CONTRACTS.md` §1 yang membaca
-   `RISK-001` sebagai kontrol penyalahgunaan. Prefix `RISK-` rupanya dipakai
-   ulang untuk dua hal berbeda. Teks persis `RISK-001`…`RISK-003` di PRD tidak
-   ada di repo → `[PERLU VERIFIKASI]`. Rekonsiliasi diperlukan agar rujukan
-   `RISK-xxx` tidak ambigu.
-2. **Periode retensi `rejected` dan `contact`.** `RISK-002` memberi angka untuk
-   audio (90 hari), tetapi retensi submission `rejected` dan `contact` belum
-   ditetapkan (`docs/DATA-MODEL.md` §11.2). Perlukah angka konkret sebelum rilis?
-3. **Sumber `contact` saat seed.** 3 seed demo tidak punya kontak (tidak pernah
-   dipersistensi). Setelah `ADR-0005`, apakah seed diberi kontak sintetis atau
-   dibiarkan tanpa (`docs/DATA-MODEL.md` §11.2)?
-4. **Kebijakan tautan submission.** Bolehkah `link` menunjuk ke host apa pun,
-   atau dibatasi allowlist (Spotify/Bandcamp/YouTube/Instagram)? Ini menentukan
-   seberapa keras SEC-F04 di fase target.
-5. **Penyimpanan rate limit.** Postgres vs Redis/Upstash. In-memory gagal di
-   Vercel multi-instance (`RISK-001`); keputusan ini memengaruhi arsitektur.
-6. **Nonce CSP vs `'unsafe-inline'`.** Apakah fase rilis bersedia memakai
-   `middleware.ts` untuk nonce sejak awal, atau menerima `'unsafe-inline'`
-   sementara? Menentukan kekuatan CSP efektif.
-7. **Audit pembacaan PII.** Haruskah pembacaan `contact` (PII) dicatat, bukan
-   hanya keputusan moderasi? (selaras `docs/API-CONTRACTS.md` Open Questions #8).
-8. **Penyimpanan log.** Apakah platform host mencatat IP/body/`note` submission
-   di log? Bila ya, `note` yang meng-echo `contact` (SEC-F05) membuat PII masuk
-   log — jadikan penghapusan echo sebagai prioritas lebih tinggi.
+1. **Berapa lama `demoContact` dan objek audio disimpan?** Tidak ada angka retensi
+   di kode; `demoContact` juga tidak ikut terhapus bersama submission (F07).
+   Perlu ditetapkan sebelum PII dikumpulkan lebih lama.
+2. **Apakah email notifikasi boleh membawa `contact` dan `audioUrl`?** Saat ini
+   iya (F01). Kalau dilarang, jalurnya perlu diubah — mis. tautan internal ke
+   dokumen, bukan lampiran.
+3. **Bucket Blob publik atau privat?** `access: "public"` dipilih di peramban.
+   Kepindahannya ke privat + signed URL mengubah alur unduh di Studio.
+4. **Siapa saja anggota workspace `submissions`?** Viewer sudah bisa menjalankan
+   `visionTool` atas dataset privat (F08).
+5. **Apakah `melodialam.id` akan jadi origin produksi?** Selama belum, canonical,
+   sitemap, OG, dan `robots.host` menunjuk ke `https://melodialam-website.vercel.app`
+   karena `NEXT_PUBLIC_SITE_URL` diarahkan ke situ (default di kode:
+   `https://melodialam.id`, `lib/site.ts:18`).
+6. **Apakah `SANITY_API_READ_TOKEN` punya akses baca ke dataset `production`?**
+   Kalau tidak, pratinjau draf 404 — bukan bocor. Perlu dipastikan agar
+   diagnosis 404 tidak salah arah.
+7. **Apakah `DATABASE_URL`/password Supabase masih hidup?** Perlu rotasi kalau
+   iya.
+8. **Bagaimana rate limit diimplementasikan di Vercel multi-instance?** Penghitung
+   in-memory tidak boleh dipakai; butuh Firewall, bucket, atau store terpisah.

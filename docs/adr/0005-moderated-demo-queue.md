@@ -2,7 +2,7 @@
 
 | Atribut | Nilai |
 |---|---|
-| **Status** | `DITERIMA` — belum diimplementasikan |
+| **Status** | `DITERIMA` — **sebagian diimplementasikan** (lihat Catatan Verifikasi) |
 | **Tanggal** | 14 Oktober 2026 |
 | **Pengambil keputusan** | Product Owner (menjawab `OQ-001`) |
 | **Terkait** | `OQ-001`, `FR-006`, `BR-002`, `USR-002`, `USR-003`, `RISK-001` |
@@ -98,3 +98,9 @@ Yang mengikat:
   ini tidak ada permukaan publik yang menampilkan entri `approved`.
 - `[PERLU VERIFIKASI]`: siapa yang meninjau antrean dan seberapa sering. Belum ada
   komitmen operasional dari tim redaksi.
+- **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): antrean pindah ke dataset privat
+  `submissions` di Sanity. `GET /api/demos` mengembalikan `count 0` untuk kiriman
+  berstatus `IN REVIEW`, jadi tidak ada entri yang tampil publik. Yang belum ada
+  tetap sama: **panel kurator untuk menyetujui** kiriman dan enum transisi status
+  seperti yang dijelaskan di atas. Keputusan moderasi masih berlaku; hanya tempat
+  simpannya yang berubah.

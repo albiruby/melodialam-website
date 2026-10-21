@@ -1,41 +1,32 @@
 # DATA-MODEL — Melodi Alam Web Platform
 
-> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
-> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
-> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
-> direktori tersebut adalah catatan historis.
-
-Dokumen ini mendefinisikan model data platform web **Melodi Alam**: bentuk entitas
-yang ada hari ini, skema relasional target di balik Payload CMS 3 + Supabase,
-aturan integritas, indeks, Row Level Security, storage, dan jalur migrasi.
-
-Isi dipisahkan eksplisit menjadi dua keadaan, mengikuti konvensi
-`docs/ARCHITECTURE.md`:
-
-- **Current State — TERVERIFIKASI.** Bentuk data yang benar-benar ada di repo
-  `melodi-alam/`. Setiap field dibaca langsung dari sumber.
-- **Proposed State — RENCANA.** Skema target. Belum diimplementasikan; fase ini
-  **DOCS ONLY** — tidak ada migrasi yang dijalankan.
-
-Label status: `TERVERIFIKASI` (dibaca di kode atau dijalankan), `RENCANA`
-(direncanakan, belum ada), `ASUMSI` (diasumsikan), `[PERLU VERIFIKASI]` (tidak
-dapat dikonfirmasi dari sumber).
-
-Acuan keputusan: ADR-0002 (Payload 3 in-app + Supabase), ADR-0003 (Supabase =
-Postgres + Storage), ADR-0004 (video catalogue tetap build-time), ADR-0005
-(moderated demo queue). Acuan requirement: `FR-001`…`FR-007`, `BR-001`…`BR-004`,
-`OQ-001`, `OQ-002`, `NFR-001`…`NFR-004`, `RISK-001`…`RISK-003`.
-
-> **⚠️ Digantikan sebagian — baca ini dulu.**
-> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
-> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
-> dihapus.
+> **Catatan (21 Okt 2026).** Dokumen ini **ditulis ulang dari nol**. Versi
+> sebelumnya mendeskripsikan skema target Postgres + Payload CMS 3 dengan tabel
+> SQL, indeks, RLS, migrasi, dan bucket Supabase. Rencana itu tidak pernah
+> dijalankan: CMS-nya diganti **Sanity Studio** (ADR-0008), seluruh kode Payload
+> dihapus, dan Supabase tidak lagi dipanggil kode mana pun.
 >
-> Bagian yang tidak lagi berlaku di dokumen ini: skema Postgres, RLS, migrasi, dan tabel
-> koleksi. Lihat
-> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
-> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
-> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+> Yang ada sekarang: **dua dataset Sanity** — `production` (publik) dan
+> `submissions` (privat) — plus satu katalog JSON hasil *build* sebagai arsip
+> cadangan. Tidak ada tabel, tidak ada RLS, tidak ada migrasi.
+>
+> Dokumen lain di `docs/` sudah diberi catatan perpindahan ke Sanity (lihat
+> ADR-0008 dan `docs/SANITY-INTEGRATION.md`). Dokumen ini sengaja tidak lagi
+> mengulang istilah Postgres, RLS, atau Supabase Storage, karena tidak
+> berlaku lagi — dan tidak mengarang skema pengganti untuk hal yang belum
+> ada.
+
+**Label status** (dipakai di seluruh dokumen):
+
+| Label | Arti |
+|---|---|
+| `TERVERIFIKASI` | Ada di kode atau di data, dan sudah dibaca/diambil langsung dari sumbernya |
+| `RENCANA` | Direncanakan, belum ada di sistem yang berjalan |
+| `ASUMSI` | Diasumsikan; belum bisa dipastikan |
+| `[PERLU VERIFIKASI]` | Tidak dapat dikonfirmasi dari sumber yang tersedia di repo |
+
+**Sumber kebenaran skema:** `melodialam-sanity/sanity/schemaTypes/*.ts`.
+**Sumber kebenaran baca sisi web:** `melodi-alam/lib/*.ts`.
 
 ---
 
@@ -43,1037 +34,936 @@ Postgres + Storage), ADR-0004 (video catalogue tetap build-time), ADR-0005
 
 | Aspek | Nilai | Status |
 |---|---|---|
-| Produk | Situs media musik Indonesia: Stories, Watch, Submit Demo, showcase ekosistem | `TERVERIFIKASI` (brief §1) |
-| Store saat ini | **Tidak ada database.** Konten = literal TypeScript + JSON generated; satu-satunya store yang bisa berubah = array in-memory di `app/api/demos/route.ts` | `TERVERIFIKASI` |
-| Store target | Supabase Postgres (via adapter `@payloadcms/db-postgres`) + Supabase Storage | `RENCANA` (ADR-0002, ADR-0003) |
-| ORM / query layer | Payload CMS 3 collections; migrasi digenerate Payload/Drizzle | `RENCANA`; nama persis `[PERLU VERIFIKASI]` |
-| Role penulis | Kurator/editor non-teknis lewat `/admin` | `RENCANA` |
-| Volume konten editorial | 12 artikel, 3 interview row, 3 genre row, 5 space item, 4 ticker item, 3 seed demo | `TERVERIFIKASI` (dihitung di `lib/content.ts`) |
-| Volume katalog video | 292 video panjang, 342 Shorts, 5 playlist | `TERVERIFIKASI` (`lib/catalogue.json`) |
-| Rasio baca/tulis | Baca jauh lebih besar; tulis hanya demo submission + edit kurator | `ASUMSI` (ARCHITECTURE §2.3) |
+| Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated News, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
+| Store utama | Sanity CMS, **dua dataset**: `production` (publik) + `submissions` (privat) | `TERVERIFIKASI` (`lib/sanity-project.ts:31,34`) |
+| Store kedua | `lib/catalogue.json` — katalog YouTube hasil *scrape*, dibangkitkan `npm run catalogue`, **tidak boleh diedit tangan** | `TERVERIFIKASI` (`lib/catalogue.ts:3`) |
+| Store fallback | `lib/content.ts` — 12 artikel, 9 baris wawancara, 4 item ticker, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
+| Basis data relasional | **Tidak ada.** Tidak ada Postgres, tidak ada ORM, tidak ada migrasi | `TERVERIFIKASI` (ADR-0008; `package.json` tidak punya `payload`/`pg`/`drizzle`) |
+| Role penulis | Kurator/editor lewat Sanity Studio (dua workspace: **Konten** dan **Submit Karya**) | `TERVERIFIKASI` (`melodialam-sanity/sanity.config.ts`) |
+| Volume konten editorial | 12 artikel (6 foto + 6 reel), 9 baris wawancara, 9 video, 5 playlist, 55 post kurasi, 1 `siteSettings`, 1 `videosPage` | `TERVERIFIKASI` — dihitung ulang dari dataset `production` pada 21 Okt 2026 (lihat §6) |
+| Volume katalog arsip | 292 video panjang, 342 Shorts, 5 playlist; `scrapedAt` = 14 Oktober 2026 | `TERVERIFIKASI` (`lib/catalogue.json`) |
+| Rasio baca/tulis | Baca jauh lebih besar; tulis = 1 jenis saja (kiriman demo) + edit kurator | `ASUMSI` |
 | Multi-tenant | Tidak. Jumlah kurator kecil (1–3) | `ASUMSI` |
-| Hosting | Vercel → route handler serverless, state in-memory tidak reliabel | `TERVERIFIKASI` (`package.json`) + `ASUMSI` |
+| Hosting | Vercel → route handler serverless | `TERVERIFIKASI` (`package.json`) |
 
-**Tujuan utama skema ini**, secara eksplisit: memisahkan (a) baris yang boleh
-dibaca publik dari (b) baris dan kolom yang hanya untuk kurator — terutama data
-pribadi `contact` yang hari ini dikumpulkan tetapi **tidak pernah disimpan**
-(`TERVERIFIKASI`, §6). Skema ini adalah tempat PII itu akhirnya mendarat, di
-tabel terpisah yang tidak punya policy baca publik.
+**Tujuan model data ini**, secara eksplisit:
+
+1. Menjaga agar artikel, video, dan kurasi **tetap bisa dibaca tanpa token**
+   (dataset `production` publik, CDN-friendly).
+2. Menjaga agar **PII musisi** — nomor WhatsApp / email manajer — tidak pernah
+   berada di dataset yang bisa dibaca publik. Karena itu `demoContact` hidup di
+   dataset privat `submissions`, terpisah dari baris kiriman yang dibaca antrean
+   publik.
 
 ---
 
-## 2. Current State — TERVERIFIKASI
+## 2. Dua dataset
 
-Bagian ini adalah bentuk data nyata per dokumen ini ditulis. Semua field dibaca
-dari `lib/content.ts`, `lib/catalogue.ts`, `lib/catalogue.json`, dan
-`app/api/demos/route.ts`. Nama tipe di kode dipertahankan apa adanya; nama tabel
-target (`articles`, `video_sessions`, dst.) adalah `RENCANA`.
+| Dataset | ACL | Tipe dokumen | Token | Dibaca oleh |
+|---|---|---|---|---|
+| `production` | **publik** | `siteSettings`, `article`, `interview`, `video`, `playlist`, `pillarPost`, `videosPage` (+ `pahlawanRow` gumasan, lihat §4.8) | tidak perlu | `lib/sanity.ts` → `contentClient` (`perspective: "published"`, `useCdn: false`) |
+| `submissions` | **privat** | `demoSubmission`, `demoContact` | **wajib** (`SANITY_API_READ_TOKEN`) | `lib/sanity-server.ts` → `submissionsClient` |
 
-### 2.1 `Article` — `lib/content.ts`
+Pemisahannya sengaja, dan mengikat:
+
+- `lib/sanity.ts` **tidak memuat token** dan boleh diimpor dari mana saja,
+  termasuk komponen klien.
+- `lib/sanity-server.ts` (dataset `submissions`) dan `lib/sanity-preview.ts`
+  (perspektif `drafts` di `production`) **memuat token** dan hanya boleh diimpor
+  dari kode server.
+- Project id (`03sgar5q`) dan nama dataset adalah **literal** di
+  `lib/sanity-project.ts`, bukan variabel lingkungan, supaya checkout bersih
+  tanpa `.env` tetap bisa membaca konten.
+
+> `[PERLU VERIFIKASI]` Status privat dataset `submissions` (flag `private` di
+> Sanity Manage) tidak bisa dikonfirmasi tanpa token: kueri anonim ke
+> `submissions` untuk `count(*[_type == "demoSubmission"])` mengembalikan `0`
+> (`200 OK`), dan dataset memang kosong saat ini — jadi yang terbukti adalah
+> "tidak ada dokumen yang bocor", bukan "dataset dikunci". Bukti privatnya ada
+> di ADR-0008 §Konsekuensi (kueri tanpa token mengembalikan `null` untuk
+> dokumen yang kueri sama kembalikan dengan token).
+
+---
+
+## 3. Bentuk data di sisi web (read model)
+
+Situs tidak membaca dokumen Sanity mentah. Setiap lapisan `lib/*.ts`
+memetakan dokumen ke bentuk yang dipakai UI, dan **selalu punya fallback**.
+Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
+
+| Lapisan | Fungsi | Sumber utama | Fallback kalau Sanity gagal |
+|---|---|---|---|
+| `lib/articles.ts` → `allArticles()`, `latestStories(n)`, `articleBySlug(slug)` | daftar & detail artikel | `article` | `ARTICLES` statis (12), diurutkan `dateISO` desc |
+| `lib/articles.ts` → `feedArticles()` | **tidak dipakai halaman mana pun lagi** (terbukti lewat pencarian seluruh repo) | `article` | idem |
+| `lib/interviews.ts` → `allInterviews()` | baris Bicara Melodi | `interview` | `INTERVIEW_ROWS` statis (9) — dipakai hanya bila hasil CMS **0 baris** |
+| `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
+| `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
+| `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; bagian "Dari Feed" lalu tidak dirender |
+| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau | `siteSettings` | per-field ke `lib/site.ts` + `lib/content.ts` |
+| `lib/videos-page.ts` → `getVideosPageCopy()` | judul/catatan bagian `/videos` | `videosPage` | per-field ke konstanta `STATIC` di berkas itu |
+| `app/api/demos/route.ts` | antrean demo | `demoSubmission` (dataset privat) | array in-memory `memoryQueue` berisi 3 `SEED_DEMOS`; kontak disimpan di `memoryContacts` |
+
+Bentuk yang dipakai UI (`TERVERIFIKASI`, dibaca dari `lib/*.ts`):
 
 ```ts
-export type ArticleCategory =
-  | "Fakta Musik" | "Rekomendasi Melodi" | "Bicara Melodi" | "Liputan Panggung";
+// lib/articles.ts
+export interface SiteArticle extends Article {   // Article = lib/content.ts
+  richBody?: unknown[];        // Portable Text; undefined bila artikel statis
+  source: "static" | "cms";
+  mediaType: "foto" | "reel";
+}
 
+// lib/content.ts
 export interface Article {
   slug: string; title: string; category: ArticleCategory;
-  date: string;        // label tampil, "10 Oktober 2026"
+  date: string;        // label tampil, mis. "10 Oktober 2026"
   dateISO: string;     // "2026-10-10"
-  excerpt: string; image: string;
-  body: string[];      // paragraf plain text, bukan HTML
-  featured?: boolean;
+  excerpt: string; note?: string;
+  image: string; mediaType?: "foto" | "reel";
+  body: string[];      // paragraf plain text — hasil proyeksi Portable Text
+}
+
+// lib/pillars-shared.ts
+export interface PillarPost {
+  id: string; pillar: string; title: string;
+  mediaType: "foto" | "reel";
+  date: string | null; igUrl: string;
+  image: string | null; imageWidth: number | null; imageHeight: number | null;
+}
+
+// lib/videos.ts
+export interface SiteVideo {
+  id: string; title: string; duration: string; seconds: number;
+  views: string; uploaded: string; featuring: string[]; venue: string; url: string;
+  source: "cms" | "catalogue";
+}
+export interface SitePlaylist { id: string; title: string; count: string; url: string; }
+
+// lib/interviews.ts
+export interface SiteInterview {
+  slug: string; artist: string; headline: string;
+  videoId: string; caption: string; source: "cms" | "static";
+}
+
+// lib/taxonomy.ts
+export interface DemoSubmission {
+  id: string; artist: string; city: string; title: string;
+  genre: string; program: string; link: string; story: string;
+  status: DemoStatus; submittedAt: string;
 }
 ```
 
-| Objek | Jumlah | Bukti |
+### 3.1 Satu daftar cerita bersama
+
+`latestStories(count = 8)` di `lib/articles.ts:216` adalah **satu-satunya**
+daftar cerita yang dipakai lintas halaman: **cerita ber-`mediaType: "foto"`
+terbaru lebih dulu, lalu cerita `reel` terbaru**, dipotong `count`.
+
+Pemakai dan potongannya (`TERVERIFIKASI`):
+
+| Pemakai | Potongan |
+|---|---|
+| Beranda `app/(site)/page.tsx:28-29` | `latestStories(8)` → 4 pertama (grid 2×2) |
+| `/stories` `app/(site)/stories/page.tsx:18` | `latestStories(8)` → 8 kartu |
+| Detail artikel `app/(site)/stories/[slug]/page.tsx:66` | `latestStories(8)` → blok "More {rubrik}" 3 kartu |
+| Sitemap `app/(site)/sitemap.ts:15` | `latestStories(8)` |
+| RSS `app/rss.xml/route.ts:29` | `latestStories(8)` |
+
+Konsekuensinya: **angka daftar cerita tidak bisa berbeda antar halaman**, dan
+cerita reel baru masuk daftar kalau seluruh cerita foto sudah habis.
+
+---
+
+## 4. Skema dataset `production`
+
+Semua field di bawah dibaca dari `melodialam-sanity/sanity/schemaTypes/*.ts`.
+Kolom "Wajib" mengikuti `validation: (rule) => rule.required()`.
+
+### 4.1 `siteSettings` — singleton, id tetap `siteSettings`
+
+Satu dokumen; di-pin di struktur Studio agar editor tidak bisa membuat yang
+kedua (`melodialam-sanity/sanity/structure.ts:12`).
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `name` | string | ya | 60 | Nama situs, mis. "MELODI ALAM" |
+| `tagline` | string | ya | 80 | Header + judul metadata, mis. "Stories & Watch" |
+| `strapline` | string | tidak | 120 | Kalimat pendek di bawah logo |
+| `owner` | string | tidak | 120 | Nama pemilik, mis. "By Infia Pariwara Nusantara" |
+| `est` | string | tidak | 40 | Ditulis apa adanya, mis. "EST. 2017" |
+| `description` | text | tidak | 300 | Meta description bawaan halaman yang tidak punya sendiri |
+| `curationNote` | string | tidak | 60 | Teks kecil di samping judul bagian, mis. "kurasi redaksi" |
+| `cardCurtain` | object | tidak | — | Copy panel hijau saat kartu di-hover (lihat di bawah) |
+| `cardCurtain.articleLabel` | string | tidak | 24 | Label kanan atas kartu Stories. Kosong ⇒ "READ STORY" |
+| `cardCurtain.articleCta` | string | tidak | 40 | Tombol bawah panel. Kosong ⇒ "Buka Catatan Redaksi" |
+| `tickerItems` | array of object | tidak | maks 8 | Item ticker beranda |
+| `tickerItems[].label` | string | ya | 200 | Teks ticker |
+| `tickerItems[].href` | string | tidak | — | Path internal (`/submit`) atau URL penuh |
+
+**`cardCurtain` sekarang hanya punya dua field: `articleLabel` + `articleCta`.**
+Field `featureLabel` dan `featureCta` **dihapus dari skema** (commit Studio
+`4cbde1e`) karena beranda berubah dari satu kartu hero penuh menjadi grid 2×2.
+Kueri sisi web (`lib/site-settings.ts:77`) juga hanya memproyeksi dua field itu,
+jadi field lama tidak pernah terpakai.
+
+> `[PERLU VERIFIKASI]` Dokumen `siteSettings` yang live di dataset masih
+> **memuat** kunci `cardCurtain.featureLabel` ("READ") dan
+> `cardCurtain.featureCta` ("Baca Artikel Penuh") sebagai sisa data lama.
+> Skema dan kueri sudah tidak mengenal keduanya, jadi tidak ada efek ke
+> tampilan — tapi dokumennya belum dibersihkan.
+
+`url` dan `locale` **sengaja tidak ada** di sini: asal harus datang dari
+lingkungan (`NEXT_PUBLIC_SITE_URL`) supaya deployment pratinjau menghasilkan
+canonical yang benar, dan locale adalah konstanta teknis.
+
+### 4.2 `article` — 12 dokumen (6 foto + 6 reel)
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `title` | string | ya | 200 | Judul lengkap |
+| `slug` | slug | ya | 96 | **Menjadi alamat URL** `/stories/<slug>`. `source: "title"`. Mengganti slug mematikan URL lama |
+| `category` | string (radio) | ya | 4 nilai | Rubrik; nilai tersimpan di §4.2.1, label tampilan di `CATEGORY_LABELS` |
+| `date` | date | ya | — | Tanggal terbit; dasar pengurutan dan `datePublished` JSON-LD |
+| `mediaType` | string (radio) | ya | `foto` \| `reel` | **Sumber cerita.** Bawaan `foto`. Lihat §4.2.2 |
+| `excerpt` | text | tidak | 300 | Dipakai di kartu, meta description, JSON-LD |
+| `note` | text | tidak | 300 | Teks panel hijau saat hover. Kosong ⇒ pakai `excerpt` |
+| `image` | image (hotspot) | tidak | — | Sampul terunggah |
+| `imagePath` | string | tidak | — | Path lokal sementara, mis. `/photos/dsc09408.webp`. Dipakai **hanya** kalau `image` kosong. disembunyikan di Studio kalau `image` terisi |
+| `body` | array (`block` + `image`) | tidak | — | Isi Portable Text |
+
+#### 4.2.1 `category` — 4 nilai, 4 label
+
+Nilai tersimpan (`ARTICLE_CATEGORY_VALUES` di `lib/taxonomy.ts`, diduplikasi di
+`melodialam-sanity/lib/taxonomy.ts`) dan label yang ditampilkan:
+
+| Nilai tersimpan | Label tampil |
+|---|---|
+| `Fakta Musik` | Fakta Musik & Esai |
+| `Rekomendasi Melodi` | Fakta Musik |
+| `Bicara Melodi` | Bicara Melodi Notes |
+| `Liputan Panggung` | Liputan & Gig Report |
+
+Rubrik yang tidak dikenal di data akan jatuh ke `Fakta Musik`, bukan tampil
+`undefined` (`lib/articles.ts:154`).
+
+#### 4.2.2 `mediaType` — `foto` (bawaan) atau `reel`
+
+Ini satu-satunya field yang membedakan dua kelompok cerita, dan aturannya
+berdiri sendiri:
+
+- **`foto`** (6 dokumen) — cerita dari post feed foto Instagram.
+- **`reel`** (6 dokumen) — cerita dari reel.
+
+Aturan main: **"Latest News" dan "Stories" adalah daftar ber-gambar**, dan
+bingkai video tidak bisa jadi kartu headline. Karena itu `latestStories()`
+menaruh seluruh cerita foto lebih dulu, lalu cerita reel. Delapan cerita yang
+tampil di `/stories` = **6 foto + 2 reel** (2 reel terbaru: *Spill Pilihan Lagu
+Arctic Monkeys* dan *Dua Dekade Endah N Rhesa*), keduanya berbadge **"Reel"** di
+kartu (`components/ArticleCards.tsx:73-77`).
+
+Empat reel lain — `wsatcc-kisah-dari-selatan-jakarta`,
+`hanin-dhiya-cinta-ini-membunuhku`, `sheila-on-7-single-baru`,
+`a7x-dear-god-jakarta` — **tidak tertaut dari halaman mana pun**: tidak ada di
+beranda, `/stories`, sitemap, RSS, maupun blok "More". Halaman
+`/stories/<slug>`-nya sendiri tetap hidup.
+
+> **Catatan desain yang sekarang usang.** `SANITY-INTEGRATION.md` §3 masih
+> menyatakan bahwa `feedArticles()` yang dipakai beranda dan `/stories`, dan
+> masih menyebut "grid 6 kartu". Keduanya sudah tidak benar: halaman-halaman
+> sekarang memakai `latestStories(8)`, dan `/stories` menampilkan 8 kartu.
+
+### 4.3 `interview` — 9 dokumen (index Bicara Melodi)
+
+Ini **bukan** cerminan katalog video; ini short list pilihan editor. Statistik
+dan thumbnail diambil dari dokumen `video` dengan `youtubeId` yang sama, jadi
+tidak ada yang harus disinkronkan manual.
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `artist` | string | ya | 80 | Nama musisi |
+| `headline` | string | ya | 140 | Judul episode, kapital semua |
+| `youtubeId` | string | ya | 11 karakter | Pengikat ke video. Validasi custom `/^[\w-]{11}$/` |
+| `caption` | string | tidak | — | Teks dalam kurung, mis. "bicara melodi ep.30" |
+| `order` | number | tidak | — | Urutan tampil, kecil ke besar. Kosong ⇒ urut `artist` asc |
+
+**Tidak ada field gambar.** Kartu memakai thumbnail YouTube yang diturunkan dari
+`youtubeId` (`components/YoutubeThumb.tsx`), jadi mustahil meleset dari videonya.
+
+### 4.4 `video` — 9 dokumen
+
+Katalog video yang di-*input manual* oleh editor. Tidak ada API key, tidak ada
+scraping.
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `youtubeId` | string | ya | 11 karakter | Pengikat ke entri katalog arsip |
+| `title` | string | ya | 200 | Judul sesi |
+| `publishedAt` | datetime | ya | — | Tanggal terbit **sungguhan**, bukan string "3d ago". Umur video dihitung saat render sehingga label tidak pernah basi |
+| `durationSeconds` | number | tidak | ≥ 1 | Detik saja, mis. 816 untuk 13:36. Situs memformatnya |
+| `views` | number | tidak | ≥ 0 | Angka mentah, mis. 1800. Diperbarui manual |
+| `venue` | string (radio) | ya | 4 nilai | Program. Bawaan `Melodi Samsara` |
+| `featuring` | array of string | tidak | — | Nama artis, satu per tag |
+
+`venue` adalah *closed set* 4 nilai: `Melodi Samsara`, `Melodi Taman`,
+`Interview`, `Arsip & Lainnya` — nilai yang sama dengan `VENUES` di
+`lib/catalogue.ts`.
+
+**Data saat ini:** 9 dokumen, **semuanya** `venue: "Melodi Samsara"`. Itulah
+sebabnya `/videos` menampilkan tepat 9 sesi (halaman memfilter
+`v.venue === "Melodi Samsara"` lalu mengambil 9 pertama).
+
+**Aturan penimpaan:** Sanity menang atas katalog arsip untuk `youtubeId` yang
+sama (`lib/videos.ts:227-230`). Jadi mengoreksi atau promoting video lama cukup
+satu dokumen, tanpa impor ulang.
+
+### 4.5 `playlist` — 5 dokumen
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `title` | string | ya | 120 | Judul playlist |
+| `playlistId` | string | ya | — | ID playlist YouTube, mis. `PL3hstHxZXaodN-0xzofBkLXr9Plb0hC_r` |
+| `count` | number | tidak | ≥ 0 | Jumlah video, dikelola manual. Situs memformatnya |
+| `order` | number | tidak | — | Urutan tampil. Kosong ⇒ urut `count` desc |
+
+Terpisah dari `video` karena playlist di YouTube bisa memuat video yang tidak
+pernah dicatat di situs.
+
+### 4.6 `pillarPost` — 55 dokumen (pool kurasi)
+
+Post Instagram terkurasi, dikelompokkan per *pillar* konten. Pool-nya hidup di
+Studio; situs merendernya di beranda (4 post foto terbaru) dan di `/kurasi`.
+
+| Field | Tipe | Wajib | Batas | Arti |
+|---|---|---|---|---|
+| `pillar` | string | ya | 9 nilai | Pillar konten (lihat tabel di bawah) |
+| `title` | string | ya | 140 | Satu baris pembuka caption; muncul di kartu |
+| `mediaType` | string | tidak | `foto` \| `reel` | Jenis post. Bawaan `foto` |
+| `date` | date | tidak | — | Tanggal post |
+| `likes` | number | tidak | — | Perkiraan dari tampilan Instagram. **Tidak diproyeksi kueri situs** — dekoratif untuk editor |
+| `igUrl` | url | ya | — | Tautan post Instagram. Wajib — tanpa ini dokumen tidak dihitung |
+| `image` | image (hotspot) | tidak | — | Gambar post |
+| `order` | number | tidak | — | Urutan kurasi. Kosong ⇒ urut tanggal terbaru |
+
+Kueri `lib/pillars.ts:28` hanya menghitung dokumen yang punya `igUrl` **dan**
+`title`; sisanya diabaikan diam-diam.
+
+Urutan baca: `order(coalesce(order, 9999) asc, date desc)`.
+
+#### 4.6.1 Sembilan pillar
+
+| Nilai `pillar` | Label | Set | Post saat ini |
+|---|---|---|---|
+| `fakta-musik` | Fakta Musik | Baca (foto) | **16** |
+| `lirik` | Lirik | Baca (foto) | **3** |
+| `trivia` | Trivia | Baca (foto) | **2** |
+| `kutipan` | Kutipan Melodi Alam | Baca (foto) | **6** |
+| `rekomendasi` | Rekomendasi Melodi | Tonton (reel) | **8** |
+| `ulas-melodi` | Ulas Melodi | Tonton (reel) | **3** |
+| `clipper` | Clipper | Tonton (reel) | **17** |
+| `similar-song` | Similar Song | Tonton (reel) | **0** |
+| `meme-humor` | Meme Humor | **tidak masuk set mana pun** | **0** |
+| | | **Total** | **55** |
+
+Dua hal yang berbeda statusesnya dan keduanya perlu diketahui editor:
+
+- **`similar-song`** ada di skema dan ada di `REEL_PILLARS`, jadi kalau diisi
+  postnya akan muncul di blok "Tonton". Saat ini **0 post**, jadi bagiannya
+  tidak dirender dan chip-nya disembunyikan (chip dengan count 0 di-filter di
+  `components/KurasiBrowser.tsx:61`).
+- **`meme-humor`** ada di skema dan di `PILLAR_LABELS`, tapi **tidak ada di
+  `PHOTO_PILLARS` maupun `REEL_PILLARS`**. Kalau diisi pun, postnya **tidak
+  akan pernah muncul** di `/kurasi` dan tidak akan punya chip. Ini kekosongan
+  skema, bukan sekadar pillar yang belum diisi.
+
+Pembagian set ada di `lib/pillars-shared.ts:22-23`:
+`PHOTO_PILLARS = ["fakta-musik","lirik","trivia","kutipan"]`,
+`REEL_PILLARS = ["rekomendasi","ulas-melodi","clipper","similar-song"]`.
+
+#### 4.6.2 Cara `/kurasi` menampilkannya
+
+`components/KurasiBrowser.tsx` (komponen klien):
+
+- Tanpa filter: **6 post per pillar** (`PILLAR_LIMIT = 6`).
+- Dengan pencarian atau chip pillar: cap dilepas sampai `SEARCH_LIMIT = 48` per
+  pilar, lalu bagian yang kosong dibuang.
+- Pencarian mencocokkan `title` (lowercase, `includes`) **dan** label pillar.
+- Chip: "Semua" + satu chip per pillar yang punya post — 8 chip tampil
+  (Semua + 7 pillar).
+- Dua blok: **"Baca — dari feed @melodi.alam"** (pillar foto) dan
+  **"Tonton — dari feed @melodi.alam"** (pillar reel). Masing-masing bagian punya
+  `id` = nilai pillar, jadi bisa di-anchor: `/kurasi#fakta-musik`.
+- *Empty state*: "Belum ada post yang cocok. Coba kata kunci lain atau pilih
+  'Semua'."
+
+Jumlah post foto vs reel di pool: **25 foto + 30 reel** (55 total).
+
+### 4.7 `videosPage` — singleton, id tetap `videosPage`
+
+Copy untuk kepala bagian halaman Melodi Samsara. Di-pin di struktur Studio
+(`structure.ts:12`).
+
+| Field | Tipe | Wajib | Batas | Arti | Bawaan |
+|---|---|---|---|---|---|
+| `samsaraTitle` | string | tidak | 60 | Judul bagian sesi — jadi `h1` halaman | "Melodi Samsara" |
+| `samsaraNote` | string | tidak | 60 | Catatan kecil di samping judul. **Kosong ⇒ dihitung otomatis** ("N sesi panggung") | — |
+| `samsaraLinkLabel` | string | tidak | 60 | Label tautan ke kanal YouTube. `↗` ditambahkan situs | "YouTube Channel" |
+| `playlistsTitle` | string | tidak | 60 | Judul bagian playlist | "Playlists" |
+| `playlistsNote` | string | tidak | 60 | Catatan kecil. Kosong ⇒ dihitung otomatis ("5 playlist publik • melodialam") | — |
+
+**`videosPage` tidak lagi punya field apa pun untuk bagian "Bicara Melodi".**
+Field-field itu dihapus dari skema (commit Studio `75b53c1`, "Drop the interview
+copy from the Melodi Samsara page") dan bagiannya dihapus dari `/videos`
+(commit situs `0b88aec`). Episode wawancara sekarang punya halaman sendiri,
+`/bicara-melodi`, dengan judul dan label sendiri — tidak ada lagi dua set
+heading yang harus dijaga sinkron.
+
+Perilaku `samsaraNote` punya **tiga** keadaan, bukan dua (`lib/videos-page.ts:60-67`):
+
+| Keadaan di Studio | Arti | Hasil di halaman |
 |---|---|---|
-| `ARTICLES` | 12 | `lib/content.ts` |
-| `ARTICLE_CATEGORIES` | 4 (kunci `CATEGORY_LABELS`) | `lib/content.ts` |
-| `INTERVIEW_ROWS` (`InterviewRow`) | 3 | `lib/content.ts` |
-| `GENRE_ROWS` (`GenreRow`) | 3 | `lib/content.ts` |
-| `SPACE_ITEMS` (`SpaceItem`) | 5 | `lib/content.ts` |
-| `TICKER_ITEMS` | 4 | `lib/content.ts` |
-| `SEED_DEMOS` | 3 | `lib/content.ts` |
+| Field tidak pernah diisi | "hitung sendiri" | `"{N} sesi panggung"` dihitung live |
+| Dikosongkan editor (string kosong) | "tidak mau ada catatan" | Catatan tidak dirender sama sekali |
+| Teks lain | Ditampilkan apa adanya | Teks itu apa adanya |
 
-Catatan integritas `TERVERIFIKASI`:
+Nilai live saat ini: `samsaraTitle: "Melodi Samsara"`,
+`samsaraLinkLabel: "YouTube Channel"`, `playlistsTitle: "Playlists"`,
+`samsaraNote: ""` (kosong → catatan disembunyikan), `playlistsNote` belum diisi
+(→ dihitung otomatis).
 
-- `body` sengaja `string[]` plain, bukan HTML — komentar di `lib/content.ts`
-  menyatakan ini mencegah content layer menyuntik markup.
-- `dateISO` selalu ada di 12 artikel; tidak ada konsep draft/publish di kode.
-- `CATEGORY_LABELS` memetakan kategori → label tampil ("Fakta Musik & Esai" dst.).
-  Itu urusan presentasi, bukan nilai tersimpan (lihat §4.1).
-- Direktori `/pahlawan-kota` kini Sanity-first: baris dibaca dari dokumen
-  `pahlawanRow` lewat `lib/pahlawan.ts`; `GENRE_ROWS` di `lib/content.ts` hanya
-  fallback statis. Field `videoId`/`articleSlug` dihapus bersama grup aksi
-  READ/WATCH (permintaan pemilik).
+### 4.8 Gumasan: `pahlawanRow` (3 dokumen)
 
-### 2.2 `VideoSession` — as stored in `lib/catalogue.json`
+Tipe `pahlawanRow` **masih terdaftar** di `contentSchemaTypes` dan masih ada
+3 dokumennya di dataset `production`, tetapi:
 
-Nama tipe di kode adalah **`CatalogueVideo`** (`lib/catalogue.ts`), bukan
-`VideoSession`. `video_sessions` adalah nama tabel target (`RENCANA`, §4.2).
+- Rute `/pahlawan-kota` sudah dihapus dari situs.
+- `lib/pahlawan.ts` sudah dihapus.
+- Tidak ada kode sisi web yang membacanya.
+
+Dokumen-dokumennya **arsip**. Diperlakukan sebagai gumasan, bukan bagian model
+data yang berjalan. Fieldnya (`title`, `slug`, `artists`, `description`,
+`image`, `imagePath`, `tags`, `order`) sengaja tidak punya `videoId` /
+`articleSlug` — grup aksi READ/WATCH dihapus atas permintaan.
+
+### 4.9 `lib/catalogue.json` — arsip build-time (bukan Sanity)
+
+Tetap artefak *build-time* sesuai ADR-0004. Dibangkitkan `npm run catalogue` dari
+`../melodi-alam-data.md`; **dilarang diedit tangan**.
+
+Struktur atas (`lib/catalogue.ts:45-71`):
+
+```ts
+{
+  meta: {
+    channelId, channelName, handle, handleUrl, subscribers, totalViews,
+    declaredVideos, joined, country, instagramFollowers, instagramPosts,
+    scrapedAt                       // "14 Oktober 2026"
+  },
+  profile: Record<string, { platform: string; metric: string;
+                            value: string; href: string | null }>,
+  counts: { videos: 292, shorts: 342, playlists: 5,
+            byVenue: { "Melodi Samsara": 101, "Interview": 143,
+                       "Arsip & Lainnya": 9, "Melodi Taman": 39 } },
+  videos: CatalogueVideo[], shorts: CatalogueShort[], playlists: CataloguePlaylist[]
+}
+```
+
+Bentuk `CatalogueVideo`:
 
 ```ts
 export interface CatalogueVideo {
-  id: string;           // YouTube video id, mis. "irtr9SnyTxM"
+  id: string;        // YouTube video id, mis. "irtr9SnyTxM"
   title: string;
-  duration: string;     // "13:36"
-  seconds: number;      // 816
-  views: string;        // display string YouTube, mis. "1.8K"
-  uploaded: string;     // relatif, mis. "3d ago"
-  ageBucket: string | null;  // mis. "0-30d"
-  featuring: string[];  // mis. ["ENDAH N RHESA"]
+  duration: string;  // "13:36"
+  seconds: number;   // 816
+  views: string;     // string display YouTube, mis. "1.8K"
+  uploaded: string;  // relatif saat scrape, mis. "3d ago"
+  ageBucket: string | null;
+  featuring: string[];
   venue: string;
   url: string;
 }
 ```
 
-`venue` adalah closed set. 4 nilai, dan hanya itu, muncul di data:
+Catatan integritas (`TERVERIFIKASI`):
 
-```
-"Melodi Samsara" | "Melodi Taman" | "Interview" | "Arsip & Lainnya"
-```
-
-`VENUES` di `lib/catalogue.ts` mendeklarasikan urutan filter yang sama, dan
-`VENUE_COUNTS` memetakan tiap venue → `COUNTS.byVenue`. `ageBucket` bertipe
-`string | null`; 17 nilai teramati di data saat ini:
-`0-30d, 1mo, 2mo, 3mo, 4mo, 5mo, 6mo, 7mo, 8mo, 9mo, 10mo, 11mo, 1-3mo, 1y, 2y,
-3y, 4y+`. Nilai itu turunan dari tanggal scrape, bukan konstanta produk, jadi
-**tidak** dijadikan `CHECK` (`RENCANA`, §4.2).
-
-### 2.3 Struktur top-level `lib/catalogue.json`
-
-File ini generated (`npm run catalogue`) dari `../melodi-alam-data.md` dan
-**tidak boleh diedit tangan**. Kunci top-level: `meta`, `profile`, `counts`,
-`videos`, `shorts`, `playlists`.
-
-```ts
-{
-  meta: {
-    channelId: "UCv7pHhArYIFvrnGfnELSfQA",
-    channelName: "Melodi Alam",
-    handle: "melodialam", handleUrl: "https://www.youtube.com/@melodialam",
-    subscribers: "20.9K", totalViews: "1.998.173",
-    declaredVideos: 635,          // number, beda dari meta lain yang string|null
-    joined: "16 Maret 2017", country: "Indonesia",
-    instagramFollowers: "221K (220K saat render)",
-    instagramPosts: "5.872",
-    scrapedAt: "14 Oktober 2026"
-  },
-  profile: Record<string, { platform: string; metric: string;
-                            value: string; href: string | null }>,
-  counts: { videos: 292, shorts: 342, playlists: 5,
-            byVenue: { "Melodi Samsara": 101, "Arsip & Lainnya": 34,
-                       "Interview": 118, "Melodi Taman": 39 } },
-  videos: CatalogueVideo[], shorts: CatalogueShort[], playlists: CataloguePlaylist[]
-}
-```
-
-Kunci `profile` berpola `platform_metric`, mis. `youtube_subscriber`,
-`instagram_followers`, `linktree_bergabung_sejak`. `meta` dan `profile` berisi
-string display YouTube/Instagram, sebagian bernilai `null`.
-
-**Keputusan `RENCANA` (ADR-0004):** `meta`, `profile`, `counts`, `videos`,
-`shorts`, `playlists` **tetap artefak build-time** dan **tidak** dimigrasikan ke
-Postgres. Halaman publik membacanya dari `lib/catalogue.json` seperti sekarang.
-Yang perlu tabel hanyalah baris sesi yang dikurasi manusia (lihat §4.2 dan Open
-Questions).
-
-### 2.4 `DemoSubmission` — `lib/content.ts`
-
-```ts
-export interface DemoSubmission {
-  id: string; artist: string; city: string; title: string;
-  genre: string; program: string; link: string; story: string;
-  status: string;         // free text
-  submittedAt: string;    // ISO date-only, "2026-10-12"
-}
-```
-
-Enum yang mengikat `genre`/`program` (keduanya `readonly [ ... ] as const`):
-
-```ts
-DEMO_GENRES = [
-  "Indie Pop / Folk", "Alternative Rock / Shoegaze", "Surf Rock / Punk",
-  "R&B / Soul / Jazz", "Ska / Reggae / Dub", "Electronic / Experimental",
-]                                   // 6 nilai
-
-DEMO_PROGRAMS = [
-  "Review Artikel dan Rekomendasi IG", "Live at Melodi Samsara",
-  "Tamu Podcast Bicara Melodi",
-]                                   // 3 nilai
-```
-
-`status` hari ini **bukan** enum. Nilai free-text nyata yang ada di kode:
-
-| Nilai `status` | Sumber |
-|---|---|
-| `SELECTED FOR SAMSARA LIVE` | `SEED_DEMOS[0]` |
-| `SHORTLISTED BY EDITOR` | `SEED_DEMOS[1]` |
-| `IN CURATION QUEUE` | `SEED_DEMOS[2]` |
-| `NEW SUBMISSION • JUST NOW` | di-set `POST /api/demos` |
-
-### 2.5 `SpaceItem` — `lib/content.ts`
-
-```ts
-export interface SpaceItem {
-  slug: string; label: string; title: string;
-  price: string | null;    // "IDR 2.499.000" | null
-  href: string | null;     // tautan Instagram | null
-  image: string;           // "/photos/..."
-  ratio: "tall" | "square";   // closed set
-  dark: boolean;
-}
-```
-
-`ratio` adalah closed set 2 nilai (dipakai `FRAME_SHAPE` di
-`components/ArticleCards.tsx`). Urutan render = urutan array `SPACE_ITEMS` —
-tidak ada field sort di kode (`RENCANA`: `sort_order`, §4.4).
-
-### 2.6 Satu-satunya store yang bisa berubah
-
-`app/api/demos/route.ts` `TERVERIFIKASI`:
-
-```ts
-const queue: DemoSubmission[] = [...SEED_DEMOS];   // module-level array
-```
-
-- `GET` → `200 { queue, count }`. Store **process-local**, reset saat restart.
-  Ini **bukan** database.
-- `POST` → validasi lalu `queue.unshift(entry)`.
-- Cap field (trim + `slice`): `artist 120`, `city 80`, `title 160`, `genre 60`,
-  `program 80`, `link 500`, `contact 160`, `story 2000`.
-- `400` bila body bukan JSON; `422 { error, errors }` bila field wajib kosong,
-  `link` tidak diawali `http://`/`https://`, atau `genre`/`program` di luar enum;
-  `201 { ok, entry, queueLength, note }` bila sukses.
-- Validasi `genre`/`program` bersifat **kondisional** (`if (genre && !…`) — nilai
-  kosong lolos di server; hanya `select` di UI yang selalu mengirim default.
-
-**`contact` tidak pernah dipersistensi.** `POST` hanya memantulkannya di string
-`note`:
-
-```
-`Kontak manajer (${contact}) dicatat terpisah dan tidak tampil di daftar publik.`
-```
-
-Jadi hari ini **tidak ada PII at rest** — tetapi juga **tidak ada cara kurator
-menghubungi artis**. File audio diputar sebagai preview lokal (`URL.createObjectURL`) **dan** diunggah ke Vercel Blob saat submit;
-**tidak diunggah** ke mana pun.
+- `ageBucket` bertipe `string | null`; **17 nilai** teramati saat ini:
+  `0-30d, 1-3mo, 1mo, 1y, 10mo, 11mo, 2mo, 2y, 3mo, 3y, 4mo, 4y+, 5mo, 6mo, 7mo,
+  8mo, 9mo`. Nilainya turunan dari tanggal scrape, **bukan** konstanta produk.
+- `uploaded` juga relatif hasil scrape dan bisa basi. `lib/videos.ts` mengikat
+  offsetnya ke tanggal scrape (`CATALOGUE_ANCHOR`) agar labelnya bergerak ke
+  arah yang benar, bukan membeku.
+- `duration` **tidak** disimpan terpisah di Sanity: `durationSeconds` di
+  `video` adalah sumbernya dan situs memformatnya (`formatDuration()`), supaya
+  tidak ada dua sumber kebenaran.
+- `views` adalah string rounded ("1.8K") sehingga tidak bisa diurutkan
+  numerik. Untuk video Sanity, `views` adalah angka mentah dan situs
+  memformatnya sendiri (`formatViews()` di `lib/videos.ts`).
 
 ---
 
-## 3. Entity-Relationship Diagram — RENCANA
+## 5. Skema dataset `submissions` (privat)
 
-```mermaid
-erDiagram
-  articles {
-    uuid id PK
-    text slug UK
-    text title
-    text category
-    date published_at
-    boolean featured
-  }
-  video_sessions {
-    uuid id PK
-    text source_video_id UK
-    text title
-    text venue
-    bigint view_count
-  }
-  demo_submissions {
-    uuid id PK
-    text public_ref UK
-    text artist
-    text city
-    text genre
-    text program
-    text moderation_status
-    text reviewed_by FK
-    date submitted_at
-  }
-  demo_contacts {
-    uuid submission_id PK_FK
-    text contact
-  }
-  ecosystem_items {
-    uuid id PK
-    text slug UK
-    text label
-    text ratio
-    integer sort_order
-  }
-  users {
-    uuid id PK
-    text email
-  }
+### 5.1 `demoSubmission`
 
-  demo_submissions ||--|| demo_contacts : "menyimpan kontak (1:1, PII)"
-  users          |o--o{ demo_submissions : "mereview (reviewed_by)"
-  articles       ||--o{ video_sessions : "tidak ada FK — dipetakan editorial"
-```
-
-Catatan diagram:
-
-- `demo_submissions — demo_contacts` adalah **1:1 wajib**, dibelah jadi dua tabel
-  semata-mata supaya tabel publik tidak punya kolom PII (§6).
-- `video_sessions` **tidak** punya FK ke `articles`. Tidak ada relasi artikel↔video
-  di kode saat ini; tautan editorial baris direktori (`GENRE_ROWS.articleSlug`/
-  `videoId`) sudah dihapus bersama grup aksi READ/WATCH — direktorinya kini
-  Sanity-first (`pahlawanRow`, lihat `SANITY-INTEGRATION.md`).
-- `users` dikelola Payload (collection auth), bukan domain editorial; nama kolom
-  persis `[PERLU VERIFIKASI]`.
-- Penyimpanan objek audio (Supabase Storage) **bukan** tabel, jadi tidak muncul
-  sebagai entitas; hanya direferensikan lewat kolom `audio_*` (§9).
-
----
-
-## 4. Target Schema (DDL) — RENCANA
-
-Prinsip: identitas `uuid` (bukan auto-increment) supaya id tidak dapat ditebak
-dan aman digenerate lintas lingkungan; `gen_random_uuid()` tersedia bawaan
-Postgres 13+ (Supabase) tanpa extension tambahan. Semua `CHECK` di bawah diturunkan
-dari nilai yang **sudah ada di kode**, bukan karangan. `[PERLU VERIFIKASI]` — nama
-tabel/kolom persis yang digenerate `@payloadcms/db-postgres` dapat berbeda
-(Payload menambah konvensi seperti `_status`, `_v` untuk versions, dan tipe
-`enum_<table>_<field>`); DDL ini adalah bentuk logis yang kita miliki.
-
-### 4.1 `articles`
-
-```sql
-create table articles (
-  id               uuid primary key default gen_random_uuid(),
-  slug             text    not null,
-  title            text    not null,
-  category         text    not null
-                   check (category in (
-                     'Fakta Musik', 'Rekomendasi Melodi',
-                     'Bicara Melodi', 'Liputan Panggung')),
-  date_label       text    not null,     -- Article.date, "10 Oktober 2026"
-  published_at     date    not null,     -- Article.dateISO, "2026-10-10"
-  excerpt          text    not null,
-  hero_image       text    not null,     -- "/photos/dsc09408.webp"
-  body_paragraphs  text[]  not null default '{}',
-  featured         boolean not null default false,
-  created_at       timestamptz not null default now(),
-  updated_at       timestamptz not null default now(),
-  constraint articles_slug_key unique (slug)
-);
-```
-
-- `date_label` disimpan sebagai label display yang ditulis editor; `published_at`
-  adalah tanggal terurut. Keduanya ada di kode (`date` dan `dateISO`).
-- `body_paragraphs text[]` = 1:1 dengan `body: string[]`, sehingga backfill
-  (§12) nol-transformasi. Jika editor menuntut rich text Payload (Lexical), kolom
-  ini menjadi `jsonb` — keputusan itu **terbuka** (Open Questions).
-- Tidak ada kolom draft: 12/12 artikel punya `dateISO`, jadi semua
-  `published_at not null` (`TERVERIFIKASI`).
-- `CATEGORY_LABELS` **tidak** disimpan; ia label presentasi turunan (§5.3).
-
-### 4.2 `video_sessions`
-
-```sql
-create table video_sessions (
-  id               uuid primary key default gen_random_uuid(),
-  source_video_id  text not null,                    -- CatalogueVideo.id
-  title            text not null,
-  venue            text not null
-                   check (venue in (
-                     'Melodi Samsara', 'Melodi Taman',
-                     'Interview', 'Arsip & Lainnya')),
-  seconds          integer not null check (seconds >= 0),
-  view_count       bigint  not null default 0 check (view_count >= 0),
-  views_label      text,                             -- "1.8K" (display YouTube)
-  uploaded_label   text,                             -- "3d ago" (relatif)
-  age_bucket       text,                             -- "0-30d"; tanpa CHECK
-  featuring        text[] not null default '{}',
-  url              text not null check (url ~* '^https?://'),
-  scraped_at       date,                             -- meta.scrapedAt
-  created_at       timestamptz not null default now(),
-  constraint video_sessions_source_key unique (source_video_id)
-);
-```
-
-- `duration` **tidak** disimpan: sudah turunan dari `seconds` via `formatDuration()`
-  (`lib/catalogue.ts`). Menyimpannya berarti dua sumber kebenaran.
-- `view_count` adalah satu-satunya kolom turunan yang **sengaja** dimaterialisasi,
-  dengan alasan dan aturan update eksplisit: `views` adalah string rounded
-  ("1.8K"), mustahil diurutkan secara numerik di SQL; `viewCount()` di
-  `lib/catalogue.ts` sudah jadi parser resminya. **Aturan update:** di-set oleh
-  importer katalog setiap kali `npm run catalogue` dijalankan.
-- `age_bucket` tidak di-`CHECK` — nilainya bertambah tiap scrape (§2.2).
-- **Batas ADR-0004:** tabel ini menyimpan hanya baris sesi yang **dikurasi/
-  di-pin** oleh editor. Katalog scrape 292/342/5 tetap build-time di
-  `lib/catalogue.json`; angka `views_label`/`age_bucket` di sini hanyalah
-  snapshot scrape, bukan sumber kebenaran. Batas ini masih **terbuka** (§16).
-
-### 4.3 `demo_submissions`
-
-```sql
-create table demo_submissions (
-  id                 uuid primary key default gen_random_uuid(),
-  public_ref         text not null,        -- id lama: 'seed-shroomeater', 'demo-...'
-  artist             text not null check (char_length(artist) between 1 and 120),
-  city               text not null check (char_length(city)  between 1 and 80),
-  title              text not null check (char_length(title) between 1 and 160),
-  genre              text not null
-                     check (genre in (
-                       'Indie Pop / Folk', 'Alternative Rock / Shoegaze',
-                       'Surf Rock / Punk', 'R&B / Soul / Jazz',
-                       'Ska / Reggae / Dub', 'Electronic / Experimental')),
-  program            text not null
-                     check (program in (
-                       'Review Artikel dan Rekomendasi IG',
-                       'Live at Melodi Samsara',
-                       'Tamu Podcast Bicara Melodi')),
-  link               text not null check (link ~* '^https?://.+'),
-  story              text not null check (char_length(story) <= 2000),
-  submitted_at       date not null default current_date,
-
-  moderation_status  text not null default 'pending'
-                     check (moderation_status in ('pending','approved','rejected')),
-  reviewed_by        uuid,                 -- FK -> users.id
-  reviewed_at        timestamptz,
-  review_note        text,                 -- pengganti status free-text
-
-  audio_object_path  text,                 -- Supabase Storage key (nullable)
-  audio_bytes        bigint check (audio_bytes is null or audio_bytes <= 26214400),
-  audio_mime         text   check (audio_mime is null or audio_mime like 'audio/%'),
-
-  created_at         timestamptz not null default now(),
-  updated_at         timestamptz not null default now(),
-
-  constraint demo_submissions_public_ref_key unique (public_ref),
-  constraint demo_approved_needs_reviewer check (
-    moderation_status <> 'approved'
-    or (reviewed_by is not null and reviewed_at is not null))
-);
-```
-
-`26214400` = 25 × 1024 × 1024 byte. Panjang `CHECK` mengikuti cap `str()` di
-`route.ts` (`TERVERIFIKASI`): `artist 120`, `city 80`, `title 160`, `story 2000`,
-`link 500` (link dibiarkan tanpa batas di DB karena CHECK regex sudah membatasi
-bentuknya; cap 500 tetap dijaga di aplikasi).
-
-**Perubahan perilaku yang perlu dicatat:** di kode saat ini `genre`/`program`
-boleh kosong (validasi kondisional, §2.6), tetapi di skema target keduanya
-`not null` karena `select` form selalu mengirim default. Ini **pengetatan
-`RENCANA`**, bukan perilaku terverifikasi — lihat Open Questions.
-
-### 4.4 `demo_contacts` (PII, tabel terpisah)
-
-```sql
-create table demo_contacts (
-  submission_id uuid primary key
-                references demo_submissions (id) on delete cascade,
-  contact       text not null check (char_length(contact) between 1 and 160),
-  created_at    timestamptz not null default now()
-);
-```
-
-`160` mengikuti cap `contact` di `route.ts`. PK = FK membuat relasi 1:1 wajib.
-Tabel ini **tidak** punya policy baca publik (§8) — itulah inti desainnya.
-
-### 4.5 `ecosystem_items`
-
-```sql
-create table ecosystem_items (
-  id           uuid primary key default gen_random_uuid(),
-  slug         text not null,
-  label        text not null,            -- "Listening Space • Bogor"
-  title        text not null,
-  price_label  text,                     -- "IDR 2.499.000" | null
-  href         text check (href is null or href ~* '^https?://'),
-  image        text not null,            -- "/photos/..."
-  ratio        text not null check (ratio in ('tall','square')),
-  dark         boolean not null default false,
-  sort_order   integer not null,         -- urutan array SPACE_ITEMS
-  created_at   timestamptz not null default now(),
-  updated_at   timestamptz not null default now(),
-  constraint ecosystem_items_slug_key unique (slug)
-);
-```
-
-- `price` tetap `text` (`price_label`) karena sumbernya label display
-  "IDR 2.499.000"; kolom numerik hanya membuat kita mengarang. Bila kurator butuh
-  sortir harga, tambahkan `price_idr integer` **turunan** dengan aturan update
-  terpisah (`ASUMSI`, bukan bagian skema ini).
-- `sort_order` diturunkan dari urutan literal array `SPACE_ITEMS` — urutan itu
-  memang data (UI merender apa adanya), jadi perlu disimpan.
-- Tidak ada `is_published`: `SpaceItem` tidak punya konsep draft
-  (`TERVERIFIKASI`), jadi tidak ada kolom yang dikarang.
-
----
-
-## 5. Entity Dictionary
-
-### 5.1 `articles`
-
-| Field | Type | Null | Default | Constraints | Purpose |
-|---|---|---|---|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK | Identitas internal |
-| `slug` | text | no | — | unique | Route `/stories/[slug]` |
-| `title` | text | no | — | — | Judul artikel |
-| `category` | text | no | — | CHECK 4 nilai | Rubrik (`ArticleCategory`) |
-| `date_label` | text | no | — | — | Tanggal display |
-| `published_at` | date | no | — | — | Tanggal sortir + SEO |
-| `excerpt` | text | no | — | — | Ringkasan kartu + `<meta>` |
-| `hero_image` | text | no | — | — | Path gambar hero |
-| `media_type` | text | no | `'foto'` | check in ('foto','reel') | Sumber cerita; `reel` tidak tampil di Latest News/Stories |
-| `body_paragraphs` | text[] | no | `'{}'` | — | Paragraf artikel |
-| `featured` | boolean | no | `false` | partial index §7 | Penanda hero landing |
-
-### 5.2 `video_sessions`
-
-| Field | Type | Null | Default | Constraints | Purpose |
-|---|---|---|---|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK | Identitas internal |
-| `source_video_id` | text | no | — | unique | YouTube id (`CatalogueVideo.id`) |
-| `title` | text | no | — | — | Judul sesi |
-| `venue` | text | no | — | CHECK 4 nilai | Format (`VENUES`) |
-| `seconds` | integer | no | — | `>= 0` | Durasi; `duration` diturunkan |
-| `view_count` | bigint | no | `0` | `>= 0` | Sortir popularitas (turunan) |
-| `views_label` | text | yes | — | — | Display YouTube apa adanya |
-| `uploaded_label` | text | yes | — | — | "3d ago" relatif saat scrape |
-| `age_bucket` | text | yes | — | — | Bucket umur; dibiarkan bebas |
-| `featuring` | text[] | no | `'{}'` | — | Artis yang tampil |
-| `url` | text | no | — | `^https?://` | Tautan YouTube |
-| `scraped_at` | date | yes | — | — | Tanggal scrape (`meta.scrapedAt`) |
-
-### 5.3 `demo_submissions`
-
-| Field | Type | Null | Default | Constraints | Purpose |
-|---|---|---|---|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK | Identitas internal |
-| `public_ref` | text | no | — | unique | id lama (`seed-*`, `demo-*`) |
-| `artist` | text | no | — | len 1–120 | Nama band/solois |
-| `city` | text | no | — | len 1–80 | Kota asal (kunci antrean) |
-| `title` | text | no | — | len 1–160 | Judul lagu/EP |
-| `genre` | text | no | — | CHECK 6 nilai | `DEMO_GENRES` |
-| `program` | text | no | — | CHECK 3 nilai | `DEMO_PROGRAMS` |
-| `link` | text | no | — | `^https?://` | EPK/streaming |
-| `story` | text | no | — | `<= 2000` | Cerita singkat |
-| `submitted_at` | date | no | `current_date` | — | Urutan antrean |
-| `moderation_status` | text | no | `'pending'` | CHECK 3 nilai | Status moderasi |
-| `reviewed_by` | uuid | yes | — | FK `users.id` | Kurator yang memutuskan |
-| `reviewed_at` | timestamptz | yes | — | — | Waktu keputusan |
-| `review_note` | text | yes | — | — | Catatan kurator (free text) |
-| `audio_object_path` | text | yes | — | — | Key di Supabase Storage |
-| `audio_bytes` | bigint | yes | — | `<= 26214400` | Ukuran file (cap 25 MB) |
-| `audio_mime` | text | yes | — | `audio/%` | Tipe MIME audio |
-
-### 5.4 `demo_contacts`
-
-| Field | Type | Null | Default | Constraints | Purpose |
-|---|---|---|---|---|---|
-| `submission_id` | uuid | no | — | PK + FK cascade | 1:1 dengan submission |
-| `contact` | text | no | — | len 1–160 | Kontak manajer (PII) |
-| `created_at` | timestamptz | no | `now()` | — | Audit |
-
-### 5.5 `ecosystem_items`
-
-| Field | Type | Null | Default | Constraints | Purpose |
-|---|---|---|---|---|---|
-| `id` | uuid | no | `gen_random_uuid()` | PK | Identitas internal |
-| `slug` | text | no | — | unique | Identitas stabil |
-| `label` | text | no | — | — | Kicker kartu |
-| `title` | text | no | — | — | Judul kartu |
-| `price_label` | text | yes | — | — | Harga display |
-| `href` | text | yes | — | `^https?://` bila ada | Tautan luar |
-| `image` | text | no | — | — | Path gambar |
-| `ratio` | text | no | — | CHECK 2 nilai | `tall` \| `square` |
-| `dark` | boolean | no | `false` | — | Tone kartu |
-| `sort_order` | integer | no | — | index §7 | Urutan tampil |
-
----
-
-## 6. Relationships and Delete Behavior
-
-| Relasi | Kardinalitas | Kepemilikan | Delete rule | Status |
+| Field | Tipe | Wajib | Batas | Arti |
 |---|---|---|---|---|
-| `demo_submissions → demo_contacts` | 1 : 1 wajib | Submission | `ON DELETE CASCADE` | `RENCANA` |
-| `users → demo_submissions.reviewed_by` | 1 : 0..n opsional | Kurator | `ON DELETE SET NULL` | `RENCANA` |
-| `demo_submissions → Storage (demo-audio)` | 1 : 0..1 | Submission | Hapus objek saat baris dihapus | `RENCANA` |
-| `articles` ↔ `video_sessions` | — | — | tidak ada FK | **(tidak ada relasi di kode)** |
+| `artist` | string | ya | 120 | Band / solois |
+| `city` | string | ya | 80 | Kota asal |
+| `title` | string | ya | 160 | Judul lagu / EP |
+| `genre` | string | tidak | 6 nilai | `DEMO_GENRES`. **Tidak wajib** di skema |
+| `program` | string | tidak | 3 nilai | `DEMO_PROGRAMS`. **Tidak wajib** di skema |
+| `link` | url | ya | — | Link streaming / EPK |
+| `story` | text | ya | 2000 | Cerita singkat |
+| `status` | string (radio) | ya | 4 nilai | Status moderasi. Bawaan `IN REVIEW` |
+| `submittedAt` | date | ya | — | Tanggal kirim (`YYYY-MM-DD`) |
+| `audioName` | string | tidak | — | Nama berkas audio. **readOnly** |
+| `audioUrl` | url | tidak | — | **URL berkas di Vercel Blob.** `readOnly` |
 
-Rasional delete behavior:
+`DEMO_GENRES` (6): `Indie Pop / Folk`, `Alternative Rock / Shoegaze`,
+`Surf Rock / Punk`, `R&B / Soul / Jazz`, `Ska / Reggae / Dub`,
+`Electronic / Experimental`.
 
-- **Cascade kontak.** `contact` tidak punya makna tanpa submission-nya, dan
-  menyisakan PII yatim justru melanggar tujuan privasi. Cascade = satu penghapusan
-  menghapus PII juga (`NFR` privasi).
-- **Set null reviewer.** Menghapus akun kurator tidak boleh menghapus riwayat
-  submission; yang hilang hanya atribusi. Alternatif `restrict` ditolak karena
-  memblokir offboarding kurator.
-- **Storage.** Baris DB dan objek Storage tidak bisa ikut ter-transaksi; importer
-  harus menghapus objek dalam langkah terpisah (atau via lifecycle rule). Ini
-  invariant aplikasi, bukan DB (§8.2).
+`DEMO_PROGRAMS` (3): `Review Artikel dan Rekomendasi IG`,
+`Live at Melodi Samsara`, `Tamu Podcast Bicara Melodi`.
 
-Tidak ada relasi `articles ↔ video_sessions` di kode, jadi tidak ada FK — menambah
-satu berarti mengarang. Dulu `GENRE_ROWS.articleSlug`/`videoId` menautkan baris
-direktori ke **salah satu** target (bukan relasi dua arah); tautan itu kini dihapus
-dan direktori dikelola Sanity (`pahlawanRow`).
+`DEMO_STATUSES` (4): `IN REVIEW`, `SHORTLISTED (SAMSARA)`,
+`APPROVED (ARTICLE)`, `ARCHIVED`.
 
----
+Enum di atas ada di **dua repo** (`lib/taxonomy.ts` di masing-masing repo) dan
+sengaja diduplikasi: Studio tidak bisa mengimpor dari repo web saat build, dan
+repo web tidak boleh bergantung pada repo Studio. Mengubah satu berarti
+mengubah yang lain.
 
-## 7. Indexes and Query Patterns
+**`audioUrl` adalah URL Vercel Blob** — bukan path Supabase Storage, bukan
+field base64, dan tidak ada `audio_bytes` / `audio_mime` terpisah. Yang ada
+hanya `audioName` + `audioUrl`, keduanya `readOnly` di Studio supaya editor
+tidak bisa menunjuk berkas yang bukan milik kiriman itu.
 
-Query di bawah diambil dari kode hari ini; kolom yang diindeks adalah kolom yang
-sudah terbukti dibaca. "Query" = jalur akses bernama, bukan tebakan.
+> **Catatan jujur tentang "read-only di Studio".** Deskripsi field di skema
+> menulis "hanya terbaca oleh pengguna Studio". Itu benar selama objeknya
+> berada di store privat — tetapi saat ini unggahan memakai
+> `access: "public"` (`components/DemoPortal.tsx:113`), jadi URL-nya secara
+> teknis bisa dibuka siapa pun yang punya tautannya. Lihat §9.
 
-| # | Query (sumber) | Index | Kolom | Justifikasi |
+### 5.2 `demoContact` — PII, dokumen terpisah
+
+| Field | Tipe | Wajib | Batas | Arti |
 |---|---|---|---|---|
-| 1 | Ambil artikel by slug (`/stories/[slug]`) | unique | `articles (slug)` | `generateStaticParams` per slug |
-| 2 | Filter kategori + urut tanggal (`/stories`) | btree | `articles (category, published_at desc)` | `JournalBrowser` filter `category` |
-| 3 | Cari judul/excerpt (`/stories`) | GIN trigram | `((title \|\| ' ' \|\| excerpt)) gin_trgm_ops` | `includes()` substring → `ILIKE` |
-| 4 | Artikel unggulan (landing hero) | btree partial | `articles (published_at desc) where featured` | `ARTICLES.filter(featured)` |
-| 5 | Ambil video by id | unique | `video_sessions (source_video_id)` | `getVideo()` |
-| 6 | Filter venue + urut populer (`/videos`) | btree | `video_sessions (venue, view_count desc)` | `videosByVenue` + `topVideos` |
-| 7 | Antrean kurator: status + urut waktu | btree | `demo_submissions (moderation_status, submitted_at desc)` | Moderasi (ADR-0005) |
-| 8 | Antrean kurator: filter kota saat pending | btree partial | `demo_submissions (city, submitted_at desc) where moderation_status = 'pending'` | Filter `pending` + `city` |
-| 9 | Baca baris publik demo | btree | `demo_submissions (submitted_at desc) where moderation_status = 'approved'` | Read path publik |
-| 10 | Item ekosistem urut tampil | btree | `ecosystem_items (sort_order)` | `SPACE_ITEMS` order |
-| 11 | `demo_contacts` | PK | `demo_contacts (submission_id)` | Lookup 1:1 by PK |
+| `submission` | reference → `demoSubmission` | ya | — | Kiriman yang memiliki kontak ini |
+| `contact` | string | ya | 160 | Nomor WhatsApp atau email manajer. **Tidak pernah tampil di situs** |
 
-```sql
-create extension if not exists pg_trgm;   -- untuk #3
+Kenapa dokumen terpisah, bukan field di `demoSubmission`? Karena baris
+kiriman dibaca query publik (`app/api/demos/route.ts:91`) dan nilai PII tidak
+pernah ikut terbawa. `demoContact` tidak ada di proyeksi mana pun yang dipakai
+situs.
 
-create unique index articles_slug_key        on articles (slug);
-create index        articles_cat_pub_idx     on articles (category, published_at desc);
-create index        articles_search_idx      on articles
-  using gin ((title || ' ' || excerpt) gin_trgm_ops);
-create index        articles_featured_idx    on articles (published_at desc) where featured;
-
-create unique index video_sessions_source_key on video_sessions (source_video_id);
-create index        video_sessions_venue_idx  on video_sessions (venue, view_count desc);
-
-create unique index demo_public_ref_key on demo_submissions (public_ref);
-create index        demo_moderation_idx on demo_submissions (moderation_status, submitted_at desc);
-create index        demo_pending_city_idx on demo_submissions (city, submitted_at desc)
-  where moderation_status = 'pending';
-create index        demo_public_idx      on demo_submissions (submitted_at desc)
-  where moderation_status = 'approved';
-
-create index        ecosystem_order_idx  on ecosystem_items (sort_order);
-```
-
-Trade-off & catatan:
-
-- **Trigram vs `tsvector`.** Pencarian hari ini adalah substring case-insensitive
-  (`title.toLowerCase().includes(q)`), termasuk partial word. Trigram (`ILIKE
-  '%q%'`) mempertahankan semantik itu; `tsvector` akan mengubah perilaku (stemming,
-  word boundary) untuk 12 baris. Pada korpus kecil ini trigram cukup; `tsvector`
-  adalah opsi bila korpus tumbuh besar.
-- **Biaya tulis.** Tiap index menambah biaya pada `insert`/`update`. Empat index di
-  `articles` masih murah karena artikel jarang ditulis; tiga index di
-  `demo_submissions` adalah harga moderasi (ADR-0005) dan volume submit rendah.
-- **Partial index** (#4, #8, #9) sengaja dipakai: hanya sebagian baris dilayani,
-  dan predikatnya sama dengan predikat policy/query.
-- **Jangan** mengindex `featured`, `dark`, `ratio`, `reviewed_by` — tidak ada
-  query bernama yang membutuhkannya.
+**Kirim dari publik selalu membuat dua dokumen:** `demoSubmission` lalu
+`demoContact` yang mereferensikannya (`app/api/demos/route.ts:295-318`).
 
 ---
 
-## 8. Moderation, Constraints, and Business-Rule Enforcement
+## 6. Isi data saat ini
 
-### 8.1 Perubahan moderasi (`RENCANA`, ADR-0005)
+Dihitung ulang dengan kueri GROQ langsung ke dataset `production` pada
+**21 Oktober 2026** (tanpa token, perspektif `published`).
 
-Antrean demo **dimoderasi**. Modelnya:
-
-1. Setiap submission lahir dengan `moderation_status = 'pending'`.
-2. Baris `pending` **privat** — tidak pernah tampil publik.
-3. Kurator menyetujui → `moderation_status = 'approved'`, `reviewed_by` diisi,
-   `reviewed_at = now()`.
-4. Read path publik **hanya** membaca baris `approved` (§8.4).
-5. Penolakan → `'rejected'` + `review_note`.
-
-**Artinya bagi field `status: string` free-text hari ini.** Field itu hilang
-sebagai satu kolom serbaguna dan dipecah menjadi tiga:
-
-| Lama (`status: string`) | Baru | Catatan |
+| Tipe | Jumlah | Rincian |
 |---|---|---|
-| `NEW SUBMISSION • JUST NOW`, `IN CURATION QUEUE` | `moderation_status = 'pending'` | State mesin, bukan kalimat |
-| `SELECTED FOR SAMSARA LIVE` | `moderation_status = 'approved'` + `review_note` | Keputusan = approved; "Samsara Live" jadi catatan |
-| `SHORTLISTED BY EDITOR` | **tidak punya rumah di 3-nilai enum** | Lihat Open Questions |
-| — | `reviewed_by`, `reviewed_at` | Baru: siapa & kapan |
+| `article` | **12** | 6 `foto` + 6 `reel` |
+| `pillarPost` | **55** | 25 `foto` + 30 `reel`; lihat rincian per pillar di §4.6.1 |
+| `interview` | **9** | Season 3 |
+| `video` | **9** | seluruhnya `venue: "Melodi Samsara"` |
+| `playlist` | **5** | `count` belum diisi di dokumen Sanity (`null`) — situs memakai `-` |
+| `siteSettings` | **1** | singleton |
+| `videosPage` | **1** | singleton |
+| `pahlawanRow` | **3** | arsip, tidak dirender |
+| `demoSubmission` | **0** | dataset privat; queue publik kosong |
+| `demoContact` | **0** | dataset privat |
 
-Alasan: `status` bebas string tidak bisa difilter secara reliabel (`"NEW
-SUBMISSION • JUST NOW"` mengandung timestamp, jadi nilainya berubah tiap
-submission), tidak bisa di-`CHECK`, dan tidak bisa dipakai index/RLS. Mengubahnya
-menjadi enum + kolom audit membuat moderasi bisa diquery, diaudit, dan diamankan
-di level baris.
-
-Migrasi field ini adalah contoh **expand-and-contract** (§12.2): kolom baru
-ditambahkan, di-backfill dari pemetaan di atas, lalu `status` lama dihapus.
-
-### 8.2 Ditegakkan database vs di tempat lain
-
-| Invariant | Ditegakkan di | Status |
-|---|---|---|
-| `category` ∈ 4 nilai | DB `CHECK` | `RENCANA` |
-| `genre` ∈ `DEMO_GENRES`, `program` ∈ `DEMO_PROGRAMS` | DB `CHECK` (+ sudah di `route.ts`) | `RENCANA` |
-| `venue` ∈ 4 nilai, `ratio` ∈ 2 nilai | DB `CHECK` | `RENCANA` |
-| `link`/`url`/`href` berawalan `http(s)://` | DB `CHECK` regex (+ `route.ts`) | `RENCANA` |
-| Panjang field submission (120/80/160/2000/160) | DB `CHECK` (+ `str()` di `route.ts`) | `RENCANA` |
-| `slug`/`source_video_id`/`public_ref` unik | DB `UNIQUE` | `RENCANA` |
-| Submission `approved` wajib punya reviewer | DB `CHECK` | `RENCANA` |
-| Kontak wajib ada (1:1) | DB PK+FK + `not null` logic | `RENCANA` |
-| Cap audio 25 MB | DB `CHECK` + Storage limit + aplikasi | `RENCANA` (§9) |
-| Body bukan HTML (anti-injeksi) | Aplikasi: `body_paragraphs text[]`, dirender per paragraf | `TERVERIFIKASI` |
-| `contact` tidak tampil publik | RLS + pemisahan tabel | `RENCANA` (§8, §9) |
-| Objek Storage dihapus saat baris dihapus | Aplikasi (tidak transaksional) | `RENCANA` |
-| `updated_at` refresh | Trigger DB atau aplikasi | `RENCANA` |
-
-### 8.3 Transaksi yang disyaratkan
-
-- **Buat submission:** satu transaksi `insert` ke `demo_submissions` + `insert`
-  ke `demo_contacts`. Kontak tidak boleh ada tanpa submission (FK) dan submission
-  wajib punya kontak (invariant aplikasi dalam transaksi yang sama).
-- **Setujui submission:** satu transaksi `update` status + reviewer + waktu, lalu
-  tulis audit jika ada.
-- **Hapus submission:** transaksi DB (cascade ke `demo_contacts`) + **langkah
-  terpisah** hapus objek Storage.
-
-### 8.4 Read path publik (approved only)
-
-```sql
--- Daftar baris approved (antrean publik /submit dihapus 16 Okt 2026)
-select public_ref, artist, city, title, genre, program, link, story,
-       submitted_at, moderation_status
-from   demo_submissions
-where  moderation_status = 'approved'
-order  by submitted_at desc;
-```
-
-Kolom `contact` **tidak** ada di tabel ini, jadi query di atas secara struktural
-tidak dapat membocorkan PII — bahkan jika `where`-nya salah tulis nanti.
+Jumlah artikel per rubrik: Fakta Musik 5 · Rekomendasi Melodi 3 · Bicara
+Melodi 2 · Liputan Panggung 2.
 
 ---
 
-## 9. Storage — RENCANA
+## 7. Relasi antar dokumen & perilaku hapus
 
-### 9.1 Bucket
+Tidak ada satu pun relasi yang ditegakkan Sanity sebagai foreign key. Semua
+"relasi" di bawah adalah referensi yang dibaca kueri.
 
-| Bucket | Isi | Akses baca | Cap | Status |
+| Relasi | Kardinalitas | Owned oleh | Hapus | Status |
 |---|---|---|---|---|
-| `demo-audio` | Berkas audio demo dari form `/submit` | Privat; kurator via signed URL | **25 MB** (`26214400` byte) | `RENCANA` |
-| `media` | Media unggahan Payload (gambar artikel, item ekosistem) | Publik | Default platform | `RENCANA` |
+| `demoContact.submission` → `demoSubmission` | 1 : 1 (praktis) | `demoContact` | **Manual** — menghapus kiriman di Studio **tidak** menghapus kontak (PII) | `TERVERIFIKASI` |
+| `pillarPost` → `article` | tidak ada | — | — | Tidak ada FK; relasi editorial lewat `igUrl`/konten |
+| `article` → `video` | tidak ada | — | — | Tidak ada FK. Blok "More {rubrik}" memakai daftar bersama, bukan referensi |
+| `interview.youtubeId` → `video.youtubeId` | 1 : 0..1 | `interview` | Tidak otomatis | Diturunkan dari string, bukan reference. Kalau video dihapus, baris wawancara tetap render (tanpa statistik) (tanpa statistik) |
+| `siteSettings` → seluruh situs | — | — | — | Singleton; tidak boleh ada yang kedua (di-pin di struktur Studio) |
+| `videosPage` → `/videos` | — | — | — | Singleton; sama |
 
-Konvensi path `demo-audio`: `{submission_id}/{uuid}-{sanitized-filename}`.
-`demo_submissions.audio_object_path` menyimpan key itu; nama asli file tidak
-dipakai mentah (path traversal + tabrakan nama).
+**Perilaku hapus yang perlu diketahui kurator (semua `RENCANA` untuk
+diperbaiki):**
 
-Hari ini **tidak ada unggahan** — `DemoPortal.tsx` hanya `URL.createObjectURL`
-lokal, dan komentar di kode menyatakan "file sendiri tidak pernah diunggah"
-(`TERVERIFIKASI`).
-
-### 9.2 Kenapa cap 25 MB dijaga di **tiga** tempat
-
-1. **Client (`DemoPortal.tsx`).** Cek `file.size` saat `onPickAudio` — UX: pengguna
-   tahu seketika, tidak menunggu unggahan gagal. **Selalu bisa dilewati** (devtools,
-   `curl`), jadi tidak boleh jadi satu-satunya penjaga.
-2. **Server (`/api/demos`).** Cek `file.size` sebelum menerbitkan signed upload URL
-   ke Supabase. Ini otoritatif: menentukan berapa byte yang kita izinkan masuk dan
-   menolak `413` sebelum ada traffic besar.
-3. **Bucket Storage (`file_size_limit`).** Penjaga terakhir. Bahkan bila API
-   dilewati dan token upload bocor, Storage sendiri menolak objek > 25 MB. Ini
-   satu-satunya lapisan yang tetap berlaku ketika aplikasi salah.
-
-Tiga tempat = tiga kepercayaan berbeda (UX, otorisasi, infrastruktur). Menaruh cap
-hanya di satu lapisan berarti percaya pada satu lapisan; di sini pemilik produk
-menetapkan 25 MB sebagai batas keras (`RENCANA`).
-
-`[PERLU VERIFIKASI]` — angka 25 MB adalah keputusan fase ini, bukan angka yang
-terbaca di kode. Limit default global Storage Supabase bergantung plan/versi;
-`file_size_limit` per-bucket adalah yang mengikat, dan nilainya harus
-dikonfirmasi saat bucket dibuat.
+- Menghapus dokumen `demoSubmission` di Studio **meninggalkan `demoContact`
+  (PII) dan objek audio (publik) hidup selamanya**. Tidak ada trigger, webhook,
+  atau job pembersih. Lihat `docs/AUDIT-2026-10-21.md` temuan F07.
+- Menghapus dokumen `article` **tidak** menghapus gambar di CDN Sanity; aset
+  gambar berdiri sendiri dari dokumennya.
+- Mengubah `slug` artikel mematikan URL lama. Tidak ada redirect otomatis
+  (bukan seperti `/journal` → `/stories` yang memang punya redirect 308).
 
 ---
 
-## 10. Row Level Security — RENCANA
+## 8. Moderasi antrean demo
 
-RLS diaktifkan di **semua** tabel domain. Ada dua kelas pembaca:
+Modelnya, sesuai ADR-0005 dan PRD §BR-002:
 
-| Peran | Sumber | Boleh baca |
+1. Setiap kiriman baru **selalu** lahir dengan `status: "IN REVIEW"`.
+   Nilainya bukan variabel dari request — `DEMO_INITIAL_STATUS` dipakai
+   langsung di `app/api/demos/route.ts:306`.
+2. Baris `IN REVIEW` **tidak pernah** tampil di antrean publik.
+   `GET /api/demos` hanya mengambil `status in $approved`, dengan
+   `DEMO_APPROVED_STATUSES = ["SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)"]`.
+3. Kurator memindahkan status di Studio (workspace **Submit Karya**). Subtitle
+   pratinjau dokumen di Studio memberi tanda ✅ untuk dua status disetujui, 📦 untuk
+   `ARCHIVED`, dan 🕓 untuk `IN REVIEW`.
+4. Hanya dua status itu yang boleh tampil publik. `ARCHIVED` adalah keadaan
+   terminal untuk kiriman yang sudah ditinjau lalu diparkir.
+
+Hal-hal yang tidak ada, dan memang tidak diklaim ada:
+
+- **Tidak ada endpoint kurator.** Perubahan status hanya lewat antarmuka Studio.
+- **Tidak ada audit siapa/kapan memutuskan.** Field `reviewed_by` /
+  `reviewed_at` **tidak ada** di skema Sanity — tidak ada pencatat riwayat
+  keputusan selain timestamp Sanity sendiri (`_updatedAt`).
+- **Tidak ada state machine transisi.** Empat nilai status adalah daftar
+  bebas yang bisa disetel editor dalam urutan apa pun.
+- **Tidak ada penghapusan otomatis** untuk `IN REVIEW` yang tidak pernah
+  ditinjau → tidak ada retensi PII yang terjadwal (§12).
+
+---
+
+## 9. Penyimpanan objek: Vercel Blob
+
+Tidak ada Supabase Storage. Penyimpanan objek untuk audio demo memakai
+**Vercel Blob**.
+
+| Aspek | Nilai | Status |
 |---|---|---|
-| `anon` | Supabase publishable/anon key | `articles`, `video_sessions`, `ecosystem_items`, demo `approved` (tanpa `contact`) |
-| `curator` | `authenticated` + JWT claim `role = 'curator'` | Semua baris `demo_*`, termasuk `pending`/`rejected` dan `demo_contacts` |
-| `service_role` / Payload | Koneksi server | Semua (melewati RLS) |
+| Layanan | Vercel Blob, paket `@vercel/blob` 2.8 | `TERVERIFIKASI` (`package.json`) |
+| Kredensial | `BLOB_READ_WRITE_TOKEN` | `RENCANA` — **belum di-set**, jadi `POST /api/demo-audio` menjawab **400** dan unggahan gagal |
+| Jalur | Browser → langsung ke Blob (signed upload), lalu `/api/demos` menerima **URL**-nya | `TERVERIFIKASI` (`components/DemoPortal.tsx:112-118`) |
+| Kunci objek | `demo-audio/{timestamp}-{nama file asli}` | `TERVERIFIKASI` |
+| Akses | `access: "public"` — dipilih di sisi peramban | `TERVERIFIKASI` |
+| Batas ukuran | 25 MB = `25 * 1024 * 1024` byte | `TERVERIFIKASI` (`lib/taxonomy.ts:76`) |
+| Tipe diterima | `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg` | `TERVERIFIKASI` |
+| Ekstensi diterima | `.mp3`, `.wav`, `.ogg` | `TERVERIFIKASI` |
 
-```sql
-alter table articles          enable row level security;
-alter table video_sessions    enable row level security;
-alter table demo_submissions  enable row level security;
-alter table demo_contacts     enable row level security;
-alter table ecosystem_items   enable row level security;
+**Tiga lapis penjaga batas 25 MB** — ketiganya `TERVERIFIKASI`:
 
--- Baca publik: konten editorial & showcase
-create policy articles_public_read on articles
-  for select to anon, authenticated using (true);
+1. **Peramban** (`components/DemoPortal.tsx:54-93`): cek ekstensi, cek tipe MIME
+   (tipe kosong dianggap sah karena beberapa peramban melapor MIME kosong untuk
+   WAV), cek `file.size` sebelum file diterima.
+2. **Server** (`app/api/demos/route.ts:236-255`): cek ekstensi `audioName` dan
+   `audioSize` dari metadata yang dilaporkan request, serta memastikan `audioUrl`
+   berawalan `https://` dan berakhiran salah satu ekstensi yang diizinkan.
+3. **Token unggah** (`app/api/demo-audio/route.ts:26-30`): `handleUpload` dengan
+   `allowedContentTypes` + `maximumSizeInBytes`, jadi batasnya ditegakkan Blob
+   sendiri.
 
-create policy video_sessions_public_read on video_sessions
-  for select to anon, authenticated using (true);
+> **Catatan jujur.** Lapis 3 baru berlaku begitu `BLOB_READ_WRITE_TOKEN` ada.
+> Selama token belum di-set, unggahan tidak pernah terjadi sama sekali —
+> formulir menampilkan "Audio gagal diunggah" dan pengunjung dapat mengirim
+> tanpa berkas. Lapis 1 dan 2 sudah aktif.
 
-create policy ecosystem_public_read on ecosystem_items
-  for select to anon, authenticated using (true);
+Yang **belum** ada (`RENCANA`, lihat `docs/AUDIT-2026-10-21.md` F01, F04, F05):
 
--- Baca publik: hanya demo yang sudah disetujui
-create policy demo_public_read on demo_submissions
-  for select to anon, authenticated
-  using (moderation_status = 'approved');
-
--- Kurator: baca seluruh antrean
-create policy demo_curator_read on demo_submissions
-  for select to authenticated
-  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator');
-
-create policy demo_curator_write on demo_submissions
-  for update to authenticated
-  using  ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator')
-  with check ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator');
-
--- PII: TIDAK ada policy untuk anon/authenticated biasa.
-create policy demo_contacts_curator_read on demo_contacts
-  for select to authenticated
-  using ((auth.jwt() -> 'app_metadata' ->> 'role') = 'curator');
-```
-
-Catatan penting (harus dibaca sebelum menganggap RLS sebagai satu-satunya
-pertahanan):
-
-- **Payload melewati RLS.** Adapter Postgres Payload biasanya tersambung dengan
-  role pemilik (koneksi server), dan RLS **tidak** berlaku untuk pemilik tabel
-  kecuali `FORCE ROW LEVEL SECURITY` dipasang. Artinya RLS di sini melindungi
-  akses **langsung** klien (publishable key) ke Supabase, **bukan** jalur Payload.
-  Jalur Payload harus dijaga terpisah oleh access control collection Payload.
-  `[PERLU VERIFIKASI]` — apakah implementasi memilih role DB terbatas atau
-  `FORCE RLS`.
-- **Insert publik.** Submission dari pengunjung anonim ditulis **lewat server**
-  (route handler), bukan langsung dari browser ke Supabase. Karena itu tidak ada
-  policy `insert` untuk `anon`. Bila kelak form menulis langsung, tambahkan policy
-  `insert` sempit (kolom `pending` saja) — `RENCANA`, belum diputuskan.
-- **`authenticated` ≠ otomatis kurator.** Policy kurator memeriksa klaim
-  `app_metadata.role`, bukan sekadar status login.
-- `contact` hanya punya policy baca kurator; tidak ada policy update/delete publik.
-  Penghapusan terjadi lewat cascade saat submission dihapus.
+- Server belum menentukan kunci objek maupun `access`; keduanya masih
+  diserahkan ke peramban.
+- Kunci objek memakai **nama file asli** — belum disanitasi.
+- Belum ada job pembersih objek, jadi token unggah yang bocor bisa menulis
+  objek milik operator yang tak pernah dihapus.
+- Audio demo **publik** selama `access: "public"`. Belum ada bucket privat +
+  signed URL.
 
 ---
 
-## 11. Lifecycle, Privacy, dan Retention
+## 10. Akses data & privasi
 
-### 11.1 Siklus hidup
+Pengganti langsung dari seksi RLS lama. Yang mengatur akses sekarang:
 
-| Entitas | Dibuat | Diubah | Dihapus |
+| Dataset | Dibaca siapa | Token | Yang terlindungi |
 |---|---|---|---|
-| `articles` | Kurator lewat `/admin` | Kurator (edit) | Hard delete oleh kurator |
-| `video_sessions` | Importer katalog / kurator pin | Importer (snapshot scrape) | Hard delete oleh kurator |
-| `demo_submissions` | `POST /api/demos` (server) | Kurator (`update` status) | Hard delete oleh kurator |
-| `demo_contacts` | Bersamaan dengan submission | Tidak pernah (immutable) | Cascade dari submission |
-| `ecosystem_items` | Kurator | Kurator | Hard delete oleh kurator |
+| `production` | siapa pun yang tahu project id `03sgar5q` | tidak | Tidak ada data sensitif di sini |
+| `submissions` | hanya kode server | `SANITY_API_READ_TOKEN` | `demoContact.contact` (PII) |
+| Blog Blob | siapa pun yang punya URL-nya | — | Objek audio demo (sementara `access: "public"`) |
 
-`created_at`/`updated_at` ada di semua tabel domain. Tidak ada soft delete di
-skema; bila kelak perlu, tambahkan `deleted_at timestamptz` dan jadikan policy
-publik `using (deleted_at is null)` — `RENCANA`.
+Prinsip yang masih berlaku:
 
-### 11.2 PII
+- **PII tidak pernah ikut di query publik.** `APPROVED_QUERY`
+  (`app/api/demos/route.ts:91`) memproyeksi 10 field dan `contact` bukan salah
+  satunya. Pesan balasan ke pengirim juga tidak memuat kontak
+  (`note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik."`).
+- **Token tidak pernah menyentuh bundel klien.** Dijaga oleh pemisahan berkas
+  (`lib/sanity.ts` tanpa token vs `lib/sanity-server.ts` / `lib/sanity-preview.ts`).
+- **Tidak ada RLS, tidak ada policy, tidak ada role kurator.** Dataset privat Sanity *menggantikan* mekanisme policy: seluruh baris dataset privat hanya
+  bisa dibaca dengan token, sedangkan dataset publik tidak punya baris sensitif
+  sama sekali. Ini lebih sederhana dan, untuk satu kurator, cukup.
 
-- Kolom PII **tunggal**: `demo_contacts.contact` (maks 160 char, kontak manajer).
-- PII hidup **hanya** di tabel yang tidak punya policy baca publik (§10).
-- Tidak ada PII lain yang disimpan. `artist`, `city`, `story` adalah data karya
-  yang memang publik setelah disetujui.
-- **Retensi:** `RENCANA` — PII dihapus bersama submission (cascade). Kebijakan
-  retensi terjadwal (mis. hapus submission `rejected` > N bulan) belum ditetapkan;
-  lihat Open Questions. Ini menyangkut `NFR` privasi.
-- **Ekspor/penghapusan atas permintaan** (hak subjek data): hapus baris
-  `demo_submissions` menghapus `demo_contacts` dan (secara aplikasi) objek audio.
-- **Seed & fixture tidak boleh memuat PII nyata.** Gunakan kontak sintetis
-  (mis. `manager@example.test`) dan tandai jelas sebagai fiktif (§13).
-- Satu detail yang sulit: karena `contact` **tidak pernah** dipersistensi hari ini
-  (§2.6), 3 seed demo lama **tidak punya kontak** untuk di-backfill. Ini bukan
-  bug migrasi — datanya memang tidak pernah ada. Lihat Open Questions.
+> `[PERLU VERIFIKASI]` `lib/sanity-server.ts` dan `lib/sanity-preview.ts` tidak
+> memakai `import "server-only"`. Penjaga sekarang adalah konvensi
+> (tidak ada `"use client"` yang menyentuh keduanya), bukan jaminan build.
+> Lihat `docs/AUDIT-2026-10-21.md` §3.
 
 ---
 
-## 12. Migration Plan — RENCANA
+## 11. Lifecycle, cache, dan revalidasi
 
-### 12.1 Urutan migrasi
+### 11.1 Siklus hidup dokumen
 
-Semua migrasi digenerate/dikelola Payload (`@payloadcms/db-postgres` →
-Drizzle) — perintah persisnya `[PERLU VERIFIKASI]`. Urutan di bawah adalah urutan
-dependensi; setiap langkah punya rollback.
-
-| # | Migrasi | Isi | Risiko | Rollback |
-|---|---|---|---|---|
-| M1 | `extensions` | `create extension if not exists pg_trgm` | Rendah | `drop extension` |
-| M2 | `articles` | tabel + unique slug | Rendah | `drop table` |
-| M3 | `video_sessions` | tabel + unique source id | Rendah | `drop table` |
-| M4 | `demo_submissions` | tabel + CHECK + unique public_ref | Sedang | `drop table` (destruktif bila sudah ada data) |
-| M5 | `demo_contacts` | tabel PII + FK cascade | Sedang | `drop table` |
-| M6 | `ecosystem_items` | tabel + unique slug | Rendah | `drop table` |
-| M7 | `indexes` | seluruh index §7 | Rendah | `drop index` |
-| M8 | `rls` | `enable rls` + policy §10 | **Tinggi** | `drop policy` + `disable rls` |
-| M9 | `storage` | bucket `demo-audio` + `media`, cap 25 MB | Sedang | `delete bucket` (hapus objek) |
-| M10 | `backfill_articles` | 12 artikel dari `lib/content.ts` | Rendah | `delete from articles` |
-| M11 | `backfill_video_sessions` | baris sesi yang di-pin | Rendah | `delete` by `scraped_at` |
-| M12 | `backfill_demos` | 3 seed demo (tanpa kontak) | Rendah | `delete where public_ref like 'seed-%'` |
-| M13 | `backfill_ecosystem` | 5 `SPACE_ITEMS` | Rendah | `delete from ecosystem_items` |
-
-Prinsip: M1–M9 membangun skema **kosong** dulu; M10–M13 adalah backfill terpisah
-yang idempotent dan bisa diulang. Tidak ada langkah destruktif pada data
-produksi karena produksi belum punya tabel ini.
-
-### 12.2 Expand-and-contract untuk moderasi
-
-Perubahan field `status` (§8.1) bukan migrasi sekali jalan:
-
-1. **Expand.** Tambah `moderation_status`, `reviewed_by`, `reviewed_at`,
-   `review_note`. `status` lama masih ada.
-2. **Backfill.** Petakan `status` → `moderation_status`:
-   `IN CURATION QUEUE`/`NEW SUBMISSION • JUST NOW` → `pending`;
-   `SELECTED FOR SAMSARA LIVE` → `approved`; `SHORTLISTED BY EDITOR` → `pending`
-   (+ `review_note`), lihat Open Questions.
-3. **Switch.** Aplikasi menulis/membaca kolom baru saja.
-4. **Contract.** `alter table demo_submissions drop column status;`
-
-`SHORTLISTED BY EDITOR` adalah satu-satunya nilai yang **tidak** punya padanan
-bersih di enum 3-nilai; pemetaan sementaranya adalah keputusan fase ini, bukan
-fakta (Open Questions).
-
-### 12.3 Jalur backfill dari sumber build-time
-
-Sumber backfill = sumber yang benar-benar ada:
-
-| Target | Sumber | Volume | Transformasi |
+| Tipe | Dibuat | Diubah | Dihapus |
 |---|---|---|---|
-| `articles` | `ARTICLES` di `lib/content.ts` | 12 | `date` → `date_label`, `dateISO` → `published_at`, `image` → `hero_image`, `body` → `body_paragraphs` (1:1) |
-| `video_sessions` | subset `lib/catalogue.json` `.videos` | subset `RENCANA` | `id` → `source_video_id`, `views` → `views_label` + `view_count` via `viewCount()`, `meta.scrapedAt` → `scraped_at` |
-| `demo_submissions` | `SEED_DEMOS` | 3 | status → `moderation_status` (§12.2) |
-| `demo_contacts` | — | 0 | **tidak ada sumber** (PII tidak pernah disimpan) |
-| `ecosystem_items` | `SPACE_ITEMS` | 5 | urutan array → `sort_order` |
+| `article` | Kurator, di Studio | Kurator | Hard delete di Studio. Gambar di CDN tetap ada |
+| `pillarPost` | Kurator | Kurator | Hard delete |
+| `interview` | Kurator | Kurator | Hard delete. `youtubeId` tidak terikat ke `video` |
+| `video` | Kurator | Kurator | Hard delete. Katalog arsip tidak ikut terhapus |
+| `playlist` | Kurator | Kurator | Hard delete |
+| `siteSettings` / `videosPage` | Sekali, di-pin | Kurator | — |
+| `demoSubmission` | **`POST /api/demos`** (server) | Kurator (status di Studio) | Hard delete di Studio — **kontak & audio tertinggal** |
+| `demoContact` | Bersamaan dengan kiriman | Tidak pernah (immutable) | **Manual** — tidak ada cascade |
 
-Yang **tidak** di-backfill: `meta`, `profile`, `counts`, `shorts`, `playlists`
-(ADR-0004, tetap build-time), `INTERVIEW_ROWS` (3), `GENRE_ROWS` (3),
-`TICKER_ITEMS` (4) — belum ada tabel target untuk keempatnya (Open Questions).
+Tidak ada soft delete di mana pun. Sanity menyimpan riwayat versi sendiri
+(versioning), tetapi itu bukan soft delete yang bisa difilter.
 
-Backfill dijalankan sebagai skrip idempotent (upsert pada `slug`/`source_video_id`/
-`public_ref`) sehingga aman diulang selama migrasi berjalan berdampingan dengan
-arsip frozen.
+### 11.2 Cache
+
+Semua lapisan baca memakai Cache Components Next.js: `"use cache"` +
+`cacheLife("minutes")` + `cacheTag(...)`.
+
+| Tag | Dipasang di | Membaca |
+|---|---|---|
+| `articles` | `lib/articles.ts:61` | `allArticles()`, `articleBySlug()` |
+| `pillar-posts` | `lib/pillars.ts:26` | `allPillarPosts()` |
+| `interviews` | `lib/interviews.ts:15` | `allInterviews()` |
+| `siteSettings` | `lib/site-settings.ts:23` | `getSiteSettings()` |
+| `videos` | `lib/videos.ts:21` | `allVideos()`, `allPlaylists()` |
+| `videosPage` | `lib/videos-page.ts:21` | `getVideosPageCopy()` |
+
+Enam tag. `POST /api/revalidate` membuang keenam-enam-nya sekaligus
+(`app/api/revalidate/route.ts:30-36`) dengan `revalidateTag(tag, "max")`.
+
+Rute revalidasi menolak apa pun yang tidak bisa membuktikan secret-nya:
+secret dibaca dari header `x-webhook-secret` atau query `?secret=`, dibandingkan
+dengan `timingSafeEqual`, dan `SANITY_REVALIDATE_SECRET` yang kosong membuat
+rute menjawab **500** (bukan diam-diam membiarkan cache kosong).
+
+> `RENCANA` / perlu diperbaiki: webhook Sanity idealnya memicu **Create +
+> Update**. Hanya "Create" yang tercentang per pemeriksaan terakhir, sehingga
+> menyunting draf yang sudah terbit belum tentu memicu pembuangan cache.
+
+### 11.3 Pratinjau draf
+
+`/preview/<type>/<slug>?secret=…` membaca perspektif **`drafts`** dari dataset
+`production` memakai token. Dua jenis yang didukung: `journal` (draf artikel)
+dan `kurasi` (post kurasi).
+
+- Tanpa secret yang cocok → **404** (bukan 403), supaya draf tidak bisa dibaca
+  tanpa secret.
+- `robots: { index: false, follow: false }`.
+- Secret: `SANITY_PREVIEW_SECRET`, atau jika kosong jatuh ke
+  `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`).
+
+> `RENCANA`: `SANITY_PREVIEW_SECRET` belum di-set, jadi saat ini satu secret
+> melayani dua kapabilitas (baca draf + invalidasi cache), dan secret diterima
+> lewat query string. Lihat `docs/AUDIT-2026-10-21.md` F03.
 
 ---
 
-## 13. Seed and Test Data — RENCANA
+## 12. Yang masih RENCANA / belum tersambung
 
-- **Reference/demo seed:** 3 `SEED_DEMOS` menjadi contoh baris `demo_submissions`
-  (`seed-shroomeater`, `seed-skyline`, `seed-pelabuhan-senja`). Karena tidak ada
-  kontak tersimpan, backfill ini **tidak** menulis `demo_contacts`.
-- **Artikel seed:** 12 artikel nyata adalah konten produksi yang ada, bukan data
-  sintetis — tetapi bermigrasi sebagai backfill, bukan sebagai seed test.
-- **Fixture test (sintetis):** submission dengan `public_ref` seperti
-  `test-xxxx`, `contact = 'manager@example.test'`, audio 1 MB dummy. **Tidak boleh**
-  memuat nomor telepon/email nyata (mengikuti aturan brief §10).
-- **Data yang dikecualikan:** PII nyata apa pun, dan seluruh artefak build-time
-  ADR-0004 (`meta`/`profile`/`counts`/`shorts`/`playlists`).
-- **Data audio:** fixture Storage memakai file kecil yang dibangkitkan, bukan
-  rekaman nyata.
+Hal-hal berikut **tidak ada di sistem yang berjalan** dan tidak boleh
+dibaca seolah-olah ada:
+
+| Hal | Status | Catatan |
+|---|---|---|
+| Basis data relasional, tabel, indeks SQL, RLS, migrasi | **Tidak pernah ada** | Digantikan Sanity (ADR-0008). Skema Postgres di versi lama dokumen ini dibuang |
+| Panel kurator khusus | `RENCANA` | Yang ada adalah Sanity Studio itu sendiri (workspace "Submit Karya") |
+| Audit keputusan moderasi (`reviewed_by`, `reviewed_at`) | `RENCANA` | Tidak ada fieldnya di skema |
+| Retensi PII terjadwal | `RENCANA` | Tidak ada job penghapus untuk kiriman `IN REVIEW`/`ARCHIVED` |
+| Penghapusan kontak + audio saat kiriman dihapus | `RENCANA` | F07 |
+| Rate limit / CAPTCHA pada `POST /api/demos` & `/api/demo-audio` | `RENCANA` | F02; tiap kiriman = 2 tulis Sanity + 1 email |
+| Idempotensi kirim (`Idempotency-Key`) | `RENCANA` | F02 |
+| Blob store + `BLOB_READ_WRITE_TOKEN` | `RENCANA` | Belum ada → unggah audio 400 |
+| Notifikasi email (`RESEND_API_KEY`) | `RENCANA` | Kodenya ada (`app/api/demos/route.ts:134-191`) tapi **inert** tanpa key |
+| `SANITY_PREVIEW_SECRET` terpisah | `RENCANA` | Saat ini jatuh ke `SANITY_REVALIDATE_SECRET` |
+| Webhook Sanity "Trigger on: Update" | `RENCANA` | Yang tercentang hanya "Create" |
+| Pillar `similar-song` berisi post | `RENCANA` | Skema dan set sudah siap; 0 post |
+| Pillar `meme-humor` dirender | **Perlu perbaikan skema** | Ada di skema & label, tapi tidak ada di `PHOTO_PILLARS`/`REEL_PILLARS` → tidak akan pernah tampil |
+| `visionTool()` dimatikan di workspace privat | `RENCANA` | F08: GROQ bebas atas dataset privat bagi siapa pun yang punya akses workspace |
+
+### 12.1 Keadaan lingkungan (per 21 Oktober 2026)
+
+> **Sumber tabel ini: `docs/AUDIT-2026-10-21.md` §5, bukan pemeriksaan ulang.**
+> Status environment Vercel hanya bisa dibaca dengan akses dashboard, jadi
+> nilainya ikut apa adanya dari audit tersebut.
+
+| Variabel | Status | Dampak kalau kosong |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Ada | Canonical, sitemap, dan OG memakai origin `vercel.app` selama `melodialam.id` belum resolve |
+| `SANITY_API_READ_TOKEN` | Ada | Tanpa ini `submissionsClient` = `null` → antrean demo jatuh ke array in-memory (3 seed) dan **kiriman tidak tersimpan** |
+| `SANITY_REVALIDATE_SECRET` | Ada | Tanpa ini `POST /api/revalidate` menjawab 500 dan pratinjau ikut mati |
+| `SANITY_PREVIEW_SECRET` | Belum | Pratinjau memakai secret revalidate |
+| `BLOB_READ_WRITE_TOKEN` | Belum | Unggah audio 400 |
+| `RESEND_API_KEY` | Belum | Notifikasi email tidak terkirim |
 
 ---
 
-## 14. Validation Checklist
+## 13. Checklist konsistensi
 
 | Cek | Status |
 |---|---|
-| Setiap entitas punya owner | Ya — kurator (`articles`, `demo_*`, `ecosystem_items`), importer (`video_sessions`) |
-| Setiap entitas punya lifecycle | Ya (§11.1) |
-| Setiap relasi punya delete behavior | Ya (§6) |
-| Setiap index memetakan ke query bernama | Ya (§7) |
-| Tidak ada tabel/kolom tanpa requirement | Ya — tiap kolom ditelusuri ke field kode |
-| Naming konsisten (snake_case, plural) | Ya |
-| Migrasi dapat dijalankan urut di DB kosong | Ya (§12.1, M1→M13) |
-| Setiap enum di DB berasal dari kode | Ya (§4, nilai dari `lib/content.ts`) |
-| PII terpisah dari jalur baca publik | Ya (§4.4, §9, §10) |
+| Setiap tipe punya field yang ditelusuri ke kode yang membacanya | Ya — kolom "Arti" di §4/§5 |
+| Setiap field punya tempat validasi yang jelas | Ya — kolom "Bajib"/"Batas" |
+| Tipe privat tidak masuk dataset publik | Ya — `melodialam-sanity/sanity/schemaTypes/index.ts:26-37` |
+| Tidak ada field yang di-proyeksi tapi tidak dipakai | Ya, kecuali `pillarPost.likes` (dekoratif untuk editor) |
+| PII tidak pernah diproyeksi ke query publik | Ya — `APPROVED_QUERY` tidak memuat `contact` |
+| Setiap lapisan baca punya fallback yang jelas | Ya — tabel §3 |
+| Tiap cache tag punya rute yang membuangnya | Ya — 6 tag, 6 di `CONTENT_TAGS` |
+| Dua dataset punya sumber skema yang sama | Ya — `melodialam-sanity/lib/taxonomy.ts` & `melodi-alam/lib/taxonomy.ts` (duplikasi disengaja) |
+| Angka daftar cerita konsisten antar halaman | Ya — semua membaca `latestStories(8)` |
+| Tidak ada klaim tentang Postgres/RLS sebagai sistem berjalan | Ya — dibuang di versi ini |
 
 ---
 
-## Verification Notes
+## Catatan Verifikasi
 
-Dibaca langsung dari sumber (bukan dari memori):
+**Dibaca langsung dari sumber:**
 
-- `lib/content.ts` (527 baris, penuh) — `ArticleCategory`, `Article`,
-  `InterviewRow`, `GenreRow`, `SpaceItem`, `DemoSubmission`, `DEMO_GENRES`,
-  `DEMO_PROGRAMS`, `SEED_DEMOS`, `CATEGORY_LABELS`, `ARTICLE_CATEGORIES`,
-  `ARTICLES` (12), `SPACE_ITEMS` (5), `TICKER_ITEMS` (4).
-- `lib/catalogue.ts` (157 baris, penuh) — `CatalogueVideo`, `CatalogueShort`,
-  `CataloguePlaylist`, `Catalogue`, `VENUES`, `VENUE_COUNTS`, `viewCount()`,
-  `formatDuration()`, `thumbnailFor()`.
-- `lib/catalogue.json` — `meta`, `profile`, `counts`, satu `videos[0]`, satu
-  `shorts[0]`, satu `playlists[0]`; nilai `byVenue` dan 17 nilai `ageBucket`
-  dihitung dengan `node -e`, bukan dibaca mata.
-- `app/api/demos/route.ts` (103 baris, penuh) — bentuk queue in-memory, cap
-  field, jalur `400`/`422`/`201`, dan fakta `contact` tidak dipersistensi.
-- `components/DemoPortal.tsx` — `onPickAudio` (preview `createObjectURL`, tanpa
-  unggah), `accept="audio/*"`, alur `POST` ke `/api/demos`.
-- `components/JournalBrowser.tsx` — filter `category` + pencarian substring pada
-  `title`/`excerpt`/`category`.
-- `docs/ARCHITECTURE.md` — untuk konsistensi label, batas modul (`MOD-101`…`MOD-103`),
-  dan acuan yang menyebut dokumen ini sebagai pemilik skema/migrasi/RLS.
-- `package.json` — dikonfirmasi **tidak ada** `payload`, `supabase`, `drizzle`,
-  `vitest`, atau `playwright` yang terpasang.
-- `docs/` — hanya berisi `ARCHITECTURE.md`; `docs/adr/` **belum ada**, sehingga
-  ADR-0002…ADR-0005 dirujuk sebagai keputusan (brief §7) dan belum ada berkasnya.
+- `melodialam-sanity/sanity/schemaTypes/*.ts` — `article.ts`, `pillarPost.ts`,
+  `siteSettings.ts`, `interview.ts`, `video.ts`, `playlist.ts`, `videosPage.ts`,
+  `demoSubmission.ts`, `demoContact.ts`, `pahlawanRow.ts`, `index.ts` (penuh).
+- `melodialam-sanity/sanity/structure.ts`, `melodialam-sanity/sanity.config.ts`,
+  `melodialam-sanity/lib/taxonomy.ts` (penuh).
+- `melodi-alam/lib/`: `articles.ts`, `pillars.ts`, `pillars-shared.ts`,
+  `catalogue.ts`, `interviews.ts`, `content.ts`, `taxonomy.ts`, `site.ts`,
+  `site-settings.ts`, `videos.ts`, `videos-page.ts`, `sanity.ts`,
+  `sanity-server.ts`, `sanity-preview.ts`, `sanity-project.ts`,
+  `content.test.ts` (penuh).
+- `melodi-alam/app/`: `(site)/page.tsx`, `(site)/stories/page.tsx`,
+  `(site)/stories/[slug]/page.tsx`, `(site)/kurasi/page.tsx`,
+  `(site)/videos/page.tsx`, `(site)/bicara-melodi/page.tsx`,
+  `(site)/submit/page.tsx`, `(site)/tentang/page.tsx` (sebagian),
+  `(site)/sitemap.ts`, `(site)/journal/route.ts`,
+  `(site)/journal/[slug]/route.ts`, `(site)/preview/[type]/[slug]/page.tsx`,
+  `api/demos/route.ts`, `api/demo-audio/route.ts`, `api/revalidate/route.ts`,
+  `rss.xml/route.ts`, `robots.ts` (penuh).
+- `melodi-alam/components/`: `ArticleCards.tsx`, `KurasiBrowser.tsx`,
+  `DemoPortal.tsx`, `YoutubeThumb.tsx`, `VideoRow.tsx` (penuh),
+  `VideoModal.tsx` (grep), `motion/MotionRoot.tsx`.
+- `melodi-alam/app/globals.css` — blok utility (`hover-reveal-curtain`,
+  `corner-frame`, `dash-reveal-*`, `video-action-reveal`) dan blok
+  `prefers-reduced-motion`.
+- `melodi-alam/package.json` — dependensi & skrip.
+- `melodi-alam/docs/adr/0008-sanity-studio-menggantikan-payload.md`,
+  `docs/SANITY-INTEGRATION.md`, `docs/AUDIT-2026-10-21.md`.
+- `melodi-alam/docs/ARCHITECTURE.md`, `docs/SECURITY-PRIVACY.md`,
+  `docs/TEST-STRATEGY.md`, `docs/API-CONTRACTS.md`, `docs/DEPLOYMENT.md` —
+  **di-*grep*** untuk istilah usang (RLS, Postgres, `feedArticles`, "6 kartu"),
+  bukan dibaca penuh.
 
-Dijalankan: dua perintah `node -e` (read-only) untuk menghitung `byVenue`,
-`ageBucket`, dan memeriksa nilai `null` pada `videos`. Tidak ada migrasi, tidak
-ada paket yang dipasang, tidak ada berkas lain yang diubah.
+**Dijalankan / dihitung:**
 
-Yang **tidak** diverifikasi (dan karena itu tidak diklaim): nama tabel/kolom persis
-yang digenerate `@payloadcms/db-postgres`, perintah migrasi Payload, dan perilaku
-RLS terhadap koneksi Payload — semuanya ditandai `RENCANA` / `[PERLU VERIFIKASI]`.
+- Kueri GROQ anonim ke dataset `production` (perspektif `published`, API
+  `2026-05-19`) pada 21 Oktober 2026:
+  - `count` per tipe: article 12, pillarPost 55, interview 9, video 9,
+    playlist 5, siteSettings 1, videosPage 1, pahlawanRow 3,
+    demoSubmission 0, demoContact 0.
+  - Rincian `pillarPost` per pillar: fakta-musik 16, lirik 3, trivia 2,
+    kutipan 6, rekomendasi 8, ulas-melodi 3, clipper 17, similar-song 0,
+    meme-humor 0 — total 55. Media: 25 `foto` + 30 `reel`.
+  - Rincian `article` per `mediaType`: 6 `foto` + 6 `reel`; daftar slug, tanggal,
+    rubrik, dan jumlah blok Portable Text.
+  - `video`: 9 dokumen, seluruhnya `venue: "Melodi Samsara"`.
+  - `interview`: 9 dokumen, `order` 1–9 berurutan.
+  - `playlist`: 5 dokumen, seluruhnya `count: null`.
+  - `siteSettings` live: `cardCurtain` memuat 4 kunci (2 di antaranya sudah
+    dilepas dari skema) dan 4 `tickerItems`.
+  - `videosPage` live: `samsaraNote: ""`, `playlistsNote: null`.
+- `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`
+  (Samsara 101, Interview 143, Arsip & Lainnya 9, Melodi Taman 39), 17 nilai
+  `ageBucket` berbeda, 0 `ageBucket` null, 19 kunci `profile`.
+- `npm test` → **9/9 lulus** (`lib/content.test.ts`, Vitest 3.2.7) — termasuk
+  aturan `BR-004` (waktu baca) dan `pillarDate()`.
+- Pencarian seluruh repo (`app/**`, `components/*.tsx`, `lib/*.ts`) untuk
+  `feedArticles`, `latestStories`, `allPillarPosts`, `allInterviews`,
+  `allVideos`, `allPlaylists`, `getSiteSettings`, `getVideosPageCopy` — dipakai
+  untuk memetakan read model.
+
+**Tidak diperiksa / tidak diklaim:**
+
+- Status privat dataset `submissions` di Sanity Manage (butuh akun) — lihat
+  §2 dan §10.
+- Keadaan sebenarnya environment Vercel (daftar env, Blob store, Resend,
+  Web Analytics) — diambil dari `docs/AUDIT-2026-10-21.md`, bukan diukur ulang
+  di dokumen ini.
+- Jumlah halaman statis hasil build — **tidak dihitung ulang** di sini. Angka
+  yang tercatat di ADR-0008 untuk build 21 Oktober 2026 adalah **33 halaman
+  statis**; angka lain (26 / 28 / 32) berasal dari build lebih lama, jadi
+  tidak diklaim sebagai fakta dokumen ini.
+- Perilaku lintas peramban, penilaian SEO nyata, dan indeksasi mesin
+  pencari.
+- Efektivitas cache tag di produksi (diasumsikan bekerja sesuai
+  `docs/AUDIT-2026-10-21.md` §4).
+
+**Selisih yang ditemukan antara acuan dan sumber nyata** — dicatat agar tidak
+menjadi "kebenaran" diam-diam (pemeriksaan ulang per 21 Okt 2026, sore; beberapa
+dokumen lain sedang direvisi bersamaan, jadi daftar ini berumur pendek):
+
+1. `docs/SANITY-INTEGRATION.md` §3/§6 masih menyebut `feedArticles()` (5×) dan
+   "grid 6 kartu" (2×). Kenyataannya semua halaman memakai `latestStories(8)`
+   dan `/stories` menampilkan 8 kartu.
+2. `docs/ARCHITECTURE.md:358,415` masih mendaftarkan dan menjelaskan
+   `feedArticles()` sebagai bagian API; fungsi itu sekarang **tidak dipakai
+   halaman mana pun**.
+3. Dokumen `siteSettings` live masih menyimpan `cardCurtain.featureLabel` dan
+   `featureCta` yang sudah tidak ada di skema.
+4. `videosPage` live punya `samsaraNote: ""` (kosong → catatan disembunyikan),
+   sedangkan komentar di skema menyebut "Kosong = dihitung otomatis" — dua
+   keadaan yang berbeda, dan kode membedakannya (§4.7).
+5. `pillarPost.likes` ada di skema tapi tidak diproyeksi kueri situs.
+6. `meme-humor` ada di skema dan label, tapi tidak masuk set pillar mana pun.
+7. `lib/articles.ts` masih mengekspor `feedArticles()` yang tidak dipakai
+   halaman mana pun.
+8. Angka `byVenue` katalog arsip berbeda dari versi dokumen lama
+   (`Interview` 143, bukan 118; `Arsip & Lainnya` 9, bukan 34) karena katalog
+   dibangkitkan ulang.
 
 ---
 
 ## Open Questions
 
-1. **Batas ADR-0004 vs tabel `video_sessions`.** ADR-0004 menyatakan katalog video
-   tetap build-time, tetapi `video_sessions` tetap masuk daftar tabel target.
-   Mana yang jadi source of truth untuk baris sesi: `lib/catalogue.json` atau
-   Postgres? Desain di §4.2 mengasumsikan tabel hanya menyimpan baris yang
-   di-pin editor, dengan kolom scrape (`views_label`, `age_bucket`) sebagai
-   snapshot. Perlu keputusan eksplisit.
-2. **Nasib `SHORTLISTED BY EDITOR`.** Nilai `status` ini tidak punya rumah di enum
-   `pending/approved/rejected`. Apakah butuh state keempat (`shortlisted`), atau
-   cukup jadi `review_note`?
-3. **`body_paragraphs text[]` vs rich text Payload.** Kode menyimpan `string[]`;
-   Payload rich text menyimpan Lexical (JSON). Memilih Lexical berarti backfill
-   harus membungkus tiap paragraf jadi node — bukan transformasi 1:1. Belum
-   diputuskan.
-4. **Pengetatan `genre`/`program` menjadi `NOT NULL`.** Kode hari ini
-   memvalidasinya secara kondisional (kosong lolos). Menjadikannya wajib adalah
-   perubahan kontrak; perlu konfirmasi apakah disengaja.
-5. **Identitas kurator.** `reviewed_by` mereferensikan `users` Payload. Bentuk
-   klaim `curator`, sumbernya (Payload auth vs Supabase Auth), dan nama kolom
-   persisnya `[PERLU VERIFIKASI]`.
-6. **RLS vs koneksi Payload.** Apakah Payload memakai role DB yang melewati RLS
-   (default) atau role terbatas + `FORCE ROW LEVEL SECURITY`? Ini menentukan apakah
-   RLS benar-benar menjadi pertahanan berlapis atau hanya melindungi akses klien.
-7. **Backfill `demo_contacts` tidak mungkin untuk data lama.** Karena `contact`
-   tidak pernah dipersistensi, 3 seed demo masuk tanpa kontak. Apakah submission
-   hasil migrasi boleh tanpa kontak (menyalahi 1:1 wajib) atau diisi penanda
-   `[PERLU VERIFIKASI]`? Ini juga temuan produk: tanpa perbaikan, kurator tetap
-   tidak bisa menghubungi artis lama.
-8. **Publik vs privat untuk audio demo.** Apakah audio demo yang `approved` boleh
-   diputar publik (butuh bucket publik atau URL bertanda tangan), atau audio
-   selalu privat untuk kurator saja? Skema saat ini mengasumsikan privat.
-9. **Retensi PII terjadwal.** Kebijakan hapus submission `rejected` setelah N bulan
-   belum ditetapkan; menyangkut `NFR` privasi.
-10. **Pertumbuhan `DEMO_GENRES`.** Daftar genre/ program milik produk dan akan
-    bertambah. `CHECK` literal mudah dibaca tetapi tiap perubahan butuh migrasi;
-    lookup table (`demo_genres`, `demo_programs`) lebih fleksibel. Perlu keputusan
-    sebelum value pertama ditambahkan.
-11. **`INTERVIEW_ROWS`, `GENRE_ROWS`, `TICKER_ITEMS`.** Tiga entitas
-    `TERVERIFIKASI` tanpa tabel target. Apakah jadi tabel sendiri, memetakan ke
-    `articles`/`video_sessions`, atau tetap build-time? **Sebagian terjawab:**
-    pasca ADR-0008 editorialnya hidup di Sanity (`interview`, `pahlawanRow`,
-    `siteSettings`) dengan fallback statis; tabel Postgres untuk ketiganya tidak
-    lagi relevan.
-12. **Angka cap 25 MB.** Keputusan fase ini, bukan angka dari kode. Nilai
-    `file_size_limit` harus dikonfirmasi terhadap plan Supabase saat bucket dibuat.
-13. **`price_idr` numerik.** Belum ada kolom harga numerik; apakah kurator butuh
-    sortir/format harga, atau `price_label` cukup?
+1. **Pillar `meme-humor`.** Mau dimasukkan ke `PHOTO_PILLARS` atau
+   `REEL_PILLARS` di `lib/pillars-shared.ts`, atau dihapus dari skema Studio
+   dan dari `PILLAR_LABELS`? Selama tidak diputuskan, pillar itu tidak bisa
+   diisi.
+2. **Pillar `similar-song`.** Ada di `REEL_PILLARS` tapi 0 post. Biarkan
+   kosong, atau isi sekalian? Kalau rencana editorialnya berubah, set-nya di dua repo
+   harus ikut berubah.
+3. **Empat reel yang tidak tertaut.** `wsatcc`, `hanin`, `sheila`, `a7x` tidak
+   muncul di halaman mana pun. Apakah tiap reel menunggu padanan post foto
+   (seperti yang tertulis di deskripsi `mediaType`), atau daftar ini perlu
+   ditambah supaya semuanya punya tempat?
+4. **Audio demo publik.** `access: "public"` sekarang. Apakah objeknya
+   sebaiknya privat dengan signed URL, atau tetap publik? Lihat temuan F04 di audit.
+5. **Retensi PII.** Berapa lama `demoContact` dan objek audio disimpan setelah
+   kiriman ditutup? Tidak ada job yang membersihkan keduanya.
+6. **Audit moderasi.** Perlu field `reviewedBy` / `reviewedAt` di
+   `demoSubmission`, atau riwayat versi Sanity cukup?
+7. **Sisa field `cardCurtain` di dokumen live.** Apakahnya dibersihkan
+   (hapus kunci `featureLabel`/`featureCta` dari dokumen), atau dibiarkan
+   sebagai data mati yang tidak dibaca?
+8. **`video.count` di `playlist`.** Kelima dokumen Sanity punya `count: null`,
+   jadi situs menampilkan `-`. Diisi manual, atau diambil dari kanal YouTube?
+9. **Label `Rekomendasi Melodi` yang tampil sebagai "Fakta Musik".** Nilai
+   tersimpan sudah tidak sesuai label tampilnya sejak lama. Apakah perlu
+   dipisah supaya rubrik terlihat apa adanya di UI?
+10. **`audioName` dan `audioUrl` read-only.** Editor tidak bisa mengoreksi
+    tautan yang salah. Cukupkan dengan validasi, atau biarkan?

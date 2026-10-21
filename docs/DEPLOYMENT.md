@@ -1,46 +1,28 @@
 # DEPLOYMENT.md — CI/CD, Environments, dan Rollback Melodi Alam
 
-> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
-> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
-> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
-> direktori tersebut adalah catatan historis.
-
-> **Status fase: DOCS ONLY.** Tidak ada berkas CI yang dibuat, tidak ada dependensi yang
-> dipasang, tidak ada `.env` yang dibuat, tidak ada konfigurasi hosting yang ditambahkan.
-> Satu-satunya perintah yang dijalankan pada fase ini adalah `npm run build` (untuk
-> mengambil angka build yang nyata) — lihat "Verification Notes".
-
-**Target deploy: Vercel** (`ADR-0006`). **Belum ada apa pun yang ter-deploy:** tidak ada
-direktori `.github/`, tidak ada berkas `.env`, tidak ada proyek Vercel, tidak ada
-konfigurasi hosting. Karena itu:
-
-- Semua klaim tentang **build itu sendiri** dapat `TERVERIFIKASI` (dijalankan / dibaca).
-- Semua klaim tentang **deploy, CI, environment, dan rollback** adalah `RENCANA`.
+> **Status fase (21 Okt 2026):** situs **sudah ter-deploy** ke Vercel
+> (`melodialam-website.vercel.app`) dan berjalan dengan **Sanity Studio**
+> sebagai CMS. Dokumen ini memakai **Payload CMS 3 + Supabase** sudah tidak
+> berlaku dan tidak lagi diceritakan sebagai feature yang ada — lihat
+> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md).
+>
+> Halaman `/pahlawan-kota`, `/spaces`, `/videos/arsip`, dan `/journal` (sebagai
+> halaman) juga sudah dihapus. `/journal` kini hanya **redirect 308**.
 
 Cara membaca label (konsisten dengan `docs/TEST-STRATEGY.md`):
 
 | Label | Arti |
 |---|---|
 | `TERVERIFIKASI` | Dibaca langsung di kode/dijalankan pada fase ini |
-| `RENCANA` | Direncanakan fase ini; belum ada |
+| `RENCANA` | Direncanakan; belum ada |
 | `ASUMSI` | Diasumsikan; perlu konfirmasi |
 | `[PERLU VERIFIKASI]` | Tidak dapat diverifikasi dari workspace |
 
-Acuan keputusan: **`ADR-0002`** (Payload CMS 3 in-app + Supabase), **`ADR-0003`** (Supabase =
-Postgres + Storage), **`ADR-0004`** (video catalogue tetap build-time), **`ADR-0005`**
-(moderated demo queue), **`ADR-0006`** (Vitest + Playwright, deploy ke Vercel). Acuan
-requirement: `FR-001`…`FR-007`, `NFR-001`…`NFR-004`, `RISK-001`…`RISK-003`.
-
-> **⚠️ Digantikan sebagian — baca ini dulu.**
-> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
-> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
-> dihapus.
->
-> Bagian yang tidak lagi berlaku di dokumen ini: variabel lingkungan, migrasi basis data,
-> dan langkah deploy backend. Lihat
-> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
-> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
-> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+Acuan keputusan: **`ADR-0006`** (Vitest + Playwright, deploy ke Vercel),
+**`ADR-0008`** (Sanity Studio menggantikan Payload). Acuan requirement:
+`BR-001`…`BR-007`, `RISK-001`…`RISK-003`. Acuan audit:
+[`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md). Acuan kontrak:
+[`API-CONTRACTS.md`](API-CONTRACTS.md).
 
 ---
 
@@ -56,20 +38,24 @@ requirement: `FR-001`…`FR-007`, `NFR-001`…`NFR-004`, `RISK-001`…`RISK-003`
 | Bahasa | TypeScript `^5` | `package.json` |
 | Gaya | Tailwind CSS `^4` via `@tailwindcss/turbopack` | `package.json`, `next.config.ts` |
 | Lint | ESLint `^9` + `eslint-config-next` `16.4.0` | `package.json` |
+| Versi paket | `0.2.0` (`package.json`) | `TERVERIFIKASI` |
 | Node/npm lokal (terukur) | Node `v24.15.0`, npm `11.12.1` | dijalankan saat fase ini |
-| Hosting target | **Vercel** | `ADR-0006` (`RENCANA`) |
+| Hosting | **Vercel** (produksi + preview) | `TERVERIFIKASI` (audit 21 Okt 2026) |
+| CMS | **Sanity Studio** — dataset `production` (publik) + `submissions` (privat) | `lib/sanity-project.ts` |
 | Port dev/start | **3100** (sengaja bukan 3000) | `package.json` |
 | Tim | Kecil (owner + kontributor; lihat `docs/CONTRIBUTING.md`) | `ASUMSI` |
 | Frekuensi rilis | Belum ditetapkan | `[PERLU VERIFIKASI]` |
 
-**Implikasi port 3100 (`TERVERIFIKASI`, catatan penting).** `-p 3100` hanya relevan untuk
-`next dev` dan `next start` **di lokal dan di CI**. Vercel **tidak** memakai flag ini —
-platform menentukan port via variabel `PORT` saat menjalankan serverless/Next runtime.
-Pilihan 3100 **tidak boleh** dianggap konfigurasi produksi.
+**Implikasi port 3100 (`TERVERIFIKASI`, catatan penting).** `-p 3100` hanya
+relevan untuk `next dev` dan `next start` **di lokal dan di CI**. Vercel
+**tidak** memakai flag ini — platform menentukan port via variabel `PORT` saat
+menjalankan serverless/Next runtime. Pilihan 3100 **tidak boleh** dianggap
+konfigurasi produksi.
 
 ### 1.2 Skrip yang benar-benar ada (`TERVERIFIKASI`)
 
-`package.json` punya 10 skrip, termasuk `test` (Vitest). Tidak ada skrip `typecheck` atau `deploy`.
+`package.json` punya **10 skrip**, termasuk `test` (Vitest). Tidak ada skrip
+`typecheck` atau `deploy`.
 
 | Command | Isi |
 |---|---|
@@ -77,53 +63,71 @@ Pilihan 3100 **tidak boleh** dianggap konfigurasi produksi.
 | `npm run build` | `next build` |
 | `npm run start` | `next start -p 3100` |
 | `npm run lint` | `eslint` |
+| `npm test` | `vitest run` |
 | `npm run catalogue` | `node scripts/build-catalogue.mjs` |
 | `npm run brand` | `node scripts/build-brand.mjs` |
 | `npm run photos` | `node scripts/copy-photos.mjs` |
+| `npm run seed:sanity` | kompilasi `lib/content.ts` + `lib/taxonomy.ts` → jalankan `scripts/seed-sanity.js` |
+| `npm run seed:videos` | `node scripts/seed-videos.js` |
 
-Tidak ada skrip `typecheck` terpisah; `tsc --noEmit` dijalankan sebagai bagian dari
-`next build` (output build menampilkan tahap "Running TypeScript ...").
+Tidak ada skrip `typecheck` terpisah; `tsc --noEmit` dijalankan sebagai bagian
+dari `next build` (output build menampilkan tahap "Running TypeScript ...").
 
 ### 1.3 Apa yang build lakukan hari ini (`TERVERIFIKASI`, angka terukur)
 
-`npm run build` dijalankan sekali dari `melodi-alam/` pada fase ini. Output nyata
-(disalin apa adanya):
+`npm run build` dijalankan sekali dari `melodi-alam/` pada 21 Okt 2026. Output
+nyata (disalin apa adanya):
 
 ```
+> melodi-alam@0.2.0 build
+> next build
+
 ▲ Next.js 16.4.0 (Turbopack)
-✓ Running next.config.ts took 37ms
+- Environments: .env
+✓ Running next.config.ts took 49ms
 - Cache Components enabled
 - Partial Prefetching enabled
 
   Creating an optimized production build ...
-✓ Compiled successfully in 665ms
+✓ Compiled successfully in 960ms
   Running TypeScript ...
-  Finished TypeScript in 1754ms ...
+  Finished TypeScript in 2.6s ...
   Collecting page data using 11 workers ...
-  Generating static pages using 11 workers (0/26) ...
-  Generating static pages using 11 workers (6/26)
-  Generating static pages using 11 workers (12/26)
-  Generating static pages using 11 workers (19/26)
-✓ Generating static pages using 11 workers (26/26) in 1359ms
+  Generating static pages using 11 workers (0/33) ...
+  Generating static pages using 11 workers (8/33)
+  Generating static pages using 11 workers (16/33)
+  Generating static pages using 11 workers (24/33)
+✓ Generating static pages using 11 workers (33/33) in 1780ms
   Finalizing page optimization ...
 
-Route (app)
-┌ ○ /
+Route (app)                                             Revalidate  Expire
+┌ ○ /                                                           1m      1h
 ├ ○ /_not-found
+├ ƒ /api/demo-audio
 ├ ƒ /api/demos
+├ ƒ /api/revalidate
 ├ ○ /apple-icon.png
-├ ○ /bicara-melodi
+├ ○ /bicara-melodi                                              1m      1h
 ├ ○ /icon.png
-├ ○ /stories
-├   /stories/[slug]
-│ ├ ◐ /stories/[slug]
-│ ├ ○ /stories/dua-dekade-endah-n-rhesa
-│ ├ ○ /stories/melankolia-di-priok-baladagehel-dongker
+├ ƒ /journal
+├ ƒ /journal/[slug]
+├ ○ /kurasi                                                     1m      1h
+├   /preview/[type]/[slug]                                      1m      1h
+│ └ ◐ /preview/[type]/[slug]                                    1m      1h
+├ ○ /robots.txt
+├ ○ /rss.xml                                                    1m      1h
+├ ○ /sitemap.xml                                                1m      1h
+├ ○ /stories                                                    1m      1h
+├   /stories/[slug]                                             1m      1h
+│ ├ ◐ /stories/[slug]                                           1m      1h
+│ ├ ○ /stories/spill-pilihan-lagu-arctic-monkeys                1m      1h
+│ ├ ○ /stories/melankolia-di-priok-baladagehel-dongker          1m      1h
 │ └ ◐ [+10 more paths]
-├ ○ /pahlawan-kota
-├ ○ /spaces
-├ ○ /submit
-└ ○ /videos
+├ ƒ /stories/[slug]/opengraph-image-1w7it6
+├ ƒ /stories/[slug]/twitter-image-1w7it6
+├ ○ /submit                                                     1m      1h
+├ ○ /tentang                                                    1m      1h
+└ ○ /videos                                                     1m      1h
 
 ○  (Static)             prerendered as static content
 ◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content
@@ -134,247 +138,294 @@ Angka **terukur** yang harus dipakai sebagai baseline (bukan estimasi):
 
 | Metrik | Nilai terukur |
 |---|---|
-| Halaman statis yang di-generate | **26** |
-| Waktu compile | **665 ms** |
-| Waktu TypeScript | **1754 ms** |
-| Waktu generate static pages | **~8 s** (32/32) |
+| Halaman statis yang di-generate | **33** |
+| Waktu compile | **960 ms** |
+| Waktu TypeScript | **2.6 s** |
+| Waktu generate static pages | **1.78 s** (33/33) |
 | Worker paralel | **11** |
-| Muat `next.config.ts` | **37 ms** |
+| Muat `next.config.ts` | **49 ms** |
+| Cache window konten | `Revalidate 1m`, `Expire 1h` |
+
+Angka waktu **bervariasi antar-jalan** (run sebelumnya: compile 1198 ms,
+TypeScript 2.5 s, generate 2.0 s). Yang **tidak** berubah antar-jalan adalah
+**33 halaman** dan tabel rute di atas — itulah yang jadi baseline.
 
 ### 1.4 Rute: statis vs dinamis (`TERVERIFIKASI`)
 
-| Rute | Jenis build | Catatan |
-|---|---|---|
-| `/` | `○` Static | Landing |
-| `/_not-found` | `○` Static | `app/not-found.tsx` |
-| `/api/demos` | `ƒ` **Dynamic** | **Route handler** (`GET`, `POST`; 503 kalau Sanity gagal) |
-| `/api/demo-audio` | `ƒ` **Dynamic** | Token unggah audio ke Vercel Blob (maks 25 MB) |
-| `/api/revalidate` | `ƒ` **Dynamic** | Webhook Sanity → 6 tag cache |
-| `/stories/[slug]/opengraph-image` · `twitter-image` | `ƒ` **Dynamic** | Kartu sosial 1200×630 per artikel |
-| `/apple-icon.png` | `○` Static | Rute metadata otomatis dari `app/apple-icon.png` |
-| `/icon.png` | `○` Static | Rute metadata otomatis dari `app/icon.png` |
-| `/bicara-melodi` | `○` Static | |
-| /stories | Static | Grid 6 kartu (Stories, hanya feed foto); tanpa filter/search |
-| `/stories/[slug]` | `○` Static + `◐` Partial Prerender | 12 slug statis; artikel baru dari CMS dirender sesuai permintaan |
-| `/tentang` | `○` Static | Profil, ekosistem, kontak & partnership |
-| `/rss.xml` | `○` Static | RSS 2.0 dari artikel feed foto |
-| `/preview/[type]/[slug]` | `◐` Partial Prerender | Pratinjau draf; butuh `?secret=` |
-| `/submit` | `○` Static | Form POST ke `/api/demos` |
-| `/videos` | `○` Static | Seleksi 9 sesi Samsara + Bicara Melodi + playlists; **tidak** ada daftar katalog 292 video |
+Tabel ini adalah **tabel rute resmi** untuk smoke test dan Environ.
 
-**Kenapa ada `◐` Partial Prerender.** `next.config.ts` mengaktifkan
-**Cache Components** dan **Partial Prefetching** (`TERVERIFIKASI`):
+| Rute | Jenis build | Isi | Sumber data |
+|---|---|---|---|
+| `/` | `○` Static | "Latest News" (grid 2×2 = 4 kartu) + strip "Curated News" (4 post kurasi) | `latestStories(8)` + `allPillarPosts()` |
+| `/stories` | `○` Static | "Stories" — grid 4 kolom, 8 kartu (foto lalu reel), badge "Reel" | `latestStories(8)` |
+| `/stories/<slug>` | `○` Static + `◐` Partial Prerender | Detail artikel; 12 slug statis di-prerender, slug dari CMS dirender saat diminta | `articleBySlug` + `latestStories(8)` |
+| `/tentang` | `○` Static | Profil, ekosistem (Samsara Bogor, SVVARA, INFIA), kontak & partnership | statis |
+| `/kurasi` | `○` Static | "Curated News" — kotak cari + chip per pillar | `allPillarPosts()` |
+| `/bicara-melodi` | `○` Static | 9 episode wawancara Season 3 | `allInterviews()` + `lib/catalogue.json` |
+| `/videos` | `○` Static | **Melodi Samsara** — 9 baris sesi + 5 playlist | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` |
+| `/submit` | `○` Static | Formulir demo 9 bagian (termasuk unggah audio opsional) | `POST /api/demos` |
+| `/preview/<type>/<slug>?secret=…` | `◐` Partial Prerender | Pratinjau draf (`journal` atau `kurasi`), `noindex`, 404 bila secret salah | Sanity `perspective: "drafts"` |
+| `/journal` | `ƒ` **Dynamic** | **308 permanen** → `/stories` | route handler |
+| `/journal/<slug>` | `ƒ` **Dynamic** | **308 permanen** → `/stories/<slug>` | route handler |
+| `/api/demos` | `ƒ` **Dynamic** | `GET` antrean approved + `POST` submission | Sanity dataset `submissions` |
+| `/api/demo-audio` | `ƒ` **Dynamic** | Token unggah audio ke Vercel Blob (maks 25 MB) | `@vercel/blob/client` |
+| `/api/revalidate` | `ƒ` **Dynamic** | Webhook Sanity → 6 tag cache | `SANITY_REVALIDATE_SECRET` |
+| `/rss.xml` | `○` Static | RSS 2.0 dari 8 cerita terbaru | `latestStories(8)` |
+| `/sitemap.xml` | `○` Static | 7 halaman + 8 artikel | `latestStories(8)` |
+| `/robots.txt` | `○` Static | `allow: /`, `disallow: /api/` | statis |
+| `/stories/<slug>/opengraph-image` | `ƒ` **Dynamic** | Kartu OG 1200×630 per artikel | Sanity |
+| `/stories/<slug>/twitter-image` | `ƒ` **Dynamic** | Kartu Twitter 1200×630 per artikel | Sanity |
+| `/_not-found` | `○` Static | Halaman 404 | `app/(site)/not-found.tsx` |
+| `/icon.png` · `/apple-icon.png` | `○` Static | Rute metadata otomatis | `app/icon.png`, `app/apple-icon.png` |
+
+**Kenapa ada `◐` Partial Prerender.** `next.config.ts` mengaktifkan **Cache
+Components** dan **Partial Prefetching** (`TERVERIFIKASI`):
 
 ```ts
 // next.config.ts
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  poweredByHeader: false,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" },
+      { protocol: "https", hostname: "cdn.sanity.io", pathname: "/images/**" },
     ],
   },
   turbopack: { rules: { "*.css": { loaders: ["@tailwindcss/turbopack"], as: "*.css" } } },
 };
 ```
 
-Konsekuensi deploy (`ASUMSI`, `[PERLU VERIFIKASI]`): sebagian HTML di-shell-kan statis dan
-sisanya di-stream saat request. Ini berarti **preview dan production harus memakai runtime
-Next.js yang sama** dengan lokal — perbedaan versi runtime dapat mengubah perilaku
-`◐`. Next.js `16.4.0` masih sangat baru; dukungan penuh dan versi Node default di Vercel
-belum dikonfirmasi di workspace → `[PERLU VERIFIKASI]`.
+Konsekuensi deploy (`ASUMSI`, `[PERLU VERIFIKASI]`): sebagian HTML di-shell-kan
+statis dan sisanya di-stream saat request. Ini berarti **preview dan
+production harus memakai runtime Next.js yang sama** dengan lokal — perbedaan
+versi runtime dapat mengubah perilaku `◐`.
 
-**`images.remotePatterns` (`TERVERIFIKASI`).** Satu-satunya host remote yang diizinkan
-adalah **`https://i.ytimg.com/vi/**`** (thumbnail YouTube untuk baris video). Semua gambar
-lain dilayani lokal dari `public/`. Konsekuensi keamanan/deploy: permintaan
-`next/image` ke host selain `i.ytimg.com` akan **gagal** (tidak akan dioptimasi). Jika
-fase berikutnya mengubah sumber gambar (mis. Supabase Storage), pola ini harus
-diperbarui — kalau tidak, gambar akan broken di produksi. Coin ini juga berarti CSP/domain
-allowlist gambar sudah sempit secara default.
+**`images.remotePatterns` (`TERVERIFIKASI`).** Dua host remote yang diizinkan:
+`https://i.ytimg.com/vi/**` (thumbnail YouTube) dan
+`https://cdn.sanity.io/images/**` (artikel Sanity). Host persis, bukan open
+proxy. Gambar artikel **wajib** datang dari Sanity — kalau sumber gambar
+berubah, pola ini harus diperbarui atau gambar akan broken di produksi.
 
-### 1.5 Pipeline aset build-time sebagai risiko deploy (`TERVERIFIKASI`)
+**Header keamanan (`TERVERIFIKASI`, `next.config.ts`).** Semua rute
+menerima `X-Content-Type-Options: nosniff`,
+`Referrer-Policy: strict-origin-when-cross-origin`,
+`X-Frame-Options: SAMEORIGIN`, `Permissions-Policy` (camera/mic/geo/payment
+dimatikan), `Strict-Transport-Security`
+(`max-age=63072000; includeSubDomains; preload`), CSP dasar (enforced), dan
+CSP penuh dalam mode `Content-Security-Policy-Report-Only`. CSP penuh
+(report-only) mengizinkan `connect-src` ke host Sanity **dan** ke host Vercel
+Blob (`https://*.public.blob.vercel-storage.com`,
+`https://*.blob.vercel-storage.com`) — tanpa itu, unggah audio demo dari
+browser akan diblokir begitu CSP report-only itu diaktifkan.
 
-Sebagian berkas di repo ini **generated**, bukan ditulis tangan. Berkas-berkas itu menjadi
-masalah deploy karena sumbernya berada **di luar repo** (lihat §4.6).
+### 1.5 Pipeline aset build-time (`TERVERIFIKASI`, **berubah**)
 
-| Artefak hasil | Generator | Sumber | Dikomit atau di-regenerate? | Kalau langkah dilewati pada clean checkout |
+Sebagian berkas di repo ini **generated**, bukan ditulis tangan. **Perubahan
+penting sejak dokumen versi lama: semua artefak generated sekarang sudah
+di-commit ke git**, jadi *clean checkout dapat di-build*.
+
+| Artefak hasil | Generator | Sumber | Status git | Kalau langkah dilewati pada clean checkout |
 |---|---|---|---|---|
-| `lib/catalogue.json` (192.670 byte) | `npm run catalogue` → `scripts/build-catalogue.mjs` | `../melodi-alam-data.md` (fallback: `melodi-alam-data.md` di root proyek) | **Belum di-track** (`TERVERIFIKASI`) | **`next build` GAGAL** — `lib/catalogue.ts` meng-import JSON ini |
-| `public/brand/melodi-alam-lockup-black.png` | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Text Logo - Black.png` (dipotong apa adanya — tanpa recolor) | **Di-track** | Masthead dan dua blok footer kehilangan logo → aset 404 |
-| `app/icon.png` (512 px, favicon) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Belum di-track** | Rute `/icon.png` kosong / fallback |
-| `app/apple-icon.png` (180 px) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Belum di-track** | Rute `/apple-icon.png` kosong / fallback |
-| `app/favicon.ico` (16/32/48) | `npm run brand` → `scripts/build-brand.mjs` | `../LOGO2/Melodi Alam Logo Only - Color.png` | **Di-track** (`TERVERIFIKASI`, satu-satunya artefak generated yang masuk git) | Favicon lama/bawaan Next.js tetap ada |
-| `public/photos/*` (33 berkas) | `npm run photos` → `scripts/copy-photos.mjs` | `../../FOTO PLACEHOLDER MELODI ALAM` | **Belum di-track** | Semua foto artikel/space → aset 404 |
+| `lib/catalogue.json` (193.574 byte) | `npm run catalogue` → `scripts/build-catalogue.mjs` | `../melodi-alam-data.md` (fallback: `./melodi-alam-data.md`) | **Di-track** | `next build` **GAGAL** — `lib/catalogue.ts` meng-import JSON ini |
+| `public/brand/melodi-alam-lockup-black.png` (87.030 byte) | `npm run brand` → `scripts/build-brand.mjs` | `../../LOGO2/Melodi Alam Text Logo - Black.png` | **Di-track** | Logo masthead/footer hilang → aset 404 |
+| `app/icon.png` (165.501 byte) | `npm run brand` | `../../LOGO2/Melodi Alam Logo Only - Color.png` | **Di-track** | Rute `/icon.png` kosong / fallback |
+| `app/apple-icon.png` (42.766 byte) | `npm run brand` | idem | **Di-track** | Rute `/apple-icon.png` kosong / fallback |
+| `app/favicon.ico` (9.535 byte) | `npm run brand` | idem | **Di-track** | Favicon lama/bawaan Next.js tetap ada |
+| `public/photos/*` (33 berkas `.webp`) | `npm run photos` → `scripts/copy-photos.mjs` | `../../FOTO PLACEHOLDER MELODI ALAM/` | **Di-track** | Semua foto artikel → aset 404 |
 
-Catatan: **seluruh proyek belum ter-commit** selain initial scaffold (`git log` hanya
-menampilkan satu commit "Initial commit from Create Next App"; `app/`, `lib/`, `scripts/`,
-`components/`, `docs/` semuanya masih untracked). Jadi "belum di-track" di atas berarti
-"belum masuk git sama sekali", bukan "sengaja di-ignore". Yang penting: **clean checkout
-dari git saat ini tidak dapat di-build**, karena artefak generated tidak ada.
+Konsekuensi yang tersisa (`TERVERIFIKASI`): **CI tidak dapat meregenerasi**
+artefak-artefak ini, karena sumbernya berada **di luar repo** `melodi-alam/`
+(`melodi-alam-data.md`, `LOGO2/`, `FOTO PLACEHOLDER MELODI ALAM/`) dan tidak
+pernah di-commit. Build tetap bisa jalan karena artefaknya ikut ter-commit —
+hanya **regenerasi** yang mustahil di runner. Aturan operasional: kalau data
+katalog berubah, jalankan `npm run catalogue` di mesin developer lalu **commit
+ hasilnya**.
 
 ### 1.6 Asumsi (`ASUMSI`)
 
-- Satu environment produksi cukup untuk v1.0; tidak ada staging terpisah (Preview per-PR
-  menggantikan peran staging). Ini konsisten dengan `docs/TEST-STRATEGY.md` §8.1.
+- Satu environment produksi cukup untuk v1.0; tidak ada staging terpisah
+  (Preview per-PR menggantikan peran staging). Konsisten dengan
+  `docs/TEST-STRATEGY.md` §8.1.
 - Pengguna awal hanya kurator internal + publik anonim; tidak ada beban tinggi
   (`NFR-001` belum diuji skala).
-- Sumber data luar-repo (`melodi-alam-data.md`, `logobulet.png`, `logotext.png`,
-  `FOTO PLACEHOLDER MELODI ALAM/`) berasal dari mesin yang sama dan tidak berubah sesering
-  kode → asumsi untuk strategi `commit-generated` di §4.6.
-- Empat release blocker "PRD §14.2" dipetakan sebagai `B1`…`B4` di `docs/TEST-STRATEGY.md`
-  §6.3; teks PRD tidak ada di workspace → `[PERLU VERIFIKASI]`.
+- Sumber data luar-repo (`melodi-alam-data.md`, `LOGO2/`, `FOTO PLACEHOLDER
+  MELODI ALAM/`) berasal dari mesin yang sama dan tidak berubah sesering kode.
+- Empat release blocker "PRD §14.2" dipetakan sebagai `B1`…`B4` di
+  `docs/TEST-STRATEGY.md` §6.3; teks PRD tidak ada di workspace →
+  `[PERLU VERIFIKASI]`.
 
 ---
 
 ## 2. Environment Plan
 
-Rencana tiga environment. Tidak ada satu pun yang berjalan hari ini (`RENCANA`).
+Tiga environment. **Production sudah berjalan** di Vercel
+(`melodialam-website.vercel.app` — `TERVERIFIKASI` lewat audit 21 Okt 2026
+yang memeriksa endpoint produksi). Keberadaan Preview per-PR
+`[PERLU VERIFIKASI]`; Local berjalan di mesin developer.
 
 | Environment | Tujuan | Data | Deploy Trigger | Akses |
 |---|---|---|---|---|
-| **Local** | Pengembangan + unit test | `lib/*.json` + `SEED_DEMOS` in-memory | Manual: `npm run dev` (port 3100) | Developer di mesin sendiri |
-| **Preview** | Review per-PR, E2E, cek visual | Demo store in-memory (kosong per instance); nanti Supabase branch/schema terpisah | **Otomatis** saat PR dibuka/di-update (`RENCANA`) | Tim internal (URL ber-token) |
-| **Production** | Situs publik | Supabase Postgres + Storage (nanti); hari ini in-memory | **Otomatis saat merge ke branch rilis** (`RENCANA`) | Publik |
+| **Local** | Pengembangan + unit test | Sanity dataset `production` (publik) + `lib/catalogue.json` | Manual: `npm run dev` (port 3100) | Developer di mesin sendiri |
+| **Preview** | Review per-PR, E2E, cek visual | Sanity `production`; demo queue di dataset `submissions` | **Otomatis** saat PR dibuka/di-update (`RENCANA` — belum ada CI di repo) | Tim internal (URL ber-token) |
+| **Production** | Situs publik (`melodialam-website.vercel.app`) | Sanity `production` + `submissions`; audio di Vercel Blob (belum ada) | **Otomatis saat merge ke branch rilis** | Publik |
 
 ### 2.1 Apa yang membedakan tiap environment
 
 | Dimensi | Local | Preview | Production |
 |---|---|---|---|
-| Sumber data editorial | `lib/content.ts` + `lib/catalogue.json` (statis, build-time) | sama (build-time) | sama sampai Payload aktif (`ADR-0002`) |
-| Demo queue | Array in-memory (`SEED_DEMOS`) | Array in-memory, **per instance** — reset tiap deploy/restart | idem; **akan** jadi Supabase (`ADR-0005`) |
-| Env vars dibaca | **nol** | **nol** (hari ini) | **nol** (hari ini) |
-| Secret | tidak ada | tidak ada (hari ini) | tidak ada (hari ini) |
-| Media | `public/` | `public/` | `public/`; nanti Supabase Storage (`ADR-0003`) |
-| Domain | `localhost:3100` | `*.vercel.app` auto | domain publik (`[PERLU VERIFIKASI]` — belum ditetapkan) |
-| Data persisten | tidak | tidak | tidak (hari ini) |
-
-### 2.2 Fakta kritis: kode membaca **nol** environment variable (`TERVERIFIKASI`)
-
-- Tidak ada berkas `.env*` di mana pun di repo (pencarian rekursif, kecuali `node_modules`
-  → nol hasil).
-- `npm run dev`, `next build`, dan `next start` semuanya berjalan tanpa env apa pun.
-- `.gitignore` meng-ignore `.env*` (baris 34) — jadi secret **tidak akan** ikut ter-commit.
-  Konsekuensi: berkas template seperti `.env.example` **juga** ter-ignore kecuali ditambah
-  `!.env.example`. Ini relevan saat fase Supabase memperkenalkan env pertama.
-
-Karena nol env dibaca kode hari ini, **semua** variabel di §3 adalah hal baru yang
-diperkenalkan fase berikutnya. Tidak ada satu pun yang dipakai sekarang.
+| Sumber data editorial | Sanity `production` + fallback `lib/content.ts` | Sanity `production` | Sanity `production` |
+| Demo queue | Sanity `submissions` **atau** array in-memory bila token kosong | idem | Sanity `submissions` |
+| Env var dibaca | `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET` | idem + opsional | idem + opsional (`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`) |
+| Secret | ada di `.env` lokal (git-ignored) | Environment Variables Vercel | Environment Variables Vercel |
+| Media | `public/photos/*` + `cdn.sanity.io` | idem | idem + Vercel Blob (belum) |
+| Domain | `localhost:3100` | `*.vercel.app` auto | `melodialam-website.vercel.app`; `melodialam.id` **belum resolve** |
+| Data persisten | Sanity (dataset privat) | Sanity | Sanity |
 
 ---
 
 ## 3. Configuration and Secrets Inventory
 
-Hari ini: **tidak ada** variabel (`TERVERIFIKASI`). Di bawah ini adalah inventaris
-**`RENCANA`** untuk fase Supabase + Payload (`ADR-0002`, `ADR-0003`). Nama variabel adalah
-**usulan konvensi**; kontrak persis Payload/Supabase belum ditulis di repo → bagian yang
-belum pasti ditandai `[PERLU VERIFIKASI]`.
+### 3.1 Environment variables (`TERVERIFIKASI`)
 
-| Variable | Scope | Secret? | Per-environment Notes |
-|---|---|---|---|
-| `NEXT_PUBLIC_SUPABASE_URL` | **client** | Tidak | URL proyek Supabase; aman terekspos ke browser. Boleh sama di Preview/Prod bila instance sama, **sebaiknya** berbeda per env |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | **client** | Tidak (`publishable`) | Anon/publishable key. Aman **hanya jika** RLS aktif (`ADR-0003`). Wajib berbeda Preview vs Prod |
-| `SUPABASE_SERVICE_ROLE_KEY` | **server saja** | **YA** | **Tidak boleh** ber-prefix `NEXT_PUBLIC_`; **tidak boleh** di-import komponen client; hanya di route handler / server action / Payload access control |
-| `PAYLOAD_SECRET` | **server saja** | **YA** | Kunci penandatanganan Payload (session/token). Panjang acak; rotasi bila bocor |
-| `SUPABASE_STORAGE_BUCKET` | server (config) | Tidak | Nama bucket Storage untuk audio/artikel (`ADR-0003`); bisa juga publik bila bucket memang publik |
-| `DATABASE_URL` / `POSTGRES_URL` | server saja | **YA** | String koneksi Postgres untuk adapter Payload (`@payloadcms/db-postgres`). **Nama pasti + bentuk wiring `[PERLU VERIFIKASI]`** |
+Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
+`lib/sanity-preview.ts`, `app/api/demo-audio/route.ts`,
+`app/api/demos/route.ts`, `app/api/revalidate/route.ts`) dan dari
+`.env.example`.
 
-### 3.1 Aturan service role key (WAJIB)
+| Variable | Scope | Secret? | Wajib? | Efek |
+|---|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | client + server | Tidak | **Ya** di produksi | Canonical origin, sitemap, RSS, `robots.txt`, OG. Kosong → jatuh ke literal `https://melodialam.id` (`lib/site.ts:18`) |
+| `SANITY_API_READ_TOKEN` | server saja | **YA** | **Ya** | Grant read pada dataset privat `submissions` + write. Kosong → demo queue jatuh ke array in-memory dan pratinjau draf selalu 404 |
+| `SANITY_REVALIDATE_SECRET` | server saja | **YA** | **Ya** | Shared secret webhook `POST /api/revalidate`. Kosong → route menjawab `500` |
+| `SANITY_PREVIEW_SECRET` | server saja | **YA** | Tidak | Secret pratinjau draf. Kosong → **fallback** ke `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`) |
+| `BLOB_READ_WRITE_TOKEN` | server saja | **YA** | Tidak | Token unggah audio. Kosong → `POST /api/demo-audio` menjawab `400` |
+| `RESEND_API_KEY` | server saja | **YA** | Tidak | Notifikasi email redaksi. Kosong → notifikasi **inert** (tidak ada panggilan HTTP) |
+| `DEMO_NOTIFY_TO` | server saja | Tidak | Tidak | Override penerima notifikasi, dipisah koma. Default `melodialam.ip@gmail.com,helfan@infia.co` |
+| `DEMO_NOTIFY_FROM` | server saja | Tidak | Tidak | Override pengirim. Default `Melodi Alam <onboarding@resend.dev>` |
 
-**`SUPABASE_SERVICE_ROLE_KEY` tidak pernah boleh mencapai client.** Aturan operasional
-(`RENCANA`):
+### 3.2 Yang **tidak** dipakai lagi
 
-1. **Tanpa prefix `NEXT_PUBLIC_`** — variabel ber-prefix itu di-inline ke bundle browser
-   oleh Next.js; service role key akan bocor permanen ke setiap pengunjung.
-2. **Import server-only.** Hanya dibaca di `app/api/**/route.ts`, server action, atau kode
-   Payload. Tambahkan guard (mis. `import "server-only"` di modul yang membacanya) bila
-   memungkinkan.
-3. **Key anon hanya aman bila RLS aktif.** Anon key memang untuk publik; jangan
-   menaruh data privat di tabel tanpa Row Level Security — lihat `docs/DATA-MODEL.md`.
-4. **Nilai berbeda per environment.** Preview memakai key/instance berbeda dari Production;
-   jangan bagikan satu service role key ke semua environment.
-5. **Rotasi.** Bila bocor (ter-commit, ter-log, tampil di screenshot): rotasi segera di
-   dashboard Supabase, perbarui env Vercel, lalu re-deploy. Jangan hanya menimpa commit.
+| Variable | Status | Catatan |
+|---|---|---|
+| `DATABASE_URL` | **Tidak dibaca kode mana pun** (`TERVERIFIKASI`) | Sisa era Supabase. **Masih tertulis di `.env` lokal** — boleh dihapus (§3.4) |
+| `PAYLOAD_SECRET` | Tidak ada | Era Payload. Kode Payload sudah dihapus seluruhnya |
+| `NEXT_PUBLIC_SUPABASE_URL` · `NEXT_PUBLIC_SUPABASE_ANON_KEY` · `SUPABASE_SERVICE_ROLE_KEY` | Tidak ada | Era Supabase |
 
-### 3.2 Penyimpanan secret
+### 3.3 Penyimpanan secret
 
-- **Produksi & Preview (`RENCANA`):** Environment Variables Vercel, per-scope
-  (Production / Preview / Development). Tandai setiap entri sebagai *sensitive* bila
-  tersedia. **`[PERLU VERIFIKASI]`** — perilaku UI/penandaan spesifik platform tidak
-  diverifikasi di workspace.
-- **Lokal (`RENCANA`):** `.env.local`, sudah ter-ignore oleh `.env*`. Jangan pernah
-  membuat `.env` yang ter-commit.
-- **CI (`RENCANA`):** GitHub Actions Secrets (untuk secret yang dibutuhkan job test,
-  mis. `SUPABASE_SERVICE_ROLE_KEY` untuk integration test terhadap branch Supabase).
+- **Produksi & Preview (`TERVERIFIKASI`):** Environment Variables Vercel,
+  per-scope (Production / Preview / Development). Penandaan "sensitive" per
+  entri `[PERLU VERIFIKASI]` — perilaku UI platform tidak diverifikasi di
+  workspace.
+- **Lokal (`TERVERIFIKASI`):** berkas `.env` ada di root repo dan di-ignore
+  oleh `.gitignore` (pola `.env*` dengan pengecualian `!.env.example`). Baris
+  34–36 `.gitignore` memastikan **template ikut ter-commit** tetapi berkas
+  rahasia tidak.
+- **CI (`RENCANA`):** belum ada CI (§4.4). Bila dibangun, secret disimpan di
+  GitHub Actions Secrets.
 
-### 3.3 Inventaris diperluas saat fase berikutnya
+### 3.4 Sisa era Supabase di `.env` lokal (`TERVERIFIKASI`)
 
-Setiap env baru **wajib** masuk tabel §3 dan ditandai scope-nya sebelum dipakai. Aturan
-gate: tidak boleh ada variabel yang dibaca kode namun tidak tercatat di sini
-(lihat §12).
+Berkas `.env` lokal memuat `DATABASE_URL` yang **tidak dibaca satu pun modul**.
+Nilai itu sisa konfigurasi era Supabase dan tidak punya efek; menghapusnya
+membuat `.env` lokal mencerminkan bentuk yang benar.
+
+`.env.example` (yang **sudah** di-commit) memuat **sepuluh variabel**:
+`SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET`, `SANITY_PREVIEW_SECRET`
+(opsional), `BLOB_READ_WRITE_TOKEN` (opsional), `RESEND_API_KEY` (opsional),
+`DEMO_NOTIFY_TO` dan `DEMO_NOTIFY_FROM` (opsional, ada default),
+`NEXT_PUBLIC_SITE_URL`, serta `GDRIVE_CLIENT_JSON` dan `GDRIVE_AUTH_PORT` untuk
+skrip lokal tarik foto Google Drive — ditambah penjelasan kenapa project id
+Sanity bukan variabel lingkungan (lihat `lib/sanity-project.ts`).
+
+`.env` **lokal** berbeda: isinya `DATABASE_URL` (baca §3.2), `NEXT_PUBLIC_SITE_URL`,
+`SANITY_API_READ_TOKEN`, dan `SANITY_REVALIDATE_SECRET` — tanpa
+`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, maupun `RESEND_API_KEY`.
+
+### 3.5 Aturan secret
+
+1. **Tanpa prefix `NEXT_PUBLIC_`** untuk apa pun yang rahasia — variabel
+   ber-prefix itu di-inline ke bundle browser oleh Next.js.
+2. **`SANITY_API_READ_TOKEN` hanya boleh dibaca kode server.**
+   `lib/sanity-server.ts` dan `lib/sanity-preview.ts` adalah satu-satunya
+   pemegangnya; keduanya tidak boleh di-import komponen client.
+3. **Nilai berbeda per environment.** Preview dan Production tidak berbagi
+   secret revalidasi.
+4. **Rotasi.** Bila bocor (ter-commit, ter-log, tampil di screenshot): rotasi
+   segera di dashboard Sanity/Vercel, perbarui env, lalu re-deploy. Jangan
+   hanya menimpa commit.
 
 ---
 
-## 4. CI Pipeline Specification
+## 4. Alur Build, Run, dan Deploy
 
-**Tidak ada CI hari ini** (`TERVERIFIKASI`): tidak ada direktori `.github/` di root proyek
-(verifikasi rekursif; yang muncul hanya `.github/` di dalam `node_modules` paket pihak
-ketiga). Seluruh spesifikasi di bawah adalah `RENCANA`.
+### 4.1 Alur lokal (`TERVERIFIKASI`)
 
-### 4.1 Alur (`RENCANA`)
-
-```mermaid
-flowchart LR
-  A[Push / PR] --> B[GitHub Actions]
-  B --> C["setup-node + cache npm"]
-  C --> D["npm ci"]
-  D --> E["npm run lint"]
-  E --> F["npm run build<br/>(berisi tsc --noEmit)"]
-  F --> G["vitest run<br/>(unit + integration)"]
-  G --> H["playwright test<br/>(journey kritis)"]
-  H --> I{Vercel Preview}
-  I --> J[Review manusia]
-  J -->|merge ke branch rilis| K[Vercel Production]
+```bash
+npm ci          # install sesuai package-lock.json
+npm run lint    # eslint
+npm test        # vitest run → 9 kasus, 1 file
+npm run build   # next build → 33 halaman statis
+npm run start   # next start -p 3100
 ```
 
-Vercel Preview dibuat oleh integrasi Git Vercel (bukan oleh workflow Actions), berjalan
-paralel dengan job test. `RENCANA` — belum ada integrasi yang dikonfigurasi.
+Hasil `npm test` yang dijalankan pada fase ini (21 Okt 2026):
 
-### 4.2 Tahapan dan blocking rule (`RENCANA`)
+```
+✓ lib/content.test.ts (9 tests) 4ms
+
+Test Files  1 passed (1)
+     Tests  9 passed (9)
+  Duration  1.34s
+```
+
+`npm run dev` (`next dev -p 3100`) untuk pengembangan; `npm run start`
+(`next start -p 3100`) untuk menjalankan hasil build. Keduanya memakai port
+**3100**, bukan 3000.
+
+### 4.2 Build di Vercel (`RENCANA` / `[PERLU VERIFIKASI]`)
+
+| Item | Nilai | Status |
+|---|---|---|
+| Framework preset | Next.js | `RENCANA` |
+| Install | `npm ci` | `RENCANA` |
+| Build command | `npm run build` | `RENCANA` |
+| Output | default (`.next`) | `RENCANA` |
+| Node runtime | perlu dikonfirmasi terhadap default Vercel untuk Next `16.4.0` + Cache Components | `[PERLU VERIFIKASI]` |
+| Root directory | repo ini adalah subfolder dari workspace | `[PERLU VERIFIKASI]` |
+
+### 4.3 Urutan build yang aman (`TERVERIFIKASI`)
+
+Urutan ini **wajib** dan sudah diuji:
+
+1. `npm ci` — `package-lock.json` ada.
+2. `npm run lint` — harus hijau.
+3. `npm test` — 9 kasus Vitest.
+4. `npm run build` — 33 halaman statis. **Jangan** menjalankan
+   `npm run catalogue` / `brand` / `photos` di runner: sumbernya di luar repo
+   dan skripnya `process.exit(1)` bila sumber tidak ada (§1.5).
+5. Deploy.
+
+### 4.4 CI (`TERVERIFIKASI` — belum ada)
+
+**Tidak ada CI hari ini**: tidak ada direktori `.github/` di root repo (verifikasi
+rekursif; yang muncul hanya `.github/` di dalam `node_modules` paket pihak
+ketiga). Tidak ada workflow YAML. Semua spesifikasi di bawah `RENCANA`.
+
+Tahap yang direncanakan (meniru `docs/TEST-STRATEGY.md` §9.1):
 
 | Tahap | Perintah | Blokir merge? | Alasan |
 |---|---|---|---|
-| Install | `npm ci` (pakai `package-lock.json`) | **Ya** | Reproducible; lockfile ada (`TERVERIFIKASI`) |
-| Lint | `npm run lint` | **Ya** | Sudah hijau (brief §2); regresi mudah ditangkap |
-| Build + typecheck | `npm run build` | **Ya** | Menangkap stylesheet gagal (`RISK` Tailwind, §9) dan error tipe/rute |
-| Unit + integration | `vitest run` | **Ya** | Cepat, deterministik (`docs/TEST-STRATEGY.md` §9.2) |
-| E2E journey kritis | `playwright test` (`E-01`, `E-05`, `E-08`, 404) | **Ya** | Journey paling mahal bila rusak |
-| E2E keyboard/reduced-motion | `playwright test` (`ACC-001`, `ACC-002`) | `ACC-001` **Ya**; `ACC-002` **Ya setelah diperbaiki** | `ACC-002` merah hari ini (`docs/TEST-STRATEGY.md` §9.2) |
-| Perf `P-01` | dalam suite E2E | **Warning** di PR, blokir di rilis | Flaky-prone di runner bersama |
+| Install | `npm ci` | **Ya** | Reproducible; lockfile ada |
+| Lint | `npm run lint` | **Ya** | Sudah hijau; regresi mudah ditangkap |
+| Build + typecheck | `npm run build` | **Ya** | Menangkap error tipe/rute dan stylesheet gagal |
+| Unit | `npm test` | **Ya** | Cepat, deterministik |
+| E2E journey kritis | `playwright test` | **Ya** | Playwright belum terpasang (`RENCANA`) |
 | Coverage % | `vitest run --coverage` | **Warning** | Diagnostik, bukan sasaran |
 
-Skrip `test` (Vitest) **sudah ada** hari ini — `npm test`, 9 kasus di `lib/content.test.ts`; Playwright belum (`package.json` kini 10 skrip, termasuk `test`). Skrip
-yang diusulkan ada di `docs/TEST-STRATEGY.md` §9.1 (`test`, `test:watch`, `test:e2e`,
-`test:e2e:report`).
-
-### 4.3 Caching (`RENCANA`)
-
-- `actions/setup-node` dengan `cache: npm` (key dari `package-lock.json`).
-- Cache `.next/cache` antar-job opsional; gunakan hash lockfile + sumber sebagai key.
-- Jangan cache `node_modules` mentah (risiko native module `sharp` tidak cocok platform).
-  `sharp` (`^0.35.5`) dipakai skrip build saja (`TERVERIFIKASI`), bukan runtime.
-
-### 4.4 Matriks OS/node (`RENCANA`)
-
-| Item | Nilai usulan | Catatan |
-|---|---|---|
-| Runner | `ubuntu-latest` | Sederhana, murah |
-| Node | versi yang dipin | Lokal terukur `v24.15.0`; **pin eksplisit** (`.nvmrc` atau `engines`) karena belum ada pin hari ini (`[PERLU VERIFIKASI]` untuk default Vercel) |
-| Engine browser (E2E) | Chromium (blokir); Firefox/WebKit advisory | `docs/TEST-STRATEGY.md` §8.5 |
-
-### 4.5 Definisi workflow usulan (`RENCANA`, bukan berkas yang sudah ada)
-
-Contoh kerangka (belum boleh dibuat di fase DOCS ONLY; disediakan sebagai target):
+Kerangka workflow (belum boleh dibuat pada fase DOCS ONLY):
 
 ```yaml
 # .github/workflows/ci.yml  — RENCANA, belum ada
@@ -395,59 +446,18 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm test
       - run: npm run build          # build + typecheck
-      - run: npx vitest run         # Vitest sudah terpasang
-      - run: npx playwright install --with-deps chromium
-      - run: npx playwright test    # RENCANA: belum terpasang
 ```
 
-Semua langkah di atas adalah target. **Tidak ada satu pun yang berjalan hari ini.**
+Caching (`RENCANA`): `actions/setup-node` dengan `cache: npm` (key dari
+`package-lock.json`). Cache `.next/cache` antar-job opsional. Jangan cache
+`node_modules` mentah (risiko native module `sharp` tidak cocok platform) —
+`sharp` dipakai skrip build saja, bukan runtime.
 
-### 4.6 Artefak generated di CI — bahaya utama karena sumber di luar repo (`TERVERIFIKASI`)
-
-Ini adalah hambatan paling konkret untuk deploy pertama.
-
-**Temuan:** dua dari tiga generator bergantung pada berkas **di luar repo**
-`melodi-alam/`:
-
-| Generator | Membaca | Ada fallback? | Lokasi terverifikasi |
-|---|---|---|---|
-| `scripts/build-catalogue.mjs` | `../melodi-alam-data.md`, lalu `./melodi-alam-data.md` | **Ada** (fallback di root proyek) | `D:\Project Website Melodi Alam\melodi-alam-data.md` (ada) |
-| `scripts/build-brand.mjs` | `../../logobulet.png`, `../../logotext.png` (ROOT = dua level di atas `scripts/`) | **Tidak** | keduanya ada di workspace root |
-| `scripts/copy-photos.mjs` | `../../FOTO PLACEHOLDER MELODI ALAM/` | **Tidak** (keluar kode 1 bila hilang) | ada di workspace root |
-
-**Kenyataan repo (`TERVERIFIKASI`):** hanya `melodi-alam/` yang merupakan git repo
-(workspace root `D:\Project Website Melodi Alam` **bukan** git repo). Jadi berkas-berkas
-sumber di atas **tidak berada di repo mana pun**. Sebuah runner CI yang meng-`checkout`
-hanya `melodi-alam` **tidak akan** memiliki `melodi-alam-data.md`, `logobulet.png`,
-`logotext.png`, maupun folder foto.
-
-**Konsekuensi (WAJIB ditangani sebelum deploy pertama):**
-
-1. CI **tidak dapat** menjalankan `npm run catalogue` / `brand` / `photos`.
-2. `next build` **meng-import `lib/catalogue.json`**, jadi build **gagal** bila JSON itu
-   tidak ada. Karena seluruh proyek saat ini untracked, **clean checkout hari ini tidak
-   dapat di-build** (`TERVERIFIKASI`).
-3. Karena `../...` tak tersedia di CI, langkah regenerate **tidak mungkin** dijalankan di
-   runner tanpa menambahkan berkasnya dari suatu tempat.
-
-**Pilihan strategi (`RENCANA`) — pilih dan dokumentasikan:**
-
-| Opsi | Cara kerja | Kelebihan | Kekurangan |
-|---|---|---|---|
-| **A. Commit artefak generated (disarankan untuk v1.0)** | Tambahkan `lib/catalogue.json`, `public/brand/`, `public/photos/`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` ke git | Build CI dapat berjalan; tidak butuh berkas luar repo; deploy deterministik | Artefak besar (~1,4 MB foto + 0,9 MB medallion) masuk git; perlu disiplin regenerate saat data sumber berubah |
-| **B. Pindahkan sumber ke dalam repo** | Letakkan `melodi-alam-data.md` (+ PNG sumber + foto) di dalam `melodi-alam/`, jalankan generator sebagai langkah build | Self-contained; generasi teruji di CI | Menambah aset biner besar ke repo; mengubah asumsi path skrip |
-| **C. Ambil sumber di CI dari lokasi privat** | Langkah CI mengunduh sumber dari storage privat sebelum generate | Repo tetap bersih | Butuh kredensial + penyimpanan tambahan; lebih rumit; `[PERLU VERIFIKASI]` |
-
-**Rekomendasi (`RENCANA`): Opsi A untuk v1.0.** Alasan: sederhana, build deterministik,
-dan hanya `lib/catalogue.json` yang wajib ada agar build lulus; aset gambar lain hanya
-memengaruhi tampilan. Jika Opsi A dipilih, tambahkan job guard opsional yang, di mesin
-developer, menjalankan `npm run catalogue` dan memeriksa `git diff --exit-code
-lib/catalogue.json` untuk memastikan artefak tidak basi.
-
-**Peringatan urutan (`TERVERIFIKASI`):** `npm run catalogue` menulis ke
-`lib/catalogue.json`. Jangan menjalankannya di dalam job build CI bila sumber
-`melodi-alam-data.md` tidak ada — skrip akan `process.exit(1)` dan menggagalkan pipeline.
+Matriks OS/node (`RENCANA`): runner `ubuntu-latest`; Node versi yang dipin
+(lokal terukur `v24.15.0`) — **belum ada pin** di `package.json`
+(`engines` tidak ada), dan default Vercel `[PERLU VERIFIKASI]`.
 
 ---
 
@@ -455,12 +465,11 @@ lib/catalogue.json` untuk memastikan artefak tidak basi.
 
 ### 5.1 Strategi (`RENCANA`, `ADR-0006`)
 
-- **Preview deployment per PR** — setiap PR memicu Vercel Preview unik; review code + klik
-  URL Preview.
-- **Production** — merge ke branch rilis (mis. `main`) memicu deploy otomatis ke
-  Production.
-- Tidak ada blue-green/canary manual; Vercel menangani atomisitas rilis + rollback instan
-  (§8). Ini right-sized untuk tim kecil.
+- **Preview deployment per PR** — setiap PR memicu Vercel Preview unik; review
+  code + klik URL Preview.
+- **Production** — merge ke branch rilis (mis. `main`) memicu deploy otomatis.
+- Tidak ada blue-green/canary manual; Vercel menangani atomisitas rilis +
+  rollback instan (§8). Ini right-sized untuk tim kecil.
 
 ### 5.2 Promosi (`RENCANA`)
 
@@ -471,13 +480,10 @@ lib/catalogue.json` untuk memastikan artefak tidak basi.
 
 ### 5.3 Konfigurasi platform (`RENCANA`, `[PERLU VERIFIKASI]`)
 
-- Framework preset: Next.js; install `npm ci`; build `npm run build`; output default
-  (`.next`). Next.js `16.4.0` + Cache Components **belum diverifikasi** terhadap versi
-  runtime Vercel default → konfirmasi sebelum deploy pertama.
-- Root directory: `melodi-alam` (repo saat ini adalah subfolder dari workspace; bila repo
-  git dibuat di root `melodi-alam`, ini default). `[PERLU VERIFIKASI]`.
-- **Tidak ada setting Vercel lain yang diklaim ada** — semua di atas adalah target, bukan
-  konfigurasi yang sudah dibuat.
+- Framework preset: Next.js; install `npm ci`; build `npm run build`; output
+  default (`.next`).
+- Tidak ada setting Vercel lain yang diklaim ada di dokumen ini — semua di
+  atas adalah target, bukan konfigurasi yang sudah dibuat.
 
 ---
 
@@ -485,63 +491,97 @@ lib/catalogue.json` untuk memastikan artefak tidak basi.
 
 ### 6.1 Hari ini (`TERVERIFIKASI`)
 
-- Tidak ada database. `/api/demos` memakai array **module-level** (`const queue =
-  [...SEED_DEMOS]`) di `app/api/demos/route.ts`: store **process-local**, reset saat
-  restart/deploy (brief §6).
-- Tidak ada PII yang tersimpan (`contact` hanya di-echo di `note`).
-- Karena itu, **data loss saat deploy hari ini bukan isu** — setiap deploy memang memulai
-  ulang antrean dari `SEED_DEMOS`. Ini **berhenti benar** begitu Supabase masuk (`ADR-0003`,
-  `ADR-0005`).
+- **Tidak ada database.** Satu-satunya store yang menulis adalah dataset privat
+  Sanity `submissions` (dokumen `demoSubmission` + `demoContact`). Bila
+  `SANITY_API_READ_TOKEN` kosong, `/api/demos` jatuh ke array **module-level**
+  (`memoryQueue`) — store process-local, reset saat restart/deploy.
+- Kontak manajer **tersimpan** (di dokumen `demoContact` terpisah), bukan lagi
+  sekadar di-echo di string `note`.
+- Audio demo **tidak** lewat server: browser mengunggah langsung ke Vercel
+  Blob, dan submission hanya membawa URL-nya.
 
-### 6.2 Setelah Supabase masuk (`RENCANA`, `ADR-0002`/`ADR-0003`)
+### 6.2 Sanity menggantikan migrasi basis data (`TERVERIFIKASI`)
 
-Aturan migrasi (expand-and-contract) wajib diikuti karena kode lama dan baru dapat hidup
-bersama selama deploy:
+Tidak ada migrasi skema SQL. Yang ada adalah **alur konten**:
 
 ```mermaid
 flowchart LR
-  A["1. EXPAND<br/>tambah kolom/tabel baru<br/>(nullable, backward-compatible)"] --> B["2. DEPLOY kode<br/>tulis ke lama + baru,<br/>baca dari baru dgn fallback"]
-  B --> C["3. BACKFILL<br/>isi data lama ke struktur baru"]
-  C --> D["4. VERIFY<br/>hitung cocok, cek null"]
-  D --> E["5. CONTRACT<br/>hapus kolom/lama<br/>(rilis terpisah)"]
+  A["Editor publishes di Studio"] --> B["Sanity menambah syncTags dataset"]
+  B --> C["Webhook POST /api/revalidate"]
+  C --> D["revalidateTag x 6"]
+  D --> E["Kunjungan berikutnya menyajikan versi baru"]
 ```
 
-Aturan tambahan (`RENCANA`):
+Kalau webhook belum terpasang, konten tetap muncul — hanya setelah jendela
+cache (1 menit) habis. Jadi webhook adalah **peningkatan kecepatan**, bukan
+syarat agar berfungsi.
 
-1. **Migrasi non-destruktif dulu.** Tambah kolom/tabel; jangan drop/rename di rilis yang
-   sama dengan perubahan kode.
-2. **Backup sebelum destruktif.** `CONTRACT` (drop) hanya setelah backup + verifikasi.
-3. **Urutan:** migrasi **sebelum** deploy kode untuk `EXPAND`; `CONTRACT` **setelah** kode
-   lama benar-benar tidak jalan.
-4. **RLS sebagai bagian migrasi.** Kebijakan Row Level Security diuji bersama migrasi,
-   bukan ditambal belakangan (`ADR-0003`; lihat `docs/DATA-MODEL.md`).
-5. Verifikasi migrasi: hitung baris/`null` yang tidak diharapkan; jangan mengandalkan
-   "migrasi sukses" tanpa cek data.
+Aturan isi konten (`RENCANA` bila perlu migrate):
 
-### 6.3 Batas (`RENCANA`)
+1. **Perubahan struktural di Studio bisa merusak situs.** Contoh nyata:
+   menghapus field `siteSettings.cardCurtain` membuat kartu kehilangan label.
+2. **Tipe dataset baru wajib masuk daftar webhook** (§7.2).
+3. **Konten baru =.slug baru.** Slug artikel yang diubah membuat URL lama
+   mati; tidak ada pengalihan otomatis selain `/journal` → `/stories`.
 
-- Tabel video catalogue tetap **build-time** (`ADR-0004`) — tidak dimigrasikan ke DB.
-- Store demo in-memory **digantikan** Supabase; transisi ini yang membuat §6.1 tidak lagi
-  berlaku, sehingga rollback data jadi relevan (§8.3).
+### 6.3 Batas (`TERVERIFIKASI`)
+
+- Katalog video tetap **build-time** (`ADR-0004`) — `lib/catalogue.json` di
+  dalam repo, bukan dokumen Sanity.
+- Halaman `/stories/[slug]` memakai `dynamicParams` default `true`: 12 slug
+  statis di-prerender, sisanya dirender saat diminta **tanpa rebuild**.
+- Kolase kurasi (`pillarPost`) tidak punya fallback statis — kalau Sanity tak
+  terjangkau, seksi simply tidak dirender.
 
 ---
 
-## 7. Versioning and Release Process
+## 7. Integrasi Sanity
 
-### 7.1 Versi (`RENCANA`)
+### 7.1 Dataset dan token (`TERVERIFIKASI`)
 
-- Sumber versi: `package.json` `version` (saat ini `0.1.0`, `TERVERIFIKASI`).
-- Skema: **SemVer** ringan (`MAJOR.MINOR.PATCH`), di-tag di git (mis. `v0.2.0`).
-- `CHANGELOG.md` diperbarui per rilis (berkas ada di root proyek, brief §11).
-- Tidak ada penerbitan paket; versi hanya penanda rilis.
+| Dataset | Sifat | Isi | Token |
+|---|---|---|---|
+| `production` | **Publik** | `siteSettings`, `article`, `interview`, `video`, `playlist`, `pillarPost`, `videosPage` | Tidak perlu token untuk baca |
+| `submissions` | **Privat** | `demoSubmission`, `demoContact` | `SANITY_API_READ_TOKEN` |
 
-### 7.2 Proses rilis (`RENCANA`)
+Project id dan nama dataset adalah **literal** di `lib/sanity-project.ts`
+(bukan env var), karena file itu dibangun dua kali — oleh Next untuk Studio
+tertanam dan oleh bundler Sanity sendiri — dan keduanya hanya sepakat pada
+bentuk literal.
 
-1. Semua gate CI hijau (§4.2).
-2. `CHANGELOG.md` diperbarui.
-3. Bump `version` di `package.json` + tag git.
-4. Merge ke `main` → deploy Production.
-5. Smoke test pasca-deploy (§10.2).
+### 7.2 Webhook revalidasi (`RENCANA` — dipasang manual)
+
+Dipasang di `sanity.io/manage` → project → **API → Webhooks**:
+
+| Setelan | Nilai | Status |
+|---|---|---|
+| **URL** | `https://melodialam-website.vercel.app/api/revalidate` | `RENCANA` |
+| **Method** | `POST` | `RENCANA` |
+| **Secret** | nilai yang sama dengan `SANITY_REVALIDATE_SECRET` | `RENCANA` |
+| **Filter** | `_type in ["article", "pillarPost", "interview", "siteSettings", "video", "playlist", "videosPage"]` — 7 tipe yang disebut di `app/api/revalidate/route.ts:21-26` | `TERVERIFIKASI` (kode) |
+| **Filter** | **8 tipe** — audit terakhir mencatat filter harus 8 tipe; tipe kedelapan belum terverifikasi di repo (`[PERLU VERIFIKASI]`, kandidat: `demoSubmission` di dataset `submissions`) | `[PERLU VERIFIKASI]` |
+| **Trigger on** | **Create + Update** — tanpa centang Update, menyunting artikel tidak memicu webhook apa pun | `RENCANA` |
+| **Projection** | `{_type, _id}` | `RENCANA` |
+
+**⚠️ Tindakan pemilik.** Pada pemeriksaan terakhir, di layar webhook Sanity
+**hanya "Create" yang tercentang**. Itu harus diperbaiki: publish hasil edit
+adalah **update**, sehingga tanpa centang Update konten hasil suntingan tidak
+segera muncul di situs. Perbaiki di dashboard Sanity, bukan di kode.
+
+Header yang dikirim Sanity adalah `x-webhook-secret`; route juga menerima
+`?secret=` sebagai cadangan (`app/api/revalidate/route.ts:57-60`). Webhook tanpa
+secret ditolak `401` — endpoint revalidasi terbuka adalah cara mudah menjadikan
+cache sebagai sasaran serangan.
+
+Route membuang **enam** tag cache sekaligus: `articles`, `pillar-posts`,
+`interviews`, `siteSettings`, `videos`, `videosPage`.
+
+### 7.3 Pratinjau draf (`TERVERIFIKASI`)
+
+Rute `/preview/<type>/<slug>?secret=…` membaca perspektif `drafts` dengan
+token. **`SANITY_PREVIEW_SECRET` belum di-set**, sehingga pratinjau memakai
+fallback `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`) — satu
+nilai melindungi dua kapabilitas. Lihat §11 butir 5.
 
 ---
 
@@ -549,48 +589,57 @@ Aturan tambahan (`RENCANA`):
 
 ### 8.1 Aplikasi — rollback instan Vercel (`RENCANA`)
 
-- Vercel menyimpan setiap deployment; **Instant Rollback** mempromosikan deployment
-  sebelumnya tanpa rebuild. Ini rollback tingkat aplikasi, target pulih dalam hitungan
-  detik–menit.
-- Pemicu rollback (usulan): error 5xx naik, halaman putih/stylesheet kosong (lihat §9),
-  atau regresi journey kritis setelah rilis.
+- Vercel menyimpan setiap deployment; **Instant Rollback** mempromosikan
+  deployment sebelumnya tanpa rebuild. Ini rollback tingkat aplikasi, target
+  pulih dalam hitungan detik–menit.
+- Pemicu rollback (usulan): error 5xx naik, halaman putih/stylesheet kosong
+  (§12.1 `H1`), atau regresi journey kritis setelah rilis.
 - Keputusan: owner produk (atau kontributor yang memegang akses Vercel).
-- **Rollback kode TIDAK mengembalikan data.** Bila rilis menyertakan migrasi destruktif,
-  rollback aplikasi bisa membuat kode lama membaca struktur baru → §8.3.
+- **Rollback kode TIDAK mengembalikan konten.** Konten ada di Sanity, bukan di
+  repo — jadi rollback aplikasi tidak menyentuh isi artikel.
 
 ### 8.2 Alternatif: forward-fix
 
-Untuk perubahan berisiko rendah, deploy perbaikan kecil lebih cepat daripada rollback.
-Aturan: pilih rollback bila data/korupsi terlibat; pilih forward-fix bila hanya UI.
+Untuk perubahan berisiko rendah, deploy perbaikan kecil lebih cepat daripada
+rollback. Aturan: pilih rollback bila gambar/asset rusak; pilih forward-fix bila
+hanya UI.
 
-### 8.3 Database — rollback via expand-and-contract (`RENCANA`)
+### 8.3 Konten — publish ulang (`TERVERIFIKASI`)
 
-Setelah Supabase masuk (`ADR-0003`), "rollback migrasi" **bukan** `drop` terbalik:
+Tidak ada "rollback migrasi" di Sanity; yang ada adalah:
 
-- Karena `EXPAND` backward-compatible (§6.2), kode lama tetap dapat membaca skema baru —
-  sehingga rollback aplikasi aman selama fase `EXPAND`.
-- `CONTRACT` (drop kolom/tabel) **tidak dapat** di-rollback tanpa backup. Karena itu
-  `CONTRACT` dipisah ke rilis tersendiri, setelah kode lama dipensiunkan.
-- **Backup sebelum destruktif** adalah prasyarat keras. Cara/jadwal backup Supabase
-  `[PERLU VERIFIKASI]` (belum dikonfigurasi).
-- RTO/RPO belum ditetapkan → `[PERLU VERIFIKASI]`.
+1. **Konten adalah data, bukan kode.** Menolak publish mengembalikan versi
+   sebelumnya; kedua versi tetap tersimpan di riwayat dokumen.
+2. **Perubahan field yang merusak** (mis. menghapus field yang dibaca
+   `lib/site-settings.ts`) diperbaiki dengan publish ulang — atau dengan
+   rollback deploy bila kodenya yang salah.
+3. **Blob tidak ikut rollback.** Objek audio yang sudah terunggah tidak hilang
+   saat rollback; tidak ada job pembersih (`RENCANA`).
 
-### 8.4 Data demo — peralihan status (`TERVERIFIKASI` → berubah)
+### 8.4 Data demo — persistensi di Sanity (`TERVERIFIKASI`)
 
-- **Hari ini:** deploy mereset antrean in-memory. "Kehilangan data" saat deploy memang
-  perilaku yang diharapkan, jadi rollback data tidak relevan.
-- **Setelah Supabase:** submission berstatus `pending`/`approved`/`rejected` (`ADR-0005`)
-  menjadi data nyata. Rollback yang menyertakan migrasi skema submission **wajib** paham
-  §8.3, dan PII (`contact`) akhirnya tersimpan → ikuti `docs/SECURITY-PRIVACY.md`.
+- **Hari ini:** submission hidup di dataset privat `submissions`. Menghapus
+  dokumen `demoSubmission` **tidak** menghapus `demoContact` (PII) atau objek
+  audio — lihat `AUDIT-2026-10-21.md` F07. Aksi kurator harus ikut menghapus
+  keduanya.
+- **Rollback aplikasi tidak menyentuh antrean demo** — antrean bukan bagian
+  dari build.
 
 ---
 
 ## 9. Monitoring and Alerting Plan
 
-**Belum ada monitoring apa pun hari ini** (`TERVERIFIKASI` — tidak ada kode/integrasi
-observability). Seluruh bagian ini `RENCANA`.
+Monitoring formal belum ada. Yang terpasang hari ini (`TERVERIFIKASI`):
 
-### 9.1 Sinyal minimum (`RENCANA`)
+| Sarana | Status | Catatan |
+|---|---|---|
+| Vercel Web Analytics | `@vercel/analytics` terpasang + `<Analytics />` di `app/(site)/layout.tsx:181` — **tapi belum dinyalakan di dashboard** | `RENCANA` — perlu dinyalakan di dashboard Vercel |
+| `@vercel/blob` | Terpasang; **store belum dibuat** | `RENCANA` |
+| Resend | Kode notifikasi ada; `RESEND_API_KEY` belum di-set | `RENCANA` |
+| Log route handler | `console.error` di `app/api/demos/route.ts` (gagal simpan, gagal email) dan `app/api/demo-audio/route.ts` | `TERVERIFIKASI` |
+| Error tracking eksternal (Sentry dsb.) | Tidak ada | `RENCANA` |
+
+### 9.1 Sinyal minimum yang direncanakan (`RENCANA`)
 
 | Sinyal | Sumber usulan | Ambang awal (usulan) |
 |---|---|---|
@@ -602,19 +651,22 @@ observability). Seluruh bagian ini `RENCANA`.
 
 ### 9.2 Kondisi yang wajib memicu perhatian (spesifik repo ini)
 
-- **Stylesheet kosong** — regresi Tailwind `@source` (§10 hazard) menghasilkan situs tanpa
-  gaya namun **200 OK**; tidak terdeteksi oleh error-rate. Mitigasi: smoke visual per
-  rilis (§10.2) + gate build.
-- **Halaman `opacity: 0`** — regresi frame-loop bisa menyembunyikan konten tanpa error.
-  Deteksi: smoke manual/otomatis konten reveal terlihat.
-- **Error `next/image` remote pattern** — bila sumber gambar berubah tanpa memperbarui
-  `remotePatterns`, muncul 400 dari optimizer.
+- **Stylesheet kosong** — regresi Tailwind `@source` (§12.1 `H1`) menghasilkan
+  situs tanpa gaya namun **200 OK**; tidak terdeteksi oleh error-rate.
+  Mitigasi: smoke visual per rilis (§10.2) + gate build.
+- **Halaman `opacity: 0`** — regresi frame-loop bisa menyembunyikan konten tanpa
+  error.
+- **Error `next/image` remote pattern** — bila sumber gambar Sanity berubah
+ path tanpa memperbarui `remotePatterns`, muncul 400 dari optimizer.
+- **Konten hilang mendadak** — Sanity tak terjangkau → `allPillarPosts()`
+  mengembalikan `[]` dan seksi kurasi hilang tanpa error HTTP.
 
 ### 9.3 Kepemilikan & proses insiden (`RENCANA`)
 
-- Pemilik alert: owner produk/teknisi utama. Belum ada rotasi on-call (tim kecil).
+- Pemilik alert: owner produk/teknisi utama. Belum ada rotasi on-call (tim
+  kecil).
 - Insiden: identifikasi → putuskan rollback (§8) atau forward-fix → catat di
-  `CHANGELOG.md`/postmortem singkat. Jaga agar alert tidak berisik: hanya sinyal di §9.1.
+  `CHANGELOG.md`/postmortem singkat.
 
 ---
 
@@ -622,68 +674,91 @@ observability). Seluruh bagian ini `RENCANA`.
 
 ### 10.1 Empat release blocker (`ASUMSI` — teks PRD tidak tersedia)
 
-`docs/TEST-STRATEGY.md` §6.3 memetakan empat blocker "PRD §14.2" sebagai `B1`…`B4`.
-Teks PRD tidak ada di workspace → pemetaan ini `ASUMSI` dan **harus dikonfirmasi**.
-Ditambah syarat kelayakan deploy dari brief §2:
+`docs/TEST-STRATEGY.md` §6.3 memetakan empat blocker "PRD §14.2" sebagai
+`B1`…`B4`. Teks PRD tidak ada di workspace → pemetaan ini `ASUMSI` dan **harus
+dikonfirmasi**.
 
 | Blocker | Tema | Bukti lulus |
 |---|---|---|
-| `B1` | Pipeline submission end-to-end + moderasi + tanpa kebocoran PII | E2E submit + `E-08` hijau |
+| `B1` | Pipeline submission end-to-end + moderasi + tanpa kebocoran PII | Submit form → dokumen `demoSubmission` + `demoContact` terpisah |
 | `B2` | Aksesibilitas: reduced motion + keyboard + alt/semantik | `ACC-001` hijau; `ACC-002` diperbaiki lalu hijau |
 | `B3` | Build bersih & semua rute publik jalan (termasuk 404, metadata) | `npm run build` + smoke rute (§10.2) |
-| `B4` | Tidak ada regresi interaksi terkunci (`DEC-002`/`DEC-003`) | E2E hover/focus `DEC-002`/`DEC-003` |
-| Kelayakan | **Halaman statis tidak turun dari 26** tanpa alasan (brief §2) | cek output build = `26/26` |
+| `B4` | Tidak ada regresi interaksi terkunci (`DEC-002`/`DEC-003`) | E2E hover/focus |
+| Kelayakan | **Halaman statis tidak turun dari 33** tanpa alasan | cek output build = `33/33` |
 
 ### 10.2 Smoke test pasca-deploy (berbasis daftar rute nyata)
 
-Dijalankan pada URL Preview **dan** Production. Semua ruta berasal dari output build
-`TERVERIFIKASI` (§1.4).
+Dijalankan pada URL Preview **dan** Production. Semua rute berasal dari output
+build `TERVERIFIKASI` (§1.4).
 
 | # | Cek | Rute |
 |---|---|---|
 | 1 | Landing memuat, stylesheet terpasang (bukan halaman tanpa gaya) | `/` |
-| 2 | Stories memuat; satu grid 6 kartu feed foto, tanpa filter/search | `/stories` |
-| 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/stories/<slug>` (uji ≥2, termasuk `dua-dekade-endah-n-rhesa`) |
-| 4 | Interview index memuat | `/bicara-melodi` |
-| 5 | Katalog video memuat; modal putar membuka `[role="dialog"]` | `/videos` |
-| 6 | Directory genre/kota memuat | `/pahlawan-kota` |
-| 7 | Showcase spaces memuat | `/spaces` |
-| 8 | Form submit memuat; submit valid → `[role="status"]` sukses, antrean +1 | `/submit` → `POST /api/demos` |
-| 9 | `GET` antrean mengembalikan `{ queue, count }` | `/api/demos` |
-| 10 | Rute tak dikenal → 404 | `/rute-tidak-ada` |
-| 11 | Favicon/touch icon disajikan | `/favicon.ico`, `/icon.png`, `/apple-icon.png` |
-| 12 | Thumbnail YouTube termuat (remote pattern `i.ytimg.com`) | baris video di `/` atau `/videos` |
+| 2 | Stories memuat; grid 8 kartu, 4 kolom, badge "Reel" pada yang reel | `/stories` |
+| 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/stories/<slug>` (uji ≥2, termasuk `spill-pilihan-lagu-arctic-monkeys`) |
+| 4 | Curated News memuat; kotak cari + chip pillar bekerja | `/kurasi` |
+| 5 | Halaman wawancara memuat; 9 episode Season 3 | `/bicara-melodi` |
+| 6 | Melodi Samsara memuat; 9 baris sesi + 5 playlist | `/videos` |
+| 7 | Halaman tentang memuat | `/tentang` |
+| 8 | Form submit memuat; submit valid → `[role="status"]` sukses | `/submit` → `POST /api/demos` |
+| 9 | Unggah audio: setelah memilih berkas, banner "gagal diunggah" **muncul** bila Blob store belum ada (`RENCANA` — lihat §11 butir 2) | `/submit` → `POST /api/demo-audio` |
+| 10 | `GET` antrean mengembalikan `{ queue, count }` | `/api/demos` |
+| 11 | Redirect permanen bekerja | `/journal` → `/stories` (308), `/journal/<slug>` → `/stories/<slug>` (308) |
+| 12 | Feed dan peta situs valid | `/rss.xml`, `/sitemap.xml`, `/robots.txt` |
+| 13 | Kartu sosial artikel dilayani (PNG 1200×630) | `/stories/<slug>/opengraph-image` |
+| 14 | Rute tak dikenal → 404 | `/rute-tidak-ada` |
+| 15 | Favicon/touch icon disajikan | `/favicon.ico`, `/icon.png`, `/apple-icon.png` |
+| 16 | Thumbnail YouTube termuat (remote pattern `i.ytimg.com`) | baris video di `/videos` |
 
 ### 10.3 Checklist pra-rilis (`RENCANA`)
 
-- [ ] Gate CI hijau: lint, build (+typecheck), Vitest, E2E journey kritis (§4.2).
-- [ ] **Artefak generated tersedia di checkout yang akan di-build** (§4.6) — paling
-      kritis untuk deploy pertama.
-- [ ] `CHANGELOG.md` + bump versi + tag (§7).
-- [ ] Tidak menambah direktori tool baru di root tanpa `@source not` (§11 `H1`).
+- [ ] Gate hijau: lint, `npm test`, build (+typecheck) (§4.3).
+- [ ] **Artefak generated ter-commit** (§1.5) — kalau `lib/catalogue.json`
+      berubah, `npm run catalogue` sudah dijalankan dan hasilnya di-commit.
+- [ ] `CHANGELOG.md` + bump versi + tag (lihat §12.3 butir 8).
+- [ ] Tidak menambah direktori tool baru di root tanpa `@source not` (§12.1 `H1`).
 - [ ] `remotePatterns` cocok dengan semua sumber gambar (§1.4, §9.2).
-- [ ] Env var baru tercatat di §3 (bila fase Supabase sudah jalan).
-- [ ] Backup DB sebelum migrasi destruktif (§6.2, §8.3).
+- [ ] Env var baru tercatat di §3.1.
 
 ### 10.4 Checklist pasca-rilis (`RENCANA`)
 
 - [ ] Jalankan smoke test §10.2 di Production.
-- [ ] Konfirmasi jumlah halaman statis tetap 26 (atau alasan penurunan dicatat).
+- [ ] Konfirmasi jumlah halaman statis tetap 33 (atau alasan penurunan dicatat).
 - [ ] Pantau sinyal §9.1 selama periode awal.
 - [ ] Siapkan rollback instan (§8.1) bila ada regresi.
 
 ---
 
-## 11. Risks and Open Questions
+## 11. Tindakan yang menunggu pemilik
 
-### 11.1 Bahaya deploy yang sudah terbukti (`TERVERIFIKASI`)
+Daftar ini **bukan** pekerjaan kode — semuanya butuh akses ke dasbor Vercel atau
+Sanity. Statusnya berasal dari `AUDIT-2026-10-21.md` (21 Okt 2026) dan tetap
+perlu dikonfirmasi saat dibaca.
 
-**`H1` — Tailwind content scan menelusuri direktori tool → stylesheet kosong secara senyap.**
-Tailwind v4 menelusuri seluruh proyek untuk mendeteksi kelas. Di repo ini
-`.codegraph/` menyimpan SQLite WAL (`codegraph.db-shm`) yang terkunci saat server MCP
-berjalan; Turbopack panic (`os error 33`) ketika streaming `globals.css` dan **seluruh
-stylesheet gagal di-generate** — tanpa error yang jelas, hanya situs tanpa gaya. Perbaikan:
-tiga direktif `@source not` di `app/globals.css` (relatif ke `app/globals.css`):
+| # | Tindakan | Akibat kalau belum dikerjakan | Status |
+|---|---|---|---|
+| 1 | **Lampirkan domain `melodialam.id`** | Domain belum resolve → `NEXT_PUBLIC_SITE_URL` masih menunjuk ke `https://melodialam-website.vercel.app`, sehingga **canonical, sitemap, RSS, `robots.txt`, dan OG** semuanya menunjuk ke alamat preview | `RENCANA` (owner) |
+| 2 | **Buat Blob store** di proyek Vercel | `BLOB_READ_WRITE_TOKEN` belum ada → `POST /api/demo-audio` menjawab `400` dan form tidak bisa melampirkan audio | `RENCANA` (owner) |
+| 3 | **Set `RESEND_API_KEY`** (+ opsional `DEMO_NOTIFY_TO`) | Notifikasi email ke redaksi **inert**; submission tetap tersimpan, tapi meja redaksi tidak diberi tahu | `RENCANA` (owner) |
+| 4 | **Nyalakan Vercel Web Analytics** di dashboard | `<Analytics />` sudah terpasang, tapi tidak ada data yang terkumpul | `RENCANA` (owner) |
+| 5 | **Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`) | Pratinjau draf memakai fallback `SANITY_REVALIDATE_SECRET` — satu nilai melindungi dua kapabilitas (`AUDIT-2026-10-21.md` F03) | `RENCANA` (owner) |
+| 6 | **Centang "Update"** di webhook Sanity dan samakan filter ke 8 tipe | Menyunting artikel di Studio **tidak** memicu webhook; konten baru muncul paling cepat setelah jendela cache 1 menit | `RENCANA` (owner) |
+| 7 | **Rotasi `SANITY_REVALIDATE_SECRET`** lalu hapus penerimaan `?secret=` di `/api/revalidate` | Secret lama masih berlaku; secret bisa bocor ke log akses lewat query string | `RENCANA` (owner) |
+| 8 | **Hapus `DATABASE_URL`** dari `.env` lokal | Tidak berbahaya (tidak dibaca kode), tapi membingungkan | `RENCANA` (owner) |
+
+---
+
+## 12. Risks and Open Questions
+
+### 12.1 Bahaya deploy yang sudah terbukti (`TERVERIFIKASI`)
+
+**`H1` — Tailwind content scan menelusuri direktori tool → stylesheet kosong
+secara senyap.** Tailwind v4 menelusuri seluruh proyek untuk mendeteksi kelas.
+Di repo ini `.codegraph/` menyimpan SQLite WAL (`codegraph.db-shm`) yang
+terkunci saat server MCP berjalan; Turbopack panic (`os error 33`) ketika
+streaming `globals.css` dan **seluruh stylesheet gagal di-generate** — tanpa
+error yang jelas, hanya situs tanpa gaya. Perbaikan: tiga direktif `@source not`
+di `app/globals.css` (relatif ke `app/globals.css`):
 
 ```css
 @source not "../.codegraph";   /* -> melodi-alam/.codegraph */
@@ -691,59 +766,70 @@ tiga direktif `@source not` di `app/globals.css` (relatif ke `app/globals.css`):
 @source not "../.next";        /* -> melodi-alam/.next */
 ```
 
-**Aturan operasional:** **setiap direktori tool baru di root proyek wajib menambah satu
-`@source not`** pada `globals.css`, kalau tidak stylesheet bisa kosong senyap.
+**Aturan operasional:** **setiap direktori tool baru di root proyek wajib
+menambah satu `@source not`** pada `globals.css`, kalau tidak stylesheet bisa
+kosong senyap.
 
-Catatan tambahan (`TERVERIFIKASI`): `.gitignore` sudah meng-ignore `/.playwright-mcp` dan
-`/.brand-check`, tetapi `globals.css` **tidak** meng-exclude keduanya. Saat ini
-`.playwright-mcp/` berada di **workspace root** (di luar `melodi-alam/`) sehingga belum
-tersentuh scan; `/.brand-check` belum ada. Jika salah satu muncul di dalam root
-`melodi-alam/`, tambahkan `@source not` yang sesuai. `.playwright-mcp` di workspace root
-**tidak** memengaruhi build `melodi-alam` (lihat §12).
+Catatan tambahan (`TERVERIFIKASI`): `.gitignore` sudah meng-ignore
+`/.playwright-mcp`, tetapi `globals.css` **tidak** meng-exclude `.playwright-mcp`
+maupun `/.brand-check`. Bila salah satu muncul di dalam root `melodi-alam/`,
+tambahkan `@source not` yang sesuai.
 
 **`H2` — Port 3100 hanya relevan lokal/CI.** `-p 3100` ada di `dev` dan `start`
-(`TERVERIFIKASI`). Vercel mengabaikannya (menentukan port via runtime). Jangan menganggap
-3100 sebagai konfigurasi produksi, dan jangan meng-hardcode `http://localhost:3100` di kode
-selain konfigurasi test.
+(`TERVERIFIKASI`). Vercel mengabaikannya (menentukan port via runtime). Jangan
+menganggap 3100 sebagai konfigurasi produksi, dan jangan meng-hardcode
+`http://localhost:3100` di kode selain konfigurasi test.
 
-**`H3` — `next/image` `fill` butuh ancestor berposisi.** Delapan instance dengan parent
-`static` pernah stretch + `sizes` salah → upscale 8×. Ini hazard kualitas visual yang juga
-muncul saat preview/deploy; lihat `docs/TEST-STRATEGY.md` (`R2`).
+**`H3` — `next/image` `fill` butuh ancestor berposisi.** Instance dengan parent
+`static` pernah stretch + `sizes` salah → upscale. Ini hazard kualitas visual
+yang juga muncul saat preview/deploy; lihat `docs/TEST-STRATEGY.md` (`R2`).
 
-**`H4` — SSR yang membakar hidden state.** `translateY(115%)` inline membuat heading
-permanen tak terlihat bila callback gagal. Aturan: SSR merender state final (§11.2).
+**`H4` — SSR yang membakar hidden state.** `translateY(115%)` inline membuat
+heading permanen tak terlihat bila callback gagal. Aturan: SSR merender state
+final.
 
-**`H5` — Kelas Tailwind dari interpolasi string tidak ter-generate.** `aspect-[${x}]`
-menghasilkan tidak ada rule. Di CI, ini muncul sebagai regresi visual tanpa error build.
+**`H5` — Kelas Tailwind dari interpolasi string tidak ter-generate.**
+`aspect-[${x}]` menghasilkan tidak ada rule. Di CI, ini muncul sebagai regresi
+visual tanpa error build.
 
-**`H6` — Dependensi sumber di luar repo (§4.6).** Build pertama dapat gagal total pada
-clean checkout. Ini bahaya deploy paling nyata saat ini.
+**`H6` — Sumber generator di luar repo (§1.5).** Build *berhasil* di clean
+checkout karena artefaknya ter-commit, tetapi **regenerasi** tidak mungkin di
+runner. Kalau katalog atau aset berubah, `npm run catalogue`/`brand`/`photos`
+hanya bisa dijalankan di mesin developer.
 
-### 11.2 Risiko terencana (`RENCANA`)
+**`H7` — Canonical masih ke domain preview.** Selama `melodialam.id` belum
+resolve (§11 butir 1), `NEXT_PUBLIC_SITE_URL` menunjuk ke `*.vercel.app`.
+Efeknya: canonical menunjuk ke URL yang tidak akan menjadi alamat final —
+dampak SEO besar, dan tidak terlihat dari kode karena nilainya datang dari env.
+
+### 12.2 Risiko terencana (`RENCANA`)
 
 | ID | Risiko | Dampak | Mitigasi |
 |---|---|---|---|
-| `D1` | Clean checkout tidak dapat di-build (artefak generated tak ter-commit) | Rilis pertama gagal | Opsi A §4.6: commit artefak generated |
-| `D2` | Next `16.4.0` + Cache Components tak cocok runtime Vercel | Build/`◐` berbeda dari lokal | `[PERLU VERIFIKASI]` sebelum deploy pertama |
-| `D3` | Service role key bocor ke client | Kritis (akses penuh DB) | §3.1: tanpa `NEXT_PUBLIC_`, server-only, RLS |
-| `D4` | Rollback aplikasi setelah migrasi destruktif | Kode lama vs skema baru tidak cocok | Expand-and-contract (§6.2, §8.3) |
-| `D5` | State demo in-memory tidak konsisten di multi-instance Vercel | Antrean hilang/tak konsisten | Supabase (`ADR-0005`); dicatat `docs/FRONTEND-PLAN.md` |
+| `D1` | Clean checkout tidak dapat di-build | Rilis pertama gagal | **Selesai** — artefak generated sudah di-commit (§1.5) |
+| `D2` | Next `16.4.0` + Cache Components tak cocok runtime Vercel | Build/`◐` berbeda dari lokal | `[PERLU VERIFIKASI]` |
+| `D3` | `SANITY_API_READ_TOKEN` bocor ke client | Kritis (akses dataset privat + seluruh PII kontak) | §3.5: tanpa `NEXT_PUBLIC_`, server-only |
+| `D4` | Blob store belum ada | Unggah audio selalu 400 | §11 butir 2 |
+| `D5` | Queue demo in-memory bila token kosong | Submission hilang saat restart | Pastikan token ter-set di produksi |
 | `D6` | Stylesheet kosong senyap (`H1`) lolos ke produksi | Situs tanpa gaya | Gate build + smoke visual §10.2 |
-| `D7` | Direktori tool baru ditambah tanpa `@source not` | `H1` terulang | Aturan `H1` + review PR |
+| `D7` | Direktori tool baru ditambahkan tanpa `@source not` | `H1` terulang | Aturan `H1` + review PR |
+| `D8` | Webhook Sanity hanya memicu Create | Konten hasil suntingan lambat muncul | §11 butir 6 |
+| `D9` | ~~`audioUrl` diterima dari host mana pun~~ | Audio asing masuk ke redaksi | **Ditutup 21 Okt 2026**: server kini menolak URL audio yang hostnya bukan `*.blob.vercel-storage.com` (`isOwnBlobUrl()` di `app/api/demos/route.ts`). Hanya `D4` yang masih membuka: tanpa Blob store, tidak ada unggahan sama sekali |
 
-### 11.3 Open Questions
+### 12.3 Open Questions
 
-1. **Artefak generated: commit atau regenerate?** Rekomendasi `RENCANA` adalah Opsi A
-   (commit). Keputusan owner diperlukan karena menyentuh ukuran repo dan alur kerja.
-2. **Sumber luar repo.** Apakah `melodi-alam-data.md`, `logobulet.png`, `logotext.png`, dan
-   `FOTO PLACEHOLDER MELODI ALAM/` akan dipindah ke dalam repo, atau tetap dikelola
-   manual? Ini menentukan apakah CI dapat meregenerasi aset.
-3. **Versi Node di Vercel.** Lokal `v24.15.0`; default Vercel `[PERLU VERIFIKASI]`.
-   Perlukah `.nvmrc`/`engines`?
-4. **Next.js 16.4.0 di Vercel.** Dukungan penuh (termasuk Cache Components) belum
-   dikonfirmasi `[PERLU VERIFIKASI]`.
-5. **Domain produksi.** Belum ditetapkan.
-6. **Ambang monitoring** (§9.1) dan **RTO/RPO** (§8.3) belum ditetapkan.
+1. **Artefak generated:siapa yang regenerate?** Sumbernya di luar repo, jadi
+   hanya mesin developer yang bisa. Siapa yang bertanggung jawab saat data
+   katalog berubah?
+2. **Versi Node di Vercel.** Lokal `v24.15.0`; default Vercel
+   `[PERLU VERIFIKASI]`. Perlukah `.nvmrc`/`engines`?
+3. **Next.js 16.4.0 di Vercel.** Dukungan penuh (termasuk Cache Components)
+   belum dikonfirmasi `[PERLU VERIFIKASI]`.
+4. **Domain produksi.** `melodialam.id` sudah dibeli tetapi belum resolve;
+   `melodialam.com` milik pihak lain (parked) dan tidak dipakai.
+5. **Filter webhook tipe kedelapan.** Sudah ada 7 tipe yang disebut di kode;
+   tipe kedelapan belum terverifikasi (§7.2).
+6. **Ambang monitoring** (§9.1) dan **RTO/RPO** belum ditetapkan.
 7. **Teks PRD §14.2** untuk empat release blocker `B1`…`B4` tidak tersedia →
    pemetaannya `ASUMSI`.
 8. **Branch rilis.** Nama branch produksi (mis. `main`) dan kebijakan tag belum
@@ -751,72 +837,116 @@ clean checkout. Ini bahaya deploy paling nyata saat ini.
 
 ---
 
-## Verification Notes
+## Catatan Verifikasi (Verification Notes)
 
-Berkas dan sistem yang dibaca/dijalankan **langsung** pada fase ini (semua relatif ke
-`D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
+Berkas dan sistem yang dibaca/dijalankan **langsung** pada fase ini (semua
+relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
 
-- `package.json` — 10 skrip persis seperti §1.2; dependensi dan devDependencies seperti
-  §1.1; **tanpa** skrip/test runner.
-- `next.config.ts` — `cacheComponents: true`, `partialPrefetching: true`,
-  `images.remotePatterns` hanya `i.ytimg.com` (`/vi/**`), rule Turbopack
-  `@tailwindcss/turbopack`.
-- `.gitignore` — `.env*`, `/coverage`, `/.next/`, `/out/`, `/build`, `.vercel`,
-  `*.tsbuildinfo`, `next-env.d.ts`, `/.codegraph`, `/.gitnexus`, `/.playwright-mcp`,
-  `/.brand-check`.
+- `app/api/demos/route.ts` — kontrak `GET`/`POST`, validasi, `audioUrl`
+  (https + ekstensi), `demoContact` terpisah, `503` bila Sanity gagal.
+- `app/api/demo-audio/route.ts` — token unggah Blob, `allowedContentTypes`,
+  `maximumSizeInBytes` 25 MB, `400` bila token tidak ada.
+- `app/api/revalidate/route.ts` — 6 tag, `x-webhook-secret` + fallback
+  `?secret=`, `401`/`500`.
+- `app/rss.xml/route.ts`, `app/(site)/sitemap.ts`, `app/robots.ts` — feed,
+  peta situs, aturan perayapan.
+- `app/(site)/journal/route.ts` dan `app/(site)/journal/[slug]/route.ts` —
+  redirect `308`.
+- `app/(site)/preview/[type]/[slug]/page.tsx` — pratinjau draf, `noindex`,
+  `notFound()` bila secret salah.
+- `app/(site)/layout.tsx:181` — `<Analytics />` terpasang.
+- `lib/site.ts` — `SITE.url` dari `NEXT_PUBLIC_SITE_URL`, fallback
+  `https://melodialam.id`; daftar nav (`/stories`, `/bicara-melodi`, `/videos` =
+  Melodi Samsara, `/kurasi` = Curated News).
+- `lib/sanity-project.ts` — project id literal, dataset `production` (publik) +
+  `submissions` (privat).
+- `lib/sanity-server.ts`, `lib/sanity-preview.ts` —Fallback antrean in-memory
+  dan fallback secret pratinjau.
+- `lib/taxonomy.ts`, `lib/content.ts` — enum demo, `SEED_DEMOS` (3 entri),
+  batas audio 25 MB.
+- `next.config.ts` — `cacheComponents`, `partialPrefetching`,
+  `poweredByHeader: false`, `images.remotePatterns` (`i.ytimg.com/vi/**` +
+  `cdn.sanity.io/images/**`), header keamanan (CSP enforced + report-only
+  dengan `connect-src` ke host Vercel Blob), HSTS.
+- `package.json` — **10 skrip** persis seperti §1.2; dependensi
+  (`next 16.4.0`, `react 19.3.0`, `@sanity/client ^8.9.0`, `@vercel/analytics
+  ^2.0.1`, `@vercel/blob ^2.8.2`, `vitest ^3.2.7`); **tanpa** `payload`,
+  `supabase`, `express`, atau `graphql` terpasang.
+- `.env.example` — **enam variabel**: `SANITY_API_READ_TOKEN`,
+  `SANITY_REVALIDATE_SECRET`, `SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`,
+  `RESEND_API_KEY`, `NEXT_PUBLIC_SITE_URL`, plus penjelasan project id
+  literal.
+- `.env` (lokal) — memuat `DATABASE_URL` yang **tidak dibaca kode mana pun**,
+  serta `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`,
+  `SANITY_REVALIDATE_SECRET`. Tidak ada `SANITY_PREVIEW_SECRET`,
+  `BLOB_READ_WRITE_TOKEN`, atau `RESEND_API_KEY`.
+- `.gitignore` — `.env*` dengan pengecualian `!.env.example`; `/.codegraph`,
+  `/.gitnexus`, `/.playwright-mcp`.
 - `app/globals.css` — tepat tiga `@source not`: `../.codegraph`, `../.gitnexus`,
   `../.next`.
-- `scripts/build-catalogue.mjs` — `SOURCE_CANDIDATES` = `../melodi-alam-data.md` lalu
-  `./melodi-alam-data.md`; `process.exit(1)` bila tak ada; menulis `lib/catalogue.json`.
-- `scripts/build-brand.mjs` — `ROOT = ../..`; membaca `logobulet.png` + `logotext.png`;
-  menulis `public/brand/*` + `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`;
-  tanpa fallback path.
-- `scripts/copy-photos.mjs` — `SRC = ../../FOTO PLACEHOLDER MELODI ALAM`; `process.exit(1)`
-  bila tak ada; menulis `public/photos/*`; tanpa fallback path.
-- `docs/TEST-STRATEGY.md` §1, §6.3, §8, §9, §12 — acuan label, gate, dan `B1`…`B4`.
-- `docs/API-CONTRACTS.md`, `docs/DATA-MODEL.md`, `docs/ARCHITECTURE.md`,
-  `docs/FRONTEND-PLAN.md` — acuan `ADR-0002`…`ADR-0006` dan bahaya in-memory.
+- `scripts/build-catalogue.mjs` — `SOURCE_CANDIDATES` =
+  `../melodi-alam-data.md` lalu `./melodi-alam-data.md`; `process.exit(1)` bila
+  tak ada; menulis `lib/catalogue.json`.
+- `scripts/build-brand.mjs` — `ROOT = ../..`; membaca `LOGO2/*.png`; menulis
+  `public/brand/*` + `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico`.
+- `scripts/copy-photos.mjs` — `SRC = ../../FOTO PLACEHOLDER MELODI ALAM`;
+  `process.exit(1)` bila tak ada; menulis `public/photos/*`.
+- `git log` → HEAD `a974b50` ("Move the Stories page to /stories"); **136
+  berkas** ter-track. Working tree **tidak** bersih saat dokumen ini ditulis
+  (perubahan belum di-commit) — kode aplikasi (`app/`, `lib/`, `components/`,
+  `scripts/`) **tidak** berubah.
+- `git ls-files` → `lib/catalogue.json`, `app/icon.png`, `app/apple-icon.png`,
+  `app/favicon.ico`, `public/brand/melodi-alam-lockup-black.png`, dan **33**
+  berkas `public/photos/*.webp` **sudah ter-track**.
+- `docs/AUDIT-2026-10-21.md`, `docs/SANITY-INTEGRATION.md`,
+  `docs/API-CONTRACTS.md`, `docs/DATA-MODEL.md`, `docs/ARCHITECTURE.md`,
+  `docs/TEST-STRATEGY.md` — acuan label, gate, `B1`…`B4`, dan temuan audit
+  (F01–F08).
+- `docs/adr/0001`…`0008` — acuan keputusan.
 
 Pemeriksaan yang **dijalankan**:
 
-- `npm run build` sekali dari `melodi-alam/` → output nyata disalin di §1.3 (26 halaman,
-  compile 665 ms, TypeScript 1754 ms, generate 1359 ms, 11 worker).
-- `node -v` → `v24.15.0`; `npm -v` → `11.12.1`.
-- Dev server yang sedang berjalan di **port 3100** (PID 9364,
-  `node_modules/next/dist/server/lib/start-server.js`) **dihentikan** sebelum build;
-  port 3100 dikonfirmasi kosong setelahnya.
-- Pencarian rekursif `.env*` (kecuali `node_modules`) → **nol hasil**.
-- Pencarian rekursif direktori `.github` → hanya di dalam `node_modules`; **tidak ada**
+- `npm run build` dua kali dari `melodi-alam/` (21 Okt 2026) → output nyata
+  disalin di §1.3 (**33** halaman, compile 960 ms, TypeScript 2.6 s, generate
+  1.78 s, 11 worker, `next.config.ts` 49 ms). Tabel rute identik di kedua
+  run.
+- `npm test` → `vitest run` 3.2.7, **1 file / 9 kasus lulus**, durasi ~1 s.
+- `node -v` → `v24.15.0`; `npm -v` → `11.12.1`; `package.json` → `engines`
+  tidak ada, versi paket `0.2.0`.
+- Pencarian rekursif `.github` → hanya di dalam `node_modules`; **tidak ada**
   `.github/` di root proyek.
-- `git ls-files` untuk artefak generated → hanya `app/favicon.ico` **ter-track**;
-  `lib/catalogue.json`, `app/icon.png`, `app/apple-icon.png`, `public/brand/`,
-  `public/photos/` **untracked**.
-- `git log` → satu commit "Initial commit from Create Next App"; seluruh kode baru
-  masih untracked.
-- Ukuran artefak: `lib/catalogue.json` 192.670 byte; `public/brand/` 6 berkas
-  (`medallion.png` 908.655 B, `medallion-256.png` 87.564 B, `medallion-128.png` 28.852 B,
-  `samsara-wordmark.png` 239.519 B, `samsara-wordmark-forest.png` 101.360 B,
-  `samsara-wordmark-ink.png` 80.961 B); `public/photos/` 33 berkas; `app/icon.png`
-  273.926 B, `app/apple-icon.png` 51.782 B, `app/favicon.ico` 9.942 B.
-- Sibling di workspace root `D:\Project Website Melodi Alam`: `melodi-alam-data.md`,
-  `logobulet.png`, `logotext.png`, `FOTO PLACEHOLDER MELODI ALAM`, `.playwright-mcp`
-  — semuanya **di luar** repo `melodi-alam`.
+- `git status --short` → `app/`, `lib/`, `components/`, `scripts/` **tidak
+  berubah**; hanya berkas `.md` dan `next.config.ts`/`package.json`/
+  `.env.example` yang sudah berubah oleh sesi dokumentasi lain sebelum
+  dokumen ini ditulis (lihat catatan di atas).
+- Ukuran artefak: `lib/catalogue.json` 193.574 byte; `app/icon.png` 165.501
+  byte; `app/apple-icon.png` 42.766 byte; `app/favicon.ico` 9.535 byte;
+  `public/brand/melodi-alam-lockup-black.png` 87.030 byte.
 
-**Tidak** dijalankan / tidak diklaim: tidak ada CI yang dijalankan, tidak ada deploy, tidak
-ada `.env` dibuat, tidak ada dependensi dipasang, tidak ada perubahan kode selain berkas
-ini. Dev server **tidak** dibiarkan berjalan.
+**Tidak** dijalankan / tidak diklaim: tidak ada CI yang dijalankan, tidak ada
+deploy, tidak ada `.env` dibuat atau diubah, tidak ada dependensi dipasang,
+tidak ada perubahan kode yang dilakukan oleh sesi dokumentasi ini (hanya dua
+berkas `.md` di `docs/`). Tidak ada probing ke endpoint produksi. Status
+dashboard Vercel/Sanity (Blob store, Resend, Web Analytics, webhook, domain)
+**tidak diverifikasi ulang** di fase ini — diambil dari
+`AUDIT-2026-10-21.md` dan ditandai `[PERLU VERIFIKASI]` di §11.
 
 ---
 
 ## Open Questions
 
-Lihat §11.3 untuk daftar lengkap. Yang paling menghambat rilis pertama, berurutan:
+Lihat §12.3 untuk daftar lengkap. Yang paling menghambat rilis berikutnya,
+berurutan:
 
-1. **Artefak generated** — commit atau regenerate? (§4.6 `D1`). Tanpa keputusan ini,
-   clean checkout tidak dapat di-build dan deploy pertama gagal.
-2. **Sumber luar repo** — pindah ke dalam repo atau tetap manual? Menentukan apakah CI
-   bisa meregenerasi aset sama sekali.
-3. **Next 16.4.0 + Cache Components di Vercel** — `[PERLU VERIFIKASI]`.
-4. **Teks PRD §14.2** — empat release blocker `B1`…`B4` masih `ASUMSI`.
-5. **Domain produksi, versi Node, branch rilis, ambang monitoring, RTO/RPO** — belum
-   ditetapkan.
+1. **Domain `melodialam.id`** — belum resolve; canonical/sitemap/OG masih ke
+   `*.vercel.app` (§11 butir 1, `H7`).
+2. **Blob store** — belum dibuat; unggah audio selalu 400 (§11 butir 2).
+3. **Webhook Sanity** — "Trigger on: Update" belum dicentang; filter belum 8
+   tipe (§11 butir 6, `D8`).
+4. **Resend + Web Analytics** — belum diset/dinyalakan (§11 butir 3–4).
+5. **`SANITY_PREVIEW_SECRET`** — belum ada; pratinjau memakai secret revalidasi
+   (§11 butir 5).
+6. **CI** — belum ada `.github/`; gate build/lint/test belum otomatis (§4.4).
+7. **Artefak generated** — siapa yang regenerate saat sumber berubah (§12.3
+   butir 1).
+8. **Versi Node, branch rilis, ambang monitoring, RTO/RPO** — belum ditetapkan.

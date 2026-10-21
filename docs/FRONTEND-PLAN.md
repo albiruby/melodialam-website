@@ -1,57 +1,58 @@
 # FRONTEND-PLAN — Melodi Alam Web Platform
 
-> **Catatan (21 Okt 2026):** `components/VideosBrowser.tsx` dan halaman `/videos/arsip`
-> sudah dihapus — situs tidak menampilkan daftar 292 video. `/videos` kini merender
-> seleksi server (`VideoRow`). Rujukan ke `VideosBrowser` di bawah adalah catatan historis.
+> **Catatan revisi (21 Okt 2026):** dokumen ini ditulis ulang untuk mencerminkan
+> kondisi repo saat ini. Versi sebelumnya masih membahas `VideosBrowser`,
+> `/pahlawan-kota`, `/spaces`, `JournalBrowser`, dan CMS Payload.
+>
+> **Jejak fitur yang sudah dihapus** dan tidak boleh lagi diceritakan sebagai
+> fitur yang ada: `/pahlawan-kota` + `lib/pahlawan.ts` · `/spaces` + `SPACE_ITEMS` ·
+> `VideosBrowser` + `/videos/arsip` · `JournalBrowser` · `HeroArticle` ·
+> `FeatureCard` · `GENRE_ROWS` / `GenreRow` · `asOptions` di `lib/taxonomy.ts` ·
+> `videosByIds` / `videosByVenue` · `demoStoreConfigured` · `draftPreviewConfigured` ·
+> `cardCurtain.featureLabel` / `cardCurtain.featureCta` · `thumbnailFor` ·
+> `interview.image`.
+> `components/motion/ParallaxImage.tsx` **masih ada di repo tetapi tak terpakai**.
 
-> **Catatan (20 Okt 2026):** halaman `/pahlawan-kota` dan `lib/pahlawan.ts` sudah
-> dihapus dari repo. `GENRE_ROWS` di `lib/content.ts` dan dokumen `pahlawanRow`
-> di Sanity disimpan sebagai arsip. Bagian dokumen ini yang masih menyebut
-> direktori tersebut adalah catatan historis.
-
-Dokumen ini merinci **front-end yang benar-benar ada** di repo `melodi-alam/` dan
-**rencana integrasinya** saat artikel/video berpindah ke Payload CMS 3 + Supabase.
+Dokumen ini merinci **front-end yang benar-benar ada** di repo `melodi-alam/`.
 Isi dipisah eksplisit, mengikuti konvensi `docs/ARCHITECTURE.md`:
 
-- **Current State — TERVERIFIKASI.** Rute, komponen, batas `"use client"`, state,
-  lapisan motion, dan interaksi hover yang ada di kode saat dokumen ini ditulis.
-  Setiap klaim dibaca langsung dari berkas.
-- **Implementation Gaps.** Requirement yang belum terpenuhi (terutama `ACC-002`).
-- **Proposed Changes / Migration — RENCANA.** Target integrasi. Belum
-  diimplementasikan. Fase ini **DOCS ONLY**.
+- **Current State — TERVERIFIKASI.** Rute, komponen, batas `"use client"`,
+  state, lapisan motion, dan interaksi hover yang ada di kode saat dokumen ini
+  ditulis. Setiap klaim dibaca langsung dari berkas; `npm run build`,
+  `npm run lint`, dan `npm test` dijalankan pada revisi ini.
+- **Implementation Gaps.** Requirement yang belum terpenuhi.
+- **Proposed Changes — RENCANA.** Perbaikan yang direncanakan. Belum
+  diimplementasikan.
 
 Label status yang dipakai konsisten: `TERVERIFIKASI` (dibaca di kode atau
 dijalankan), `RENCANA` (direncanakan, belum ada), `ASUMSI` (diasumsikan),
 `[PERLU VERIFIKASI]` (tidak dapat dikonfirmasi dari sumber).
 
-Acuan keputusan: `ADR-0002` (Payload 3 in-app + Supabase), `ADR-0003` (Supabase =
-Postgres + Storage), `ADR-0004` (katalog video tetap build-time), `ADR-0005`
-(moderated demo queue). Acuan requirement: `FR-001`…`FR-007`, `ACC-001`…`ACC-003`,
-`NFR-001`…`NFR-004`, `DEC-002`, `DEC-003`.
+Acuan keputusan: ADR-0001 (artikel route, video modal), ADR-0004 (katalog video
+tetap build-time), ADR-0005 (antrean demo dimoderasi), ADR-0006 (Vitest +
+Playwright), ADR-0007 (tipografi), ADR-0008 (Sanity Studio menggantikan Payload).
+Acuan requirement: `FR-001`…`FR-007`, `ACC-001`…`ACC-003`, `NFR-001`…`NFR-004`,
+`BR-001`…`BR-004`.
 
-> Catatan cakupan: nama ADR di atas mengacu pada penomoran yang dipakai
-> `docs/ARCHITECTURE.md` §12 dan `docs/DATA-MODEL.md` (ADR-0002…ADR-0005).
-> Berkas `docs/adr/000N-*.md` belum ada di repo ini `[PERLU VERIFIKASI]`.
+> **Catatan cakupan:** teks PRD asli tidak ada di repo ini; pemetaan ID-nya lewat
+> `docs/PRD-REFERENCE.md`, dan sebagian baris di sana sudah usang (masih menyebut
+> `VideosBrowser`, `/pahlawan-kota`, dan menandai `BR-001`/`BR-004` "BELUM"
+> padahal keduanya sudah ada di kode).
 
-> **⚠️ Digantikan sebagian — baca ini dulu.**
-> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
-> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
-> dihapus.
->
-> Bagian yang tidak lagi berlaku di dokumen ini: batas server/client yang menyebut Payload
-> dan rute `/admin`. Lihat
-> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
-> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
-> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+> **Dokumen saudara:** batas modul dan alur data ada di
+> [`ARCHITECTURE.md`](ARCHITECTURE.md); panduan integrasi CMS di
+> [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md); token dan utilitas di
+> [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
 
 ---
 
 ## 1. Implementation Overview
 
 **Produk.** Melodi Alam — platform media musik Indonesia: jurnalisme editorial
-(*Stories*), hub katalog YouTube (*Watch*), pipeline pengiriman demo (*Submit
-Demo*), dan showcase ekosistem fisik (Samsara / Svarga / Acasa, turntable
-SVVARA). Bagian dari PT Infia Pariwara Nusantara (INFIA Corp).
+(*Stories*), sesi panggung (*Melodi Samsara*), kurasi feed Instagram (*Curated
+News*), wawancara (*Bicara Melodi*), pipeline pengiriman demo (*Submit Karya*),
+dan halaman profil (*Tentang*). Bagian dari PT Infia Pariwara Nusantara
+(INFIA Corp).
 
 **Stack front-end (`TERVERIFIKASI`, `package.json` + `next.config.ts`).**
 
@@ -62,33 +63,42 @@ SVVARA). Bagian dari PT Infia Pariwara Nusantara (INFIA Corp).
 | Bahasa | TypeScript `^5`, alias `@/*` → root proyek |
 | Styling | Tailwind CSS `^4` via `@tailwindcss/turbopack`; token di `app/globals.css` `@theme` |
 | Animasi | `motion` `^14.2.0` (import dari `motion/react`) |
+| Konten | `@sanity/client` `^8.9.0`, `@sanity/image-url` `^2.1.1`, `@portabletext/react` `^8.0.1` |
+| Form | `@vercel/blob` `^2.8.2`, `@vercel/analytics` `^2.0.1` |
 | Dev port | `3100` (`next dev -p 3100`) |
 | Cache | `cacheComponents: true`, `partialPrefetching: true` |
-| Remote image | hanya `i.ytimg.com/vi/**` |
+| Remote image | `i.ytimg.com/vi/**` dan `cdn.sanity.io/images/**` |
+| Test | Vitest `^3.2.7` (`npm test`) |
 
-**Strategi front-end saat ini.** *Layered monolith statis.* Seluruh halaman
-dirender pada build time; satu-satunya jalur runtime dinamis adalah
-`POST /api/demos`. Halaman tetap **server component**; interaktivitas diekstrak ke
-komponen `"use client"` berdaun sesempit mungkin. Tidak ada library state
-manajemen, tidak ada router tambahan, tidak ada data-fetching library — dan
-dokumen ini **tidak** mengusulkan penambahan salah satunya.
+**Strategi front-end saat ini.** *Layered monolith statis dengan server
+component sebagai default.* Halaman tetap **server component**; interaktivitas
+diekstrak ke komponen `"use client"` berdaun sesempit mungkin. Tidak ada library
+state manajemen, tidak ada router tambahan, tidak ada data-fetching library —
+dan dokumen ini **tidak** mengusulkan penambahan salah satunya.
 
-**Prinsip yang mengikat implementation (dari temuan terukur, lihat brief §9).**
+**Batas server/client yang menentukan bentuk kode.** Konten editorial dibaca
+**hanya di server** melalui `lib/articles.ts`, `lib/pillars.ts`, `lib/videos.ts`,
+`lib/interviews.ts`, dan `lib/site-settings.ts`. Client component tidak pernah
+mengimpor klien Sanity; satu-satunya kebalikannya adalah
+`lib/pillars-shared.ts`, yang sengaja hanya berisi data murni agar bisa ikut ke
+bundel klien.
 
-1. Batas server/client ditentukan oleh **kebutuhan interaktivitas**, bukan estetika.
-2. **SSR merender keadaan akhir; animasi hanya menambah.** Jangan memanggang state
-   tersembunyi ke HTML yang dirender server.
+**Prinsip yang mengikat implementation (dari temuan terukur).**
+
+1. Batas server/client ditentukan oleh **kebutuhan interaktivitas**, bukan
+   estetika.
+2. **SSR merender keadaan akhir; animasi hanya menambah.** Jangan memanggang
+   state tersembunyi ke HTML yang dirender server.
 3. Nama kelas Tailwind harus **literal** (tanpa interpolasi string).
 4. `lib/catalogue.json` adalah artefak generated — **satu penulis** (`scripts/`).
 5. `next/image` `fill` butuh ancestor berposisi.
 6. `transform: scale()` melembutkan foto → parallax memakai box oversized.
-7. Setiap direktori tool baru di root proyek perlu `@source not` (RISK-001).
-
-**Strategi implementasi (RENCANA).** Tambahkan lapisan CMS **tanpa** menulis ulang
-halaman yang sudah berfungsi: sumber data bergeser per-halaman dari impor
-`lib/content.ts` ke pembacaan server-only dari Payload (`ADR-0002`, `ADR-0003`),
-sementara katalog video **tetap** artefak build-time (`ADR-0004`). Rollback =
-mengembalikan pembaca ke `lib/*` (lihat `ARCHITECTURE.md` §13.3).
+7. Setiap direktori tool baru di root proyek perlu `@source not`.
+8. **Thumbnail YouTube bukan `next/image`** — `<img>` biasa + `srcset`, supaya
+   poster yang diganti artis di YouTube tidak terkunci cache optimizer Vercel
+   selama setahun.
+9. **Satu `<Link>` per kartu**, bukan link judul + `::after` yang tidak
+   menangkap klik di area teks.
 
 ---
 
@@ -98,111 +108,141 @@ mengembalikan pembaca ke `lib/*` (lihat `ARCHITECTURE.md` §13.3).
 
 | Sumber | Peran | Status |
 |---|---|---|
-| `melodi-docs-brief.md` | Ground truth terverifikasi; menang atas dokumen lain | `TERVERIFIKASI` |
 | `docs/ARCHITECTURE.md` | Batas modul, kepemilikan data, ADR | `TERVERIFIKASI` |
-| `docs/DATA-MODEL.md` | Skema target, moderasi, storage | `TERVERIFIKASI` |
+| `docs/SANITY-INTEGRATION.md` | Peta tulis-di-Studio → render-di-halaman | `TERVERIFIKASI` |
+| `docs/DESIGN-SYSTEM.md` | Token, utilitas, aturan interaksi terkunci | `TERVERIFIKASI` |
+| `docs/AUDIT-2026-10-21.md` | Temuan keamanan & codebase yang masih terbuka | `TERVERIFIKASI` (sebagai dokumen) |
 | PRD (ID `FR`/`ACC`/`NFR`/`DEC`) | Acuan requirement produk | Teks persisnya tidak ada di repo ini → `[PERLU VERIFIKASI]` |
 
 **Pemetaan acuan requirement yang dipakai dokumen ini** (label jujur):
 
 | ID | Dipakai untuk | Dasar |
 |---|---|---|
-| `FR-001`…`FR-004` | Empat permukaan publik: Stories, Watch, Submit, showcase | `ASUMSI` (pemetaan atas brief §1) |
-| `FR-005` | Form/pipeline demo submission | `TERVERIFIKASI` (ARCHITECTURE §2.1) |
-| `FR-006` | Moderasi/antrean demo | `TERVERIFIKASI` (ARCHITECTURE §2.1) |
-| `FR-007` | Metadata/SEO permukaan publik | `ASUMSI` |
-| `ACC-001` | Reduced motion dihormati | `ASUMSI` (brief §8) |
-| `ACC-002` | Affordance hover-reveal juga harus bekerja via `:focus-within` | `TERVERIFIKASI` (dinyatakan pada brief tugas) |
-| `ACC-003` | Alt text & semantik | `ASUMSI` (kebijakan alt nyata di kode) |
-| `NFR-001`…`NFR-004` | Non-fungsional: performa statis, SEO, aksesibilitas, reliabilitas | `ASUMSI`; teks persis `[PERLU VERIFIKASI]` |
-| `DEC-002` | Hierarchy heading reveal strip `—` | `TERVERIFIKASI` (brief §8) |
-| `DEC-003` | Row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | `TERVERIFIKASI` (brief §8) |
+| `FR-001` | Empat permukaan publik: Latest News / Stories / Watch / Curated News | `ASUMSI` (pemetaan atas kebutuhan saat ini) |
+| `FR-002` | Grid artikel 4 kolom berselang-seling | `TERVERIFIKASI` — `ArticleCard` + `titleFirst` di `app/(site)/stories/page.tsx:35` |
+| `FR-003` | Pembaca artikel penuh | `TERVERIFIKASI` — `app/(site)/stories/[slug]/page.tsx` |
+| `FR-004` | Indeks wawancara tipografi | `TERVERIFIKASI` — `app/(site)/bicara-melodi/page.tsx` |
+| `FR-005` | Daftar video bernomor dengan hover `[ ▶ ] — [ M \| WATCH ↗ ]` | `TERVERIFIKASI` — `components/VideoRow.tsx:49-70` |
+| `FR-006` | Formulir demo 9 bagian | `TERVERIFIKASI` — `components/DemoPortal.tsx` |
+| `FR-007` | Etalase Spaces & Instruments | `BERTENTANGAN` — `/spaces` dihapus atas permintaan |
+| `BR-001` | Audio demo: 3 ekstensi, ≤ 25 MB, ditegakkan di klien **dan** server | `TERVERIFIKASI` — `lib/taxonomy.ts:76-78`, `DemoPortal.tsx:63-92`, `app/api/demos/route.ts:236-255` |
+| `BR-002` | Status awal `IN REVIEW`, hanya kurator yang mengubah | `TERVERIFIKASI` untuk status awal; `RENCANA` untuk jalur moderasi |
+| `BR-003` | Grid genap → judul dulu, ganjil → gambar dulu | `TERVERIFIKASI` — `titleFirst={i % 2 === 1}` |
+| `BR-004` | Waktu baca = `max(1, ceil(kata ÷ 200))` | `TERVERIFIKASI` — `lib/content.ts:57-70`, diuji di `lib/content.test.ts` |
+| `ACC-001` | Kontras teks utama | `ASUMSI` (kebijakan warna dimiliki `DESIGN-SYSTEM.md`) |
+| `ACC-002` | Hover-reveal harus setara lewat keyboard (`:focus-within`) | `TERVERIFIKASI` — **terpenuhi**; lihat §10.2 |
+| `ACC-003` | `prefers-reduced-motion` dihormati | `TERVERIFIKASI` — `globals.css:455-481` + `MotionRoot` |
+| `NFR-001`…`NFR-004` | Non-fungsional: performa, SEO, aksesibilitas, sanitasi input | `ASUMSI`; teks persis `[PERLU VERIFIKASI]` |
 
-### 2.2 Dependency integrasi (RENCANA)
+### 2.2 Dependency integrasi
 
 | Dependency | Arah | Status |
 |---|---|---|
-| Payload CMS 3 collections | App (server) → Payload | `RENCANA`; mount point `(payload)` `[PERLU VERIFIKASI]` |
-| Supabase Postgres | Payload → DB | `RENCANA`; adapter `@payloadcms/db-postgres` (dari DATA-MODEL) |
-| Supabase Storage | App → bucket `media`, `demo-audio` | `RENCANA` |
-| `lib/catalogue.json` | Build-time, tidak berubah | `TERVERIFIKASI` + `ADR-0004` |
-| Vercel | Hosting; route handler serverless | `RENCANA` (keputusan pemilik) |
+| Sanity `production` (publik) | App (server) → Sanity, tanpa token | `TERVERIFIKASI` |
+| Sanity `submissions` (privat) | App (server) → Sanity, wajib token | `TERVERIFIKASI` |
+| Sanity Studio (`melodialam-sanity`) | Kurator → Studio → dataset | `TERVERIFIKASI` |
+| Vercel Blob | Browser → Blob (token dari server) | `TERVERIFIKASI` kodenya; `RENCANA` blob store belum dibuat |
+| Resend | Server → Resend | `TERVERIFIKASI` kodenya; `RENCANA` `RESEND_API_KEY` belum diset |
+| Vercel (hosting + revalidate webhook) | Studio → `POST /api/revalidate` | `TERVERIFIKASI` kodenya; `RENCANA` webhook belum dicentang "Trigger on: Create + Update" |
+| `lib/catalogue.json` | Build-time, tidak berubah | `TERVERIFIKASI` + ADR-0004 |
 
 ### 2.3 Asumsi (ASUMSI)
 
 - `ASUMSI` — Load awal; kurator 1–3 orang; tanpa multi-tenant/RBAC kompleks.
 - `ASUMSI` — Trafik baca (artikel/katalog) jauh lebih besar dari trafik submit.
-- `ASUMSI` — Vercel multi-instance membuat state in-memory tidak reliabel.
-- `ASUMSI` — Client component tidak boleh mengimpor SDK Payload (aturan R7
-  ARCHITECTURE §7); data editorial harus tiba lewat props dari server component.
+- `ASUMSI` — Client component tidak boleh mengimpor modul yang memegang token
+  (aturan R7 `ARCHITECTURE.md` §7).
 
 ### 2.4 Blocker / gap yang diketahui
 
 | Gap | Dampak | Status |
 |---|---|---|
-| `ACC-002` tidak terpenuhi: semua affordance hover-reveal hanya `:hover` | Pengguna keyboard tidak dapat memunculkan `—`/row-action/curtain | `TERVERIFIKASI` (lihat §10.3) |
-| `GET /api/demos` tidak dikonsumsi UI mana pun | Antrean publik dihapus dari `/submit` (16 Okt 2026); `GET` tetap tanpa konsumen | `TERVERIFIKASI` (lihat §7.2) |
-| `contact` tidak dipersistensi | Kurator tak dapat menghubungi artis | `TERVERIFIKASI` (brief §6) |
-| VideoModal tanpa manajemen fokus | Fokus tidak masuk/terkembali; tidak ada focus trap | `TERVERIFIKASI` (lihat §10.2) |
-| Label form tak terasosiasi (`Field` tanpa `htmlFor`/`id`) | Field selain audio tidak punya label programatik | `TERVERIFIKASI` (lihat §10.2) |
+| Tidak ada endpoint moderasi kurator | `BR-002` belum ditegakkan; status hanya bisa diubah manual di Studio | `TERVERIFIKASI` |
+| Cabang fallback `GET /api/demos` tidak menyaring status | Antrean `IN REVIEW` bisa terbaca publik bila token tidak ada | `TERVERIFIKASI` (audit F06) |
+| `audioUrl` diterima dari host mana pun | Submit bisa mengarahkan kurator ke host asing | `TERVERIFIKASI` (audit F01) |
+| Token unggah Blob diterbitkan tanpa batas | Objek bisa ditulis tanpa ada yang membersihkannya | `TERVERIFIKASI` (audit F04) |
+| `POST /api/demos` tanpa rate limit | Dua tulis Sanity + satu email per request | `TERVERIFIKASI` (audit F02) |
+| Drawer navigasi tanpa tutup via `Escape`, tanpa `aria-current` di nav mobile | Penyimpangan keyboard/mobile | `TERVERIFIKASI` (§10.2) |
+| `GET /api/demos` tidak dikonsumsi UI mana pun | Endpoint hidup tanpa konsumen | `TERVERIFIKASI` (§7.1) |
 
 ---
 
 ## 3. Route and Navigation Specification
 
-Semua halaman berada di bawah root layout tunggal
-(`app/layout.tsx`) sehingga **shell** identik di seluruh rute:
-`MotionRoot` → `ScrollProgress` → `Ticker` → `SiteHeader` →
-`<main class="mx-auto max-w-[1360px] space-y-20 px-4 py-10 sm:px-8">` → `SiteFooter`.
+Semua halaman berada di bawah satu root layout (`app/(site)/layout.tsx`) sehingga
+**shell** identik di seluruh rute:
+`MotionRoot` → skip-link → `ScrollProgress` → `Ticker` → `SiteHeader` →
+`<main id="main" tabIndex={-1}">` → `SiteFooter` → `<Analytics />`.
+
+Navigasi utama (`lib/site.ts:29`): `Latest News` (`/`) · `Stories` (`/stories`) ·
+`Bicara Melodi` (`/bicara-melodi`) · `Melodi Samsara` (`/videos`, badge "YT") ·
+`Curated News` (`/kurasi`), plus tombol `Submit Karya` ke `/submit`.
 
 ### 3.1 Struktur rute saat ini (TERVERIFIKASI)
 
-| Route ID | Path | Berkas | Mode render | Data yang dibaca | Client component yang di-mount |
-|---|---|---|---|---|---|
-| ROUTE-001 | `/` | `app/page.tsx` | Static (server component) | `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`, `SPACE_ITEMS` (`lib/content`); `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS` (`lib/catalogue`) | `Reveal`, `RevealText`, `CountUp`, `ParallaxImage`, `WatchButton`, `WatchLink`, `VideoModal` |
-| ROUTE-002 | `/stories` (Stories) | `app/stories/page.tsx` | Static | `feedArticles()` (Sanity → fallback `ARTICLES`) | `Reveal`, `ArticleCards.ArticleCard` |
-| ROUTE-003 | `/stories/[slug]` | `app/stories/[slug]/page.tsx` | Static, `generateStaticParams` → 12 slug | `ARTICLES` (sebagai `ALL`), `CATEGORY_LABELS`; `generateMetadata` per slug | tidak ada `"use client"` langsung; `ArticleCard` (server) menyeret `ParallaxImage`? **Tidak** — lihat catatan di bawah |
-| ROUTE-004 | `/bicara-melodi` | `app/bicara-melodi/page.tsx` | Static | `INTERVIEW_ROWS` (`lib/content`); `videosByIds` (`lib/catalogue`) | `Reveal`, `WatchButton`, `VideoModal` |
-| ROUTE-005 | `/videos` | `app/videos/page.tsx` | Static | `CHANNEL`, `COUNTS`, `PLAYLISTS` (`lib/catalogue`) | `Reveal`, `VideosBrowser`, `VideoModal` |
-| ROUTE-006 | `/pahlawan-kota` | `app/pahlawan-kota/page.tsx` | Static | `allPahlawanRows()` (`lib/pahlawan`): Sanity `pahlawanRow`, fallback `GENRE_ROWS` | `Reveal` |
-| ROUTE-007 | `/spaces` | `app/spaces/page.tsx` | Static | `SPACE_ITEMS` (`lib/content`) | `Reveal` |
-| ROUTE-008 | `/submit` | `app/submit/page.tsx` | Static | `DEMO_GENRES`, `DEMO_PROGRAMS`, `DEMO_AUDIO_*` (via `DemoPortal`) | `Reveal`, `DemoPortal` |
-| ROUTE-009 | `/api/demos` | `app/api/demos/route.ts` | Route handler (`GET`, `POST`) | `SEED_DEMOS`, `DEMO_GENRES`, `DEMO_PROGRAMS` (`lib/content`); `queue` in-memory | — |
-| ROUTE-404 | sembarang path lain | `app/not-found.tsx` | Static | `PRIMARY_NAV` (`lib/site`) | — |
+Bentuk render diambil dari output `next build` (21 Okt 2026): `○` = static,
+`◐` = partial prerender, `ƒ` = dynamic.
 
-Catatan penghitungan: brief §5 memuat 10 baris tabel (8 halaman + API + 404).
-Build melaporkan **26 static pages** (brief §2), konsisten dengan 8 rute halaman
-di mana ROUTE-003 ter-ekspansi menjadi 12 halaman ter-prerender, ditambah rute
-metadata/ikon yang dihasilkan Next `[PERLU VERIFIKASI: komposisi 26 angka persis]`.
+| Route ID | Path | Berkas | Bentuk | Data yang dibaca | Client component yang di-mount |
+|---|---|---|---|---|---|
+| ROUTE-001 | `/` | `app/(site)/page.tsx` | `○` | `latestStories(8)`, `allPillarPosts()`, `allVideos()`, `getSiteSettings()` | `Reveal`, `RevealText`, `CountUp` |
+| ROUTE-002 | `/stories` | `app/(site)/stories/page.tsx` | `○` | `latestStories(8)`, `getSiteSettings()` | `Reveal` |
+| ROUTE-003 | `/stories/<slug>` | `app/(site)/stories/[slug]/page.tsx` | `◐` (12 slug ter-prerender + on-demand) | `articleBySlug(slug)`, `latestStories(8)`, `getSiteSettings()` | — |
+| ROUTE-004 | `/bicara-melodi` | `app/(site)/bicara-melodi/page.tsx` | `○` | `allInterviews()`, `allVideos()` | `Reveal`, `VideoModal` (+`WatchButton`) |
+| ROUTE-005 | `/videos` | `app/(site)/videos/page.tsx` | `○` | `allVideos()`, `allPlaylists()`, `getVideosPageCopy()`, `CHANNEL` | `Reveal`, `VideoModal` |
+| ROUTE-006 | `/kurasi` | `app/(site)/kurasi/page.tsx` | `○` | `allPillarPosts()` | `Reveal`, `KurasiBrowser` |
+| ROUTE-007 | `/tentang` | `app/(site)/tentang/page.tsx` | `○` | statis (`EXTERNAL_LINKS`, `SITE`) | `Reveal` |
+| ROUTE-008 | `/submit` | `app/(site)/submit/page.tsx` | `○` | enum demo (`DEMO_GENRES`, `DEMO_PROGRAMS`, batas audio) | `Reveal`, `DemoPortal` |
+| ROUTE-009 | `/preview/<type>/<slug>` | `app/(site)/preview/[type]/[slug]/page.tsx` | `◐`, `noindex` | Sanity `perspective: "drafts"` | — |
+| ROUTE-010 | `/api/demos` | `app/api/demos/route.ts` | `ƒ` | `submissionsClient` atau `memoryQueue` | — |
+| ROUTE-011 | `/api/demo-audio` | `app/api/demo-audio/route.ts` | `ƒ` | `@vercel/blob/client` | — |
+| ROUTE-012 | `/api/revalidate` | `app/api/revalidate/route.ts` | `ƒ` | 6 tag cache | — |
+| ROUTE-013 | `/rss.xml` | `app/rss.xml/route.ts` | `○` | `latestStories(8)` | — |
+| ROUTE-014 | `/sitemap.xml` | `app/(site)/sitemap.ts` | `○` | `latestStories(8)` | — |
+| ROUTE-015 | `/robots.txt` | `app/robots.ts` | `○` | `SITE.url` | — |
+| ROUTE-016 | `/journal` | `app/(site)/journal/route.ts` | `ƒ` | — | 308 → `/stories` |
+| ROUTE-017 | `/journal/<slug>` | `app/(site)/journal/[slug]/route.ts` | `ƒ` | — | 308 → `/stories/<slug>` |
+| ROUTE-018 | `/stories/<slug>/opengraph-image` | `app/(site)/stories/[slug]/opengraph-image.tsx` | `ƒ` | `articleBySlug(slug)` | — |
+| ROUTE-019 | `/stories/<slug>/twitter-image` | `app/(site)/stories/[slug]/twitter-image.tsx` | `ƒ` | `articleBySlug(slug)` | — |
+| ROUTE-404 | sembarang path lain | `app/(site)/not-found.tsx` | `○` | `PRIMARY_NAV` | — |
+
+Total: **33 halaman statis** pada build (`TERVERIFIKASI`, output `next build`).
+Tabel rute juga memuat `/_not-found`, `/_global-error`, `/icon.png`,
+`/apple-icon.png`, dan `/favicon.ico`.
 
 ### 3.2 Parameter, akses, dan fallback
 
 | Route | Parameter | Akses | Fallback |
 |---|---|---|---|
-| ROUTE-003 | path `slug` (12 nilai dari `ARTICLES`) | publik | `ALL.find` gagal → `notFound()` → `app/not-found.tsx`. `dynamicParams` dibiarkan default; slug tak dikenal dirender on-demand lalu 404 (`TERVERIFIKASI` membaca kode) |
-| ROUTE-002 | — | publik | — grid selalu memuat 6 kartu feed foto; tanpa filter/pencarian (disederhanakan 16 Okt 2026) |
-| ROUTE-005 | state filter/page/query di memori (bukan URL) | publik | `VideoRow` kosong → pesan "Tidak ada video yang cocok."; `safePage` dijepit ke rentang valid |
-| ROUTE-009 | — | publik (tidak ada auth) | `400` body bukan JSON; `422` validasi gagal; `201` sukses |
+| ROUTE-003 | path `slug` | publik | `articleBySlug` → `notFound()` → `app/(site)/not-found.tsx`. `dynamicParams` dibiarkan default, jadi slug yang hanya ada di Sanity dirender on-demand lalu di-*cache* |
+| ROUTE-009 | path `type` (`journal` \| `kurasi`), path `slug`, query `secret` | **ber-secret** | Tanpa `SANITY_API_READ_TOKEN` atau secret salah → `notFound()`. Perbandingan secret constant-time |
+| ROUTE-001 | — | publik | `latestStories(8` → `allArticles()` → fallback `ARTICLES` di `lib/content.ts` bila Sanity tak terjangkau |
+| ROUTE-002 | — | publik | idem |
+| ROUTE-005 | — | publik | `allVideos()` → arsip katalog; `allPlaylists()` → `PLAYLISTS` katalog |
+| ROUTE-006 | — | publik | `allPillarPosts()` → `[]`; bagian tidak dirender |
+| ROUTE-010 | — | publik (tanpa auth) | `400` body bukan JSON · `413` body > 16 KB · `422` validasi gagal · `503` Sanity privat gagal menulis · `201` sukses |
+| ROUTE-012 | header `x-webhook-secret` atau query `secret` | ber-secret | `500` bila env belum diset · `401` bila secret salah |
 
-**Tidak ada** rute terproteksi, redirect, atau deep-link ber-state di URL saat ini
-(`TERVERIFIKASI`). State filter/pencarian **tidak** dipersistensi ke query string —
-konsekuensinya tidak dapat dibagikan/di-bookmark (`ASUMSI`: ini perilaku yang
-diterima, bukan keluhan yang dibuka ulang).
+**Tidak ada** rute terproteksi selain pratinjau dan revalidasi, dan tidak ada
+state di URL selain `?secret=` pada dua rute tersebut. Pencarian kurasi **tidak**
+di-persistensi ke query string — konsekuensinya tidak dapat dibagikan
+(`ASUMSI`: perilaku yang diterima, bukan keluhan yang dibuka ulang).
 
 ### 3.3 Hubungan layout
 
 ```mermaid
 graph TB
-  ROOT["app/layout.tsx (server)<br/>4 font · metadata · lang=id"]
+  ROOT["app/(site)/layout.tsx (server)<br/>4 font · JSON-LD · skip-link · metadata"]
   MR["motion/MotionRoot (client)"]
   SP["ScrollProgress (client)"]
   TK["Ticker → motion/MarqueeTape (client)"]
   HD["SiteHeader (client)"]
-  MAIN["<main> (server, 1 landmark)"]
+  MAIN["<main id=main> (server, 1 landmark)"]
   FT["SiteFooter (server)"]
   ROOT --> MR --> SP --> TK --> HD --> MAIN --> FT
-  MAIN --> R1["ROUTE-001 … ROUTE-008"]
+  MAIN --> R1["ROUTE-001 … ROUTE-009"]
   MAIN --> NF["ROUTE-404"]
+  ROOT -.->|"JSON-LD + RSS auto-discovery"| MAIN
 ```
 
 ---
@@ -213,7 +253,7 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 
 - **Shell / layout** — hidup di root layout atau bagian dari kerangka global.
 - **Composite** — menyusun sebuah kapabilitas utuh dan memegang state fitur.
-- **Pattern** — pola UI dapat-dipakai-ulang berukuran kecil (affordance, wrapper).
+- **Pattern** — pola UI dapat-dipakai-ulang berukuran kecil.
 - **Primitive** — elemen dasar presentasional tanpa state.
 - **Motion primitive** — pembungkus animasi (`components/motion/*`).
 
@@ -221,72 +261,86 @@ Klasifikasi lapisan yang dipakai di seluruh dokumen ini:
 
 | Route | Server (page) | Composite/Pattern | Motion | Video affordance |
 |---|---|---|---|---|
-| ROUTE-001 `/` | `page.tsx` | `ArticleCards.FrontCard`, `WatchLink` | `Reveal`, `RevealText`, `CountUp`, | `VideoModal`, `WatchButton` |
-| ROUTE-002 `/stories` | `page.tsx` | `ArticleCards.ArticleCard` (grid 6 kartu) | `Reveal` | — |
-| ROUTE-003 `/stories/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` | — | — |
-| ROUTE-004 `/bicara-melodi` | `page.tsx` | — | `Reveal` | `VideoModal`, `WatchButton` |
-| ROUTE-005 `/videos` | `page.tsx` | `VideosBrowser` (+`WatchLink`) | `Reveal` | `VideoModal`, `WatchButton` |
-| ROUTE-006 `/pahlawan-kota` | `page.tsx` | — | `Reveal` | — |
-| ROUTE-007 `/spaces` | `page.tsx` | — | `Reveal` | — |
+| ROUTE-001 `/` | `page.tsx` | `ArticleCards.FrontCard`, `PillarCards.PillarCard` | `Reveal`, `RevealText`, `CountUp` | — |
+| ROUTE-002 `/stories` | `page.tsx` | `ArticleCards.ArticleCard` (grid 8) | `Reveal` | — |
+| ROUTE-003 `/stories/[slug]` | `page.tsx` | `ArticleCards.ArticleCard` (blok "More"), `ArticleBody` | — | — |
+| ROUTE-004 `/bicara-melodi` | `page.tsx` | `YoutubeThumb` | `Reveal` | `VideoModal`, `WatchButton` |
+| ROUTE-005 `/videos` | `page.tsx` | `VideoRow`, `YoutubeThumb` | `Reveal` | `VideoModal`, `WatchLink`, `WatchButton` |
+| ROUTE-006 `/kurasi` | `page.tsx` | `KurasiBrowser` + `PillarCards` | `Reveal` | — |
+| ROUTE-007 `/tentang` | `page.tsx` | — | `Reveal` | — |
 | ROUTE-008 `/submit` | `page.tsx` | `DemoPortal` | `Reveal` | — |
+| ROUTE-009 `/preview` | `page.tsx` | `ArticleBody` | — | — |
 
 ### 4.2 Batas server/client (`TERVERIFIKASI`, dibaca dari directive)
 
-**12 berkas `"use client"`** di `components/`:
+**13 berkas `"use client"`** di `components/`:
 
-`SiteHeader`, `ScrollProgress`, `Reveal`, `VideosBrowser`,
-`VideoModal`, `WatchLink`, `DemoPortal`, `motion/MotionRoot`, `motion/RevealText`,
-`motion/ParallaxImage`, `motion/CountUp`, `motion/MarqueeTape`.
+`SiteHeader`, `ScrollProgress`, `Reveal`, `VideoModal`, `WatchLink`,
+`YoutubeThumb`, `KurasiBrowser`, `DemoPortal`, `motion/MotionRoot`,
+`motion/RevealText`, `motion/CountUp`, `motion/MarqueeTape`,
+`motion/ParallaxImage` (**tak terpakai**).
 
 **Server component (tanpa directive)** di `components/`:
 
-`SiteFooter`, `Ticker`, `ArticleCards`, `MelodiAlamLockup`.
+`ArticleCards`, `ArticleBody`, `PillarCards`, `VideoRow`, `SiteFooter`, `Ticker`
+(sekalian mengekspor `SubmitLink`), `MelodiAlamLockup`.
 
 ```mermaid
 graph LR
   subgraph server["Server-rendered"]
-    PG["app/*/page.tsx"]
+    PG["app/(site)/**/page.tsx"]
+    AC["ArticleCards"]
+    AB["ArticleBody"]
+    PC["PillarCards"]
+    VR["VideoRow"]
     FO["SiteFooter"]
     TI["Ticker"]
-    AC["ArticleCards"]
     BM["MelodiAlamLockup"]
   end
-  subgraph client["Client boundary (12)"]
+  subgraph client["Client boundary (13)"]
     HD["SiteHeader"]
     RB["Reveal"]
-    VB["VideosBrowser"]
     VM["VideoModal + WatchButton"]
     WL["WatchLink"]
+    YT["YoutubeThumb"]
+    KB["KurasiBrowser"]
     DP["DemoPortal"]
     SP["ScrollProgress"]
     M["motion/* (5)"]
   end
-  PG --> FO
   PG --> AC
-  AC --> M
-  TI --> M
+  PG --> AB
+  PG --> PC
+  PG --> VR
+  PG --> FO
+  PG --> TI
   PG --> RB
-  PG --> VB
   PG --> VM
-  PG --> WL
+  PG --> KB
   PG --> DP
   HD --> BM
+  KB --> PC
+  VR --> YT
+  VR --> VM
 ```
 
 **Aturan yang berlaku:** `lib/*` tidak pernah mengimpor `app/*`/`components/*`;
 `components/*` boleh mengimpor `lib/*`; `scripts/*` tidak diimpor runtime
-(`TERVERIFIKASI`, ARCHITECTURE §7).
+(`TERVERIFIKASI`, `ARCHITECTURE.md` §7). Klien Sanity hanya boleh masuk lewat
+`lib/pillars-shared.ts` bila dipakai komponen klien.
 
 ### 4.3 Pemilik state & sumber kebenaran (ringkas)
 
 | Data/UI | Pemilik | Pembaca | Status |
 |---|---|---|---|
-| Artikel editorial | `lib/content.ts` | ROUTE-001/002/003 | `TERVERIFIKASI` |
-| Katalog video | `lib/catalogue.json` (generated) | ROUTE-001/004/005 | `TERVERIFIKASI` |
-| Fakta kanal | `lib/catalogue.json` | `lib/site.ts` → footer | `TERVERIFIKASI` |
-| Brand & nav | `lib/site.ts` | layout, `SiteHeader` | `TERVERIFIKASI` |
-| Antrean demo (klien) | **dihapus 16 Okt 2026** — `DemoPortal` tidak lagi menampilkan antrean | — | `TERVERIFIKASI` |
-| Antrean demo (server) | array `queue` di route handler | **tidak ada konsumen** | `TERVERIFIKASI` |
+| Artikel editorial | Sanity `article` (fallback `lib/content.ts`) | ROUTE-001/002/003, sitemap, RSS | `TERVERIFIKASI` |
+| Kurasi feed | Sanity `pillarPost` | ROUTE-001/006 | `TERVERIFIKASI` |
+| Video | Sanity `video` + `lib/catalogue.json` | ROUTE-001/004/005 | `TERVERIFIKASI` |
+| Wawancara | Sanity `interview` (fallback `INTERVIEW_ROWS`) | ROUTE-004 | `TERVERIFIKASI` |
+| Copy situs | Sanity `siteSettings` (fallback `lib/site.ts`) | layout, header, footer, metadata | `TERVERIFIKASI` |
+| Navigasi & rubric footer | `lib/site.ts` (kode, **bukan** CMS) | `SiteHeader`, `SiteFooter`, 404 | `TERVERIFIKASI` |
+| Antrean demo (klien) | **tidak ada** — `DemoPortal` tidak menampilkan antrean | — | `TERVERIFIKASI` |
+| Antrean demo (server) | Sanity `submissions`, atau array proses-lokal | **tidak ada konsumen** | `TERVERIFIKASI` |
 
 ---
 
@@ -300,100 +354,156 @@ menjelaskan alasan teknis nyata, bukan estetika.
 | Komponen | Lapisan | Server/Client | Mengapa | Props | Dipakai di |
 |---|---|---|---|---|---|
 | `MotionRoot` | Shell | **Client** | `MotionConfig` adalah konteks `motion/react` | `children` | root layout (semua rute) |
-| `SiteHeader` | Shell | **Client** | `usePathname()` + `useState` drawer | — | semua rute |
-| `SiteFooter` | Shell | **Server** | murni presentasional | — | semua rute |
-| `Ticker` | Shell | **Server** | hanya menyusun `TICKER_ITEMS`; loop diserahkan ke `MarqueeTape` | — | semua rute |
+| `SiteHeader` | Shell | **Client** | `usePathname()` + `useState` drawer | `brand: { tagline, strapline, est, owner }` | semua rute |
+| `SiteFooter` | Shell | **Server** | murni presentasional | `settings: SiteSettings` | semua rute |
+| `Ticker` | Shell | **Server** | menyusun item dari `siteSettings`; loop diserahkan ke `MarqueeTape` | `items: TickerItem[]` | semua rute |
 | `ScrollProgress` | Shell | **Client** | listener `scroll`/`resize` + `useState(pct)` | — | semua rute |
-| `Reveal` | Shell/Pattern | **Client** | `IntersectionObserver` + `useState(visible)` | `children`, `as?: "section"\|"div"\|"article"`, `className?` | ROUTE-001,002,004,005,006,007,008 |
+| `Reveal` | Shell/Pattern | **Client** | `IntersectionObserver` + `useState(visible)` | `children`, `as?: "section"\|"div"\|"article"`, `className?` | ROUTE-001…008 |
 
 Catatan `SiteHeader` (`TERVERIFIKASI`): drawer ditutup **pada tap** link
 (`onClick={closeDrawer}`), bukan di `useEffect`, dengan komentar eksplisit bahwa
 ini menghindari cascading render saat navigasi dari dalam drawer. Nav desktop
-memakai `aria-current="page"` via `isActive()`; badge nav (`YT`) dirender bila ada.
+memakai `aria-current="page"` via `isActive()`; badge nav (`YT`) dirender bila
+ada. Nav mobile **tidak** memakai `aria-current` — lihat §10.2.
+
+Catatan `Ticker` (`TERVERIFIKASI`): `Ticker` adalah server component yang
+memakai `<a>` biasa (bukan `next/link`) untuk item ber-`href`, dan `<div>` dengan
+titik berdenyut untuk item tanpa tautan. Item datang dari
+`siteSettings.tickerItems` yang maksimal 8 item.
 
 ### 5.2 Composite
 
 | Komponen | Lapisan | Server/Client | Mengapa | Props | Dipakai di |
 |---|---|---|---|---|---|
-| `VideosBrowser` | Composite | **Client** | filter venue + search + pagination | — (mengimpor `@/lib/catalogue`) | ROUTE-005 |
-| `DemoPortal` | Composite | **Client** | form, preview audio lokal, `fetch` POST | — | ROUTE-008 |
-| `VideoModal` | Composite | **Client** | state modal + listener `CustomEvent` + Escape | — | ROUTE-001,004,005,006 |
-| `ArticleCards` | Composite (server) | **Server** | presentasional; mengekspor 2 komponen | lihat §5.3 | ROUTE-001,002,003 |
-
-`ArticleCards` mengekspor: `ArticleCard` (Stories), `FrontCard` (beranda) (+
-helper internal `CardImage` dan konstanta `COVER_FRAME`). Setiap kartu adalah
-**satu** `<Link>` yang membungkus seluruh kartu — pola `after:absolute inset-0`
-yang lama tidak menangkap klik di area teks, jadi diganti anchor sungguhan.
+| `KurasiBrowser` | Composite | **Client** | kotak cari + chip pillar + pengelompokan | `posts: PillarPost[]` | ROUTE-006 |
+| `DemoPortal` | Composite | **Client** | form, preview audio lokal, `upload` ke Blob, `fetch` POST | — | ROUTE-008 |
+| `VideoModal` | Composite | **Client** | state modal + listener `CustomEvent` + `Escape` + focus trap | — | ROUTE-004, ROUTE-005 |
+| `ArticleCards` | Composite | **Server** | presentasional; mengekspor 2 komponen | lihat §5.3 | ROUTE-001,002,003 |
+| `PillarCards` | Composite | **Server** | presentasional; mengekspor 3 komponen | lihat §5.3 | ROUTE-001,006 |
 
 ### 5.3 Presentational / pattern / primitive
 
 | Komponen | Lapisan | Server/Client | Props | Dipakai di |
 |---|---|---|---|---|
-| `ArticleCard` | Composite/Server | Server | `article: Article`, `titleFirst?: boolean`, `index?: number` | ROUTE-002 (via browser), ROUTE-003 |
-| `FrontCard` | Composite/Server | Server | `article: Article`, `lead?: boolean` | ROUTE-001 (grid 2×2) |
-| `CardImage` (internal) | Primitive | Server | `article`, `readLabel`, `noteCta` (frame 4:5) | di dalam `ArticleCard` |
-| `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,004,005,006 |
-| `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-001,005 |
+| `ArticleCard` | Composite/Server | Server | `article`, `titleFirst?`, `index?`, `readLabel?`, `noteCta?` | ROUTE-002, ROUTE-003 |
+| `FrontCard` | Composite/Server | Server | `article`, `lead?` | ROUTE-001 |
+| `CardImage` (internal `ArticleCards`) | Primitive | Server | `article`, `readLabel`, `noteCta` (frame 4:5) | di dalam `ArticleCard` |
+| `PillarCard` | Primitive | Server | `post`, `showPillar?` | ROUTE-001, ROUTE-006 |
+| `PillarRow` | Primitive | Server | `post`, `index` | ROUTE-006 (bagian "Tonton") |
+| `PillarHead` | Pattern | Server | `label`, `note` | ROUTE-006 |
+| `VideoRow` | Composite/Server | Server | `video`, `index` | ROUTE-005 |
+| `ArticleBody` | Composite/Server | Server | `rich?: unknown[]`, `paragraphs: string[]` | ROUTE-003, ROUTE-009 |
+| `WatchButton` (dari `VideoModal`) | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-004, ROUTE-005 |
+| `WatchLink` | Pattern | **Client** | `id`, `title`, `className?`, `children` | ROUTE-005 |
+| `YoutubeThumb` | Primitive | **Client** | `id`, `className?`, `sizes?`, `width?`, `height?` | ROUTE-004, ROUTE-005 |
 | `SubmitLink` (dari `Ticker`) | Pattern | Server | `className?` | `SiteHeader` (nav desktop) |
 | `MelodiAlamLockup` | Primitive | Server | `width?`, `sizes?`, `className?`, `alt?` (default `"Melodi Alam"`), `eager?` | `SiteHeader`, `SiteFooter` (dua blok) |
 
-**Progressive enhancement `WatchLink` (`TERVERIFIKASI`).** Anchor menyimpan
-`href="https://www.youtube.com/watch?v={id}"` yang nyata (crawlable dan berfungsi
-tanpa hydration). `onClick` mencegah default **hanya** untuk klik kiri tanpa
-modifier (`metaKey/ctrlKey/shiftKey/altKey` lolos ke perilaku native), lalu
-mengirim `CustomEvent("melodi:watch")`.
+**Satu `<Link>` per kartu (`TERVERIFIKASI`, `components/ArticleCards.tsx:5-15`).**
+Setiap kartu artikel adalah **satu** `<Link>` yang membungkus seluruh kartu —
+gambar, judul, ringkasan, dan baris kaki. Versi lama menaruh link pada judul
+dan meregangkan `::after` di atas kartu; pseudo-element itu berada di atas
+artwork tetapi klik pada caption di bawahnya tidak melakukan apa pun. Anchor
+sungguhan tidak bisa gagal menangkap.
 
-**`WatchButton` (`TERVERIFIKASI`).** `<button type="button">` dengan
-`aria-label={`Putar ${title}`}`, `className` selalu diawali `relative` (kebutuhan
-`next/image fill`), dan `stopPropagation()` + `preventDefault()` sebelum
-mengirim event yang sama.
+**Thumbnail YouTube tanpa `next/image` (`TERVERIFIKASI`,
+`components/YoutubeThumb.tsx`).** Satu komponen, **dua** call site: baris sesi
+Melodi Samsara (`components/VideoRow.tsx:24`) dan indeks Bicara Melodi
+(`app/(site)/bicara-melodi/page.tsx:67`). Atribut `srcset` 320w/480w/1280w plus
+`sizes` per slot, dan `onError` turun bertahap `maxresdefault` → `sddefault` →
+`hqdefault`. Setelah ketiga varian gagal, komponen merender "poster tidak
+tersedia". `alt=""` (dekoratif — tombol pembungkus yang memberi nama).
+
+**`ArticleBody` dua sumber, satu kolom (`TERVERIFIKASI`,
+`components/ArticleBody.tsx`).** Artikel CMS membawa Portable Text dan dirender
+lewat `<PortableText>` sehingga heading, list, kutipan, dan gambar inline
+utuh; artikel statis membawa array string dan dirender sebagai paragraf. Keduanya
+masuk ke `.article-prose` yang sama, sehingga tipografinya identik. Gambar inline
+Portable Text memakai `<img>` biasa, bukan `next/image` — Sanity CDN sudah
+meresize dan mengonversi URL-nya, dan blok inline tidak menyimpan dimensi.
 
 **`MelodiAlamLockup` (`TERVERIFIKASI`).** Satu-satunya aset merek yang dirender
-halaman: masthead dan dua blok footer memakainya. Ukuran diatur `className`
-(`w-[...]` + `h-auto`); atribut `width`/`height` di `next/image` memakai ukuran
-asli artwork (2021×286), bukan ukuran tampilan — tinggi hasil optimasi dibulatkan,
-jadi atribut turunan tidak pernah sama dengan kotak yang dirender dan Next
-mencatat warning "width or height modified" di tiap page load.
+halaman: masthead dan dua blok footer memakainya. Ukuran diatur `className`;
+atribut `width`/`height` di `next/image` memakai ukuran asli artwork
+(2021×286), bukan ukuran tampilan — optimizer membulatkan tinggi hasil
+optimasi, jadi atribut turunan tidak pernah sama dengan kotak yang dirender.
+`alt` bawaannya **`"Melodi Alam"`** (bukan kosong) di kedua blok footer.
 
-**Aset merek (`TERVERIFIKASI`).** `npm run brand` hanya menulis dua hal:
-`public/brand/melodi-alam-lockup-black.png`, dipotong apa adanya dari
-`LOGO2/Melodi Alam Text Logo - Black.png` (tanpa recolor; jarak
-medallion–wordmark adalah jarak artwork-nya), dan ikon app dari
-`LOGO2/Melodi Alam Logo Only - Color.png`. Tidak ada medallion warna, crop
-wordmark, atau aset Samsara di halaman.
+**Aset merek (`TERVERIFIKASI`).** `npm run brand` menulis
+`public/brand/melodi-alam-lockup-black.png` dari
+`LOGO2/Melodi Alam Text Logo - Black.png` (tanpa recolor), ikon aplikasi dari
+`LOGO2/Melodi Alam Logo Only - Color.png`, serta `app/icon.png`,
+`app/apple-icon.png`, `app/favicon.ico`.
 
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
-**`/stories` (Stories).** Satu grid kartu `ArticleCard` (6 feed foto) dirender langsung oleh
-server component — tanpa filter, pencarian, hitungan, atau header hierarki.
-`JournalBrowser` dihapus 16 Oktober 2026; pola `titleFirst` ganjil/genap tetap
-dipertahankan di grid (`BR-003`).
+**Beranda.** Grid 2×2 = 4 `FrontCard` (thumbnail 4:5 kecil di kiri, rubrik +
+tanggal, judul, ringkasan, "Baca Selengkapnya ↗"). Satu kartu pertama diberi
+badge "Cover Story" (`lead`). Baris hitung memakai `CountUp` untuk
+`{stories.length} artikel di journal` dan `{curatedVideos} sesi panggung`,
+dengan "Semua artikel ↗" ke `/stories`. Di bawahnya strip "Curated News": 4
+`PillarCard` foto terbaru dari pool kurasi (label pillar, judul, tanggal,
+"Buka di IG ↗") plus "Semua kurasi ↗". Strip disembunyikan bila pool kosong.
+Angka "sesi panggung" dihitung dari video yang sumbernya `cms` — bukan angka
+hard-code.
 
-**`VideosBrowser`.** `PAGE_SIZE = 12`; `type Filter = Venue | "all"` dari
-`VENUES`. `reset(fn)` mengatur ulang `page` ke 0 saat filter/search berubah.
-Indikator "`{matches.length} video • halaman {n} / {m}`". Navigasi Prev/NEXT
-dengan `disabled` yang sesuai; ada link kanal eksternal di tengah grid 3 kolom.
+**`/stories`.** Satu pool, grid 4 kolom, 8 kartu. `titleFirst={i % 2 === 1}`
+membalik kolom genap agar judul tampil lebih dulu. Footer tiap kartu:
+rubrik, badge **"Reel"** bila `article.mediaType === "reel"`, menit baca, dan
+tanggal. Baris bawah: "Konten kurasi dari feed @melodi.alam" + "Curated News ↗".
+Tanpa filter, tanpa pencarian, tanpa penghitung.
 
-**`DemoPortal`.** Form `noValidate` dengan 8 field bernomor; `Field` merender
-`<label>` + `children` + `<p role="alert">` bila ada error. Submit mengirim JSON
-ke `POST /api/demos`. Preview audio memakai `URL.createObjectURL` (tidak diunggah)
-dan di-`revoke` saat diganti/berhasil. Antrean kanan ("Incoming Demo Queue")
-**dihapus 16 Okt 2026** — halaman kini hanya formulir + banner konfirmasi;
-`DemoPortal` tidak lagi membaca `SEED_DEMOS` atau menambahkan `data.entry`.
+**`/stories/<slug>`.** Header (rubrik, tanggal, menit baca, sumber, penanda
+"dari CMS" bila sumbernya CMS), `h1`, ringkasan serif, cover 4:5 `max-w-md` di
+tengah, `ArticleBody`, footer ("8 artikel di journal • kurasi redaksi" + tautan
+Instagram), lalu blok "More {rubrik}" — 3 kartu: rubrik sama dulu, lalu rubrik
+lain, dari `latestStories(8)` yang sama.
+
+**`/bicara-melodi`.** 9 episode Season 3, satu baris per episode: nama artis
+(`font-display`, sangat besar), headline uppercase, durasi + umur unggahan,
+`WatchButton` berisi `YoutubeThumb` 160 px, dan caption miring. Setiap baris
+terhubung ke kanal lewat `Bicara Melodi S3 ↗`.
+
+**`/videos` — Melodi Samsara.** `h1` "Melodi Samsara" dari
+`getVideosPageCopy().samsaraTitle`, **9 baris** sesi (`VideoRow`: nomor dua
+digit, thumbnail, judul, venue + umur, durasi + Featuring, tombol Watch),
+baris "Sesi lainnya ada di kanal YouTube" + tombol "YouTube ↗", lalu **5
+playlist** dalam grid 5 kolom, dan tautan "Curated News ↗". `VideoModal`
+di-mount sekali di halaman ini.
+
+**`/kurasi` — Curated News.** `KurasiBrowser`: kotak cari (`<input type="search">`
++ `<label class="sr-only">`), chip per pillar dengan `aria-pressed` dan
+jumlahnya, lalu dua kelompok: "Baca — dari feed @melodi.alam" (pillar foto,
+grid 6 kolom, `PillarCard`) dan "Tonton — dari feed @melodi.alam" (pillar reel,
+`PillarRow`). Tanpa filter, tiap pillar menampilkan 6 posting terbaru; dengan
+pencarian atau chip, batas 6 dilepas dan pencarian berjalan di seluruh pool
+(batas tampilan 48). Bagian yang kosong setelah filter **dihilangkan**.
+Setiap section punya `id` per pillar sehingga bisa di-anchor
+(`/kurasi#fakta-musik`).
+
+**`DemoPortal`.** Form `noValidate` dengan **9 bagian** bernomor: nama band,
+kota, judul, genre, tujuan submit, link streaming/EPK, kontak WhatsApp/email
+manajer, file audio opsional, cerita singkat. Setiap field punya `id` + `<label
+htmlFor>` eksplisit. Audio diperiksa di peramban (ekstensi, MIME, ukuran ≤ 25 MB)
+dan **diunggah langsung ke Vercel Blob** sebelum kiriman dikirim; URL-nya ikut
+dalam payload. Submit mengirim JSON ke `POST /api/demos`; `422` memetakan
+`errors` ke field dan memindahkan fokus ke field pertama yang bermasalah; sukses
+mereset form dan mencabut object URL.
 
 **`VideoModal`.** Dirender sekali per halaman yang memakainya; dibuka imperatif
 lewat `window.dispatchEvent(new CustomEvent("melodi:watch", { detail: { id, title } }))`.
-Menangani tombol `Escape` lewat listener `keydown` global; klik backdrop
-(`e.target === e.currentTarget`) menutup; iframe `youtube.com/embed/{id}?autoplay=1`
-dengan `allow` dan `allowFullScreen`. Tombol tutup berlabel "Tutup [ESC] ✕".
+Menangani `Escape` lewat listener `keydown` global; klik backdrop
+(`e.target === e.currentTarget`) menutup; iframe
+`youtube.com/embed/{id}?autoplay=1` dengan `allow` dan `allowFullScreen`.
+Tombol tutup berlabel "Tutup [ESC] ✕".
 
 ---
 
 ## 6. Motion Layer
 
-Seluruh komponen ini adalah **client component** dan merupakan bagian *load-bearing*,
-bukan hiasan. Untuk tiap primitif, batasan yang membentuknya dicatat — inilah
-alasan kode tampak seperti sekarang (brief §9).
+Seluruh komponen ini adalah **client component** dan merupakan bagian
+*load-bearing*, bukan hiasan. Untuk tiap primitif, batasan yang membentuknya
+dicatat.
 
 ### 6.1 `MotionRoot` — satu tuas global (`TERVERIFIKASI`)
 
@@ -404,8 +514,8 @@ tidak perlu penjaga sendiri**.
 
 **Pengecualian yang didokumentasikan di kode:** nilai *scroll-linked* adalah
 `style` motion value, bukan animasi, jadi komponen yang menurunkannya memeriksa
-`useReducedMotion` sendiri (`ParallaxImage`, `CountUp`, `MarqueeTape`) — dan
-`Reveal` memakai `matchMedia("(prefers-reduced-motion: reduce)")` langsung.
+`useReducedMotion` sendiri (`CountUp`, `MarqueeTape`) — dan `Reveal` memakai
+`matchMedia("(prefers-reduced-motion: reduce)")` langsung.
 
 ### 6.2 `RevealText` — mask yang di-arm di klien (`TERVERIFIKASI`)
 
@@ -415,8 +525,8 @@ callback viewport yang meleset membuat heading **tak terlihat permanen**.
 
 - SSR merender **keadaan akhir** yang terbaca; `initial={false}` pada
   `motion.span` mencegah Motion menulis keadaan tersembunyi ke markup.
-- `armed` di-set lewat `useIsoLayoutEffect` (fallback `useEffect` di server) agar
-  mask tidak berkedip mundur.
+- `armed` di-set lewat `useIsoLayoutEffect` (fallback `useEffect` di server)
+  agar mask tidak berkedip mundur.
 - Trigger adalah **pembacaan rect langsung** pada `scroll`/`resize`, bukan
   callback `IntersectionObserver`, dengan komentar bahwa reveal tidak boleh
   bergantung pada callback yang tak dapat dipastikan berjalan.
@@ -424,22 +534,25 @@ callback viewport yang meleset membuat heading **tak terlihat permanen**.
   `overflow-hidden`, dengan `margin-bottom` negatif agar tinggi baris tetap.
 - Spasi dirender sebagai text node nyata → heading tetap membungkus seperti teks biasa.
 
-### 6.3 `ParallaxImage` — box oversized, bukan `scale()` (`TERVERIFIKASI`)
+### 6.3 `ParallaxImage` — **tersisa, tak terpakai** (`TERVERIFIKASI`)
 
-Batasan yang membentuknya: **`transform: scale()` pada wrapper melembutkan foto.**
-Browser merasterisasi pada ukuran layout lalu meng-upscale bitmap; `sizes` tidak
-dapat menggambarkan faktor skala yang tak terlihat (terukur: hero menyajikan
-1328px ke render 1581px, upscale 1.45x).
+Komponen masih ada di `components/motion/ParallaxImage.tsx`, tetapi **tidak ada
+berkas di repo yang mengimpornya** — tidak ada halaman yang memakainya lagi
+sejak grid beranda berubah. Kodenya sendiri masih utuh dan benar:
 
-- Frame tetap di tempat layout; **gambar di dalam yang bergerak** → tinggi halaman
-  tidak bertambah dan scroll tidak direbut.
+- Frame tetap di tempat layout; **gambar di dalam yang bergerak** → tinggi
+  halaman tidak bertambah dan scroll tidak direbut.
 - Box gambar dibuat lebih tinggi dari frame sebesar `distance + EDGE_HEADROOM`
   (`EDGE_HEADROOM = 32`) di **tiap** sisi, sehingga lebar render = lebar frame dan
   `sizes` tetap eksak.
 - `useScroll({offset:["start end","end start"]})` → `useSpring` → `useTransform`
   ke rentang `[distance, -distance]`.
-- Saat `useReducedMotion()` true, travel dibuang (`{top:0,bottom:0}`), sesuai
-  rekomendasi Motion untuk nilai turunan scroll.
+- Reduced motion **tidak** di-branch di render (server tidak tahu preferensi
+  pengguna → mismatch hydration); 대신 diselesaikan di CSS lewat
+  `.parallax-layer { transform: none !important }`.
+
+Statusnya: **utang** — komponen mati yang belum dibuang (`RENCANA` untuk
+membuang atau menghidupkannya kembali; lihat Open Questions).
 
 ### 6.4 `CountUp` — SSR merender angka nyata (`TERVERIFIKASI`)
 
@@ -468,10 +581,8 @@ Batasan yang membentuknya (dua hal, keduanya load-bearing):
 
 Detail lain: kecepatan = `BASE_SPEED (62) + boost * VELOCITY_SCALE (0.5)`,
 di-spring dari `useVelocity(scrollY)`; wrap dua arah agar reverse cepat tidak
-keluar ujung; **sengaja bukan skew** (skew setrip selebar halaman menggeser tepi
-sebesar `tan(angle) x halfWidth` ~100px dan merobek strip); children dirender dua
-kali oleh komponen (bukan oleh pemanggil) karena matematika wrap bergantung pada
-dua paruh identik.
+keluar ujung; **sengaja bukan skew**; children dirender dua kali oleh komponen
+(bukan oleh pemanggil) karena matematika wrap bergantung pada dua paruh identik.
 
 ---
 
@@ -481,24 +592,23 @@ dua paruh identik.
 
 | State ID | State | Kategori | Pemilik | Sumber kebenaran | Konsumen | Persistence |
 |---|---|---|---|---|---|---|
-| ST-04 | `filter` (Venue \| "all") | Local UI | `VideosBrowser` | komponen | `all` | tidak |
-| ST-05 | `query` | Local UI | `VideosBrowser` | komponen | `matches` | tidak |
-| ST-06 | `page` (0-based) | Local UI | `VideosBrowser` | komponen | `safePage`,`rows` | tidak |
-| ST-07 | `all`/`matches`/`pageCount`/`safePage`/`rows` | Derived (`useMemo`) | `VideosBrowser` | diturunkan | render baris | — |
-| ST-08 | `queue` (antrean demo) | **dihapus 16 Okt 2026** | — | — | — | — |
-| ST-09 | `errors` (per-field) | Local UI | `DemoPortal` | respons `422` | `Field` | tidak |
-| ST-10 | `banner` (status/error) | Local UI | `DemoPortal` | respons server / `catch` | `role="status"` | tidak |
-| ST-11 | `pending` | Local UI | `DemoPortal` | komponen | tombol submit `disabled` | tidak |
-| ST-12 | `audioFile`/`audioSrc` | Local UI + Blob | `DemoPortal` | `File` yang dipilih | preview `<audio>` + unggah ke Vercel Blob saat submit (route `/api/demo-audio`) | URL hasil unggah masuk `audioUrl` |
-| ST-13 | `drawerOpen` | Local UI | `SiteHeader` | komponen | drawer `hidden` | tidak |
-| ST-14 | video modal `{id,title} \| null` | Local UI | `VideoModal` | event `melodi:watch` | dialog | tidak |
-| ST-15 | `pct` (progress) | Local UI | `ScrollProgress` | `scrollY` | lebar bar | tidak |
-| ST-16 | `visible` | Local UI | `Reveal` | `IntersectionObserver` | kelas `is-visible` | tidak |
-| ST-17 | `armed` / `shown` | Local UI | `RevealText` | rect read | mask | tidak |
-| ST-18 | `queue` (server) | Server | `app/api/demos` | array modul | **tidak ada konsumen** | proses-lokal, reset saat restart |
+| ST-01 | `query` | Local UI | `KurasiBrowser` | komponen | `matches` | tidak |
+| ST-02 | `pillar` (`"all"` \| nilai pillar) | Local UI | `KurasiBrowser` | komponen | `matches`, `aria-pressed` chip | tidak |
+| ST-03 | `matched`, `readPillars`, `watchPillars`, `chips` | Derived (`useMemo`) | `KurasiBrowser` | diturunkan | render bagian | — |
+| ST-04 | `errors` (per-field) | Local UI | `DemoPortal` | respons `422` | `Field` | tidak |
+| ST-05 | `banner` + `bannerIsError` | Local UI | `DemoPortal` | respons server / `catch` | `role="status"` / `role="alert"` | tidak |
+| ST-06 | `pending` | Local UI | `DemoPortal` | komponen | tombol submit `disabled` | tidak |
+| ST-07 | `audioFile`/`audioName`/`audioSize`/`audioSrc`/`audioError` | Local UI + object URL | `DemoPortal` | `File` yang dipilih | preview `<audio>` + unggah ke Vercel Blob saat submit | URL hasil unggah masuk `audioUrl` |
+| ST-08 | `drawerOpen` | Local UI | `SiteHeader` | komponen | drawer `hidden` | tidak |
+| ST-09 | video modal `{id,title} \| null` | Local UI | `VideoModal` | event `melodi:watch` | dialog | tidak |
+| ST-10 | `pct` (progress) | Local UI | `ScrollProgress` | `scrollY` | lebar bar | tidak |
+| ST-11 | `visible` | Local UI | `Reveal` | `IntersectionObserver` | kelas `is-visible` | tidak |
+| ST-12 | `armed` / `shown` | Local UI | `RevealText` | rect read | mask | tidak |
+| ST-13 | `step` (varian poster) | Local UI | `YoutubeThumb` | `onError` | `src` poster | tidak |
+| ST-14 | Antrean demo (server) | Server | `app/api/demos` | Sanity `submissions`, atau array proses-lokal | **tidak ada konsumen** | proses-lokal, reset saat restart |
 
-> `ST-01`–`ST-03` (state `JournalBrowser`) dihapus 16 Oktober 2026 — `/stories`
-> kini dirender server tanpa state klien.
+> State `JournalBrowser` (filter kategori + pencarian) **dihapus** bersama
+> halamannya; `/stories` kini dirender server tanpa state klien.
 
 **Tidak ada** application state, URL state, atau persistent client state.
 Redux/Zustand/Context global **tidak** diperlukan dan tidak dipakai
@@ -510,18 +620,18 @@ Redux/Zustand/Context global **tidak** diperlukan dan tidak dipakai
 subtree React yang sama**, dan sering tidak punya hubungan parent/child:
 
 - `VideoModal` di-mount **sekali** oleh server component halaman
-  (`<VideoModal />` di ROUTE-001/004/005/006), bukan oleh komponen yang merender baris.
+  (`<VideoModal />` di ROUTE-004 dan ROUTE-005), bukan oleh komponen yang
+  merender baris.
 - Pemicu berada di kedalaman berbeda — di ROUTE-005 pemicu dirender oleh
-  `VideosBrowser`, **yang sendirinya client component**, dan barisnya
-  unmount/remount setiap kali filter atau halaman berubah.
+  `VideoRow`, dan barisnya di-*render* ulang tiap request.
 
-Context React akan menuntut sebuah provider yang membungkus **keduanya**. Komposisi
-yang dirender server tidak menyediakannya; menambahkannya berarti memindahkan
-`VideoModal` (dan provider) ke satu client boundary besar yang membungkus halaman
-— memperbesar bundle klien dan memaksa boundary client naik tanpa alasan
-tampilan. Komentar kode menyatakan desainnya: modal "Rendered once and shared by
-every page that needs a 'watch' affordance" dan "open it imperatively through
-`window.dispatchEvent`".
+Context React akan menuntut sebuah provider yang membungkus **keduanya**.
+Komposisi yang dirender server tidak menyediakannya; menambahkannya berarti
+memindahkan `VideoModal` (dan provider) ke satu client boundary besar yang
+membungkus halaman — memperbesar bundle klien dan memaksa boundary client naik
+tanpa alasan tampilan. Komentar kode menyatakan desainnya: modal "Rendered once
+and shared by every page that needs a 'watch' affordance" dan "open it
+imperatively through `window.dispatchEvent`".
 
 `CustomEvent("melodi:watch")` memberi satu **protokol tunggal** yang dipakai
 `<button>` (`WatchButton`) dan `<a href>` (`WatchLink`) tanpa prop-drilling, dan
@@ -531,107 +641,143 @@ satu `VideoModal` aktif per halaman (si kode mematuhi itu), tanpa type-safety
 event, dan tanpa URL sehingga tidak dapat di-deep-link (`DEC` pemilik: video tetap
 modal). `ASUMSI`: ini diterima sebagai konsekuensi keputusan "video tanpa URL".
 
-### 7.3 Aturan sinkronisasi & reset (RENCANA, tetap berlaku)
+### 7.3 Aturan sinkronisasi & reset
 
-- **Filter berubah → `page` = 0** (sudah dilakukan `reset()`; pertahankan saat
-  data pindah ke props).
+- **Pencarian/kurasi berubah → batas per pillar berubah.** Tanpa filter, tiap
+  pillar dibatasi 6 posting; dengan filter, batas dilepas (dan section kosong
+  dihilangkan). State tidak disalin ke URL.
 - **Submit sukses → reset form + revoke object URL + banner sukses** (sudah ada).
-- **`<VideoModal />` tunggal per halaman** — pertahankan sebagai invarian; jika
-  suatu saat ditambahkan, tambahkan asersi/uji.
+- **`<VideoModal />` tunggal per halaman** — pertahankan sebagai invarian.
 - **Jangan menyimpan salinan `query` di store** — tidak ada store yang boleh
-  menduplikasi URL/komponen state (aturan skill §5).
+  menduplikasi state komponen.
 
 ---
 
 ## 8. Data Flow and API Integration
 
-### 8.1 Alur A — Submit demo (`TERVERIFIKASI`)
+### 8.1 Alur A — satu daftar cerita (`TERVERIFIKASI`)
+
+```mermaid
+flowchart LR
+  S["Sanity `article`<br/>(production)"] --> A["allArticles()<br/>lib/articles.ts:173"]
+  F["lib/content.ts<br/>ARTICLES (fallback)"] --> A
+  A --> L["latestStories(8)<br/>foto dulu, lalu reel"]
+  L --> H["Beranda: 4 pertama"]
+  L --> ST["/stories: 8"]
+  L --> SM["/sitemap.xml: 8 URL"]
+  L --> RS["/rss.xml: 8 item"]
+  L --> MO["Detail: blok 'More' 3 kartu"]
+```
+
+Kunci Invariant ini: **angka di empat tempat tidak bisa berbeda**. Beranda,
+`/stories`, sitemap, dan feed semuanya membaca `latestStories(8)` dari
+`lib/articles.ts`. Tidak ada tempat lain yang menyusun daftar cerita sendiri.
+
+### 8.2 Alur B — Submit demo (`TERVERIFIKASI`)
 
 ```mermaid
 sequenceDiagram
   participant U as "Pengguna"
   participant F as "DemoPortal (client)"
+  participant AU as "POST /api/demo-audio"
+  participant BL as "Vercel Blob"
   participant R as "POST /api/demos"
-  participant Q as "queue (array modul)"
+  participant SC as "Sanity submissions (privat)"
+  participant Q as "memoryQueue (fallback)"
 
-  U->>F: isi 8 field, klik Kirim
-  F->>F: preventDefault · setPending(true) · reset errors/banner
-  F->>R: fetch JSON {artist,city,title,genre,program,link,contact,story}
+  U->>F: isi 9 bagian, pilih file audio
+  F->>F: cek ekstensi/MIME/ukuran ≤ 25 MB
+  F->>AU: token unggah
+  AU->>BL: handleUpload
+  BL-->>F: blob.url
+  F->>R: fetch JSON {artist,city,title,genre,program,link,contact,story,audioUrl,audioName,audioSize}
   R->>R: str() trim + slice cap per field
   alt body bukan JSON
     R-->>F: 400 { error }
   else validasi gagal
     R-->>F: 422 { error, errors }
   else valid
-    R->>Q: queue.unshift(entry)
+    R->>SC: create demoSubmission (IN REVIEW) + demoContact
     R-->>F: 201 { ok, entry, queueLength, note }
   end
   alt 201
-    F->>F: unshift entry ke queue; banner sukses; reset form + audio
+    F->>F: reset form + revoke object URL + banner sukses
   else error
-    F->>F: setErrors(errors); setBanner(error)
+    F->>F: setErrors(errors); fokus field pertama; setBanner(error)
   end
   F->>F: finally setPending(false)
 ```
 
 **Temuan terverifikasi pada alur ini:**
 
-- `contact` **tidak dipersistensi**; hanya muncul di string `note` respons `201`.
-  Tidak ada PII at rest hari ini — tetapi juga tidak ada cara kurator menghubungi
-  artis (brief §6; SECURITY-PRIVACY.md).
-- File audio hanya di-`URL.createObjectURL` lokal; **tidak ada unggahan**.
-- `GET /api/demos` **tidak dikonsumsi** oleh UI mana pun (`TERVERIFIKASI` — satu-satunya
-  referensi `/api/demos` di kode klien adalah `fetch` POST di `DemoPortal`). Antrean
-  publik yang dulu tampil di `/submit` **dihapus 16 Okt 2026** — tidak ada lagi UI
-  yang menampilkan entri demo.
-- Karena store proses-lokal, `GET` bergantung pada instance yang melayani request
-  (`ASUMSI` Vercel multi-instance → tidak konsisten). `RISK-004`.
+- **PII tidak ikut pada baris yang dibaca publik.** Kontak ditulis ke dokumen
+  `demoContact` terpisah di dataset privat; `note` pada respons 201 hanya
+  memberi tahu bahwa kontak tersimpan terpisah.
+- **`GET /api/demos` tidak dikonsumsi UI mana pun** (`TERVERIFIKASI` — satu-satunya
+  referensi `/api/demos` di komponen klien adalah `fetch` POST di
+  `components/DemoPortal.tsx:126`). Antrean publik tidak lagi ada di `/submit`.
+- **Cabang fallback tidak menyaring status.** Tanpa
+  `SANITY_API_READ_TOKEN`, `GET /api/demos` mengembalikan seluruh `memoryQueue`,
+  termasuk entri `IN REVIEW` (`TERVERIFIKASI`, audit F06).
+- **Tidak ada rate limit, quota, CAPTCHA, atau idempotensi** pada `POST`
+  (`TERVERIFIKASI`, audit F02).
 
-### 8.2 Alur B — Modal video (`TERVERIFIKASI`)
+### 8.3 Alur C — Modal video (`TERVERIFIKASI`)
 
 `Klik WatchButton / WatchLink → CustomEvent("melodi:watch", {id,title}) →
 VideoModal setState → iframe youtube embed → Escape/backdrop → setState(null)`.
 Perbedaannya dengan `WatchLink`: bila modifier/middle-click, event native tetap
 berjalan (tab baru ke YouTube) — **progressive enhancement** yang harus
-dipertahankan saat migrasi.
+dipertahankan.
 
-### 8.3 Kontrak API yang ada
+### 8.4 Kontrak API yang ada
 
 `GET /api/demos` → `200 { queue: DemoSubmission[], count: number }`.
 `POST /api/demos` → cap field: artist 120, city 80, title 160, genre 60, program
-80, link 500, contact 160, story 2000; status `400/422/201`. Field wajib:
-`artist`, `city`, `title`, `story`, `contact`, `link`. Kontrak penuh di
-`API-CONTRACTS.md` (`TERVERIFIKASI`, brief §6 + `route.ts`).
+80, link 500, contact 160, story 2000, audioName 200, audioUrl 500; status
+`400/413/422/503/201`. Field wajib: `artist`, `city`, `title`, `story`, `contact`,
+`link`. Body maksimum 16 KB. Kontrak penuh di `API-CONTRACTS.md`.
 
-### 8.4 Integrasi data editorial (RENCANA)
+`POST /api/demo-audio` → `handleUpload`; tipe dibatasi ke 3 MIME audio, ukuran
+25 MB, `addRandomSuffix: true`; tanpa token → `400`.
+
+`POST /api/revalidate` → secret lewat header `x-webhook-secret` atau query
+`secret`, dibandingkan constant-time; `500` (env kosong), `401` (secret salah),
+`200 { revalidated, tags }` (6 tag).
+
+### 8.5 Integrasi CMS (TERVERIFIKASI)
 
 ```mermaid
 sequenceDiagram
   participant Cur as "Kurator"
-  participant Adm as "/admin (Payload)"
-  participant SB as "Supabase Postgres/Storage"
-  participant RSC as "Server Component (halaman)"
+  participant St as "Sanity Studio<br/>(repo melodialam-sanity)"
+  participant SN as "Sanity<br/>production / submissions"
+  participant RSC as "Server Component"
   participant CC as "Client component (props)"
 
-  Cur->>Adm: create/update Artikel
-  Adm->>SB: tulis via adapter
-  RSC->>SB: baca (server-only, lib/cms/*)
+  Cur->>St: create/update Artikel
+  St->>SN: tulis dokumen
+  Note over SN: publish → webhook → POST /api/revalidate
+  RSC->>SN: baca (server-only, GROQ)
   RSC->>CC: kirim data serializable sebagai props
-  Note over CC: client TIDAK mengimpor SDK Payload (aturan R7)
+  Note over CC: client TIDAK mengimpor klien Sanity
 ```
 
 ---
 
 ## 9. UI State and Interaction Specifications
 
-### 9.1 Matriks state per area (yang perlu ditangani saat migrasi)
+### 9.1 Matriks state per area
 
 | Area | Initial | Loading | Empty | Error | Sukses | Catatan |
 |---|---|---|---|---|---|---|
-| `/stories` | daftar penuh | — (data statis) | empty-state + "Reset Filter" | — | — | `RENCANA`: tambah loading/error bila data lewat Payload |
-| `/videos` | hal. 1 dari 12 | — | "Tidak ada video yang cocok." | — | — | pagination `safePage` |
-| `/submit` | form bersih, queue = seed | `pending` → tombol "Mengirim…" | — | banner + `role="alert"` per field | banner `role="status"` | `400/422/fetch-fail` punya pesan |
-| `/stories/[slug]` | artikel | — | — | slug tak dikenal → `notFound()` | — | `RENCANA`: bila Slug hilang di Payload → 404 |
+| `/` | 4 kartu + strip kurasi | — (data statis, di-*cache*) | strip kurasi tidak dirender bila pool kosong | — | — | angka sesi dihitung saat render |
+| `/stories` | 8 kartu | — | — | — | — | grid penuh, tanpa filter |
+| `/stories/<slug>` | artikel | — | — | slug tak dikenal → `notFound()` | — | blok "More" 3 kartu dari pool yang sama |
+| `/kurasi` | 6 posting per pillar | — | "Belum ada post yang cocok. Coba kata kunci lain atau pilih “Semua”." | — | — | chip + cari, batas 6 / 48 |
+| `/videos` | 9 sesi + 5 playlist | — | — | — | — | `Melodi Samsara` = 9 baris; sisanya di kanal |
+| `/bicara-melodi` | 9 episode | — | — | — | — | statistik diambil dari video yang ditunjuk |
+| `/submit` | form bersih | `pending` → tombol "Mengirim…" | — | banner `role="alert"` + `role="alert"` per field | banner `role="status"` | `400/413/422/503/fetch-fail` punya pesan |
 | Modal video | tertutup | — | — | — | — | **tidak ada** state error bila embed gagal (`[PERLU VERIFIKASI]` perlu ditambah?) |
 
 ### 9.2 Perilaku form submit (sudah ada, pertahankan)
@@ -639,9 +785,9 @@ sequenceDiagram
 Field wajib (`artist`, `city`, `title`, `story`, `contact`, `link`) divalidasi
 **server-side** di route handler; klien tidak melakukan validasi pre-submit
 (`noValidate`, tanpa pola klien). Pesan error muncul per-field lewat `role="alert"`
-dan banner ringkas lewat `role="status"`. `pending` mencegah double-submit.
-`RENCANA`: pertahankan validasi server sebagai otoritatif; klien hanya boleh
-menambah UX (mis. cek `file.size` audio) — **tidak** menggantikan server.
+dan banner ringkas lewat `role="status"`/`role="alert"`. `pending` mencegah
+double-submit. Klien **boleh** menambah UX (cek `file.size` audio) — tetapi
+**tidak** menggantikan server.
 
 ---
 
@@ -650,81 +796,67 @@ menambah UX (mis. cek `file.size` audio) — **tidak** menggantikan server.
 Token lengkap dimiliki `docs/DESIGN-SYSTEM.md`. Di sini hanya yang mengikat
 front-end.
 
-### 10.1 Yang sudah ditangani (TERVERIFIKASI)
+### 10.1 Yang sudah ditangani (`TERVERIFIKASI`)
 
 | Area | Implementasi | Di mana |
 |---|---|---|
-| Reduced motion | `@media (prefers-reduced-motion: reduce)` memaksa durasi animasi/transisi 0.01ms, `scroll-behavior: auto`, dan memaksa `.reveal-section`/`.stagger-item` terlihat | `globals.css` |
-| Reduced motion (Motion) | `MotionConfig reducedMotion="user"` + `useReducedMotion` per primitif scroll | `MotionRoot`, `ParallaxImage`, `CountUp`, `MarqueeTape`, `Reveal` |
+| Reduced motion | `@media (prefers-reduced-motion: reduce)` memaksa durasi animasi/transisi 0.01ms, `scroll-behavior: auto`, dan memaksa `.reveal-section`/`.stagger-item` terlihat | `app/globals.css:455-481` |
+| Reduced motion (Motion) | `MotionConfig reducedMotion="user"` + `useReducedMotion` per primitif scroll | `MotionRoot`, `CountUp`, `MarqueeTape`, `Reveal` |
+| Indikator fokus global | `:focus-visible { outline: 2px solid var(--color-forest) }` | `app/globals.css:57-60` |
+| **Paritas keyboard** | **Setiap** affordance hover punya kembaran `.group:focus-within` / `.dash-reveal-item:focus-within` | `globals.css:169, 260, 286, 299, 339-340, 369, 393` |
+| Skip-link | "Lompat ke konten utama" → `#main`; `<main id="main" tabIndex={-1}>` | `app/(site)/layout.tsx:154-159` |
 | Nama tombol video | `aria-label={`Putar ${title}`}` | `WatchButton` |
 | Drawer | `aria-expanded` + `aria-controls="mobile-nav"`; `hidden` saat tertutup; label tombol berganti "Tutup ✕"/"Menu ☰" | `SiteHeader` |
-| Nav aktif | `aria-current="page"` | `SiteHeader` (nav desktop) |
-| Filter | `aria-pressed` | `VideosBrowser` |
-| Search | `<label htmlFor>` + `sr-only` | `VideosBrowser` |
-| Feedback form | `role="alert"` (per-field), `role="status"` (banner) | `DemoPortal` |
-| Dialog video | `role="dialog"`, `aria-modal="true"`, `aria-label`, tutup via `Escape`/backdrop, `title` iframe | `VideoModal` |
-| Alt text | Artikel/genre/space → `article.title`/`row.title`; thumbnail video → `alt=""` (dekoratif, tombol memberi nama); footer wordmark `alt=""` karena salinan menamai venue | lihat `MelodiAlamLockup`, `ArticleCards`, halaman |
+| Nav aktif | `aria-current="page"` (nav desktop) | `SiteHeader` |
+| Filter kurasi | `aria-pressed` per chip | `KurasiBrowser` |
+| Search kurasi | `<label htmlFor="kurasi-search" class="sr-only">` | `KurasiBrowser` |
+| Feedback form | `role="alert"` (per-field), `role="status"`/`"alert"` (banner) | `DemoPortal` |
+| Dialog video | `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, tutup via `Escape`/backdrop, `title` iframe | `VideoModal` |
+| **Manajemen fokus dialog** | Fokus masuk ke tombol tutup, `Tab` diputar di dalam panel, fokus kembali ke pemicu, scroll body dikunci | `VideoModal.tsx:56-100` |
+| Label form | Setiap input punya `id` + `<label htmlFor>` | `DemoPortal` |
+| Alt text | Kartu artikel & kurasi → judul post; thumbnail YouTube → `alt=""` (dekoratif, tombol memberi nama); wordmark → `alt="Melodi Alam"` | `ArticleCards`, `PillarCards`, `YoutubeThumb`, `MelodiAlamLockup` |
 | Landmark | `<header>`, `<main>`, `<footer>`, `<nav>` | layout + `SiteHeader`/`SiteFooter` |
-| Halaman 404 | `<h1>` semantik + daftar link navigasi | `app/not-found.tsx` |
+| Halaman 404 | `<h1>` semantik + daftar link navigasi | `app/(site)/not-found.tsx` |
 
 ### 10.2 Gap aksesibilitas (jujur, `TERVERIFIKASI`)
 
 | # | Gap | Bukti |
 |---|---|---|
-| A1 | **`ACC-002` tidak terpenuhi.** Semua affordance hover-reveal hanya `:hover`; **tidak ada satu pun** selektor `:focus`/`:focus-within`/`:focus-visible` di `globals.css` | grep `focus-within\|:focus` pada `globals.css` → **0 hasil** |
-| A2 | `VideoModal` **tanpa focus trap / initial focus / focus return**; tidak mengunci scroll body; fokus dapat menab ke belakang backdrop | membaca `VideoModal.tsx` |
-| A3 | Drawer **tanpa** manajemen fokus, **tanpa** tutup via `Escape`, dan nav mobile **tanpa** `aria-current` | `SiteHeader.tsx` |
-| A4 | `Field` di `DemoPortal` merender `<label>` **tanpa `htmlFor`** dan input **tanpa `id`** → label tidak terasosiasi programatik (kecuali audio yang punya `htmlFor="demo-audio"`) | `DemoPortal.tsx` |
-| A5 | **Tidak ada skip-link** ke `<main>` | layout |
-| A6 | `.video-action-reveal` ber-`pointer-events: none` + `overflow:hidden` + `max-width:0` saat tidak hover → tombol di dalamnya **tidak terlihat** saat difokus keyboard | `globals.css`, `VideoModal.tsx` |
-| A7 | Rasio kontras `text-neutral-500`/`neutral-400` pada putih berpotensi < 4.5:1 `[PERLU VERIFIKASI]` — kebijakan warna dimiliki `DESIGN-SYSTEM.md` | — |
-| A8 | Reveal `MarqueeTape` menggunakan `onMouseEnter/Leave` (pointer) untuk jeda; tidak ada padanan keyboard (ticker tidak interaktif, jadi minor) | `MarqueeTape.tsx` |
+| A1 | **Drawer mobile** tanpa tutup via `Escape`, tanpa focus trap, dan tanpa pemindahan fokus ke isi drawer saat dibuka | `components/SiteHeader.tsx:102-128` |
+| A2 | **Nav mobile tanpa `aria-current`** — hanya berubah warna (`text-forest`), tidak ditandai secara programatik | `components/SiteHeader.tsx:108-119` |
+| A3 | **Rasio kontras** `text-neutral-500`/`neutral-400` pada putih berpotensi < 4.5:1 `[PERLU VERIFIKASI]` — kebijakan warna dimiliki `DESIGN-SYSTEM.md` | — |
+| A4 | Reveal `MarqueeTape` menggunakan `onMouseEnter/Leave` (pointer) untuk jeda; tidak ada padanan keyboard (ticker tidak interaktif, jadi minor) | `MarqueeTape.tsx:92-97` |
+| A5 | Halaman daftar (`/stories`, `/kurasi`, `/videos`) memakai `<h2>` untuk judulnya, bukan `<h1>`; `<h1>` sitewide dipakai masthead | `app/(site)/**/page.tsx` |
+| A6 | `.video-action-reveal` mulai dari `max-width: 0` + `opacity: 0` + `pointer-events: none`; pasangan `:focus-within` sudah ada sehingga keyboard **sudah** bisa memunculkannya | `app/globals.css:378-399` |
 
-**Rekomendasi perbaikan (RENCANA, bukan fase ini):** pada §10.3 layanan CSS,
-tambahkan pasangan `:focus-within` untuk tiap `.group:hover` dan `:hover` pada
-utilitas reveal; tambahkan focus trap + `inert` pada dialog; asosiasikan label
-form; tambahkan skip-link.
+**Catatan positif (perubahan sejak versi dokumen sebelumnya):** `ACC-002`
+**terpenuhi** — `globals.css` kini memuat kembaran `:focus-within` untuk setiap
+utilitas reveal (`text-outline-muted`, `editorial-img`, `hover-reveal-curtain`,
+`hover-reveal-tag`, `corner-frame`, `dash-reveal-prefix`, `video-action-reveal`).
+Skip-link sudah ada. Label form sudah terasosiasi. `VideoModal` sudah mengelola
+fokus. Empat gap lama (A2, A3, A4, A5 versi lama) sudah tertutup.
 
 ### 10.3 Verifikasi interaksi hover yang dikunci (`DEC-002`, `DEC-003`)
 
-Tiga perilaku dikunci pemilik (brief §8). Ketiganya **ADA** di kode, tetapi
-**hanya via `:hover`** — karena itu tetap melanggar `ACC-002`.
+Tiga perilaku dikunci pemilik. Ketiganya **ADA** di kode, dan kini **juga**
+aktif lewat keyboard.
 
 | Locked interaction | Ada? | Implementasi | Dipakai di | Catatan fungsional |
 |---|---|---|---|---|
-| `DEC-002` strip `—` pada hierarchy heading | **Ada di CSS, tanpa pemakaian** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` | — (satu-satunya pemakainya, `JournalBrowser`, dihapus 16 Okt 2026) | Hover-only (A1). Utilitas dibiarkan di `globals.css` untuk heading hierarki berikutnya |
-| `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover .video-action-reveal` | ROUTE-001 (video teaser + genre rows), ROUTE-005 (`VideoRow`) | Hover-only (A1, A6). **Nilai fungsional bervariasi** — lihat di bawah. ROUTE-006 tidak lagi memakai reveal: grup aksi dihapus atas permintaan |
-| Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` (curtain) + `.corner-frame` (bracket), pemicu `.group:hover …` | Curtain: `ArticleCards.CardImage` (ROUTE-002/003) & `FrontCard` (ROUTE-001). Bracket: juga pada box gambar ROUTE-001 (genre) & ROUTE-006 | Hover-only (A1). Di ROUTE-001 genre & ROUTE-006 bracket muncul **tanpa** curtain (tidak ada `.hover-reveal-curtain` di sana) |
-
-**Temuan fungsional (gap yang harus diperbaiki, `TERVERIFIKASI`):**
-
-- **ROUTE-001 genre rows:** tombol `▶` di dalam `.video-action-reveal` adalah
-  `<span>`, dan badge `M | Watch ↗` adalah `<div>` — **tidak ada** elemen
-  interaktif. Barisnya ber-`cursor-pointer` tetapi tanpa handler/link. Reveal-nya
-  **murni dekoratif**; tidak ada tujuan navigasi.
-- **ROUTE-006 `pahlawan-kota`:** grup aksi (`▶`/`✎`, `—`, badge `M | READ/WATCH ↗`)
-  **dihapus atas permintaan**. Baris kini signpost murni — tidak ada objek `target`,
-  `WatchButton`, maupun `VideoModal`; baris dibaca Sanity-first (`pahlawanRow`).
-- **ROUTE-005 `VideosBrowser`:** ▶ adalah `WatchButton` fungsional dan judul adalah
-  `WatchLink`; badge `M | Watch ↗` tetap `<div>`. Ini instance yang paling lengkap.
-- **ROUTE-001 video teaser:** ▶ adalah `WatchButton`, judul adalah `WatchLink`,
-  badge `<div>`. Lengkap.
-
-Ringkasan: `DEC-002` **terpenuhi secara visual** (satu permukaan, ROUTE-002);
-`DEC-003` **terpenuhi secara visual** pada baris video (ROUTE-001/ROUTE-005;
-ROUTE-006 dikecualikan atas permintaan); **curtain + bracket terpenuhi** di kartu
-artikel. Yang **belum**: paritas keyboard
-(`ACC-002`), dan "wiring" navigasi pada baris genre `ROUTE-001`
-(meski ini lebih dekat ke `FR-001`/`FR-004` daripada ke `DEC-002`/`DEC-003`).
+| `DEC-002` strip `—` pada hierarchy heading | **Ada di CSS** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` **dan** `:focus-within` | — (utilitas tersedia untuk heading hierarki berikutnya; pemakai sebelumnya, `JournalBrowser`, sudah dihapus) | Sudah ada pasangan keyboard |
+| `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover` **dan** `.group:focus-within` | ROUTE-005 (`VideoRow`) | `▶` = `WatchButton` fungsional, judul = `WatchLink`, badge `M \| Watch ↗` = `<div>` dekoratif |
+| Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` + `.corner-frame`; pemicu `.group:hover` **dan** `.group:focus-within` | Curtain: `ArticleCard.CardImage` (ROUTE-002/003) · Bracket: `ArticleCard.CardImage` dan `FrontCard` (ROUTE-001) | Curtain hanya ada pada kartu artikel, bukan pada `PillarCard` |
 
 ### 10.4 Responsive (`TERVERIFIKASI`, ringkas)
 
-Breakpoint Tailwind (`sm`/`md`/`lg`) mengemudi: masthead 3 kolom di `md+` (wordmark
-span penuh di bawah `md`); nav desktop `lg:flex`, drawer `lg:hidden`; grid kartu
-1→2→4 kolom (`/stories`) dan 1→2→5 (`/spaces`, playlists); baris video
-`flex-wrap` → `md:flex-nowrap`; `DemoPortal` `lg:grid-cols-12` (8+4).
-`body { overflow-x: hidden }` dipasang global. Tap target tombol play bulat
-`h-11 w-11` (44px) — sesuai batas minimum.
+Breakpoint Tailwind (`sm`/`md`/`lg`/`xl`) mengemudi: masthead 3 kolom di `md+`
+(wordmark baris penuh di bawah `md`); nav desktop `lg:flex`, drawer `lg:hidden`;
+grid beranda 1→2 kolom (`sm`); strip kurasi 2→4 kolom (`lg`); grid `/stories`
+1→2→4 kolom; grid kurasi 2→3→6 kolom; blok "More" 1→2→3 kolom; grid playlist
+1→2→5 kolom; `VideoRow` `flex-wrap` → `md:flex-nowrap`; cover artikel
+`max-w-md` di tengah; baris video `min-w-[240px]`. `body { overflow-x: hidden }`
+dipasang global. Tap target tombol play bulat `h-11 w-11` (44px) — sesuai batas
+minimum.
 
 ---
 
@@ -735,41 +867,54 @@ yang dieksekusi pada fase DOCS ini.
 
 | Task ID | Task | Route/Komponen terkait | Dependencies | Acceptance Criteria | Tests |
 |---|---|---|---|---|---|
-| FE-A1 | Bekukan `lib/content.ts` sebagai read-only selama migrasi | `lib/content.ts` | — | Tidak ada tulis simbolis; pembaca berhenti memodifikasi | lint + review diff |
-| FE-A2 | Tambah lapisan akses server-only `lib/cms/*` (di atas Payload) | baru | Payload terpasang | Client tidak pernah mengimpor `lib/cms` (R7) | aturan lint/boundary |
-| FE-A3 | Tambah pasangan `:focus-within` untuk seluruh utilitas reveal | `globals.css` | — | Semua `.group:hover` punya pasangan `:focus-within` | uji keyboard manual/E2E (`ACC-002`) |
-| FE-B1 | `/stories` membaca artikel dari Sanity dan merender satu grid 6 kartu feed foto (penyederhanaan Stories, **selesai** 16 Okt 2026) | ROUTE-002 | — | 12 kartu selalu tampil; tanpa state klien | Playwright: hitung 12 kartu (`E-03`) |
-| FE-B2 | `/stories/[slug]` membaca via Payload + revalidasi | ROUTE-003 | FE-A2 | 12 slug awalnya tetap valid; slug tak ada → 404 | unit lookup + E2E 404 |
-| FE-C1 | Migrasi `/submit` ke koleksi `DemoSubmissions` + moderasi | ROUTE-008, ROUTE-009 | FE-A2 | Buat → `moderation_status='pending'`; antrean publik hanya `approved` | integrasi + E2E submit |
-| FE-C2 | **Dibatalkan 16 Okt 2026** — antrean publik dihapus dari `/submit`; tidak ada antrean klien untuk diganti | ROUTE-008 | FE-C1 | — | — |
-| FE-C3 | Persist `contact` sebagai PII + hapus echo di `note` | ROUTE-009 | FE-C1 | Kontak tersimpan terlindungi, tidak publik | uji akses + review |
-| FE-C4 | Unggah audio ke bucket `demo-audio` (cap 25MB) | `DemoPortal` | FE-C1 | Preview tetap; unggahan sukses/gagal tertangani | E2E unggah + cap |
-| FE-D1 | Manajemen fokus `VideoModal` (trap, initial, return) | `VideoModal` | — | Fokus masuk dialog, tidak keluar, kembali ke pemicu | E2E keyboard |
-| FE-D2 | Perbaiki label form (`htmlFor`/`id`) & skip-link | `DemoPortal`, layout | — | Setiap input punya nama aksesibel | uji a11y |
-| FE-D3 | Wiring navigasi baris genre (`ROUTE-001`) | `page.tsx` | — | Baris genre punya tujuan navigasi nyata | E2E klik |
-| FE-E1 | Verifikasi build/lint/tsc + rute setelah migrasi | semua | FE-B*,FE-C* | Build hijau, tanpa regresi statis | `npm run build`, `lint` |
+| FE-A1 | Tambah `import "server-only"` pada modul yang memegang token | `lib/sanity-server.ts`, `lib/sanity-preview.ts` | — | Build gagal bila klien mengimpornya | percobaan build |
+| FE-A2 | Tambah pasangan `:focus-within` untuk seluruh utilitas reveal | `app/globals.css` | — | **selesai** — sudah ada di `globals.css` | uji keyboard manual |
+| FE-B1 | Saring status pada cabang fallback `GET /api/demos`, atau hapus cabangnya | `app/api/demos/route.ts` | — | `IN REVIEW` tak pernah terbaca publik | unit/integrasi |
+| FE-B2 | Batasi host `audioUrl` ke store Blob milik operator | `app/api/demos/route.ts` | FE-C1 | URL asing → `422` | integrasi |
+| FE-B3 | Pasang Blob store privat; server menentukan key + `access` | `app/api/demo-audio/route.ts` | — | objects tidak bisa ditulis tanpa batas | E2E unggah |
+| FE-B4 | Rate limit + `Idempotency-Key` pada `POST /api/demos` | `app/api/demos/route.ts` | — | Request berulang tidak menggandakan data | integrasi |
+| FE-C1 | Tutup `Escape` + focus management untuk drawer mobile | `components/SiteHeader.tsx` | — | `Escape` menutup; fokus masuk drawer | E2E keyboard |
+| FE-C2 | Tambahkan `aria-current` pada nav mobile | `components/SiteHeader.tsx` | — | Halaman aktif ditandai | uji a11y |
+| FE-D1 | Allowlist skema pada `marks.link` di Portable Text | `components/ArticleBody.tsx` | — | Hanya `http/https/mailto/tel` | unit |
+| FE-D2 | `typeof` check untuk `imagePath` | `lib/articles.ts` | — | Dokumen rusak tidak menggagalkan RSS | unit |
+| FE-D3 | Buang karakter terlarang XML 1.0 di `xml()` | `app/rss.xml/route.ts` | — | Feed tetap valid | unit |
+| FE-D4 | Cocokkan `id` video dengan `/^[\w-]{11}$/` di modal | `components/VideoModal.tsx` | — | Event berbahaya tidak masuk URL embed | unit |
+| FE-E1 | Endpoint moderasi kurator (aturan transisi `BR-002`) | `app/api/**` | — | Hanya kurator yang bisa mengubah status | E2E |
+| FE-F1 | Playwright: alur kritis (buka artikel, modal video, submit demo) | repo | FE-C* | 3 journey hijau | — |
+| FE-F2 | CI: `lint` + `test` + `build` | `.github/workflows/` | FE-F1 | Pipeline hijau pada setiap PR | — |
+| FE-G1 | Pasang domain `melodialam.id` + perbarui `NEXT_PUBLIC_SITE_URL` | `lib/site.ts` | — | Canonical, sitemap, OG, RSS benar | manual |
+| FE-G2 | Pasang `SANITY_PREVIEW_SECRET` terpisah + rotasi secret lama | `lib/sanity-preview.ts` | — | Satu secret = satu kapabilitas | manual |
+| FE-G3 | Webhook Sanity: centang **Create + Update**, filter 8 tipe | dashboard Sanity | — | Menyunting draf memicu revalidasi | manual |
+| FE-G4 | Pasang `RESEND_API_KEY` + `DEMO_NOTIFY_TO` | `app/api/demos/route.ts` | — | Email redaksi terkirim | manual |
+| FE-G5 | Naikkan CSP penuh ke *enforced* | `next.config.ts` | — | Tidak ada pelanggaran di console | manual |
+| FE-H1 | Buang `ParallaxImage` atau hidupkan kembali | `components/motion/` | — | Tidak ada komponen mati | — |
 
-**Paralelisme:** FE-A3, FE-D1, FE-D2, FE-D3 tidak bergantung pada Payload dan boleh
-berjalan lebih dulu (perbaikan murni front-end, langsung menutup `ACC-002`).
-FE-B* dan FE-C* bergantung pada FE-A2.
+**Paralelisme:** FE-A1, FE-C1, FE-C2, FE-D1…FE-D4, FE-H1 tidak bergantung pada
+layanan eksternal dan boleh berjalan lebih dulu. FE-B* bergantung pada FE-B3
+(Blob store). FE-F1 bergantung pada FE-C* dan FE-E1. FE-G* adalah pekerjaan
+dashboard.
 
 ---
 
 ## 12. Testing Plan
 
-Runner target: **Vitest** (unit/logic) + **Playwright** (E2E) — keputusan pemilik,
-`RENCANA`. Tidak ada skrip test di `package.json` saat ini (`TERVERIFIKASI`).
+Runner terpasang: **Vitest** (`npm test`, 9 kasus di `lib/content.test.ts`).
+Runner E2E: **Playwright belum terpasang** (`RENCANA`, ADR-0006).
 
-| Level | Sasaran | Contoh kasus |
-|---|---|---|
-| Unit | `viewCount`, `videosByVenue`, pemetaan cap `str()` | parsing "107K"→107000; filter venue; cap 120/80/160 |
-| Unit | Invarian data `lib/content.ts` | setiap `INTERVIEW_ROWS[].videoId` ada di katalog |
-| Component | `VideosBrowser` render + interaksi | filter mengubah daftar; pagination men-`disabled` PREV di hal. 1; empty-state muncul |
-| Component | `DemoPortal` state | `pending` menonaktifkan tombol; `422` menampilkan `role="alert"` per field |
-| Integration | `POST /api/demos` kontrak | `400`, `422` (per-field), `201`; `queue.unshift` |
-| E2E | Journey kritis | buka artikel dari kartu → `/stories/[slug]`; buka modal via `WatchButton` → tutup `Escape`; submit demo sukses |
-| E2E | Keyboard/`ACC-002` | Tab ke tombol play → reveal terlihat; Tab masuk dialog → fokus terperangkap |
-| Build | `npm run build` + `npm run lint` + `tsc --noEmit` | hijau, jumlah halaman statis terverifikasi |
+| Level | Sasaran | Contoh kasus | Status |
+|---|---|---|---|
+| Unit | `readingTimeMinutes` | `max(1, ceil(kata ÷ 200))`; 200 kata = 1 menit; 201 kata = 2 menit | `TERVERIFIKASI` — lulus |
+| Unit | `pillarDate` | `"2026-03-04"` → `"4 Mar 2026"`; `null` → `""` | `TERVERIFIKASI` — lulus |
+| Unit | `isArticleCategory` | Menerima `"Fakta Musik"`; menolak string lain dan non-string | `TERVERIFIKASI` — lulus |
+| Unit | `str()` + cap field | `artist` 120, `city` 80, `title` 160, `story` 2000 | `RENCANA` |
+| Unit | Parsing `viewCount` | `"107K"` → 107000 | `RENCANA` |
+| Component | `KurasiBrowser` | chip menyaring; bagian kosong menghilang; empty-state muncul | `RENCANA` |
+| Component | `DemoPortal` state | `pending` menonaktifkan tombol; `422` menampilkan `role="alert"` per field | `RENCANA` |
+| Integration | `POST /api/demos` | `400`, `413`, `422` (per-field), `201`; `demoContact` terpisah dari `demoSubmission` | `RENCANA` |
+| Integration | `POST /api/revalidate` | `500` tanpa env, `401` secret salah, `200` + 6 tag | `RENCANA` |
+| E2E | Journey kritis | buka artikel dari kartu → `/stories/<slug>`; buka modal via `WatchButton` → tutup `Escape`; submit demo sukses | `RENCANA` (Playwright) |
+| E2E | Keyboard/`ACC-002` | Tab ke tombol play → reveal terlihat; Tab masuk dialog → fokus terperangkap | `RENCANA` (Playwright) |
+| Build | `npm run build` + `npm run lint` + `npm test` | hijau; jumlah halaman statis = 33 | `TERVERIFIKASI` — hijau saat revisi ini ditulis |
 
 **Anti-pola yang dihindari:** jangan menulis test yang hanya meng-cermin detail
 implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
@@ -782,22 +927,24 @@ implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
 
 | ID | Risiko | Bukti/status | Mitigasi |
 |---|---|---|---|
-| FE-R1 | Tailwind content scan menabrak direktori tool baru → CSS kosong senyap | `TERVERIFIKASI` (`@source not` ×3) | Tambah `@source not` untuk setiap direktori tool baru (`RISK-001`) |
+| FE-R1 | Tailwind content scan menabrak direktori tool baru → CSS kosong senyap | `TERVERIFIKASI` (`@source not` ×3) | Tambah `@source not` untuk setiap direktori tool baru |
 | FE-R2 | Batas client salah → SSR membawa state tersembunyi | `TERVERIFIKASI` (aturan SSR-renders-final) | Review setiap client component baru terhadap aturan |
-| FE-R3 | Migrasi membuat dua sumber kebenaran editorial | `RENCANA` | Bekukan `lib/content.ts` read-only; migrasi per-halaman (`RISK-005`) |
-| FE-R4 | Client component ikut menyeret dataset besar (mis. seluruh katalog) | `TERVERIFIKASI` (`VideosBrowser` impor `@/lib/catalogue`) | `ADR-0004` menahan katalog di build-time; optimasi kirim-potongan via props sebagai `RENCANA` opsional |
-| FE-R5 | `ACC-002` tertinggal → regresi aksesibilitas permanen | `TERVERIFIKASI` (grep `:focus` = 0) | FE-A3 masuk Fase A; uji keyboard di Definition of Done |
+| FE-R3 | Dua sumber kebenaran editorial (CMS vs `lib/content.ts`) | `TERVERIFIKASI` — disengaja (ADR-0008) | Jaga `lib/content.ts` sebagai fallback, bukan sumber |
+| FE-R4 | Client component menyeret dataset besar | `TERVERIFIKASI` — `KurasiBrowser` menerima `posts` sebagai props (bukan mengimpor Sanity) | Pertahankan pola "data masuk via props" |
+| FE-R5 | `ACC-002` regresi → affordance hover kembali hover-only | `TERVERIFIKASI` — pasangan `:focus-within` ada; bisa hilang diam-diam saat utilitas CSS diedit | Uji keyboard di Definition of Done |
 | FE-R6 | Event `melodi:watch` global tanpa tipe → dua modal bentrok | `TERVERIFIKASI` (satu modal per halaman) | Pertahankan invarian satu `<VideoModal />`/halaman |
-| FE-R7 | `GET /api/demos` tanpa konsumen saat migrasi → antrean tetap palsu | **Dihapus 16 Okt 2026** — antrean publik dihapus dari `/submit`; `GET` tetap tanpa konsumen | — |
+| FE-R7 | `GET /api/demos` tanpa konsumen | `TERVERIFIKASI` | Tetap pertahankan sebagai endpoint kurator, atau hapus saat moderasi dibangun |
+| FE-R8 | Komponen mati menumpuk (`ParallaxImage`) | `TERVERIFIKASI` — tidak ada importer | FE-H1 |
+| FE-R9 | Path gambar rusak membuat satu dokumen menggagalkan seluruh RSS | `TERVERIFIKASI` — `imagePath` tidak di-*type-check* | FE-D2 |
 
 ### 13.2 Open Questions (ringkas; detail di akhir dokumen)
 
-- Nama ADR `ADR-0002`…`ADR-0005` dipakai lintas dokumen, tetapi `docs/adr/` belum
-  ada `[PERLU VERIFIKASI]`.
-- Apakah `/stories/[slug]` tetap ingin *statis* atau menerima ISR/revalidasi saat
-  konten menjadi editable? (`FR-007`/`NFR-001` menuntut keputusan ini.)
-- **Ditutup 16 Okt 2026:** antrean publik dihapus dari `/submit`; pertanyaan
-  pangkas-`story` tidak berlaku lagi.
+- Apakah `dynamicParams` pada `/stories/[slug]` dibiarkan default (slug Sanity
+  dirender on-demand) atau dikunci?
+- Kapan `ParallaxImage` dibuang atau dihidupkan kembali?
+- Kapan Playwright dan CI masuk?
+- Apakah `melodialam.id` akan menjadi origin kanonik, dan apa yang terjadi pada
+  env lama?
 
 ---
 
@@ -805,100 +952,142 @@ implementasi (mis. menghitung render) tanpa memverifikasi perilaku pengguna.
 
 Front-end dianggap selesai untuk suatu fase bila, secara **observable**:
 
-1. **Fungsional** — semua 8 rute halaman + `/api/demos` + 404 berperilaku seperti
-   §3; filter/search/pagination bekerja; modal video buka/tutup; submit demo
-   menghasilkan status yang benar.
-2. **State** — tidak ada duplikasi sumber kebenaran; filter berubah → `page` 0;
-   submit sukses → form reset + audio revoked; satu `<VideoModal />` per halaman.
+1. **Fungsional** — 9 rute halaman + 3 route handler API + 2 redirect + feed/
+   sitemap/robots berperilaku seperti §3; kurasi bisa dicari dan difilter;
+   modal video buka/tutup; submit demo menghasilkan status yang benar.
+2. **State** — tidak ada duplikasi sumber kebenaran; daftar cerita berasal dari
+   satu fungsi (`latestStories`); submit sukses → form reset + object URL
+   dicabut; satu `<VideoModal />` per halaman.
 3. **Aksesibilitas** — reduced motion dihormati; **`ACC-002` terpenuhi**
    (reveal dapat dimunculkan via `:focus-within`); dialog mengelola fokus;
-   label form terasosiasi; `aria-current` di nav desktop **dan** mobile.
-4. **Interaksi terkunci** — `DEC-002` dan `DEC-003` tetap ada pada baris video;
-   direktori `/pahlawan-kota` sengaja tanpa aksi (grup dihapus atas permintaan).
-5. **Data** — katalog tetap build-time (`ADR-0004`); editorial dari Payload
-   (`ADR-0002`, `ADR-0003`); moderasi demo tetap (`ADR-0005`), tetapi antrean
-   publik dihapus dari `/submit` (16 Okt 2026).
-6. **Build & test** — `npm run build`, `npm run lint`, `tsc --noEmit` hijau;
-   unit + E2E kritis lulus; jumlah halaman statis tidak turun tanpa alasan.
+   label form terasosiasi; skip-link ada; `aria-current` di nav desktop **dan**
+   mobile.
+4. **Interaksi terkunci** — `DEC-002` dan `DEC-003` tetap ada pada baris video dan
+   punya pasangan keyboard.
+5. **Data** — katalog tetap build-time (ADR-0004); editorial dari Sanity
+   (ADR-0008); moderasi demo ditegakkan di kode (ADR-0005).
+6. **Build & test** — `npm run build`, `npm run lint`, `npm test` hijau; jumlah
+   halaman statis tidak turun tanpa alasan (baseline: 33).
 7. **Konvensi** — nama kelas Tailwind literal; `@source not` lengkap; `next/image`
-   `fill` selalu punya ancestor berposisi.
+   `fill` selalu punya ancestor berposisi; satu `<Link>` per kartu; thumbnail
+   YouTube tetap `<img>` + `srcset`.
 
 ---
 
 ## Verification Notes
 
-Berkas yang dibaca **langsung** untuk dokumen ini (semua di
+Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 `D:\Project Website Melodi Alam\melodi-alam\`):
 
-- `app/layout.tsx` — 4 font variable, `MotionRoot`, `ScrollProgress`, `Ticker`,
-  `SiteHeader`, `<main>`, `SiteFooter`, `metadata`; `data-scroll-behavior="smooth"`.
-- `app/not-found.tsx` — 404 memakai `PRIMARY_NAV`.
-- `app/page.tsx` (ROUTE-001) — konsumsi `ARTICLES`, `GENRE_ROWS`, `INTERVIEW_ROWS`,
-  `SPACE_ITEMS`, `latestVideos`, `videosByIds`, `CHANNEL`, `COUNTS`; pemakaian
-  `RevealText`/`CountUp`/`ParallaxImage`/`WatchButton`/`WatchLink`/`VideoModal`.
-- `app/stories/page.tsx` — `Reveal` + grid `ArticleCard` (6 kartu, `feedArticles()`);
-  `JournalBrowser` dihapus 16 Oktober 2026.
-- `app/stories/[slug]/page.tsx` — `generateStaticParams`, `generateMetadata`,
-  `notFound()`, `ArticleCard`, drop cap; **tidak ada `Reveal`**.
-- `app/bicara-melodi/page.tsx` — `INTERVIEW_ROWS` + `videosByIds` + `WatchButton`
-  + `VideoModal`.
-- `app/videos/page.tsx` — `PLAYLISTS` (sortir count), `CHANNEL`, `COUNTS`,
-  `VideosBrowser`, `VideoModal`.
-- `app/pahlawan-kota/page.tsx` — `GENRE_ROWS`; objek `target` dihitung tetapi
-  **hanya `label`** yang dipakai (temuan gap §10.3).
-- `app/spaces/page.tsx` — `SPACE_ITEMS`, link `<a>` kondisional.
-- `app/submit/page.tsx` — `Reveal` + `DemoPortal`.
-- `app/api/demos/route.ts` — `GET`/`POST`, cap field, validasi, `400/422/201`,
-  `contact` tak dipersistensi, `note`.
-- `app/globals.css` (seluruh 373 baris) — `@source not` ×3, `@theme`, seluruh
-  `@utility`, selektor `.group:hover`, blok `prefers-reduced-motion`.
-- `components/SiteHeader.tsx`, `SiteFooter.tsx`, `Ticker.tsx`, `ScrollProgress.tsx`,
-  `Reveal.tsx`, `ArticleCards.tsx`, `VideosBrowser.tsx`,
-  `VideoModal.tsx`, `WatchLink.tsx`, `DemoPortal.tsx`, `MelodiAlamLockup.tsx`.
-- `components/motion/MotionRoot.tsx`, `RevealText.tsx`, `ParallaxImage.tsx`,
-  `CountUp.tsx`, `MarqueeTape.tsx`.
-- `lib/site.ts`, `lib/catalogue.ts`, `lib/content.ts` (tipe + ekspor + seed/enum).
-- `package.json`, `next.config.ts` (versi, skrip, `cacheComponents`,
-  `partialPrefetching`, `remotePatterns`).
-- `docs/ARCHITECTURE.md`, `docs/DATA-MODEL.md` (acuan ADR & skema target).
-- Brief `melodi-docs-brief.md` (ground truth).
+- `package.json` — 10 skrip npm, versi dependency, port 3100.
+- `next.config.ts` — `cacheComponents`, `partialPrefetching`, `poweredByHeader`,
+  blok `headers()` (CSP enforced + report-only, HSTS, Permissions-Policy),
+  `images.remotePatterns`, aturan Turbopack.
+- `app/globals.css` — seluruh 481 baris: `@source not` ×3, `@theme`, seluruh
+  `@utility`, pasangan `.group:focus-within` (7 pasang), blok
+  `prefers-reduced-motion` dengan `.parallax-layer`.
+- `app/(site)/layout.tsx` — 4 font, skip-link, JSON-LD `WebSite`/`Organization`,
+  auto-discovery RSS, urutan provider, `<main id="main" tabIndex={-1}>`,
+  `SiteFooter settings`, `<Analytics />`.
+- `app/(site)/page.tsx` — `latestStories(8)`, slice 4, `FrontCard`, `CountUp`
+  dua kali, `PillarCard` ×4, `allVideos()` untuk menghitung sesi terkurasi.
+- `app/(site)/stories/page.tsx` — `latestStories(8)`, grid `sm:grid-cols-2
+  lg:grid-cols-4`, `titleFirst={i % 2 === 1}`, `cardCurtain.articleLabel`/
+  `articleCta`, baris "Curated News ↗".
+- `app/(site)/stories/[slug]/page.tsx` — `generateStaticParams`,
+  `instant = false`, `generateMetadata`, JSON-LD `Article` + `BreadcrumbList`,
+  cover 4:5 `max-w-md`, `ArticleBody`, blok "More" 3 kartu.
+- `app/(site)/stories/[slug]/opengraph-image.tsx` — `ImageResponse` 1200×630,
+  `alt`, `size`, `contentType`.
+- `app/(site)/videos/page.tsx` — `SAMSARA_PREVIEW = 9`, `VideoRow`,
+  `getVideosPageCopy()`, grid playlist `lg:grid-cols-5`, `<VideoModal />`.
+- `app/(site)/bicara-melodi/page.tsx` — `allInterviews()`, `videoById`,
+  `YoutubeThumb` 160 px di dalam `WatchButton`, `<VideoModal />`.
+- `app/(site)/kurasi/page.tsx` — `allPillarPosts()` → `KurasiBrowser`.
+- `app/(site)/tentang/page.tsx` — 3 blok, kontak, alamat Samsara, kanal resmi,
+  tautan RSS.
+- `app/(site)/submit/page.tsx` — `DemoPortal`.
+- `app/(site)/not-found.tsx` — `PRIMARY_NAV`.
+- `app/(site)/journal/route.ts`, `app/(site)/journal/[slug]/route.ts` —
+  `Response.redirect(..., 308)`.
+- `app/(site)/preview/[type]/[slug]/page.tsx` — `robots: { index: false }`,
+  `instant = false`, `secretMatches`, tipe `journal` dan `kurasi`.
+- `app/(site)/sitemap.ts`, `app/rss.xml/route.ts`, `app/robots.ts` — sumber
+  `latestStories(8)`, `disallow: "/api/"`.
+- `app/api/demos/route.ts` — GET/POST, cap field, validasi, status
+  `400/413/422/503/201`, `demoSubmission` + `demoContact`, notifikasi Resend,
+  fallback `memoryQueue`, `APPROVED_QUERY`.
+- `app/api/demo-audio/route.ts` — `handleUpload`, `DEMO_AUDIO_TYPES`,
+  `DEMO_AUDIO_MAX_BYTES`, `400` tanpa token.
+- `app/api/revalidate/route.ts` — 6 tag, `timingSafeEqual`, `500`/`401`/`200`.
+- `components/*` — 13 berkas ber-`"use client"` (hasil grep directive) dan 7
+  berkas server: `ArticleCards.tsx`, `ArticleBody.tsx`, `PillarCards.tsx`,
+  `VideoRow.tsx`, `SiteFooter.tsx`, `Ticker.tsx`, `MelodiAlamLockup.tsx`.
+  `components/motion/ParallaxImage.tsx` dibaca utuh dan **tidak diimpor siapa
+  pun** (grep terhadap seluruh repo).
+- `lib/*` — articles, content, taxonomy, sanity, sanity-server, sanity-preview,
+  sanity-project, pillars, pillars-shared, videos, videos-page, interviews,
+  site-settings, site, catalogue, catalogue.json, content.test.ts.
+- `docs/adr/0008-sanity-studio-menggantikan-payload.md`,
+  `docs/adr/0004-katalog-video-build-time.md` — untuk status keputusan.
+- `docs/AUDIT-2026-10-21.md` — sumber temuan F01–F10 (dirujuk, bukan
+  diverifikasi ulang).
 
-Pemeriksaan grep yang dijalankan:
+**Dijalankan pada revisi ini:**
 
-- `/api/demos|SEED_DEMOS` (hanya `*.tsx`) → hanya `DemoPortal` (POST), **tidak ada**
-  konsumen `GET`. (**Pembaruan 16 Okt 2026:** `SEED_DEMOS` juga sudah tidak ada di
-  `DemoPortal` — antrean publik dihapus.)
-- `focus-within|:focus|focus-visible` pada `app/globals.css` → **0 hasil**
-  (dasar temuan A1 / `ACC-002`).
+- `npm run build` → **sukses**, `Generating static pages using 11 workers (33/33)`.
+  Bentuk rute terbaca dari tabel output: `○` untuk `/`, `/stories`, `/kurasi`,
+  `/videos`, `/bicara-melodi`, `/tentang`, `/submit`, `/rss.xml`, `/sitemap.xml`,
+  `/robots.txt`; `◐` untuk `/stories/[slug]` (12 slug ter-prerender + "+10 more
+  paths") dan `/preview/[type]/[slug]`; `ƒ` untuk `/journal`, `/journal/[slug]`,
+  `opengraph-image`, `twitter-image`, dan ketiga route API.
+- `npm run lint` → **bersih**, tanpa keluaran.
+- `npm test` → **9/9 lulus** (`lib/content.test.ts`, 3 ms).
 
-**Tidak dijalankan:** `npm run build`, `npm run dev`, `npm run lint`, `npm run
-catalogue`. **Tidak ada** berkas selain `docs/FRONTEND-PLAN.md` yang dibuat atau
-diubah. Fase DOCS ONLY dipatuhi.
+**Tidak dijalankan / tidak diperiksa:**
 
-Yang **tidak** dapat dikonfirmasi dari sumber (ditandai `[PERLU VERIFIKASI]` di
-teks): teks persis PRD untuk `FR-001`…`FR-007`, `ACC-001`…`ACC-003`,
-`NFR-001`…`NFR-004`; penomoran/berkas ADR; komposisi persis "26 static pages";
-kontras warna final (dimiliki `DESIGN-SYSTEM.md`).
+- `npm run dev` (server pengembangan) dan seluruh skrip `scripts/` — tidak
+  diperlukan untuk memverifikasi klaim dokumen ini.
+- **Kondisi produksi** (Vercel, Sanity, domain, Blob store, Resend, Web
+  Analytics, konfigurasi webhook): diambil dari `docs/AUDIT-2026-10-21.md` dan
+  **tidak** diverifikasi ulang. Tidak ada permintaan jaringan ke produksi yang
+  dilakukan.
+- **Jumlah dokumen nyata di Sanity** (`pillarPost` 55 posting, `article` 6 foto +
+  6 reel, `pillar` per posting): berasal dari `docs/SANITY-INTEGRATION.md` dan
+  `docs/AUDIT-2026-10-21.md`, bukan dari pengukuran langsung. Di mana pun
+  jumlah itu disebut di dokumen ini, nilainya ditandai `[PERLU VERIFIKASI]`.
+- **Angka "9 sesi panggung"** pada baris hitung beranda: dihitung saat render
+  dari `videos.filter((video) => video.source === "cms").length`, jadi nilainya
+  bergantung pada isi dataset CMS saat ini — **tidak** diverifikasi di sini.
+- Kontras warna final (dimiliki `DESIGN-SYSTEM.md`).
+- `docs/PRD-REFERENCE.md` masih memuat baris usang (menyebut `VideosBrowser`,
+  `/pahlawan-kota`, dan menandai `BR-001`/`BR-004` "BELUM"); dokumen itu berada
+  di luar lingkup revisi ini.
+- Tidak ada berkas selain `docs/FRONTEND-PLAN.md` yang dibuat atau diubah.
 
 ---
 
 ## Open Questions
 
-1. **Teks & pemetaan ID PRD.** Dokumen ini memakai `FR`/`ACC`/`NFR`/`DEC` sesuai
+1. **Teks & pemetaan ID PRD.** Dokumen ini memakai `FR`/`ACC`/`NFR`/`BR` sesuai
    brief dan `ARCHITECTURE.md`, tetapi PRD mentah tidak ada di repo. Pemetaan
-   `FR-001`…`FR-004` dan `NFR-001`…`NFR-004` adalah `ASUMSI` — perlu diselaraskan
-   dengan `docs/PRD-REFERENCE.md`.
-2. **Berkas ADR.** `ADR-0002`…`ADR-0005` diacu lintas dokumen, tetapi
-   `docs/adr/000N-*.md` belum ada. Perlu dibuat agar rujukan tidak menggantung.
-3. **Mode render `/stories/[slug]` pasca-CMS.** Tetap sepenuhnya statis, memakai
-   ISR, atau on-demand revalidation? Ini keputusan arsitektur yang memengaruhi
-   `FR-007`/`NFR-001` dan belum diputuskan.
-4. **Cakupan antrean publik.** **Ditutup 16 Okt 2026:** antrean publik dihapus
-   dari `/submit`; pertanyaan pangkas-`story` tidak berlaku lagi.
-5. **Nasib `GET /api/demos`.** Tanpa konsumen hari ini; apakah tetap dipertahankan
-   sebagai endpoint kurator, atau diganti server component di migrasi?
-6. **`dynamicParams` pada `/stories/[slug]`.** Dibiarkan default (slug tak dikenal
-   dirender on-demand lalu 404). Perlu dikonfirmasi apakah pemilik menginginkan
-   `dynamicParams = false` untuk build yang lebih ketat.
-7. **Kontras warna.** `text-neutral-500`/`neutral-400` pada latar putih berpotensi
-   di bawah 4.5:1; `DESIGN-SYSTEM.md` yang memutuskan, bukan dokumen ini.
+   `FR-001`…`FR-007` dan `NFR-001`…`NFR-004` adalah `ASUMSI` — perlu
+   diselaraskan dengan `docs/PRD-REFERENCE.md`, yang sendiri masih memuat baris
+   usang.
+2. **`dynamicParams` pada `/stories/[slug]`.** Dibiarkan default, sehingga artikel
+   yang hanya ada di Sanity dirender on-demand lalu di-*cache*. Perlu dipastikan
+   apakah ia perlu dikunci ke build (`dynamicParams = false`) atau dibiarkan
+   on-demand.
+3. **Cabang fallback antrean demo.** Tanpa `SANITY_API_READ_TOKEN`, `GET /api/demos`
+   mengembalikan seluruh antrean termasuk `IN REVIEW`. Disaring atau dihapus?
+4. **Aktor moderasi.** Siapa yang menjalankan perubahan status `BR-002`? Studio,
+   halaman admin sendiri, atau CLI?
+5. **Bucket audio.** Privat atau publik? Token unggah saat ini diterbitkan ke
+   peramban (`access: "public"`), dan nama file asli ikut ke URL publik.
+6. **`ParallaxImage`.** Komponen mati yang belum dibuang — dibuang, atau ada
+   rencana memakainya lagi?
+7. **Kontras warna.** `text-neutral-500`/`neutral-400` pada latar putih
+   berpotensi di bawah 4.5:1; `DESIGN-SYSTEM.md` yang memutuskan, bukan dokumen
+   ini.
+8. **Menu mobile & `aria-current`.** Dua hal yang belum dikerjakan dan tidak
+   bertentangan dengan keputusan apa pun — tinggal dikerjakan.

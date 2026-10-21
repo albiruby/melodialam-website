@@ -5,17 +5,151 @@ Semua perubahan penting pada proyek ini didokumentasikan di berkas ini.
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/id/1.1.0/), dan versi
 mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
-> **Catatan kejujuran riwayat.** Repositori ini baru memiliki satu commit di Git
-> (*"Initial commit from Create Next App"*). Seluruh pekerjaan di bawah ini berada di
-> working tree dan **belum pernah di-commit** sebelum entri ini disusun. Karena itu
-> bagian `0.1.0` mencatat keadaan yang dicapai, bukan riwayat commit per commit.
-> Semua klaim di sini dapat diverifikasi terhadap kode di repositori saat ini.
+> **Catatan kejujuran riwayat.** Entri `0.1.0` (14 Oktober 2026) menandai keadaan
+> saat rilis pertama — saat itu repositori baru berisi satu commit dan seluruh
+> pekerjaan ada di working tree. Repositori kini memiliki 61 commit, dan semua
+> entri di bawah `0.1.0` bisa diverifikasi ke kode serta ke riwayat Git. Daftar
+> status yang masih menunggu tindakan pemilik ada di bagian *Known Issues*.
 
 ---
 
 ## [Unreleased]
 
 Belum ada.
+
+---
+
+## [0.2.0] — 2026-10-21
+
+Rilis kedua: situs dipindah dari berkas statis ke Sanity, diberi Curator News
+berupa pillar dari feed Instagram, dan seluruh komponen editorial disatukan
+pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
+
+### Added
+
+**CMS (Sanity)**
+
+- Studio Sanity pindah ke repo sendiri (`melodialam-sanity`) dan di-deploy ke
+  `sanity.studio` — bukan lagi Studio tertanam di aplikasi web.
+- Tipe konten: `siteSettings`, `article`, `interview`, `video`, `playlist`,
+  `pillarPost`, `videosPage` pada dataset `production` (publik), serta
+  `demoSubmission` dan `demoContact` pada dataset `submissions` (privat).
+- Isi statis di `lib/content.ts` bertahan sebagai fallback bila Sanity tak
+  terjangkau, sehingga halaman tetap tampil.
+- Webhook Sanity memanggil `POST /api/revalidate` dengan enam tag, sehingga
+  satu kali Publish membersihkan cache konten yang relevan.
+
+**Kurasi**
+
+- `pillarPost` dengan 55 post aktif: fakta-musik 16, lirik 3, trivia 2,
+  kutipan 6, rekomendasi 8, ulas-melodi 3, clipper 17. Pilar `similar-song`
+  dan `meme-humor` ada di skema tetapi belum berisi post.
+- Halaman `/kurasi` (Curated News): kotak cari, chip per pilar, blok BACA dan
+  TONTON, enam post per pilar, dan anchor per pilar.
+
+**Pengiriman demo**
+
+- Audio demo diunggah langsung ke Vercel Blob lewat token unggah, sehingga
+  berkas 25 MB tidak pernah melewati fungsi serverless.
+- Kontak PIC disimpan terpisah di `demoContact`, bukan dikubur di dalam catatan.
+- Notifikasi email lewat Resend — fitur ini diam selama `RESEND_API_KEY` belum
+  diset.
+
+**Editor & SEO**
+
+- `/preview/<type>/<slug>?secret=…` untuk pratinjau draf (tanpa indeks).
+- Halaman `/tentang`.
+- Canonical di seluruh halaman, `sitemap.xml` dan `rss.xml` yang dibangun dari
+  CMS, serta `robots.txt`.
+- `opengraph-image` dan `twitter-image` per artikel (1200×630).
+- JSON-LD `WebSite`, `Organization`, dan `BreadcrumbList`.
+- Tombol berbagi pada halaman artikel.
+
+**Alat bantu**
+
+- Vitest terpasang; `npm test` menjalankan sembilan kasus di `lib/content.test.ts`.
+- `@vercel/analytics` terpasang di layout.
+
+### Changed
+
+- **Beranda** membuka diri pada grid 2×2 berisi empat kartu Latest News,
+  diikuti strip Curated News berisi empat post kurasi terbaru.
+- **`/journal` menjadi `/stories`.** Halaman memang bernama Stories, jadi
+  alamatnya ikut. URL lama `/journal` dan `/journal/<slug>` menjawab **308**
+  permanen ke alamat baru lewat route handler, sehingga tautan yang sudah
+  dibagikan dan halaman yang sudah terindeks mendarat ke artikelnya.
+- **`/videos` menjadi Melodi Samsara**: sembilan sesi panggung dan lima
+  playlist. Bagian Bicara Melodi dihapus dari sana karena episodenya sudah punya
+  halaman sendiri di `/bicara-melodi`.
+- Satu daftar cerita bersama, `latestStories(8)` di `lib/articles.ts`, dipakai
+  beranda, `/stories`, sitemap, dan feed — angka di semua halaman tidak mungkin
+  berbeda.
+- Aturan isi: Latest News dan Stories hanya memuat cerita dari **foto feed**
+  Instagram. Cerita reel ditandai lewat `article.mediaType` dan ditahan dari
+  daftar utama.
+- Cover artikel dan pilar tampil pada rasio 4:5 native, memakai `object-cover`.
+- Satu komponen `YoutubeThumb` untuk semua thumbnail: `srcset` 320w/480w/1280w
+  dan fallback maxres → sd → hq. Sengaja bukan `next/image`, karena cache
+  optimizer Vercel menahan gambar remote hampir setahun.
+- Kartu artikel, pilar, dan video kini satu `<Link>` tunggal, sehingga seluruh
+  area kartu bisa diklik.
+- `/kurasi` dipanggil Curated News, dan bagian footer "#FaktaMusik & Esai
+  Skena" mengarah ke `/stories`.
+
+### Removed
+
+- `/pahlawan-kota` beserta `lib/pahlawan.ts` — isinya pindah ke Sanity sebagai
+  arsip dan tidak lagi tampil di situs.
+- `/spaces` beserta `SPACE_ITEMS`.
+- `VideosBrowser` dan arsip `/videos/arsip`.
+- `JournalBrowser` — filter kategori dan pencarian yang pernah ada di Stories.
+- `HeroArticle`, `FeatureCard`, `GENRE_ROWS`/`GenreRow`.
+- `asOptions` di `lib/taxonomy.ts`, `videosByIds`, `videosByVenue`,
+  `demoStoreConfigured`, `draftPreviewConfigured`, `thumbnailFor`, dan
+  `interview.image`.
+- Field `cardCurtain.featureLabel` dan `cardCurtain.featureCta` (juga di
+  Studio), serta field Bicara Melodi di `videosPage`.
+
+### Fixed
+
+- Berkas audio 25 MB kini ditegakkan, lewat token unggah Blob dan batas
+  `DEMO_AUDIO_MAX_BYTES`.
+- Kontak PIC tersimpan dan dapat dibaca kurator.
+- Selektor `:focus` tersedia di `globals.css`, sehingga seluruh interaksi
+  reveal dapat dipakai dengan keyboard.
+- Waktu baca artikel dihitung dan ditampilkan di kartu.
+- `editorial-paper` akhirnya didefinisikan sebagai utility di `globals.css`.
+- Antrean demo tidak lagi hilang saat server restart — sekarang tinggal di
+  Sanity.
+- Nama merek konsisten: masthead Melodi Alam, dan halaman memakai "Melodi
+  Samsara" hanya untuk lini panggung.
+
+### Security
+
+- Audit keamanan 21 Oktober 2026 menghasilkan sepuluh temuan
+  (F01–F10). Audit berjalan tanpa sandbox sistem operasi, sehingga **tidak
+  satu pun temuan terkonfirmasi**; semuanya berstatus `needs_validation` dan
+  belum diperbaiki. Ringkasan ada di `docs/AUDIT-2026-10-21.md`, artefak
+  lengkapnya disalin ke folder audit tim.
+- `SANITY_REVALIDATE_SECRET` sempat muncul utuh di log percakapan, jadi wajib
+  dirotasi. Selama `SANITY_PREVIEW_SECRET` belum diset, rute pratinjau masih
+  memakai secret yang sama — bukan pemisahan yang semestinya.
+
+### Known Issues
+
+- `melodialam.id` belum resolve, jadi canonical, sitemap, dan kartu OG masih
+  menunjuk `https://melodialam-website.vercel.app`.
+- Blob store di Vercel belum dibuat, sehingga unggah audio demo membalas 400.
+- `RESEND_API_KEY` belum diset; notifikasi email diam.
+- Web Analytics terpasang tetapi belum dinyalakan di dasbor Vercel.
+- Webhook Sanity: "Trigger on" idealnya **Create + Update**, tetapi pemeriksaan
+  terakhir hanya menemukan **Create** tercentang — perubahan di Studio belum
+  membersihkan cache situs.
+- `SANITY_PREVIEW_SECRET` belum diset, jadi rute pratinjau memakai
+  `SANITY_REVALIDATE_SECRET` sebagai gantinya.
+- Belum ada CI: repositori tidak punya workflow `.github/`.
+- Sepuluh temuan audit belum diperbaiki.
+- `text-green-400` masih dipakai di dua tempat, di luar palet merek.
 
 ---
 
@@ -103,8 +237,8 @@ multi-halaman, terhubung ke katalog YouTube yang di-scrape dan ke set aset merek
 
 ### Fixed
 
-Delapan regresi nyata ditemukan dan diperbaiki selama pengembangan. Sebagian besar
-sempat tampak baik-baik saja, dan justru itu masalahnya.
+- Delapan regresi nyata ditemukan dan diperbaiki selama pengembangan. Sebagian besar
+  sempat tampak baik-baik saja, dan justru itu masalahnya.
 
 - **Stylesheet gagal dibangun seluruhnya tanpa error.** Scanner konten Tailwind menyisir
   `.codegraph/` dan menabrak berkas SQLite yang terkunci, membuat Turbopack *panic* dan
@@ -132,6 +266,7 @@ sempat tampak baik-baik saja, dan justru itu masalahnya.
 ### Known Issues
 
 Dicatat apa adanya, belum diperbaiki. Rincian di `docs/PRD-REFERENCE.md`.
+Seluruh butir di bawah ini sudah ditutup pada `0.2.0`, kecuali dua butir terakhir.
 
 - **Antrean demo hilang saat server restart.** Penyimpanannya array proses-lokal.
 - **Berkas audio 25 MB tidak ditegakkan** (`BR-001`). Input memakai `accept="audio/*"`

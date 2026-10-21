@@ -1,41 +1,37 @@
 # API-CONTRACTS — Melodi Alam Web Platform
 
-Dokumen ini adalah **kontrak antarmuka** platform web **Melodi Alam**: endpoint
-yang benar-benar ada hari ini, celah yang terbukti dari kode, dan kontrak target
-yang dibutuhkan stack terpilih (Payload CMS 3 di dalam app ini + Supabase).
+Dokumen ini adalah **kontrak antarmuka** platform web **Melodi Alam**: setiap
+endpoint HTTP yang benar-benar ada di repo `melodi-alam/` hari ini, lengkap
+dengan method, field, cap, status code, header, dan pesan validasi yang dibaca
+langsung dari kodenya.
 
-Isi dipisahkan eksplisit menjadi dua keadaan, mengikuti `docs/ARCHITECTURE.md`
-dan `docs/DATA-MODEL.md`:
+Tidak ada kontrak target di dokumen ini. Backend yang berjalan adalah
+**Sanity Studio** (dataset `production` publik + dataset `submissions` privat),
+bukan Payload CMS dan bukan Supabase — lihat
+[`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md).
+Semua spec lama bertanda Payload/Supabase (`/api/curator/*`, `/api/graphql`,
+`DATABASE_URL`, `demo_submissions`) sudah **dibuang** dan tidak lagi diceritakan
+sebagai fitur yang ada.
 
-- **Current State — `TERVERIFIKASI`.** Endpoint yang ada di repo `melodi-alam/`.
-  Setiap method, field, cap, status code, dan pesan validasi dibaca langsung dari
-  `app/api/demos/route.ts` dan `components/DemoPortal.tsx`.
-- **Target State — `RENCANA`.** Kontrak yang dibutuhkan fase berikutnya
-  (Payload CMS 3 + Supabase + moderated queue). Belum diimplementasikan; fase ini
-  **DOCS ONLY** — tidak ada endpoint baru yang dibuat.
+Label status:
 
-Label status: `TERVERIFIKASI` (dibaca di kode), `RENCANA` (direncanakan),
-`ASUMSI` (diasumsikan), `[PERLU VERIFIKASI]` (tidak dapat dikonfirmasi dari sumber).
+| Label | Arti |
+|---|---|
+| `TERVERIFIKASI` | Dibaca langsung di kode repo (dengan `file:line`) |
+| `RENCANA` | Direncanakan; belum ada di kode |
+| `ASUMSI` | Diasumsikan; belum bisa dipastikan |
+| `[PERLU VERIFIKASI]` | Tidak dapat diverifikasi dari workspace |
 
-Acuan keputusan: **ADR-0002** (Payload 3 in-app + Supabase), **ADR-0003**
-(Supabase = Postgres + Storage), **ADR-0005** (moderated demo queue). Acuan
-requirement: `BR-001` (batas berkas audio + tipe berkas), `RISK-001` (kontrol
-penyalahgunaan / abuse). Acuan skema data: `docs/DATA-MODEL.md`.
+Acuan requirement: **`BR-001`** (batas berkas audio + tipe berkas),
+**`RISK-001`** (kontrol penyalahgunaan). Acuan skema data:
+[`DATA-MODEL.md`](DATA-MODEL.md), [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
+Acuan audit: [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md).
 
-> Catatan cakupan. Hanya **satu** route handler yang ada di repo:
-> `app/api/demos/route.ts` (method `GET` dan `POST`). Semua endpoint lain di
-> dokumen ini diberi label `RENCANA` dan **tidak diklaim ada**.
-
-> **⚠️ Digantikan sebagian — baca ini dulu.**
-> Dokumen ini disusun saat backend direncanakan memakai **Payload CMS 3 + Supabase**.
-> Sejak itu CMS-nya diganti dengan **Sanity Studio**, dan seluruh kode Payload sudah
-> dihapus.
->
-> Bagian yang tidak lagi berlaku di dokumen ini: endpoint yang dilayani CMS (`/admin`,
-> REST/GraphQL Payload). Lihat
-> [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md)
-> dan [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) untuk keadaan sekarang. Bagian lain
-> di dokumen ini masih relevan sejauh tidak menyangkut backend.
+> **Catatan cakupan.** Repo ini punya **empat route handler** (`app/api/**`),
+> satu generator metadata (`app/robots.ts`, `app/(site)/sitemap.ts`), satu
+> route XML (`app/rss.xml/route.ts`), dan **dua route handler pengalihan
+> 308** di `app/(site)/journal/`. Semua ada di §3–§4. Tidak ada endpoint lain;
+> apa pun yang tidak ada di sini **tidak ada**.
 
 ---
 
@@ -45,221 +41,204 @@ penyalahgunaan / abuse). Acuan skema data: `docs/DATA-MODEL.md`.
 
 | Kode | Konsumen | Kebutuhan | Status |
 |---|---|---|---|
-| `C1` | `components/DemoPortal.tsx` (client component, layar `/submit`) | Mengirim satu submission via `POST /api/demos`, membaca `errors` per-field dan `error` banner | `TERVERIFIKASI` |
-| `C2` | Antrean publik *Incoming Demo Queue* di layar `/submit` | **Dihapus 16 Okt 2026** — antrean tidak lagi ditampilkan; `DemoPortal` kini hanya formulir + banner | `TERVERIFIKASI` |
-| `C3` | Kurator/editor (non-teknis) | Meninjau submission, menyetujui/menolak, membaca kontak artis | `RENCANA` (ADR-0005) |
-| `C4` | Halaman editorial (Journal, Videos) | Membaca artikel dan sesi video dari CMS | `RENCANA` (ADR-0002) |
+| `C1` | `components/DemoPortal.tsx` (client component, layar `/submit`) | `POST /api/demo-audio` (token unggah) lalu `POST /api/demos`; membaca `error` banner dan `errors` per-field | `TERVERIFIKASI` |
+| `C2` | Sanity webhook (dipasang manual di dashboard Sanity) | `POST /api/revalidate` dengan secret, untuk membuang 6 tag cache | `TERVERIFIKASI` (kode) / `RENCANA` (pasang) |
+| `C3` | Kurator/editor (non-teknis, di dalam Sanity Studio) | Membaca submission + kontak artis **di dataset privat `submissions`**, bukan lewat API | `TERVERIFIKASI` |
+| `C4` | Perayapan mesin pencari & pembaca feed | `GET /rss.xml`, `GET /sitemap.xml`, `GET /robots.txt` | `TERVERIFIKASI` |
+| `C5` | Pengunjung yang menyimpan tautan lama `/journal/...` | Redirect permanen `308` ke `/stories/...` | `TERVERIFIKASI` |
 
-Temuan penting `TERVERIFIKASI`: meski `GET /api/demos` ada, **tidak ada konsumen
-yang memanggilnya** — dan sejak 16 Okt 2026 `DemoPortal` tidak lagi menampilkan
-antrean sama sekali (hanya formulir + banner). Konsekuensinya, mengubah bentuk
-`GET` tidak memecahkan klien yang sudah dikirim — lihat §9.
+Temuan penting `TERVERIFIKASI`: **tidak ada satu pun klien di repo yang
+memanggil `GET /api/demos`.** `DemoPortal` (satu-satunya konsumen API di sisi
+browser) hanya mengirim `POST`. `GET /api/demos` tetap dipertahankan sebagai
+antrean publik baca-saja, dan bentuk responsnya **sudah** dibatasi ke baris
+berstatus disetujui.
 
 ### 1.2 Gaya antarmuka
 
 | Aspek | Nilai | Status |
 |---|---|---|
-| Gaya hari ini | REST, JSON, route handler Next.js App Router | `TERVERIFIKASI` |
-| Gaya target | REST untuk aksi domain (submit, moderasi) + **Payload REST/GraphQL** untuk koleksi editorial | `RENCANA` (ADR-0002) |
-| Format body | JSON (`application/json`) | `TERVERIFIKASI` |
+| Gaya hari ini | REST/JSON, Next.js App Router route handler | `TERVERIFIKASI` |
+| Format body | JSON (`application/json`), kecuali `POST /api/demo-audio` yang menerima body `@vercel/blob` | `TERVERIFIKASI` |
+| Format non-JSON | `GET /rss.xml` → `application/rss+xml`; `GET /robots.txt` → `text/plain`; `GET /sitemap.xml` → `application/xml` | `TERVERIFIKASI` |
 | Basis URL dev | `http://localhost:3100` (port sengaja bukan 3000) | `TERVERIFIKASI` (`package.json`) |
 | Versi kontrak | Belum berversi; tidak ada prefix `/v1` | `TERVERIFIKASI` |
 
 ### 1.3 Model autentikasi
 
-| Fase | Model | Status |
+| Endpoint | Model | Status |
 |---|---|---|
-| Hari ini | **Tidak ada autentikasi apa pun.** `GET` dan `POST /api/demos` terbuka | `TERVERIFIKASI` |
-| Target | Submission publik tetap anonim; aksi kurator butuh sesi kurator (role `curator`) | `RENCANA` (ADR-0002, ADR-0005) |
+| `GET /api/demos` | **Tidak ada autentikasi.** Terbuka publik | `TERVERIFIKASI` |
+| `POST /api/demos` | **Tidak ada autentikasi.** Terbuka publik | `TERVERIFIKASI` |
+| `POST /api/demo-audio` | **Tidak ada autentikasi.** Token unggah terbit untuk siapa pun yang meminta | `TERVERIFIKASI` |
+| `POST /api/revalidate` | **Shared secret** (`SANITY_REVALIDATE_SECRET`), dibandingkan constant-time | `TERVERIFIKASI` |
+| `GET /rss.xml` · `/sitemap.xml` · `/robots.txt` | Tidak ada autentikasi | `TERVERIFIKASI` |
+| `GET /journal` · `/journal/[slug]` | Tidak ada autentikasi | `TERVERIFIKASI` |
 
-Bentuk persis kredensial kurator (cookie sesi Payload vs Bearer JWT) dan sumber
-klaim `role` adalah `[PERLU VERIFIKASI]` — mengikuti `docs/DATA-MODEL.md` §10.
-Kontrak ini mendokumentasikan **persyaratan** (operation harus menolak non-kurator),
-bukan mekanisme token spesifik.
+Tidak ada endpoint moderasi kurator. Kurator bekerja **di dalam Sanity Studio**
+(dataset privat `submissions`), sehingga tidak ada surface HTTP yang mengekspos PII
+kontak. Endpoint moderasi (`/api/curator/*`) **tidak ada** — jangan ditulis
+sebagai rencana di dokumen lain.
 
 ### 1.4 Asumsi
 
-- `ASUMSI` — Dev server dijalankan tanpa environment variable (brief §3). Kontrak
-  target yang butuh koneksi Supabase/Payload akan memperkenalkannya sendiri.
-- `ASUMSI` — Payload 3 mengekspos koleksi di bawah `/api`; detail rute persis
-  `[PERLU VERIFIKASI]` (§7.4). Potensi bentrok catch-all Payload dengan
-  `/api/demos` dicatat di Open Questions.
-- `ASUMSI` — Volume submit rendah (kurator 1–3 orang, `docs/DATA-MODEL.md`),
-  sehingga batas rate dipilih longgar (§8).
+- `ASUMSI` — Volume submit rendah (1–3 kurator), sehingga belum ada rate limit
+  di `POST /api/demos`. Lihat §6.3 untuk daftar kontrol yang belum ada.
+- `ASUMSI` — Demo queue dibaca lewat `GET /api/demos` hanya oleh integrator
+  internal; tidak ada UI publik yang memakainya.
+- `[PERLU VERIFIKASI]` — Nilai `SANITY_API_READ_TOKEN` di lingkungan produksi
+  (scope, masa berlaku, hak akses) tidak dapat diverifikasi dari repo.
 
 ---
 
 ## 2. Konvensi
 
-Konvensi di §2.1–§2.3 berlaku hari ini (`TERVERIFIKASI`). §2.4–§2.8 adalah target.
-
 ### 2.1 Format data (`TERVERIFIKASI`)
 
 | Data | Konvensi | Sumber |
 |---|---|---|
-| ID submission | `demo-<Date.now base36>-<6 char base36 acak>`; seed memakai `seed-<slug>` | `route.ts` `id()` |
-| Tanggal submit | **Date-only** `YYYY-MM-DD` (UTC), dari `new Date().toISOString().slice(0,10)` | `route.ts` |
-| Field teks | Di-`trim()` lalu `slice()` ke cap; non-string dipetakan ke `""` | `route.ts` `str()` |
-| Enum `genre`/`program` | Closed set `as const` dari `lib/content.ts` | `route.ts` |
-| Casing JSON key | `camelCase` | `route.ts` |
-| `null` vs absen | Tidak ada field opsional bersifat `null` di kode hari ini; field yang tak dikirim menjadi `""` setelah `str()` | `route.ts` |
+| ID submission (fallback in-memory) | `demo-<Date.now base36>-<6 char base36 acak>`; seed memakai `seed-<slug>` | `app/api/demos/route.ts:58-60` |
+| ID submission (Sanity) | `_id` dokumen Sanity, apa adanya | `app/api/demos/route.ts:342` |
+| Tanggal submit | **Date-only** `YYYY-MM-DD`, dari `new Date().toISOString().slice(0,10)` | `app/api/demos/route.ts:261` |
+| Field teks | Di-`trim()` lalu `slice()` ke cap; non-string dipetakan ke `""` | `app/api/demos/route.ts:54-56` |
+| Enum `genre`/`program` | Closed set `as const` dari `lib/taxonomy.ts` | `app/api/demos/route.ts:227-232` |
+| Casing JSON key | `camelCase` | `app/api/demos/route.ts:40-52` |
+| `null` vs absen | Field yang tak dikirim menjadi `""` setelah `str()`; `null` tidak pernah muncul di respons | `app/api/demos/route.ts:76-88` |
+| `status` | Enum tertutup 4 nilai (lihat §6.2), bukan free text | `lib/taxonomy.ts` |
 
 ### 2.2 Batas payload dan cap field (`TERVERIFIKASI`)
 
-`str(value, max = 500)` — default cap 500, tiap field punya cap eksplisit:
+`str(value, max = 500)` — default cap 500, tiap field punya cap eksplisit
+(`app/api/demos/route.ts:206-216`):
 
-| Field | Cap karakter | Wajib? |
+| Field | Cap karakter | Wajib? | Sumber |
+|---|---|---|---|
+| `artist` | 120 | Ya | `route.ts:206` |
+| `city` | 80 | Ya | `route.ts:207` |
+| `title` | 160 | Ya | `route.ts:208` |
+| `genre` | 60 | Tidak (validasi kondisional) | `route.ts:209` |
+| `program` | 80 | Tidak (validasi kondisional) | `route.ts:210` |
+| `link` | 500 | Ya | `route.ts:211` |
+| `contact` | 160 | Ya | `route.ts:212` |
+| `story` | 2000 | Ya | `route.ts:213` |
+| `audioName` | 200 | Tidak | `route.ts:214` |
+| `audioUrl` | 500 | Tidak — harus `https://…` + ekstensi audio | `route.ts:216` |
+| `audioSize` | angka (bukan string) | Tidak | `route.ts:215` |
+
+Batas bodies:
+
+| Batas | Nilai | Sumber |
 |---|---|---|
-| `artist` | 120 | Ya |
-| `city` | 80 | Ya |
-| `title` | 160 | Ya |
-| `genre` | 60 | Tidak (validasi kondisional) |
-| `program` | 80 | Tidak (validasi kondisional) |
-| `link` | 500 | Ya |
-| `contact` | 160 | Ya |
-| `story` | 2000 | Ya |
-| `audioUrl` | 500 | Tidak — harus `https://…` + ekstensi audio |
-| `audioName` | 200 | Tidak |
-| `audioSize` | angka | Tidak |
+| Body `POST /api/demos` | **16 KB** (`16 * 1024`) → `413` | `route.ts:38`, `route.ts:195-197` |
+| Audio (server, via metadata) | **25 MB** (`25 * 1024 * 1024` = `26214400`) | `lib/taxonomy.ts` `DEMO_AUDIO_MAX_BYTES` |
+| Audio (server, via token Blob) | **25 MB** (`maximumSizeInBytes`) | `app/api/demo-audio/route.ts:28` |
+| Antrean yang dikembalikan `GET` | **100 baris** (`[0...100]`) | `app/api/demos/route.ts:91` |
 
 Pemotongan **diam-diam** (tanpa error): nilai lebih panjang dipotong, bukan
 ditolak. Cap ini dijalankan **sebelum** validasi wajib, sehingga field 700
 karakter yang valid tetap lolos.
 
-### 2.3 Status code hari ini (`TERVERIFIKASI`)
+### 2.3 Status code (`TERVERIFIKASI`)
 
-| Status | Kapan | Body |
-|---|---|---|
-| `200` | `GET /api/demos` selalu | `{ queue, count }` |
-| `201` | `POST` sukses | `{ ok, entry, queueLength, note }` |
-| `400` | Body `POST` bukan JSON valid | `{ error }` |
-| `422` | Validasi field gagal | `{ error, errors }` |
-| `413` | Body > 16 KB | `{ error }` |
-| `503` | Penyimpanan Sanity gagal | `{ error }` — form menampilkan pesan, bukan stack |
+| Status | Endpoint | Kapan | Body |
+|---|---|---|---|
+| `200` | `GET /api/demos` | Selalu (tidak ada jalur error) | `{ queue, count }` |
+| `201` | `POST /api/demos` | Submission tersimpan | `{ ok, entry, queueLength, note }` |
+| `400` | `POST /api/demos` | Body bukan JSON valid | `{ error }` |
+| `413` | `POST /api/demos` | Body > 16 KB | `{ error }` |
+| `422` | `POST /api/demos` | Validasi field gagal | `{ error, errors }` |
+| `503` | `POST /api/demos` | Penyimpanan ke Sanity gagal | `{ error }` |
+| `200` | `POST /api/demo-audio` | Token unggah terbit | `{ type, clientToken }` |
+| `400` | `POST /api/demo-audio` | Token gagal terbit (mis. `BLOB_READ_WRITE_TOKEN` belum ada) | `{ error }` |
+| `200` | `POST /api/revalidate` | Cache dibuang | `{ revalidated, tags }` |
+| `401` | `POST /api/revalidate` | Secret tidak cocok | `{ error }` |
+| `500` | `POST /api/revalidate` | `SANITY_REVALIDATE_SECRET` belum diset | `{ error }` |
+| `200` | `GET /rss.xml` | Selalu | XML RSS 2.0 |
+| `200` | `GET /sitemap.xml` | Selalu | XML sitemap |
+| `200` | `GET /robots.txt` | Selalu | `text/plain` |
+| `308` | `GET /journal` | Selalu | Redirect permanen ke `/stories` |
+| `308` | `GET /journal/[slug]` | Selalu | Redirect permanen ke `/stories/<slug>` |
 
-Untuk `PUT`/`DELETE`/`PATCH` pada `/api/demos` (tidak diekspor): `ASUMSI` —
+Untuk method lain pada route yang sama (mis. `PUT /api/demos`): `ASUMSI` —
 Next.js mengembalikan `405` secara otomatis, tetapi **body dan `Allow`-header
 tidak dikendalikan oleh kode ini**; tidak diklaim di sini (`[PERLU VERIFIKASI]`).
-Error tak terduga saat menulis ke Sanity ditangkap eksplisit: **503** dengan pesan ramah, dan detailnya dicatat di log server.
 
-### 2.4 Format data target (`RENCANA`)
+### 2.4 Header cache (`TERVERIFIKASI`)
 
-- Timestamp: ISO 8601 **dengan timezone** (`2026-10-14T09:30:00Z`) untuk
-  `reviewedAt`/`createdAt`; `submittedAt` tetap date-only untuk kompatibilitas UI.
-- ID target: `uuid` internal (tidak diekspos), plus `publicRef` (string lama)
-  yang tetap dipakai publik — lihat `docs/DATA-MODEL.md` §4.3.
-- Enum: `moderationStatus ∈ {pending, approved, rejected}` (ADR-0005).
+| Rute | Header | Sumber |
+|---|---|---|
+| `/rss.xml` | `Cache-Control: public, s-maxage=600, stale-while-revalidate=600` | `app/rss.xml/route.ts:70` |
+| `/rss.xml` | `Content-Type: application/rss+xml; charset=utf-8` | `app/rss.xml/route.ts:69` |
+| `/sitemap.xml` | `Cache-Control: public, max-age=0, must-revalidate` · `Content-Type: application/xml` | _default Next.js_ — diverifikasi lewat `next start` |
+| `/robots.txt` | `Cache-Control: public, max-age=0, must-revalidate` · `Content-Type: text/plain` | _default Next.js_ — diverifikasi lewat `next start` |
+| `/api/demos` | Tanpa header cache eksplisit; query Sanity memakai `cache: "no-store"` | `app/api/demos/route.ts:115`, `:357` |
+| `/api/demo-audio` · `/api/revalidate` | Tanpa header cache eksplisit | `TERVERIFIKASI` |
 
-### 2.5 Paginasi target (`RENCANA`)
+### 2.5 Environment yang memengaruhi perilaku (`TERVERIFIKASI`)
 
-Offset-based, dengan amplop seragam. **Setiap daftar tak terbatas wajib
-berpaginasi** — ini salah satu celah yang diperbaiki (§3).
-
-| Param | Default | Batas | Keterangan |
+| Variable | Scope | Efek kalau tidak di-set | Efek kalau di-set |
 |---|---|---|---|
-| `page` | `1` | ≥ 1 | Halaman 1-based |
-| `limit` | `20` | 1–100 | Di atas 100 dijepit ke 100 |
+| `NEXT_PUBLIC_SITE_URL` | client + server | `SITE.url` jatuh ke literal `https://melodialam.id` (`lib/site.ts:18`) | Canonical origin, sitemap, RSS, `robots.txt`, OG memakai nilai itu |
+| `SANITY_API_READ_TOKEN` | server saja | `submissionsClient = null` → `/api/demos` memakai antrean in-memory; `draftClient = null` → `/preview/...` selalu 404 | Antrean demo + kontak hidup di dataset privat `submissions`; pratinjau draf aktif |
+| `SANITY_REVALIDATE_SECRET` | server saja | `POST /api/revalidate` → `500` | Route bekerja; juga dipakai sebagai **fallback** secret pratinjau |
+| `SANITY_PREVIEW_SECRET` | server saja | Pratinjau memakai fallback `SANITY_REVALIDATE_SECRET` | Pratinjau memakai secret terpisah |
+| `BLOB_READ_WRITE_TOKEN` | server saja | `POST /api/demo-audio` → `400` | Token unggah terbit |
+| `RESEND_API_KEY` | server saja | Notifikasi email **inert** (tidak ada panggilan HTTP) | Notifikasi email dikirim ke redaksi |
+| `DEMO_NOTIFY_TO` | server saja | Default `melodialam.ip@gmail.com,helfan@infia.co` | Override penerima, dipisah koma |
+| `DEMO_NOTIFY_FROM` | server saja | Default `Melodi Alam <onboarding@resend.dev>` | Override pengirim |
 
-Amplop respons daftar:
-
-```json
-{
-  "data": [],
-  "meta": { "page": 1, "limit": 20, "total": 42, "totalPages": 3 }
-}
-```
-
-`ASUMSI` — offset dipilih (bukan cursor) karena volume rendah dan UI butuh nomor
-halaman; cursor tidak diperlukan bukti apa pun saat ini.
-
-### 2.6 Filter, sortir, pencarian target (`RENCANA`)
-
-`GET /api/demos` menerima `city`, `genre`, `program`, `q` (pencarian substring
-`artist`/`title`), dan `sort` (`submittedAt:desc` default). Semua opsional.
-
-### 2.7 Error envelope target (`RENCANA`)
-
-Satu amplop untuk semua endpoint baru, backward-compatible terhadap `{ error,
-errors }` (detail di §6).
-
-### 2.8 Idempotensi, rate limit, dan batas payload target (`RENCANA`)
-
-Header `Idempotency-Key` untuk `POST` (aman retry), rate limit per-IP, dan batas
-unggahan audio 25 MB. Detail di §8.
+`DATABASE_URL` **tidak dibaca kode mana pun** di repo ini. Kalau masih ada di
+berkas `.env` lokal, itu sisa era Supabase dan boleh dihapus — lihat
+[`DEPLOYMENT.md`](DEPLOYMENT.md) §3.
 
 ---
 
 ## 3. Inventaris Operasi
 
-Kolom **Fase**: `TERVERIFIKASI` = ada di kode hari ini; `RENCANA` = target.
+Kolom **Fase**: `TERVERIFIKASI` = ada di kode hari ini; `RENCANA` = belum ada.
 
-| ID | Method & Path | Tujuan | Auth | Requirement/Layar | Fase |
+| ID | Method & Path | Tujuan | Auth | Build | Fase |
 |---|---|---|---|---|---|
-| `API-01` | `GET /api/demos` | Baca seluruh antrean demo (array in-memory) | Tidak ada | Layar `/submit` (klien tidak memanggilnya) | `TERVERIFIKASI` |
-| `API-02` | `POST /api/demos` | Kirim satu submission demo | Tidak ada | Form `/submit` (`DemoPortal`) | `TERVERIFIKASI` |
-| `API-03` | `POST /api/demos` | Tulis submission sebagai `pending` (privat) | Tidak ada (publik) | `/submit`; ADR-0005 | `RENCANA` |
-| `API-04` | `GET /api/demos` | Baca antrean **approved-only**, terpaginasi | Tidak ada (publik) | ADR-0005 — antrean publik dihapus dari `/submit` (16 Okt 2026), konsumen menyusul | `RENCANA` |
-| `API-05` | `GET /api/curator/demos` | Kurator membaca seluruh antrean + PII terpisah | Kurator | Moderasi; ADR-0005 | `RENCANA` |
-| `API-06` | `GET /api/curator/demos/{id}/contact` | Kurator membaca kontak artis (PII) | Kurator | Menghubungi artis; ADR-0005 | `RENCANA` |
-| `API-07` | `POST /api/curator/demos/{id}/approve` | Setujui submission → tampil publik | Kurator | ADR-0005 | `RENCANA` |
-| `API-08` | `POST /api/curator/demos/{id}/reject` | Tolak submission + catatan | Kurator | ADR-0005 | `RENCANA` |
-| `API-09` | `GET/POST/PATCH/DELETE /api/articles…` | CRUD artikel via Payload REST | Kurator (tulis) / publik (baca) | Journal; ADR-0002 | `RENCANA` |
-| `API-10` | `GET/POST/PATCH/DELETE /api/videos…` | CRUD sesi video via Payload REST | Kurator (tulis) / publik (baca) | Watch; ADR-0002 | `RENCANA` |
-| `API-11` | `POST /api/graphql` | GraphQL Payload (query + mutation) | Publik (baca) / kurator (tulis) | Editorial; ADR-0002 | `RENCANA` |
+| `API-01` | `GET /api/demos` | Baca antrean demo **approved-only** (atau antrean seed, kalau Sanity tak terhubung) | Tidak ada | `ƒ` Dynamic | `TERVERIFIKASI` |
+| `API-02` | `POST /api/demos` | Kirim satu submission demo | Tidak ada | `ƒ` Dynamic | `TERVERIFIKASI` |
+| `API-03` | `POST /api/demo-audio` | Terbitkan token unggah berkas audio ke Vercel Blob | Tidak ada | `ƒ` Dynamic | `TERVERIFIKASI` |
+| `API-04` | `POST /api/revalidate` | Webhook Sanity → buang 6 tag cache | Shared secret | `ƒ` Dynamic | `TERVERIFIKASI` |
+| `API-05` | `GET /rss.xml` | Feed RSS 2.0 dari 8 cerita terbaru | Tidak ada | `○` Static | `TERVERIFIKASI` |
+| `API-06` | `GET /sitemap.xml` | Peta situs: 7 halaman + 8 artikel | Tidak ada | `○` Static | `TERVERIFIKASI` |
+| `API-07` | `GET /robots.txt` | Aturan perayapan + alamat sitemap | Tidak ada | `○` Static | `TERVERIFIKASI` |
+| `API-08` | `GET /journal` | Redirect permanen ke `/stories` | Tidak ada | `ƒ` Dynamic | `TERVERIFIKASI` |
+| `API-09` | `GET /journal/[slug]` | Redirect permanen ke `/stories/<slug>` | Tidak ada | `ƒ` Dynamic | `TERVERIFIKASI` |
+
+Tidak ada endpoint moderasi kurator, endpoint CMS REST/GraphQL, atau endpoint
+pengunggahan audio yang menerima `multipart/form-data`.
 
 ---
 
-## 4. Spesifikasi Operasi — Current State (`TERVERIFIKASI`)
+## 4. Spesifikasi Operasi (`TERVERIFIKASI`)
 
 ### 4.1 `API-01` — `GET /api/demos`
 
 | Properti | Nilai |
 |---|---|
-| Tujuan | Membaca seluruh isi antrean demo |
+| Tujuan | Membaca antrean demo yang **sudah disetujui** |
 | Method & path | `GET /api/demos` |
 | Auth | Tidak ada; terbuka publik |
 | Parameter | **Tidak ada.** Tidak ada query, header, atau paginasi |
 | Efek samping | Tidak ada |
-| Cache | Tidak ada header cache eksplisit (`ASUMSI` default Next) |
+| Cache | Tanpa header cache eksplisit; pembacaan Sanity memakai `cache: "no-store"` |
 
-**Kode referensi** (`app/api/demos/route.ts`):
+**Dua jalur, satu kontrak** (`app/api/demos/route.ts:106-123`):
 
-```ts
-export async function GET() {
-  return NextResponse.json({ queue, count: queue.length });
-}
-```
+1. **Sanity terhubung** (`SANITY_API_READ_TOKEN` ada): GROQ
+   `*[_type == "demoSubmission" && status in $approved] | order(submittedAt desc)[0...100]`
+   dengan `$approved = ["SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)"]`.
+   `cache: "no-store"`.
+2. **Sanity tidak terhubung**: array modul `memoryQueue` yang disemai dari
+   `SEED_DEMOS` (3 entri) — **tanpa** filter status.
+
+Kalau pembacaan Sanity melempar error, route **jatuh ke antrean seed** dengan
+`200`, bukan `5xx` ("the queue is a convenience, not a page").
 
 **Respons sukses — `200`** (`application/json`):
-
-```json
-{
-  "queue": [ /* DemoSubmission[] */ ],
-  "count": 3
-}
-```
-
-- `queue`: seluruh array modul, **termasuk 3 seed** dari `SEED_DEMOS`, urut
-  terbaru-dulu (entri baru di-`unshift`).
-- `count`: `queue.length` — jumlah elemen, bukan jumlah approved.
-- **Tidak ada status error.** Route ini tidak dapat mengembalikan `4xx`/`5xx`
-  dari logikanya sendiri.
-
-**Celah `TERVERIFIKASI` (dibuktikan dari kode):**
-
-1. **Store proses-lokal.** `const queue: DemoSubmission[] = [...SEED_DEMOS];`
-   adalah array di level modul. Isinya hidup selama satu proses Node dan
-   **reset saat restart**. Ini bukan database.
-2. **Tidak konsisten antar-instance.** Di Vercel (multi-instance/serverless),
-   `GET` bergantung pada instance yang melayani request (`ASUMSI` — dicatat juga
-   di `docs/ARCHITECTURE.md` §8.3).
-3. **Tanpa paginasi.** Mengembalikan **seluruh** antrean tanpa batas.
-4. **Tanpa filter/sortir/pencarian.** Tidak ada parameter `city`, `genre`, `q`.
-5. **Tanpa autentikasi dan tanpa rate limit.**
-6. **Antrean tidak dimoderasi.** Semua entri yang pernah di-`POST` masuk ke
-   antrean ini; belum ada konsep approved-only (akan diperbaiki `API-04`, ADR-0005).
-
-**Contoh respons** (bentuk entry dari `SEED_DEMOS[0]`):
 
 ```json
 {
@@ -273,13 +252,36 @@ export async function GET() {
       "program": "Live at Melodi Samsara",
       "link": "https://www.instagram.com/melodi.alam/",
       "story": "Direkam secara live di studio kecil kawasan Baranangsiang, terinspirasi kabut sore Kota Bogor.",
-      "status": "SELECTED FOR SAMSARA LIVE",
+      "status": "SHORTLISTED (SAMSARA)",
       "submittedAt": "2026-10-12"
     }
   ],
-  "count": 3
+  "count": 1
 }
 ```
+
+- `queue`: array baris yang lolos filter status (jalur Sanity) atau seluruh
+  antrean seed (jalur fallback). Maksimal **100** baris.
+- `count`: `queue.length` — jumlah elemen, **bukan** jumlah dokumen Sanity
+  seluruh.
+- Baris di-*narrow* ke `DemoSubmission` oleh `toPublicRow()`
+  (`route.ts:76-89`): `genre`/`program` yang `null` menjadi `""`.
+
+**Tidak ada status error.** Route ini tidak dapat mengembalikan `4xx`/`5xx`
+dari logikanya sendiri.
+
+**Celah `TERVERIFIKASI`:**
+
+1. **Fallback tidak memfilter status.** Tanpa `SANITY_API_READ_TOKEN`, jalur
+   seed mengembalikan `seed-pelabuhan-senja` yang berstatus `IN REVIEW` —
+  yakni status belum disetujui ikut terbaca. Jalur Sanity tidak punya masalah ini.
+2. **Tanpa paginasi.** Dibatasi 100 baris, tapi tidak ada cara meminta halaman
+   berikutnya.
+3. **Tanpa autentikasi dan tanpa rate limit.**
+4. **Tanpa filter/sortir/pencarian** selain urutan `submittedAt desc` yang
+   dipatok server.
+5. **Tidak ada konsumen di repo** (§1.1) — mengubah bentuk respons tidak
+   Clinics klien yang sudah dikirim.
 
 ### 4.2 `API-02` — `POST /api/demos`
 
@@ -288,12 +290,11 @@ export async function GET() {
 | Tujuan | Menerima satu submission demo dari form `/submit` |
 | Method & path | `POST /api/demos` |
 | Auth | Tidak ada; terbuka publik |
-| Content-Type | `application/json` (yang dikirim klien) |
-| Efek samping | `queue.unshift(entry)` — memutasi array proses-lokal |
-| Idempotensi | **Tidak ada.** Retry menghasilkan entri ganda (`RISK-001`, §8) |
+| Content-Type | `application/json` (dikirim klien) |
+| Efek samping | Menulis 2 dokumen Sanity (`demoSubmission` + `demoContact`), atau meng-`unshift` ke array proses-lokal |
+| Idempotensi | **Tidak ada.** Retry menghasilkan entri ganda |
 
-**Request body** — 8 field, semuanya opsional di tipe (`Payload`), tetapi 6
-wajib setelah validasi:
+**Request body** — 11 field; 6 wajib setelah validasi:
 
 ```json
 {
@@ -304,18 +305,33 @@ wajib setelah validasi:
   "program": "Review Artikel dan Rekomendasi IG",
   "link": "https://open.spotify.com/example",
   "contact": "manager@example.test",
-  "story": "Single kedua dari EP mendatang."
+  "story": "Single kedua dari EP mendatang.",
+  "audioName": "demo-skyline.mp3",
+  "audioSize": 4213376,
+  "audioUrl": "https://abc123.public.blob.vercel-storage.com/demo-audio/1760000000000-demo-skyline-xyz.mp3"
 }
 ```
 
-**Pipeline server** (`route.ts`, urut persis):
+**Pipeline server** (`route.ts:193-374`, urut persis):
 
-1. `await request.json()`. Jika gagal parse → `400` (langkah 2 dilewati).
-2. `str()` per field: `trim()` + `slice(0, cap)`. Non-string → `""`.
-3. Bangun `errors` objek per-field (urutan kode: `artist`, `city`, `title`,
-   `story`, `contact`, `link`, lalu `genre`, `program`).
-4. Jika `errors` tidak kosong → `422`.
-5. Susun `entry`, `unshift` ke `queue`, kembalikan `201`.
+1. `await request.text()`. Panjang > 16 KB → **`413`**.
+2. `JSON.parse(raw)`. Gagal parse → **`400`**. Hasil parse yang bukan objek
+   (mis. `null` atau array) juga → **`400` "Body harus berupa objek JSON."**.
+3. `str()` per field: `trim()` + `slice(0, cap)`. Non-string → `""`.
+   `audioSize` dibaca lewat `bytes()`: angka atau string angka; selain itu `0`.
+4. Bangun objek `errors` per-field.
+5. `errors` tidak kosong → **`422`**.
+6. `submittedAt` = `YYYY-MM-DD`.
+7. **Tanpa Sanity** (`route.ts:265-291`): buat `entry` berstatus `IN REVIEW`,
+   simpan `contact` di peta terpisah `memoryContacts`, `unshift` ke
+   `memoryQueue`, balas `201`.
+8. **Dengan Sanity** (`route.ts:293-326`): buat dokumen `demoSubmission`, lalu
+   dokumen `demoContact` yang mereferensikannya. Gagal → **`503`**.
+9. Kirim notifikasi email (inert tanpa `RESEND_API_KEY`); kegagalan email
+   **tidak** mengubah jawaban.
+10. Hitung `queueLength` = jumlah submission **approved**. Query hit-nya
+    boleh gagal → `queueLength` = `0`, jawaban tetap `201`.
+11. Balas **`201`**.
 
 **Validasi `TERVERIFIKASI` (pesan persis, huruf demi huruf):**
 
@@ -330,24 +346,37 @@ wajib setelah validasi:
 | `link` | tidak cocok `/^https?:\/\/.+/i` (dan tak kosong) | `Link harus diawali http:// atau https://.` |
 | `genre` | non-kosong **dan** di luar `DEMO_GENRES` | `Genre tidak dikenal.` |
 | `program` | non-kosong **dan** di luar `DEMO_PROGRAMS` | `Program tujuan tidak dikenal.` |
+| `audioName` | akhiran nama bukan `.mp3`/`.wav`/`.ogg` | `Format berkas harus .mp3, .wav, .ogg.` |
+| `audioName` | `audioSize > 26214400` | `Ukuran berkas melebihi batas 25 MB.` |
+| `audioUrl` | bukan `https://`, host tidak berakhiran `.blob.vercel-storage.com`, atau path (tanpa query) tidak berakhiran `.mp3`/`.wav`/`.ogg` | `Tautan audio tidak dikenal.` |
 
 Catatan validasi yang harus dibaca konsumen:
 
+- **Satu kunci, satu pesan.** `audioName` dipakai untuk **dua** aturan; aturan
+  ukuran menimpa aturan format bila keduanya gagal.
 - **`genre`/`program` kondisional.** Nilai kosong **lolos** server (cek hanya
-  `if (genre && …)`). Hanya `<select>` di UI yang selalu mengirim nilai default
-  (`DEMO_GENRES[0]` / `DEMO_PROGRAMS[0]`). Jadi `{}` (semua kosong) menghasilkan
-  error untuk 6 field wajib, **bukan** untuk `genre`/`program`.
+  `if (genre && …)`). Jadi `{}` (semua kosong) menghasilkan error untuk 6 field
+  wajib, **bukan** untuk `genre`/`program`.
 - **Regex `link` ketat.** `/^https?:\/\/.+/i` mensyaratkan minimal satu karakter
   setelah `//`; `"https://"` saja **gagal**. Skema selain `http`/`https` gagal.
 - **Cap dijalankan lebih dulu.** Field 700 karakter tidak memicu error panjang,
   hanya terpotong.
 - **Tidak ada validasi tipe.** Angka/`null`/objek untuk field string menjadi
   `""` lewat `str()`, lalu jatuh ke error "wajib diisi" bila field itu wajib.
+- **`audioUrl` hanya Forma, bukan host.** Validasi memeriksa skema `https` dan
+  ekstensi, **bukan** host. `audioUrl` dari host mana pun yang berakhiran
+  `.mp3` diterima — lihat celah §4.2.1.
 
 **Error `400`** — body bukan JSON valid:
 
 ```json
 { "error": "Body harus berupa JSON." }
+```
+
+**Error `413`** — body > 16 KB:
+
+```json
+{ "error": "Kiriman terlalu besar." }
 ```
 
 **Error `422`** — `errors` hanya memuat field yang gagal:
@@ -362,13 +391,19 @@ Catatan validasi yang harus dibaca konsumen:
 }
 ```
 
+**Error `503`** — penyimpanan Sanity gagal:
+
+```json
+{ "error": "Pengiriman demo sedang tidak bisa disimpan. Coba lagi nanti." }
+```
+
 **Sukses `201`:**
 
 ```json
 {
   "ok": true,
   "entry": {
-    "id": "demo-m2x1ab-k9f3zq",
+    "id": "a1b2c3d4e5f6",
     "artist": "Skyline",
     "city": "Bandung",
     "title": "Senja di Jalan Braga",
@@ -376,11 +411,11 @@ Catatan validasi yang harus dibaca konsumen:
     "program": "Review Artikel dan Rekomendasi IG",
     "link": "https://open.spotify.com/example",
     "story": "Single kedua dari EP mendatang.",
-    "status": "NEW SUBMISSION • JUST NOW",
-    "submittedAt": "2026-10-14"
+    "status": "IN REVIEW",
+    "submittedAt": "2026-10-21"
   },
-  "queueLength": 4,
-  "note": "Kontak manajer (manager@example.test) dicatat terpisah dan tidak tampil di daftar publik."
+  "queueLength": 12,
+  "note": "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik."
 }
 ```
 
@@ -389,336 +424,299 @@ Field respons sukses:
 | Field | Tipe | Catatan |
 |---|---|---|
 | `ok` | `boolean` | Selalu `true` |
-| `entry` | `DemoSubmission` | Objek yang di-`unshift` |
-| `queueLength` | `number` | `queue.length` **setelah** unshift |
-| `note` | `string` | Mengandung **nilai `contact` mentah** |
+| `entry` | `DemoSubmission` | `id` = `_id` Sanity, atau `demo-<base36>-<6>` pada jalur in-memory |
+| `queueLength` | `number` | Jalur Sanity: jumlah submission **approved**. Jalur in-memory: `memoryQueue.length` |
+| `note` | `string` | Teks konstan. **Tidak** memuat nilai `contact` |
 
-`entry.status` selalu `"NEW SUBMISSION • JUST NOW"` (string bebas, bukan enum).
-`entry.submittedAt` date-only UTC.
+`entry.status` **selalu** `"IN REVIEW"` (`DEMO_INITIAL_STATUS`) — submission
+publik tidak dapat dibuat dengan status lain. `entry.submittedAt` date-only.
+`entry` **tidak pernah** memuat `contact`, `audioName`, atau `audioUrl`, even
+though the last two are stored on the Sanity document.
 
 **Celah `TERVERIFIKASI` (dibuktikan dari kode):**
 
-1. **`contact` tidak dipersistensi.** Nilai ini hanya muncul kembali di string
-   `note` pada respons `201`. Tidak ada kolom untuk menyimpannya di `entry`.
-   Artinya: tidak ada PII at rest hari ini, tetapi **juga tidak ada cara kurator
-   menghubungi artis**. `note` sebenarnya adalah satu-satunya jalur nilai kontak
-   keluar dari server — dan itu memantulkannya kepada pengirim sendiri.
-2. **Tidak ada autentikasi** pada operasi tulis publik.
-3. **Tidak ada rate limiting** — `RISK-001` (`ASUMSI`: spam flood membanjiri array).
-4. **Tidak ada idempotensi** — retry jaringan menghasilkan duplikat.
-5. **File audio sekarang diunggah** ke Vercel Blob lewat `POST /api/demo-audio`, lalu `POST /api/demos` menerima `audioUrl`. `DemoPortal.onPickAudio` hanya
-   `URL.createObjectURL(file)`; `POST` mengirim JSON teks, bukan `multipart`.
-   Tidak ada unggahan, tidak ada validasi ukuran/tipe di server (target:
-   `API-03` + §8, `BR-001`).
-6. **Klien memakai ulang entri pending secara optimistis.** `DemoPortal`
-   menambahkan `data.entry` ke state queue lokalnya, jadi entri akan tampil
-   meski (di target) belum approved — lihat §7.2 catatan kompatibilitas.
+1. **Tidak ada autentikasi, rate limit, atau idempotensi** pada operasi tulis
+   publik. Satu permintaan = 2 tulis Sanity + 1 email berbayar.
+2. **Fallback in-memory janji yang tidak disimpan.** Tanpa
+   `SANITY_API_READ_TOKEN`, submission hanya hidup di memori satu instance
+   (reset saat restart/deploy), tapi klien tetap melihat `201` dan banner
+   "sudah masuk antrean tinjauan kurator".
+3. **Tidak ada endpoint kurator.** Moderasi terjadi manual di Sanity Studio
+   (ubah `status`), jadi transisi status tidak ditegakkan oleh kode.
+
+**Celah yang sudah ditutup (21 Okt 2026):**
+
+- **`audioUrl` tidak diikat ke host** → kini ditolak. Validasi memeriksa skema
+  `https`, host berakhiran `.blob.vercel-storage.com` (store Blob milik
+  operator, varian `public` maupun `private`), dan ekstensi `.mp3`/`.wav`/
+  `.ogg`. Audio dari host asing **tidak lagi** diterima atau dikirim lewat email
+  notifikasi. Fungsi `isOwnBlobUrl()` di `app/api/demos/route.ts`.
+- **`audioSize` tidak pernah terbaca** → kini dibaca. Klien mengirim angka
+  (`components/DemoPortal.tsx`), dan server menerima angka maupun string
+  angka lewat `bytes()`. Aturan "Ukuran berkas melebihi batas 25 MB" sudah
+  menyala — dibuktikan: 30 MB → **`422`**.
+- **`JSON.parse(raw)` bisa mengembalikan `null`** → kini ditolak lebih dulu.
+  Body `null`, array, atau JSON rusak menjawab **`400` "Body harus berupa objek
+  JSON."**, bukan `500` dengan body kosong.
+
+### 4.3 `API-03` — `POST /api/demo-audio`
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Terbitkan **client token** untuk unggahan langsung browser → Vercel Blob |
+| Method & path | `POST /api/demo-audio` |
+| Auth | Tidak ada |
+| Content-Type | Body `@vercel/blob` (`HandleUploadBody`), dikirim oleh SDK `@vercel/blob/client` |
+| Efek samping | Membuat token; **tidak** menulis objek ke storage (browser yang mengunggah) |
+| Butuh env | `BLOB_READ_WRITE_TOKEN` (default SDK), `TERVERIFIKASI` |
+
+**Kenapa token, bukan unggah langsung ke server** (`app/api/demo-audio/route.ts:5-18`):
+file 25 MB tidak pernah melewati fungsi serverless (Vercel membatasi ukuran
+body request jauh di bawah itu). Browser mengunggah langsung ke Blob.
+
+**Batas yang ditegakkan** (`onBeforeGenerateToken`, `route.ts:26-30`):
+
+| Batasan | Nilai | Sumber |
+|---|---|---|
+| `allowedContentTypes` | `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg` | `lib/taxonomy.ts` `DEMO_AUDIO_TYPES` |
+| `maximumSizeInBytes` | `26214400` (25 MB) | `lib/taxonomy.ts` `DEMO_AUDIO_MAX_BYTES` |
+| `addRandomSuffix` | `true` | `route.ts:29` |
+
+**Respons sukses — `200`** (`application/json`), bentuk dari
+`handleUpload()` (`node_modules/@vercel/blob/dist/client.d.ts:380-387`):
+
+```json
+{
+  "type": "blob.generate-client-token",
+  "clientToken": "eyJ2ZXIiOiIyIiwidG9rZW4iOiJ..."
+}
+```
+
+**Error `400`** — token gagal terbit (mis. `BLOB_READ_WRITE_TOKEN` belum ada,
+atau `onBeforeGenerateToken` melempar):
+
+```json
+{ "error": "Unggah audio belum bisa diproses. Coba lagi nanti." }
+```
+
+Kegagalan dicatat di log server sebagai `[api/demo-audio] gagal membuat token
+unggah:`. Form di `/submit` menampilkan banner "Audio gagal diunggah. Coba
+lagi, atau hapus berkasnya lalu kirim tanpa audio." dan **tidak** mengirim
+formulir tanpa audio.
+
+**Celah `TERVERIFIKASI`:**
+
+1. **Token terbit untuk siapa pun.** Tidak ada verifikasi pengguna, rate limit,
+   atau kuota → siapa pun bisa menulis objek ke store milik operator.
+2. **`access` ditentukan klien.** `DemoPortal` mengunggah dengan
+   `access: "public"`, dan token tidak mengikat `access` — server tidak
+   menentukan kebijakan akses.
+3. **Nama berkas asli ikut ke URL.** `demo-audio/<timestamp>-<nama asli>` —
+   nama asli bisa mengandung data personal.
+4. **Tidak ada cron pembersih.** Objek yang sudah ada tidak pernah dihapus.
+
+### 4.4 `API-04` — `POST /api/revalidate`
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Membuang cache 6 tag saat Sanity Studio mem-publish |
+| Method & path | `POST /api/revalidate` |
+| Auth | Shared secret `SANITY_REVALIDATE_SECRET` |
+| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan) |
+| Efek samping | `revalidateTag(tag, "max")` untuk 6 tag |
+
+**Tag yang dibuang** (`route.ts:30-37`):
+
+| Tag | Konstanta | Sumber |
+|---|---|---|
+| `articles` | `ARTICLES_TAG` | `lib/articles.ts:61` |
+| `pillar-posts` | `PILLARS_TAG` | `lib/pillars.ts:26` |
+| `interviews` | `INTERVIEWS_TAG` | `lib/interviews.ts:15` |
+| `siteSettings` | `SETTINGS_TAG` | `lib/site-settings.ts:23` |
+| `videos` | `VIDEOS_TAG` | `lib/videos.ts:21` |
+| `videosPage` | `VIDEOS_PAGE_TAG` | `lib/videos-page.ts:21` |
+
+**Respons sukses — `200`:**
+
+```json
+{
+  "revalidated": true,
+  "tags": ["articles", "pillar-posts", "interviews", "siteSettings", "videos", "videosPage"]
+}
+```
+
+**Error `500`** — `SANITY_REVALIDATE_SECRET` belum diset:
+
+```json
+{ "error": "SANITY_REVALIDATE_SECRET belum diset di server." }
+```
+
+**Error `401`** — secret tidak cocok (perbandingan constant-time,
+`route.ts:39-45`):
+
+```json
+{ "error": "Secret tidak cocok." }
+```
+
+**Catatan `[PERLU VERIFIKASI]`** — tidak ada webhook yang benar-benar terpasang
+di dashboard Sanity dari sisi repo ini; pemasangan dilakukan manual. Konfigurasi
+yang direncanakan (`RENCANA`): filter 8 tipe `_type`, "Trigger on: **Create + Update**",
+projection `{_type, _id}`. Lihat [`DEPLOYMENT.md`](DEPLOYMENT.md) §7.2.
+
+**Celah `TERVERIFIKASI`:** secret diterima juga lewat query string (`?secret=`),
+sehingga bisa bocor ke log akses dan riwayat peramban.
+
+### 4.5 `API-05` — `GET /rss.xml`
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Feed RSS 2.0 dari 8 cerita terbaru |
+| Method & path | `GET /rss.xml` |
+| Auth | Tidak ada |
+| Sumber data | `latestStories(8)` — **pool yang sama** dengan beranda, `/stories`, sitemap, dan blok "More" |
+| Cache | `public, s-maxage=600, stale-while-revalidate=600` |
+
+**Isi feed:**
+
+| Elemen | Nilai | Sumber |
+|---|---|---|
+| `<title>` | `${SITE.name} — ${SITE.tagline}` | `app/rss.xml/route.ts:12` |
+| `<link>` | `SITE.url` | `route.ts:57` |
+| `<description>` | `SITE.description` | `route.ts:58` |
+| `<language>` | `id-ID` | `route.ts:59` |
+| `<lastBuildDate>` | Tanggal cerita pertama, atau hari ini bila kosong | `route.ts:60` |
+| `<atom:link>` | `${SITE.url}/rss.xml` (`rel="self"`) | `route.ts:61` |
+| `<item><link>` | `${SITE.url}/stories/<slug>` | `route.ts:34` |
+| `<item><guid>` | Sama dengan `<link>`, `isPermaLink="true"` | `route.ts:43` |
+| `<item><pubDate>` | RFC 822 dari `dateISO`, dihitung pada `+07:00` | `route.ts:23-26` |
+| `<item><category>` | `article.category` | `route.ts:45` |
+| `<item><description>` | `article.excerpt` | `route.ts:46` |
+| `<item><enclosure>` | Cover artikel, absolut, `type="image/jpeg"` | `route.ts:47` |
+
+Nilai XML di-escape lewat `xml()` (`route.ts:14-21`): `&`, `<`, `>`, `"`, `'`.
+
+**Contoh item:**
+
+```xml
+<item>
+  <title>Senja di Jalan Braga</title>
+  <link>https://melodialam.id/stories/senja-di-jalan-braga</link>
+  <guid isPermaLink="true">https://melodialam.id/stories/senja-di-jalan-braga</guid>
+  <pubDate>Tue, 21 Oct 2026 02:00:00 GMT</pubDate>
+  <category>Fakta Musik</category>
+  <description>Single kedua dari EP mendatang kami.</description>
+  <enclosure url="https://cdn.sanity.io/images/03sgar5q/production/cover-1600x2000.jpg" type="image/jpeg" />
+</item>
+```
+
+**Catatan `TERVERIFIKASI`:** `pubDate` selalu dihitung pada jam `09:00:00+07:00`
+dari tanggal artikel (bukan jam terbit sebenarnya). `enclosure` selalu
+`type="image/jpeg"` walaupun berkas aslinya bisa `.webp`.
+
+### 4.6 `API-06` — `GET /sitemap.xml`
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Peta situs untuk mesin pencari |
+| Method & path | `GET /sitemap.xml` (`app/(site)/sitemap.ts`) |
+| Auth | Tidak ada |
+| Sumber data | `latestStories(8)` + daftar halaman statis hard-coded |
+
+**Halaman yang dicantumkan** (`sitemap.ts:18-26`):
+
+| Path | `priority` | `changeFrequency` |
+|---|---|---|
+| `/` | 1 | `daily` |
+| `/stories` | 0.9 | `daily` |
+| `/videos` | 0.8 | `weekly` |
+| `/kurasi` | 0.8 | `weekly` |
+| `/bicara-melodi` | 0.7 | `weekly` |
+| `/tentang` | 0.5 | `monthly` |
+| `/submit` | 0.6 | `monthly` |
+
+Ditambah **8 URL artikel** (`/stories/<slug>`) dengan `priority: 0.7`,
+`changeFrequency: "monthly"`, dan `lastModified` = `article.dateISO`
+(`sitemap.ts:36-41`). `lastModified` untuk 7 halaman statis diambil dari
+`dateISO` artikel terakhir (`sitemap.ts:16`, `:32`).
+
+**Yang sengaja tidak ada:** halaman video modal tidak punya URL sendiri, dan
+`/journal` tidak masuk peta — hanya redirect `308`.
+
+**Catatan `TERVERIFIKASI`:** `SITE.url` ikut di sini, jadi domain yang salah
+langsung memengaruhi peta situs.
+
+### 4.7 `API-07` — `GET /robots.txt`
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Aturan perayapan + alamat sitemap |
+| Method & path | `GET /robots.txt` (`app/robots.ts`) |
+| Auth | Tidak ada |
+
+**Isi** (`app/robots.ts:8-17`):
+
+```txt
+User-Agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://melodialam.id/sitemap.xml
+Host: https://melodialam.id
+```
+
+Seluruh situs boleh diindeks; hanya `/api/` yang dilarang. `Host` dan `Sitemap`
+mengikuti `SITE.url`.
+
+### 4.8 `API-08` — `GET /journal` (redirect permanen)
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Mengalihkan alamat lama section Journal ke alamat baru |
+| Method & path | `GET /journal` (`app/(site)/journal/route.ts`) |
+| Auth | Tidak ada |
+| Hasil | `308 Permanent Redirect` → `/stories` |
+
+**Contoh respons:**
+
+```http
+HTTP/1.1 308 Permanent Redirect
+Location: https://melodialam.id/stories
+```
+
+Tidak ada body; `Response.redirect()` menuliskan header `Location`. Alasan
+ditulis di komentar kode: tautan lama dan indeks mesin pencari harus mendarat
+di alamat baru, bukan 404.
+
+### 4.9 `API-09` — `GET /journal/[slug]` (redirect permanen)
+
+| Properti | Nilai |
+|---|---|
+| Tujuan | Mengalihkan alamat lama satu artikel ke alamat baru |
+| Method & path | `GET /journal/[slug]` (`app/(site)/journal/[slug]/route.ts`) |
+| Path param | `slug` — diteruskan apa adanya ke tujuan |
+| Hasil | `308 Permanent Redirect` → `/stories/<slug>` |
+
+**Contoh respons:**
+
+```http
+HTTP/1.1 308 Permanent Redirect
+Location: https://melodialam.id/stories/senja-di-jalan-braga
+```
+
+Route ini adalah **route handler**, bukan halaman: `/journal` tidak lagi punya
+halaman, jadi build menandainya `ƒ` (Dynamic).
 
 ---
 
-## 5. Spesifikasi Operasi — Target State (`RENCANA`)
+## 5. Skema dan Model Error
 
-Semua di §5 adalah `RENCANA`. Tidak ada yang diimplementasikan pada fase ini.
-Rute eksak Payload (`API-09`…`API-11`) adalah `[PERLU VERIFIKASI]`.
+### 5.1 Skema bersama
 
-### 5.1 `API-03` — `POST /api/demos` (tulis, privat)
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Menyimpan submission sebagai `pending` → tidak tampil publik sampai disetujui (ADR-0005) |
-| Method & path | `POST /api/demos` (path **tidak berubah**) |
-| Auth | Tidak ada (pengunjung anonim). Ditulis lewat server, bukan browser→Supabase |
-| Idempotensi | Header `Idempotency-Key` (§8.1) |
-| Rate limit | Per-IP (§8.2) |
-| Efek samping | `insert` transaksional ke `demo_submissions` + `demo_contacts` (`docs/DATA-MODEL.md` §8.3); opsional unggah audio ke Storage |
-
-**Request body** — bentuk lama dipertahankan persis (8 field JSON) agar
-`DemoPortal` tidak berubah:
-
-```json
-{
-  "artist": "Skyline", "city": "Bandung", "title": "Senja di Jalan Braga",
-  "genre": "Indie Pop / Folk", "program": "Review Artikel dan Rekomendasi IG",
-  "link": "https://open.spotify.com/example",
-  "contact": "manager@example.test",
-  "story": "Single kedua dari EP mendatang."
-}
-```
-
-**Unggahan audio (`TERVERIFIKASI` sejak 20 Okt 2026).** Karena file tidak dapat
-dikirim sebagai JSON, ditetapkan salah satu (keputusan terbuka, Open Questions):
-
-- `POST /api/demos/uploads` → keluarkan signed upload URL Supabase, diikuti
-  `PUT` objek oleh klien; `objectPath` lalu dirujuk di `POST /api/demos`; **atau**
-- `POST /api/demos` menerima `multipart/form-data` (field JSON + file).
-
-Validasi audio target: tipe di allowlist (`audio/mpeg`, `audio/wav`,
-`audio/x-wav`, `audio/mp4`, `audio/aac`, `audio/ogg`, `audio/flac`) → jika di luar
-itu `415`; ukuran ≤ **26214400 byte (25 MB)** → jika lebih `413`.
-
-**Validasi field:** identik dengan §4.2 **plus** pengetatan `genre`/`program`
-menjadi wajib (`docs/DATA-MODEL.md` §4.3). Pengetatan ini adalah perubahan
-perilaku — Open Questions.
-
-**Sukses `201`** (bentuk lama, `contact` **tidak** lagi di-echo di `note`):
-
-```json
-{
-  "ok": true,
-  "entry": {
-    "publicRef": "demo-m2x1ab-k9f3zq",
-    "artist": "Skyline", "city": "Bandung", "title": "Senja di Jalan Braga",
-    "genre": "Indie Pop / Folk", "program": "Review Artikel dan Rekomendasi IG",
-    "link": "https://open.spotify.com/example",
-    "story": "Single kedua dari EP mendatang.",
-    "moderationStatus": "pending",
-    "submittedAt": "2026-10-14"
-  },
-  "queueLength": 42,
-  "note": "Demo Anda masuk antrean kurasi. Kontak tersimpan privat untuk redaksi."
-}
-```
-
-**Error:** `400` (JSON cacat), `415` (tipe audio), `413` (audio > 25 MB),
-`422` (`{ error, errors }`), `429` (rate limit), `409` (idempotency konflik) —
-amplop di §6.
-
-> Catatan kompatibilitas. Sejak antrean publik dihapus dari `/submit` (16 Okt
-> 2026), klien tidak lagi menampilkan `entry` hasil `POST` di mana pun — baris
-> `pending` sepenuhnya privat. Lihat `FRONTEND-PLAN.md`.
-
-### 5.2 `API-04` — `GET /api/demos` (publik, approved-only, terpaginasi)
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Baris `approved` (ADR-0005); antrean publik di `/submit` dihapus 16 Okt 2026 — konsumen endpoint ini menyusul |
-| Method & path | `GET /api/demos` (path tidak berubah; **bentuk respons berubah**) |
-| Auth | Tidak ada (publik) |
-| Query | `page`, `limit`, `city`, `genre`, `program`, `q`, `sort` (§2.5, §2.6) |
-| PII | **Tidak pernah** memuat `contact` — query publik secara struktural hanya membaca tabel tanpa kolom PII (`docs/DATA-MODEL.md` §8.4) |
-
-**Query contoh:**
-
-```
-GET /api/demos?page=1&limit=20&city=Bogor&sort=submittedAt:desc
-```
-
-**Respons `200`:**
-
-```json
-{
-  "data": [
-    {
-      "publicRef": "seed-shroomeater",
-      "artist": "Shroomeater", "city": "Bogor",
-      "title": "Echoes in the Pine Forest",
-      "genre": "Alternative Rock / Shoegaze",
-      "program": "Live at Melodi Samsara",
-      "link": "https://www.instagram.com/melodi.alam/",
-      "story": "Direkam secara live di studio kecil kawasan Baranangsiang…",
-      "moderationStatus": "approved",
-      "submittedAt": "2026-10-12"
-    }
-  ],
-  "meta": { "page": 1, "limit": 20, "total": 1, "totalPages": 1 }
-}
-```
-
-**Error:** `400` (param paginasi tidak valid), `422` (`city`/`genre`/`program`
-di luar nilai yang dikenal). Tidak ada `404` pada path koleksi.
-
-`ASUMSI` — perubahan dari `{ queue, count }` menjadi `{ data, meta }` **bukan**
-breaking change bagi klien yang dikirim, karena tidak ada konsumen yang memanggil
-`GET` (§1.1). Konsumen eksternal hipotetis butuh versi baru — lihat §9.
-
-### 5.3 `API-05` — `GET /api/curator/demos`
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Kurator membaca **seluruh** antrean (semua `moderationStatus`) |
-| Method & path | `GET /api/curator/demos` |
-| Auth | **Wajib.** Role `curator` |
-| Query | `page`, `limit`, `moderationStatus`, `city`, `genre`, `q`, `sort` |
-| PII | Tidak memuat `contact`; PII diambil terpisah (`API-06`) |
-
-**Respons `200`:**
-
-```json
-{
-  "data": [
-    {
-      "id": "3f9c…", "publicRef": "demo-m2x1ab-k9f3zq",
-      "artist": "Skyline", "city": "Bandung", "title": "Senja di Jalan Braga",
-      "genre": "Indie Pop / Folk", "program": "Review Artikel dan Rekomendasi IG",
-      "link": "https://open.spotify.com/example",
-      "story": "Single kedua dari EP mendatang.",
-      "moderationStatus": "pending",
-      "submittedAt": "2026-10-14",
-      "reviewedBy": null, "reviewedAt": null, "reviewNote": null,
-      "hasContact": true, "hasAudio": true
-    }
-  ],
-  "meta": { "page": 1, "limit": 20, "total": 1, "totalPages": 1 }
-}
-```
-
-**Error:** `401` (tanpa sesi), `403` (bukan kurator).
-
-`hasContact`/`hasAudio` sengaja boolean, bukan nilai PII — supaya daftar kurator
-dapat menandai baris tanpa pernah mengangkut kontak.
-
-### 5.4 `API-06` — `GET /api/curator/demos/{id}/contact`
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Kurator mengambil kontak artis untuk menghubungi (mengisi celah §4.2) |
-| Method & path | `GET /api/curator/demos/{id}/contact` |
-| Auth | **Wajib.** Role `curator` |
-| Path param | `id` — id internal submission (uuid) |
-| Audit | `ASUMSI` — setiap pembacaan sebaiknya tercatat (PII) |
-
-**Respons `200`:**
-
-```json
-{ "submissionId": "3f9c…", "contact": "manager@example.test",
-  "createdAt": "2026-10-14T09:30:00Z" }
-```
-
-**Error:** `401`, `403`, `404` (submission tidak ada / tidak punya kontak).
-Tidak ada `contact` yang boleh muncul di `API-04` atau `API-05`.
-
-### 5.5 `API-07` — `POST /api/curator/demos/{id}/approve`
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Setujui submission → tampil di read path publik (ADR-0005) |
-| Method & path | `POST /api/curator/demos/{id}/approve` (aksi non-CRUD eksplisit) |
-| Auth | **Wajib.** Role `curator` |
-| Transisi | `pending` → `approved`; isi `reviewedBy`, `reviewedAt` |
-| Idempotensi | Idempoten secara alami: approve ulang baris yang sudah `approved` → `200` (bukan `409`) |
-
-**Request body (opsional):** `{ "reviewNote": "Live at Melodi Samsara — Rabu." }`
-
-**Respons `200`:**
-
-```json
-{ "id": "3f9c…", "publicRef": "demo-m2x1ab-k9f3zq",
-  "moderationStatus": "approved", "reviewedBy": "u_12",
-  "reviewedAt": "2026-10-14T10:00:00Z", "reviewNote": "Live at Melodi Samsara — Rabu." }
-```
-
-**Error:** `401`, `403`, `404`, `409` (transisi ilegal, mis. dari `rejected`),
-`422` (`reviewNote` terlalu panjang).
-
-### 5.6 `API-08` — `POST /api/curator/demos/{id}/reject`
-
-| Properti | Nilai |
-|---|---|
-| Tujuan | Tolak submission; tidak pernah tampil publik |
-| Method & path | `POST /api/curator/demos/{id}/reject` |
-| Auth | **Wajib.** Role `curator` |
-| Transisi | `pending` → `rejected`; isi `reviewedBy`, `reviewedAt`, `reviewNote` |
-
-**Request body:** `{ "reviewNote": "Belum sesuai format demo." }` (`reviewNote`
-disarankan wajib untuk jejak audit — Open Questions).
-
-**Respons `200`:** sama bentuknya dengan `API-07`, `moderationStatus: "rejected"`.
-
-**Error:** `401`, `403`, `404`, `409`, `422`.
-
-```mermaid
-sequenceDiagram
-  participant Fan as "Pengunjung (anonim)"
-  participant Api as "POST /api/demos"
-  participant Db as "Supabase Postgres"
-  participant Cur as "Kurator"
-  participant Pub as "GET /api/demos"
-
-  Fan->>Api: { artist, …, contact, story }
-  Api->>Db: insert demo_submissions (pending) + demo_contacts
-  Api-->>Fan: 201 { ok, entry(pending) }
-  Cur->>Db: GET /api/curator/demos (semua status)
-  Cur->>Db: POST …/{id}/approve
-  Db-->>Cur: 200 { moderationStatus: approved }
-  Pub->>Db: select … where moderation_status = 'approved'
-  Db-->>Pub: { data, meta }
-```
-
-### 5.7 `API-09`/`API-10` — Payload REST untuk `articles` dan `videos`
-
-`RENCANA` (ADR-0002). Payload 3 dalam app ini mengekspos setiap koleksi sebagai
-resource REST. **Slug koleksi dan rute persis `[PERLU VERIFIKASI]`** terhadap
-versi Payload yang dipasang.
-
-| Operasi | Method & path (default Payload) | Auth | Catatan |
-|---|---|---|---|
-| List artikel | `GET /api/articles` | Publik (baca) | Payload menambah `where`, `limit`, `page`, `sort`, `depth` |
-| Baca satu | `GET /api/articles/{id}` | Publik (baca) | `id` = id Payload, bukan `slug` |
-| Buat | `POST /api/articles` | Kurator | Kontrol akses di level collection Payload |
-| Ubah | `PATCH /api/articles/{id}` | Kurator | |
-| Hapus | `DELETE /api/articles/{id}` | Kurator | |
-| List sesi video | `GET /api/videos` | Publik (baca) | Slug `videos` vs `video-sessions` `[PERLU VERIFIKASI]` |
-
-**Bentuk respons Payload** (list) — khas Payload, bukan amplop §2.5:
-
-```json
-{
-  "docs": [ { "id": "…", "slug": "…", "title": "…" } ],
-  "totalDocs": 12, "limit": 10, "totalPages": 2, "page": 1,
-  "pagingCounter": 1, "hasPrevPage": false, "hasNextPage": true,
-  "prevPage": null, "nextPage": 2
-}
-```
-
-Konsekuensi kontrak: **dua gaya paginasi hidup berdampingan** — amplop
-`{ data, meta }` untuk aksi domain (`API-03`…`API-08`) dan gaya Payload
-`{ docs, totalDocs, … }` untuk koleksi editorial (`API-09`…`API-11`). Ini
-disengaja: memaksa amplop seragam berarti membungkus Payload. Trade-off dicatat
-di Open Questions; `FRONTEND-PLAN.md` harus memilih satu konsumsi per layar.
-
-Endpoint `POST`/`PATCH`/`DELETE` Payload adalah permukaan CMS, bukan API domain
-publik; akses tulis wajib dijaga access control collection Payload (ADR-0002,
-`docs/DATA-MODEL.md` §10).
-
-### 5.8 `API-11` — GraphQL Payload
-
-`RENCANA`. Payload menyediakan satu endpoint GraphQL untuk query dan mutation
-koleksi yang sama.
-
-| Properti | Nilai |
-|---|---|
-| Method & path (default) | `POST /api/graphql` `[PERLU VERIFIKASI]` |
-| Auth | Publik (query baca) / kurator (mutation) via access control Payload |
-| Bentuk | Query/mutation SDL digenerate dari definisi koleksi |
-
-Contoh query:
-
-```graphql
-query LatestArticles {
-  Articles(limit: 10, sort: "-publishedAt") {
-    docs { id slug title excerpt publishedAt }
-    totalDocs
-  }
-}
-```
-
-Tidak ada SDL statis yang bisa dikutip di sini karena skema digenerate dari
-koleksi Payload (`[PERLU VERIFIKASI]`). **GraphQL tidak menggantikan** `API-03`/
-`API-04`: submission anonim tetap lewat route handler (validasi §6, rate limit
-§8) agar tidak ada mutation publik untuk membuat baris `pending` yang dapat
-disalahgunakan.
-
----
-
-## 6. Schemas dan Error Model
-
-### 6.1 Skema bersama
-
-**`DemoSubmission` (`TERVERIFIKASI`)** — `lib/content.ts`:
+**`DemoSubmission`** — `lib/taxonomy.ts` (diekspor ulang dari `lib/content.ts`):
 
 | Field | Tipe | Null? | Sumber |
 |---|---|---|---|
-| `id` | `string` | no | Seed / `id()` |
+| `id` | `string` | no | Seed / `id()` / `_id` Sanity |
 | `artist` | `string` | no | Input (cap 120) |
 | `city` | `string` | no | Input (cap 80) |
 | `title` | `string` | no | Input (cap 160) |
@@ -726,85 +724,93 @@ disalahgunakan.
 | `program` | `string` | no | Input (cap 80, enum bila non-kosong) |
 | `link` | `string` | no | Input (cap 500, regex) |
 | `story` | `string` | no | Input (cap 2000) |
-| `status` | `string` | no | Free text (§4.2) |
+| `status` | `DemoStatus` | no | Enum tertutup (§5.2) |
 | `submittedAt` | `string` | no | Date-only `YYYY-MM-DD` |
 
-`DemoSubmission` **tidak punya** field `contact` — itu akar celah §4.2.
+`DemoSubmission` **tidak punya** field `contact`, `audioName`, maupun
+`audioUrl` — ketiganya tidak pernah masuk ke respons publik.
 
-**Skema target (`RENCANA`):** lihat `docs/DATA-MODEL.md` §5.3–§5.4. Perbedaan
-yang relevan bagi kontrak: `publicRef` menggantikan pemakaian `id` sebagai
-identitas publik; `status` free-text diganti `moderationStatus` enum + `reviewedBy`/
-`reviewedAt`/`reviewNote`; `contact` pindah ke `demo_contacts` (1:1, PII).
+**Dokumen Sanity** (privat, dataset `submissions`) — dipetakan di
+`app/api/demos/route.ts:295-317`:
 
-### 6.2 Error envelope target (`RENCANA`) — superset backward-compatible
+| Tipe | Field yang ditulis |
+|---|---|
+| `demoSubmission` | `artist`, `city`, `title`, `genre?`, `program?`, `link`, `story`, `status`, `submittedAt`, `audioName?`, `audioUrl?` |
+| `demoContact` | `submission` (reference ke `demoSubmission`), `contact` |
 
-Klien hari ini (`DemoPortal`) hanya membaca dua field: `data.error` (string,
-ditampilkan sebagai banner) dan `data.errors` (map field→pesan). Target **wajib
-tetap menyediakan keduanya**, dan boleh menambah field baru:
+`demoContact` adalah dokumen **terpisah** agar kontak tidak pernah ikut
+terbawa query yang membaca field submission.
+
+### 5.2 Katalog status demo
+
+| Status | Arti | Visibel di `GET /api/demos`? |
+|---|---|---|
+| `IN REVIEW` | Menunggu kurator (`DEMO_INITIAL_STATUS`) | Tidak (jalur Sanity) / Ya (jalur seed) |
+| `SHORTLISTED (SAMSARA)` | Disetujui untuk tampil | Ya |
+| `APPROVED (ARTICLE)` | Disetujui untuk artikel | Ya |
+| `ARCHIVED` | Diarsipkan | Tidak |
+
+Sumber: `lib/taxonomy.ts` (`DEMO_STATUSES`, `DEMO_INITIAL_STATUS`,
+`DEMO_APPROVED_STATUSES`).
+
+### 5.3 Amplop error
+
+Semua endpoint JSON memakai amplop yang sama:
 
 ```json
-{
-  "error": "Periksa kembali isian formulir.",
-  "code": "VALIDATION_ERROR",
-  "errors": {
-    "artist": "Nama band atau solois wajib diisi."
-  },
-  "details": [
-    { "field": "artist", "code": "REQUIRED", "message": "Nama band atau solois wajib diisi." }
-  ],
-  "requestId": "req_01J…"
-}
+{ "error": "<pesan bahasa Indonesia>" }
 ```
 
-| Field | Tipe | Untuk siapa | Kompatibel? |
-|---|---|---|---|
-| `error` | `string` (pesan manusia) | Klien lama (banner) | ya — dipertahankan |
-| `errors` | `Record<string,string>` | Klien lama (per-field) | ya — dipertahankan |
-| `code` | `string` (kode mesin) | Klien baru | tambahan |
-| `details` | `Array<{field, code, message}>` | Klien baru | tambahan |
-| `requestId` | `string` | Dukungan/observability | tambahan |
+`POST /api/demos` menambah `errors` (map field → pesan) pada `422`. Tidak ada
+kode mesin (`code`), `details`, atau `requestId` — amplop itu adalah `RENCANA`
+di §8 dan belum ada di kode.
 
-Prinsip: **`error` tetap string manusiawi**, bukan objek. Mengubahnya menjadi
-objek akan memecahkan `DemoPortal` (`setBanner(data.error)`), dan itu perubahan
-kontrak yang tidak perlu. Untuk error non-validasi (mis. `401`, `404`) di endpoint
-kurator, `errors` boleh absen (`ASUMSI` — endpoint kurator belum punya klien).
-
-### 6.3 Katalog error
+### 5.4 Katalog error
 
 | `code` | Status | Arti | Aksi klien | Fase |
 |---|---|---|---|---|
-| — | `400` | Body bukan JSON valid | Perbaiki body; jangan retry buta | `TERVERIFIKASI` |
+| — | `200` | Berhasil | — | `TERVERIFIKASI` |
+| — | `201` | Resource dibuat | Tampilkan banner sukses | `TERVERIFIKASI` |
+| — | `308` | Redirect permanen | Ikuti `Location` | `TERVERIFIKASI` |
+| — | `400` | Body bukan JSON valid / token unggah gagal | Perbaiki body; jangan retry buta | `TERVERIFIKASI` |
+| — | `401` | Secret webhook tidak cocok | Perbaiki secret | `TERVERIFIKASI` |
+| — | `413` | Body > 16 KB | Perkecil payload | `TERVERIFIKASI` |
 | — | `422` | Validasi field gagal | Tampilkan `errors` per field | `TERVERIFIKASI` |
-| `BAD_REQUEST` | `400` | JSON cacat / param tak valid | Perbaiki request | `RENCANA` |
-| `UNAUTHENTICATED` | `401` | Tidak ada sesi kurator | Login ke `/admin` | `RENCANA` |
-| `FORBIDDEN` | `403` | Sesi ada, bukan kurator | Minta akses; jangan retry | `RENCANA` |
-| `NOT_FOUND` | `404` | Submission/koleksi tidak ada | Hapus dari daftar | `RENCANA` |
-| `CONFLICT` | `409` | Transisi status ilegal / idempotency konflik | Muat ulang state | `RENCANA` |
+| — | `500` | `SANITY_REVALIDATE_SECRET` belum diset | Set env di Vercel | `TERVERIFIKASI` |
+| — | `503` | Penyimpanan Sanity gagal | Tampilkan pesan; coba lagi nanti | `TERVERIFIKASI` |
+| `VALIDATION_ERROR` | `422` | Validasi field gagal (kode mesin) | Tampilkan `errors` | `RENCANA` |
+| `RATE_LIMITED` | `429` | Melebihi batas (`RISK-001`) | Hormati `Retry-After` | `RENCANA` |
 | `PAYLOAD_TOO_LARGE` | `413` | Audio > 25 MB (`BR-001`) | Kecilkan berkas | `RENCANA` |
 | `UNSUPPORTED_MEDIA_TYPE` | `415` | Tipe audio di luar allowlist (`BR-001`) | Ganti format | `RENCANA` |
-| `VALIDATION_ERROR` | `422` | Validasi field gagal | Tampilkan `errors` | `RENCANA` |
-| `RATE_LIMITED` | `429` | Melebihi batas (`RISK-001`) | Hormati `Retry-After` | `RENCANA` |
 | `INTERNAL_ERROR` | `500` | Kesalahan server | Retry dengan backoff | `RENCANA` |
-
-`ASUMSI` — pemetaan `400`/`422` hari ini tidak punya kode mesin; `code` ditambahkan
-di target tanpa mengubah status maupun pesan lama.
 
 ---
 
-## 7. Validasi
+## 6. Validasi
 
-### 7.1 Aturan yang dibawa **apa adanya** dari route saat ini (`TERVERIFIKASI`)
+### 6.1 Aturan yang ditegakkan server (`TERVERIFIKASI`)
 
 1. Trim setiap field string; non-string → `""`.
 2. Cap per field: `artist 120`, `city 80`, `title 160`, `genre 60`, `program 80`,
-   `link 500`, `contact 160`, `story 2000`.
+   `link 500`, `contact 160`, `story 2000`, `audioName 200`, `audioUrl 500`.
 3. Wajib: `artist`, `city`, `title`, `story`, `contact`, `link`.
 4. `link` cocok `/^https?:\/\/.+/i` (case-insensitive, minimal 1 char setelah `//`).
 5. `genre` ∈ `DEMO_GENRES` **bila non-kosong**.
 6. `program` ∈ `DEMO_PROGRAMS` **bila non-kosong**.
-7. Pesan error Indonesia persis seperti tabel §4.2.
+7. `audioName` berakhiran `.mp3` / `.wav` / `.ogg` (bila ada).
+8. `audioSize` ≤ `26214400` **bila `audioName` ada** — angka maupun string angka
+   dibaca (`bytes()`).
+9. `audioUrl` diawali `https://`, host berakhiran `.blob.vercel-storage.com`,
+   dan path-nya berakhiran `.mp3` / `.wav` / `.ogg` (bila ada).
+10. Pesan error Indonesia persis seperti tabel §4.2.
 
-Enum penuh (`lib/content.ts`, `as const`):
+Validasi yang sama dijalankan **dua kali** di sisi klien
+(`components/DemoPortal.tsx` `onPickAudio`) dan di server, karena permintaan
+yang dibuat-buat tidak wajib sopan pada pemeriksaan browser.
+
+### 6.2 Enum penuh
+
+`lib/taxonomy.ts` (`as const`, diekspor ulang oleh `lib/content.ts`):
 
 ```
 DEMO_GENRES = [
@@ -816,101 +822,74 @@ DEMO_PROGRAMS = [
   "Review Artikel dan Rekomendasi IG", "Live at Melodi Samsara",
   "Tamu Podcast Bicara Melodi",
 ]
+
+DEMO_AUDIO_EXTENSIONS = [".mp3", ".wav", ".ogg"]
+DEMO_AUDIO_TYPES = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg"]
+DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024   // 26214400
+
+DEMO_STATUSES = [
+  "IN REVIEW", "SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)", "ARCHIVED",
+]
 ```
 
-### 7.2 Aturan yang **ditambahkan** fase target (`RENCANA`)
-
-| # | Aturan | Nilai | Status | Acuan |
-|---|---|---|---|---|
-| 1 | `genre` wajib (bukan lagi kondisional) | salah satu `DEMO_GENRES` | `RENCANA` | Open Questions |
-| 2 | `program` wajib | salah satu `DEMO_PROGRAMS` | `RENCANA` | Open Questions |
-| 3 | Tipe audio allowlist | `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/mp4`, `audio/aac`, `audio/ogg`, `audio/flac` | `RENCANA` | `BR-001` |
-| 4 | Ukuran audio | ≤ `26214400` byte (25 MB), dijaga di klien + server + bucket | `RENCANA` | `BR-001` |
-| 5 | `reviewNote` panjang | `ASUMSI` ≤ 1000 karakter | `RENCANA` | Open Questions |
-| 6 | `page`/`limit` valid | `page ≥ 1`, `limit` 1–100 | `RENCANA` | §2.5 |
-
-Allowlist audio di atas adalah `ASUMSI` — `accept="audio/*"` di `DemoPortal`
-saat ini **tidak** membatasi tipe, dan `BR-001` tidak merinci daftar final.
-25 MB mengikuti `docs/DATA-MODEL.md` §9.2 (`26214400` byte) dan ditandai sebagai
-keputusan fase, bukan angka dari kode.
-
----
-
-## 8. Idempotensi, Rate Limit, dan Kontrol Penyalahgunaan (`RENCANA`, `RISK-001`)
-
-Semua di §8 adalah `RENCANA`. Hari ini tidak ada satu pun kontrol ini
-(`TERVERIFIKASI`, §4.2 celah 3–4).
-
-### 8.1 Idempotensi
-
-- Header `Idempotency-Key` (string, disarankan UUID v4) pada `POST /api/demos`.
-- Server menyimpan `key → (request fingerprint, status, body)` selama 24 jam.
-- Key sama + body sama → **putar ulang** respons tersimpan (tanpa insert baru).
-- Key sama + body berbeda → `409 CONFLICT`.
-- Tanpa header → perilaku lama (bisa duplikat), tetapi klien resmi selalu mengirim.
-
-### 8.2 Rate limiting
-
-| Endpoint | Batas usulan | Kunci | Status |
-|---|---|---|---|
-| `POST /api/demos` | 5 / jam, 20 / hari | IP | `ASUMSI` |
-| `GET /api/demos` | 60 / menit | IP | `ASUMSI` |
-| `POST /api/curator/*` | 120 / menit | user kurator | `ASUMSI` |
-
-Respons `429` menyertakan `Retry-After` (detik) dan `code: "RATE_LIMITED"`.
-Angka di atas adalah `ASUMSI` awal (volume rendah, `docs/DATA-MODEL.md` §2);
-nilai final perlu pengukuran. Penyimpanan penghitung (Postgres vs Redis/Upstash)
-belum diputuskan — Open Questions.
-
-### 8.3 Kontrol tambahan
+### 6.3 Kontrol yang belum ada (`RENCANA`, `RISK-001`)
 
 | Kontrol | Tujuan | Status |
 |---|---|---|
-| Honeypot field tersembunyi di form | Menangkap bot naif | `ASUMSI` |
+| Rate limit per-IP | Membatasi spam ke `POST /api/demos` | `RENCANA` |
+| Honeypot field tersembunyi | Menangkap bot naif | `RENCANA` |
 | CAPTCHA (mis. Turnstile) bila spam terbukti | Gerbang manusia | `RENCANA`, `[PERLU VERIFIKASI]` pilihan vendor |
-| Batas panjang body di route handler | Menolak payload raksasa sebelum parse | `RENCANA` |
-| Normalisasi + escapar output `story`/`artist` | Mencegah HTML/JS from submission tampil mentah | `RENCANA` |
-| Log tanpa PII | `contact` tidak masuk log/observability | `RENCANA` |
+| Header `Idempotency-Key` | Mencegah entri ganda saat retry | `RENCANA` |
+| Rotasi `audioUrl` ke host Blob milik operator | Mencegah audio dari host asing | `RENCANA` |
+| Server menentukan `access` + key objek | Menjaga bucket tetap privat | `RENCANA` |
+| Granti satu usage token unggah | Mencegah abuse storage | `RENCANA` |
+| Penghapusan `demoContact` + objek audio saat submission dihapus | Mencegah PII & aset yatim | `RENCANA` |
 
-Catatan: karena output submission dirender React (auto-escape) dan `story`
-disimpan sebagai teks, risiko XSS langsung rendah (`ASUMSI`) — tetapi ledakan
+Catatan: output submission dirender React (auto-escape) dan `story` disimpan
+sebagai teks, sehingga risiko XSS langsung rendah (`ASUMSI`) — tetapi ledakan
 ukuran dan spam tetap relevan (`RISK-001`).
 
 ---
 
-## 9. OpenAPI 3.1 — endpoint yang ada hari ini
+## 7. OpenAPI 3.1 — endpoint yang ada hari ini
 
-Fragmen di bawah hanya memuat endpoint `TERVERIFIKASI` (`API-01`, `API-02`).
-Endpoint `RENCANA` sengaja **tidak** disertakan agar spec ini tetap mencerminkan
-dunia nyata dan dapat ditempel ke spec lebih besar nanti.
+Fragmen di bawah hanya memuat endpoint `TERVERIFIKASI`. Endpoint `RENCANA`
+sengaja **tidak** disertakan agar spec ini tetap mencerminkan dunia nyata.
 
 ```yaml
 openapi: 3.1.0
 info:
   title: Melodi Alam — API
-  version: 0.1.0-draft
+  version: 0.2.0-draft
   description: >
-    Fragmen TERVERIFIKASI. Hanya memuat endpoint yang benar-benar ada di
-    app/api/demos/route.ts. Endpoint RENCANA tidak termasuk.
+    Fragmen TERVERIFIKASI. Memuat route handler, generator metadata, feed RSS,
+    dan redirect permanen yang benar-benar ada di repo melodi-alam.
 servers:
   - url: http://localhost:3100
     description: Dev server (port 3100)
 tags:
   - name: demos
-    description: Antrean submission demo (in-memory)
+    description: Antrean submission demo (dataset privat `submissions` Sanity)
+  - name: uploads
+    description: Token unggah audio demo ke Vercel Blob
+  - name: cache
+    description: Invalidasi cache dari webhook Sanity
+  - name: feeds
+    description: Feed dan peta situs
 paths:
   /api/demos:
     get:
-      operationId: listDemoQueue
-      summary: Baca seluruh antrean demo
+      operationId: listApprovedDemoQueue
+      summary: Baca antrean demo yang disetujui
       description: >
-        Mengembalikan seluruh isi array in-memory. Tidak ada paginasi, filter,
-        atau autentikasi. Store proses-lokal; reset saat restart.
+        Tanpa token Sanity, mengembalikan antrean seed in-memory (3 entri)
+        tanpa filter status. Dengan token, mengembalikan maksimal 100 baris
+        `demoSubmission` berstatus SHORTLISTED (SAMSARA) atau APPROVED (ARTICLE).
       tags: [demos]
       security: []
       responses:
         '200':
-          description: Seluruh isi queue.
+          description: Antrean.
           content:
             application/json:
               schema:
@@ -935,15 +914,15 @@ paths:
                     program: "Live at Melodi Samsara"
                     link: "https://www.instagram.com/melodi.alam/"
                     story: "Direkam secara live di studio kecil kawasan Baranangsiang."
-                    status: "SELECTED FOR SAMSARA LIVE"
+                    status: "SHORTLISTED (SAMSARA)"
                     submittedAt: "2026-10-12"
-                count: 3
+                count: 1
     post:
       operationId: createDemoSubmission
       summary: Kirim satu submission demo
       description: >
-        Memvalidasi body JSON, memotong tiap field ke cap-nya, lalu
-        menambahkan entri ke awal queue in-memory.
+        Memvalidasi body JSON, memotong tiap field ke cap-nya, lalu menyimpan
+        submission berstatus IN REVIEW dan kontak manajer pada dokumen terpisah.
       tags: [demos]
       security: []
       requestBody:
@@ -963,7 +942,7 @@ paths:
               story: "Single kedua dari EP mendatang."
       responses:
         '201':
-          description: Submission diterima.
+          description: Submission tersimpan.
           content:
             application/json:
               schema:
@@ -977,16 +956,16 @@ paths:
                     $ref: '#/components/schemas/DemoSubmission'
                   queueLength:
                     type: integer
-                    minimum: 1
+                    minimum: 0
+                    description: >
+                      Jalur Sanity: jumlah submission approved. Jalur in-memory:
+                      panjang antrean modul.
                   note:
                     type: string
-                    description: >
-                      Mengandung nilai `contact` mentah hari ini. Ini akan
-                      berubah di fase target (contact tidak lagi di-echo).
               example:
                 ok: true
                 entry:
-                  id: "demo-m2x1ab-k9f3zq"
+                  id: "a1b2c3d4e5f6"
                   artist: "Skyline"
                   city: "Bandung"
                   title: "Senja di Jalan Braga"
@@ -994,10 +973,10 @@ paths:
                   program: "Review Artikel dan Rekomendasi IG"
                   link: "https://open.spotify.com/example"
                   story: "Single kedua dari EP mendatang."
-                  status: "NEW SUBMISSION • JUST NOW"
-                  submittedAt: "2026-10-14"
-                queueLength: 4
-                note: "Kontak manajer (manager@example.test) dicatat terpisah dan tidak tampil di daftar publik."
+                  status: "IN REVIEW"
+                  submittedAt: "2026-10-21"
+                queueLength: 12
+                note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik."
         '400':
           description: Body bukan JSON valid.
           content:
@@ -1006,6 +985,14 @@ paths:
                 $ref: '#/components/schemas/SimpleError'
               example:
                 error: "Body harus berupa JSON."
+        '413':
+          description: Body lebih besar dari 16 KB.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+              example:
+                error: "Kiriman terlalu besar."
         '422':
           description: Validasi field gagal.
           content:
@@ -1017,7 +1004,183 @@ paths:
                 errors:
                   artist: "Nama band atau solois wajib diisi."
                   link: "Link harus diawali http:// atau https://."
+        '503':
+          description: Penyimpanan ke Sanity gagal.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+              example:
+                error: "Pengiriman demo sedang tidak bisa disimpan. Coba lagi nanti."
+  /api/demo-audio:
+    post:
+      operationId: createDemoAudioUploadToken
+      summary: Terbitkan token unggah berkas audio demo
+      description: >
+        Memakai `handleUpload` dari `@vercel/blob/client`. Browser mengunggah
+        langsung ke Vercel Blob; berkas 25 MB tidak pernah melewati server.
+        Membutuhkan BLOB_READ_WRITE_TOKEN.
+      tags: [uploads]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Token terbit.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [type, clientToken]
+                properties:
+                  type:
+                    type: string
+                    const: "blob.generate-client-token"
+                  clientToken:
+                    type: string
+        '400':
+          description: Token gagal terbit.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+              example:
+                error: "Unggah audio belum bisa diproses. Coba lagi nanti."
+  /api/revalidate:
+    post:
+      operationId: revalidateContentCache
+      summary: Buang cache 6 tag konten
+      description: >
+        Dipanggil webhook Sanity. Membandingkan `x-webhook-secret` (atau
+        query `?secret=`) dengan SANITY_REVALIDATE_SECRET secara constant-time.
+      tags: [cache]
+      security:
+        - webhookSecret: []
+      parameters:
+        - name: secret
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Cadangan bila header `x-webhook-secret` tidak dipakai.
+      responses:
+        '200':
+          description: Cache dibuang.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [revalidated, tags]
+                properties:
+                  revalidated:
+                    type: boolean
+                    const: true
+                  tags:
+                    type: array
+                    items:
+                      type: string
+              example:
+                revalidated: true
+                tags: ["articles", "pillar-posts", "interviews", "siteSettings", "videos", "videosPage"]
+        '401':
+          description: Secret tidak cocok.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+              example:
+                error: "Secret tidak cocok."
+        '500':
+          description: SANITY_REVALIDATE_SECRET belum diset.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleError'
+              example:
+                error: "SANITY_REVALIDATE_SECRET belum diset di server."
+  /rss.xml:
+    get:
+      operationId: getRssFeed
+      summary: Feed RSS 2.0 dari 8 cerita terbaru
+      tags: [feeds]
+      security: []
+      responses:
+        '200':
+          description: Feed RSS.
+          content:
+            application/rss+xml:
+              schema:
+                type: string
+  /sitemap.xml:
+    get:
+      operationId: getSitemap
+      summary: Peta situs (7 halaman + 8 artikel)
+      tags: [feeds]
+      security: []
+      responses:
+        '200':
+          description: Sitemap XML.
+          content:
+            application/xml:
+              schema:
+                type: string
+  /robots.txt:
+    get:
+      operationId: getRobots
+      summary: Aturan perayapan dan alamat sitemap
+      tags: [feeds]
+      security: []
+      responses:
+        '200':
+          description: robots.txt.
+          content:
+            text/plain:
+              schema:
+                type: string
+  /journal:
+    get:
+      operationId: redirectJournalSection
+      summary: Redirect permanen ke /stories
+      tags: [feeds]
+      security: []
+      responses:
+        '308':
+          description: Redirect permanen.
+          headers:
+            Location:
+              schema:
+                type: string
+              example: "/stories"
+  /journal/{slug}:
+    get:
+      operationId: redirectJournalArticle
+      summary: Redirect permanen ke /stories/{slug}
+      tags: [feeds]
+      security: []
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '308':
+          description: Redirect permanen.
+          headers:
+            Location:
+              schema:
+                type: string
+              example: "/stories/senja-di-jalan-braga"
 components:
+  securitySchemes:
+    webhookSecret:
+      type: apiKey
+      in: header
+      name: x-webhook-secret
   schemas:
     DemoSubmission:
       type: object
@@ -1050,7 +1213,7 @@ components:
           maxLength: 2000
         status:
           type: string
-          description: Free text hari ini, bukan enum.
+          enum: ["IN REVIEW", "SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)", "ARCHIVED"]
         submittedAt:
           type: string
           pattern: '^\d{4}-\d{2}-\d{2}$'
@@ -1058,7 +1221,6 @@ components:
     DemoSubmissionInput:
       type: object
       required: [artist, city, title, link, contact, story]
-      additionalProperties: false
       properties:
         artist:
           type: string
@@ -1099,6 +1261,20 @@ components:
           type: string
           minLength: 1
           maxLength: 2000
+        audioName:
+          type: string
+          maxLength: 200
+        audioSize:
+          type: integer
+          minimum: 0
+          maximum: 26214400
+          description: >
+            Hanya dibaca bila bertipe angka; klien resmi mengirim string, jadi
+            aturan ukuran tidak menyala untuk jalur itu.
+        audioUrl:
+          type: string
+          maxLength: 500
+          pattern: '^https://.+\.(mp3|wav|ogg)$'
     SimpleError:
       type: object
       required: [error]
@@ -1124,114 +1300,161 @@ Catatan keakuratan spec:
 - `DemoSubmissionInput.required` mencerminkan field yang **benar-benar** divalidasi
   server (`artist`, `city`, `title`, `link`, `contact`, `story`). `genre`/`program`
   tidak `required` karena validasi kondisional (§4.2).
-- Regex `link` memakai `pattern: '^https?://.+'`; kode memakai `/^https?:\/\/.+/i`
-  (**case-insensitive**). JSON Schema dapat menambah `(?i)` lewat implementasi
-  spesifik; `[PERLU VERIFIKASI]` dukungan validator — secara fungsional
+- Regex `link` memakai `pattern: '^https?://.+'`; kode memakai
+  `/^https?:\/\/.+/i` (**case-insensitive**). JSON Schema tidak punya flag
+  inline portabel → `[PERLU VERIFIKASI]` dukungan validator; secara fungsional
   `http://`/`HTTP://` sama-sama diterima kode.
+- `audioUrl` diverifikasi **per komponen**, bukan satu regex tunggal: kode
+  memisahkan cek skema `^https://` dan cek ekstensi pada path tanpa query
+  (`route.ts:249-255`).
 - Status `405` untuk method lain tidak dimodelkan: itu perilaku framework, bukan
   kontrak yang ditulis kode ini (§2.3).
+- `/rss.xml`, `/sitemap.xml`, dan `/robots.txt` dimodelkan sebagai `200` dengan
+  body teks; bentuk XML persisnya dijelaskan di §4.5–§4.7.
 
 ---
 
-## 10. Versi dan Kebijakan Perubahan
+## 8. Versi dan Kebijakan Perubahan
 
 | Aspek | Keputusan | Status |
 |---|---|---|
 | Penomoran versi | Belum ada; tidak ada prefix `/v1` | `TERVERIFIKASI` |
-| Kebijakan target | Perubahan **breaking** (menghapus field, mengubah tipe, mengubah arti kode error) wajib versi baru atau periode deprecasi | `RENCANA` |
-| Toleransi field tak dikenal | Server: abaikan field tambahan. Klien: abaikan field respons tak dikenal | `RENCANA` |
-| `GET /api/demos` `{queue,count}` → `{data,meta}` | **Bukan** breaking bagi klien rilis (tidak ada konsumen `GET`); breaking bagi konsumen hipotetis, jadi diperlakukan sebagai perubahan besar bila ada konsumen eksternal | `TERVERIFIKASI` + `ASUMSI` |
-| `status` → `moderationStatus` | Breaking; migrasi expand-and-contract (`docs/DATA-MODEL.md` §12.2) | `RENCANA` |
-| Amplop error | **Aditif** — `error`/`errors` dipertahankan; `code`/`details` ditambah | `RENCANA` |
+| Toleransi field tak dikenal | Klien: abaikan field respons tak dikenal | `RENCANA` |
+| Amplop error | Aditif — `error`/`errors` dipertahankan; `code`/`details` ditambahkan | `RENCANA` |
+| Bentuk `GET /api/demos` | `{ queue, count }` → `{ data, meta }` | `RENCANA` — tidak urgent: tidak ada konsumen di repo (§1.1) |
+| `status` → `moderationStatus` | Tidak perlu — `status` sudah enum tertutup | `RENCANA` bila kurator butuh riwayat (`reviewedBy`, `reviewedAt`) |
+| Penghapusan rute | Selalu pakai redirect `308` (lihat `API-08`/`API-09`), bukan 404 | `TERVERIFIKASI` |
 
 ---
 
-## 11. Validation Checklist
+## 9. Validation Checklist
 
 | Cek (api-contract-designer) | Hasil |
 |---|---|
-| Setiap layar punya operasi yang dibutuhkan | Ya — `/submit` (API-02/03/04), moderasi (API-05…08), editorial (API-09…11) |
-| Setiap operasi dipetakan ke requirement/screen | Ya — kolom Requirement/Layar di §3 |
-| Penamaan dan bentuk konsisten | Sebagian — aksi domain `{data,meta}` vs Payload `{docs,…}`; trade-off eksplisit di §5.7 |
-| Setiap error yang harus ditangani klien terdefinisi | Ya — §6.3 |
-| Paginasi ada untuk tiap daftar tak terbatas | Ya di target (`API-04`, `API-05`); **gap** di `API-01` (§4.1) |
-| Data sensitif tidak dikembalikan tanpa perlu | Ya di target — `contact` hanya di `API-06`; **gap** di `API-02` (echo di `note`) |
-| Contoh valid terhadap skemanya | Ya — contoh §4/§5/§9 mengikuti tipe |
+| Setiap layar punya operasi yang dibutuhkan | Ya — `/submit` (API-02 + API-03), feed (API-05–API-07), kurasi (API-01) |
+| Setiap operasi dipetakan ke requirement/layar | Ya — kolom Auth/Build di §3 |
+| Penamaan dan bentuk konsisten | Ya — satu amplop error `{ error }` + `errors` |
+| Setiap error yang harus ditangani klien terdefinisi | Ya — §5.4 |
+| Paginasi ada untuk tiap daftar tak terbatas | **Gap** — `GET /api/demos` dibatasi 100 baris tanpa paginasi |
+| Data sensitif tidak dikembalikan tanpa perlu | Ya — `contact` tidak pernah di respons; `demoContact` dokumen terpisah |
+| Contoh valid terhadap skemanya | Ya — contoh §4/§7 mengikuti tipe |
 | Tidak mengklaim endpoint yang belum ada | Ya — `RENCANA` berlabel eksplisit |
 
 ---
 
 ## Verification Notes
 
-Dibaca langsung dari sumber (bukan dari memori). Tidak ada server yang
-dijalankan, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
+Dibaca langsung dari sumber (bukan dari memori). Tidak ada server produksi yang
+dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
 
-- `app/api/demos/route.ts` (**103 baris, penuh**) — satu-satunya route handler di
-  repo. Diverifikasi: `queue` module-level dari `SEED_DEMOS`; `MAX_FIELD = 500`;
-  `str()` trim+slice; `id()` format `demo-<base36>-<6char>`; `GET` → `200
-  {queue, count}`; `POST` → `400 {error}`, `422 {error, errors}`, `201
-  {ok, entry, queueLength, note}`; cap per field; keenam pesan wajib + pesan
-  `link`/`genre`/`program`; `queue.unshift(entry)`; `status` dan `submittedAt`;
-  fakta `contact` hanya muncul di `note`.
-- `components/DemoPortal.tsx` — `ApiError` hanya membaca `{error, errors}`;
-  `POST /api/demos` mengirim JSON 8 field; `onPickAudio` memakai
-  `URL.createObjectURL` (tanpa unggah); `accept="audio/*"`; pesan banner sukses
-  dan fallback error. **Pembaruan 16 Okt 2026:** state queue dari `SEED_DEMOS`
-  dihapus — antrean publik tidak lagi ditampilkan.
-- `lib/content.ts` — `DemoSubmission` (baris 459–470), `DEMO_GENRES` (6 nilai),
-  `DEMO_PROGRAMS` (3 nilai), `SEED_DEMOS` (3 entri: `seed-shroomeater`,
-  `seed-skyline`, `seed-pelabuhan-senja`).
-- `package.json` — dikonfirmasi dev port `3100`; **tidak ada** `payload`,
-  `express`, `supabase`, atau `graphql` terpasang. Tidak ada package API/gateway.
-- `docs/DATA-MODEL.md` dan `docs/ARCHITECTURE.md` — dibaca untuk konsistensi
-  nama entitas (`demo_submissions`, `demo_contacts`, `publicRef`,
-  `moderationStatus`), cap `26214400`, ADR, dan batas modul (`MOD-007`,
-  `MOD-101`…`MOD-104`).
-- `app/api/**` — di-glob; **hanya** `demos/route.ts` yang ada.
-- `docs/` — hanya `ARCHITECTURE.md` dan `DATA-MODEL.md` sebelum dokumen ini;
-  `docs/adr/` belum ada, sehingga ADR dirujuk sebagai keputusan (brief §7).
+- `app/api/demos/route.ts` (**375 baris, penuh**) — satu-satunya route handler
+  yang menyimpan data. Diverifikasi: `memoryQueue` modul-level dari
+  `SEED_DEMOS` + `memoryContacts`; `MAX_FIELD = 500`; `MAX_BODY_BYTES = 16*1024`;
+  `str()` trim+slice; `id()` format `demo-<base36>-<6 char>`; `APPROVED_QUERY`
+  `[0...100]` + `status in $approved`; `toPublicRow()`; `GET` → `200 {queue, count}`
+  dengan fallback ke antrean seed saat query melempar; `POST` → `413` (body
+  besar), `400` (JSON cacat), `422 {error, errors}`, `503` (gagal simpan),
+  `201 {ok, entry, queueLength, note}`; `notifyNewSubmission()` (Resend, error
+  ditelan); `DEMO_INITIAL_STATUS = "IN REVIEW"`; `demoContact` ditulis sebagai
+  dokumen terpisah.
+- `app/api/demo-audio/route.ts` (**45 baris, penuh**) — `handleUpload` dari
+  `@vercel/blob/client`; `allowedContentTypes` = `DEMO_AUDIO_TYPES`;
+  `maximumSizeInBytes` = `DEMO_AUDIO_MAX_BYTES`; `addRandomSuffix: true`;
+  `onUploadCompleted` kosong; `catch` → `400` dengan pesan "Unggah audio belum
+  bisa diproses. Coba lagi nanti."
+- `app/api/revalidate/route.ts` (**69 baris, penuh**) — `timingSafeEqual`;
+  `CONTENT_TAGS` 6 tag; header `x-webhook-secret` dengan fallback query
+  `?secret=`; `500` bila `SANITY_REVALIDATE_SECRET` kosong; `401` bila tidak
+  cocok; `revalidateTag(tag, "max")`.
+- `app/rss.xml/route.ts` (**73 baris, penuh**) — `latestStories(8)`; `xml()`;
+  `rfc822()` pada `+07:00`; header `Cache-Control` dan `Content-Type`;
+  `<enclosure type="image/jpeg">`.
+- `app/(site)/sitemap.ts` (**43 baris, penuh**) — 7 halaman statis + artikel
+  dari `latestStories(8)`.
+- `app/robots.ts` (**18 baris, penuh**) — `allow: "/"`, `disallow: "/api/"`,
+  `sitemap`, `host`.
+- `app/(site)/journal/route.ts` dan `app/(site)/journal/[slug]/route.ts`
+  (**10 baris masing-masing**) — `Response.redirect(..., 308)`.
+- `lib/site.ts` — `SITE.url` = `NEXT_PUBLIC_SITE_URL` tanpa trailing slash,
+  fallback literal `https://melodialam.id`.
+- `lib/taxonomy.ts` — `DEMO_AUDIO_MAX_BYTES` (25 MB), `DEMO_AUDIO_TYPES`,
+  `DEMO_AUDIO_EXTENSIONS`, `DEMO_GENRES` (6), `DEMO_PROGRAMS` (3),
+  `DEMO_STATUSES` (4), `DEMO_INITIAL_STATUS`, `DEMO_APPROVED_STATUSES`.
+- `lib/content.ts` — `SEED_DEMOS` (3 entri: `seed-shroomeater` status
+  `SHORTLISTED (SAMSARA)`, `seed-skyline` status `APPROVED (ARTICLE)`,
+  `seed-pelabuhan-senja` status `IN REVIEW`).
+- `lib/sanity-server.ts` — `submissionsClient` null bila
+  `SANITY_API_READ_TOKEN` kosong.
+- `lib/sanity-preview.ts` — `previewSecret()` =
+  `SANITY_PREVIEW_SECRET ?? SANITY_REVALIDATE_SECRET ?? null`.
+- `components/DemoPortal.tsx` — `upload()` ke `handleUploadUrl: "/api/demo-audio"`
+  dengan `access: "public"`; `payload.audioSize = String(audioFile.size)`
+  (string); `POST /api/demos` mengirim JSON; `ApiError` hanya membaca
+  `{error, errors}`; `onPickAudio` menolak ekstensi/tipe/size di browser.
+- `node_modules/@vercel/blob/dist/client.d.ts:380-387` — bentuk balik
+  `handleUpload()`: `{ type: "blob.generate-client-token", clientToken: string }`.
+- `package.json` — versi paket `0.2.0`; port dev/start `3100`; **tidak ada**
+  `payload`, `supabase`, `express`, atau `graphql` terpasang.
+- `next.config.ts` — `cacheComponents: true`, `partialPrefetching: true`;
+  `images.remotePatterns` = `i.ytimg.com/vi/**` **dan** `cdn.sanity.io/images/**`.
+- `npm run build` (dijalankan 21 Okt 2026) — 33 halaman statis; route table
+  mengonfirmasi `ƒ` untuk `/api/demos`, `/api/demo-audio`, `/api/revalidate`,
+  `/journal`, `/journal/[slug]`, dan `○` untuk `/rss.xml`, `/sitemap.xml`,
+  `/robots.txt`.
+
+**Diverifikasi dengan menjalankan server** (`npm run start` di port 3100, lokal,
+21 Okt 2026; server dimatikan lagi sesudahnya):
+
+| Panggilan | Hasil |
+|---|---|
+| `GET /robots.txt` | `200`, `Cache-Control: public, max-age=0, must-revalidate`, `Content-Type: text/plain` |
+| `GET /sitemap.xml` | `200`, `Cache-Control: public, max-age=0, must-revalidate`, `Content-Type: application/xml` |
+| `GET /rss.xml` | `200`, `Cache-Control: public, s-maxage=600, stale-while-revalidate=600`, `Content-Type: application/rss+xml; charset=utf-8` |
+| `GET /journal` | `308`, `Location: /stories` |
+| `GET /journal/test-slug` | `308`, `Location: /stories/test-slug` |
+| `GET /api/demos` | `200`, `{"queue":[],"count":0}` (dataset `submissions` aktif, belum ada baris approved) |
+| `POST /api/demos` body `not json` | `400` `{"error":"Body harus berupa JSON."}` |
+| `POST /api/demos` body `null` | **`500` dengan body kosong** — mengonfirmasi celah §4.2.4 |
+| `POST /api/demos` body > 16 KB | `413` `{"error":"Kiriman terlalu besar."}` |
+| `POST /api/demos` body dengan field kosong + enum salah + audio salah | `422` dengan 10 kunci `errors` persis seperti tabel §4.2, urutan: `artist`, `city`, `title`, `story`, `contact`, `link`, `genre`, `program`, `audioName`, `audioUrl` |
+| `POST /api/demo-audio` | `400` `{"error":"Unggah audio belum bisa diproses. Coba lagi nanti."}` (`BLOB_READ_WRITE_TOKEN` belum ada) |
+| `POST /api/revalidate` tanpa secret / dengan secret salah | `401` `{"error":"Secret tidak cocok."}` |
 
 Tidak diverifikasi (karena itu tidak diklaim, atau ditandai `RENCANA` /
-`[PERLU VERIFIKASI]`): rute eksak Payload REST/GraphQL, bentuk kredensial kurator,
-perilaku `405` Next.js untuk method tak terdefinisi, skema SDL GraphQL, angka
-final rate limit, dan apakah Payload catch-all `/api/[...slug]` bentrok dengan
-`/api/demos`.
+`[PERLU VERIFIKASI]`): perilaku `405` Next.js untuk method tak terdefinisi;
+nilai env di proyek Vercel; keberadaan & konfigurasi webhook Sanity di
+dashboard; bentuk upload body `@vercel/blob` yang dikirim browser; keputusan
+moderasi kurator (tidak ada endpoint-nya). `POST /api/demos` dengan body
+**valid** sengaja **tidak** dijalankan, karena itu akan menulis dokumen
+`demoSubmission` + `demoContact` ke dataset produksi.
 
 ---
 
 ## Open Questions
 
-1. **Bentrok rute `/api` Payload dengan `/api/demos`.** Payload 3 memakai
-   catch-all di bawah `/api`; bisakah `/api/demos` tetap menjadi route handler
-   milik app tanpa ditelan Payload? `[PERLU VERIFIKASI]` terhadap versi Payload
-   yang dipasang. Mempengaruhi semua endpoint di §5.
-2. **Pengetatan `genre`/`program`.** Hari ini keduanya boleh kosong (validasi
-   kondisional). Menjadikannya wajib (`docs/DATA-MODEL.md` §4.3) adalah perubahan
-   kontrak; disengaja atau tidak?
-3. **Cara unggah audio.** `POST /api/demos/uploads` (signed URL) vs
-   `multipart/form-data` pada `POST /api/demos`? Menentukan apakah `POST` tetap
-   `application/json` (kompatibel penuh) atau berubah.
-4. **Perubahan perilaku optimistis klien.** `DemoPortal` menambahkan `entry` ke
-   antrean publik. Bila `entry` kini `pending`, klien harus berubah — bagaimana
-   UI menandai "menunggu kurasi"? (→ `FRONTEND-PLAN.md`.)
-5. **Bentuk kredensial kurator.** Cookie sesi Payload vs Bearer JWT; sumber klaim
-   `role`; apakah `API-05`…`API-08` memakai `/api/curator/*` (kontrak ini) atau
-   langsung endpoint Payload (`/api/demo-submissions`)? Keduanya valid; pilih satu.
-6. **Dua gaya paginasi.** Aksi domain `{data,meta}` (§2.5) vs Payload
-   `{docs,totalDocs,…}` (§5.7). Apakah konsumen frontend menormalkan di satu
-   lapisan, atau kontrak membiarkan dua gaya? (→ `FRONTEND-PLAN.md`.)
-7. **Idempotency store & rate limit store.** Postgres, Redis/Upstash, atau
-   in-memory per-instance? Pendekatan in-memory akan gagal di Vercel multi-instance
-   (`RISK-001`), jadi pilihan ini harus eksplisit.
-8. **Audit pembacaan PII.** Haruskah `API-06` mencatat siapa membaca kontak,
-   kapan? `docs/DATA-MODEL.md` §11.2 menyebut retensi tetapi bukan audit baca.
-9. **`reviewNote` wajib atau opsional** saat `reject`? Jejak audit menyarankan
-   wajib; kontrak ini menandainya terbuka (§5.6).
-10. **Nasib `SHORTLISTED BY EDITOR`.** `docs/DATA-MODEL.md` Open Questions #2:
-    nilai `status` lama ini tidak punya rumah di enum `pending/approved/rejected`.
-    Bila butuh state keempat, `API-04`/`API-07`/`API-08` ikut terpengaruh.
-11. **Nilai final rate limit `ASUMSI`.** Angka di §8.2 belum diukur; perlu data
-    spam nyata atau keputusan produk sebelum dianggap kontrak.
-12. **Dukungan regex `link` di OpenAPI.** `/^https?:\/\/.+/i` bersifat
-    case-insensitive; `pattern` JSON Schema tidak punya flag inline portabel.
-    Tetapkan penulisan pattern final saat spec digabung (§9).
+1. **Filter webhook Sanity 8 tipe.** Tujuh tipe konten disebut di
+   `app/api/revalidate/route.ts:21-26`; tipe kedelapan belum terverifikasi —
+   `[PERLU VERIFIKASI]`. Apakah itu `demoSubmission` (dataset `submissions`,
+   perlu webhook terpisah) atau tipe lain?
+2. **Host `audioUrl`.** Validasi sekarang hanya memeriksa skema + ekstensi.
+   Kalau store Blob dibuat, host store itu bisa dibandingkan server-side
+   (tanpa menambah env baru) dan celah §4.2.1 tertutup.
+3. **`audioSize` bertipe string.** Klien mengirim string, server mengharapkan
+   angka. Perbaikannya satu baris di `components/DemoPortal.tsx` (kirim angka)
+   atau di server (`Number(body.audioSize)`).
+4. **Body `"null"` pada `POST /api/demos`.** `JSON.parse("null")` →
+   `TypeError` → `500` dengan body kosong (terverifikasi). Perlu `body &&`
+   sebelum membaca field.
+5. **Antrean fallback tanpa filter status.** Jalur seed mengembalikan entri
+   `IN REVIEW`. Kalau `SANITY_API_READ_TOKEN` dipastikan ada di produksi, jalur
+   ini praktis mati — tapi filter status di fallback tetap lebih aman.
+6. **Rate limit & idempotensi.** Belum ada angkanya. Perlu data spam nyata
+   sebelum ditetapkan sebagai kontrak.
+7. **Rotasi `SANITY_REVALIDATE_SECRET` + `SANITY_PREVIEW_SECRET` terpisah.**
+   Sekarang satu nilai melindungi dua kapabilitas (lihat
+   `AUDIT-2026-10-21.md` F03). Selain itu, penerimaan `?secret=` di
+   `/api/revalidate` sebaiknya dihapus — header saja.
+8. **`queueLength` yang ambigu.** Jalur Sanity mengembalikan jumlah submission
+   *approved*; jalur in-memory mengembalikan panjang antrean modul (termasuk
+   entri `IN REVIEW`). Satu nama, dua makna — perlu diseragamkan atau diberi
+   nama terpisah.
