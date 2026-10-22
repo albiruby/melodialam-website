@@ -522,7 +522,7 @@ formulir tanpa audio.
 | Tujuan | Membuang cache 6 tag saat Sanity Studio mem-publish |
 | Method & path | `POST /api/revalidate` |
 | Auth | Shared secret `SANITY_REVALIDATE_SECRET` |
-| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan). Selama rotasi, nilai **sebelumnya** juga diterima lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` |
+| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan). Selama rotasi, nilai **sebelumnya** juga diterima lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` (sudah dikosongkan 22 Okt 2026) |
 | Efek samping | `revalidateTag(tag, "max")` untuk 6 tag |
 
 **Tag yang dibuang** (`route.ts:30-37`):

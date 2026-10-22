@@ -50,10 +50,9 @@ Empat hal yang paling penting:
    bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
    terkonfirmasi*.
 3. **`SANITY_REVALIDATE_SECRET` pernah terekspos di log percakapan** di luar repo.
-   Nilai itu **sudah dirotasi** (22 Okt 2026): secret lama masih diterima
-   sebentar lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` sampai webhook Sanity
-   diarahkan ke secret baru. Pratinjau draf sekarang memakai secret sendiri,
-   `SANITY_PREVIEW_SECRET` (F03 ditutup).
+   Nilai itu **sudah dirotasi dan nilai lamanya sudah mati** (22 Okt 2026): webhook
+   Sanity memakai secret baru, dan secret lama menjawab **401**. Pratinjau draf
+   sekarang memakai secret sendiri, `SANITY_PREVIEW_SECRET` (F03 ditutup).
 4. **PII dan audio tidak pernah keluar ke jalur baca publik.** Kueri antrean
    hanya membaca status yang disetujui dan hanya memproyeksikan field tertentu
    (`app/api/demos/route.ts:122-133`). Yang bocor ke pihak ketiga adalah **email
@@ -249,15 +248,17 @@ eksposur di luar repo tetap berarti nilai itu harus dianggap bocor dan
 **dirotasi**. Perbaikan: secret terpisah untuk pratinjau, header saja untuk
 webhook, lalu rotasi nilai lama.
 
-> **Perkembangan 22 Okt 2026.** Tiga bagian dari perbaikan ini sudah dikerjakan:
-> `SANITY_PREVIEW_SECRET` dipasang sebagai secret terpisah dan **fallback-nya
-> dihapus** dari `lib/sanity-preview.ts`; `SANITY_REVALIDATE_SECRET` sudah
-> **dirotasi** (nilai lama ditahan sebentar lewat
-> `SANITY_REVALIDATE_SECRET_PREVIOUS` sampai webhook Sanity diarahkan ke nilai
-> baru); dan rute pratinjau menjawab **404** untuk secret yang salah, karena
+> **Perkembangan 22 Okt 2026 — rotasi tuntas.** `SANITY_PREVIEW_SECRET`
+> dipasang sebagai secret terpisah dan **fallback-nya dihapus** dari
+> `lib/sanity-preview.ts`; `SANITY_REVALIDATE_SECRET` **dirotasi**, webhook Sanity
+> diarahkan ke nilai baru, dan `SANITY_REVALIDATE_SECRET_PREVIOUS` dikosongkan —
+> secret lama kini menjawab **401** (dibuktikan: publish → halaman segar dalam
+> 8,2 detik). Rute pratinjau menjawab **404** untuk secret yang salah, karena
 > pemeriksaannya dipindah ke `proxy.ts` yang berjalan sebelum halaman dirender.
-> Yang tersisa: hapus `SANITY_REVALIDATE_SECRET_PREVIOUS` setelah webhook
-> diperbarui, dan cabut penerimaan `?secret=` di `/api/revalidate`.
+>
+> **Yang tersisa:** cabut penerimaan `?secret=` di `/api/revalidate`, dan
+> pertimbangkan verifikasi tanda tangan `sanity-webhook-signature` sebagai ganti
+> header buatan sendiri.
 
 **F04/F05 — kapabilitas unggah Blob tidak terikat server.**
 `app/api/demo-audio/route.ts:23-35` memanggil `handleUpload` tanpa
