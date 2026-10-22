@@ -561,7 +561,7 @@ Dipasang di `sanity.io/manage` → project → **API → Webhooks**:
 | **Secret** | nilai yang sama dengan `SANITY_REVALIDATE_SECRET` | `RENCANA` |
 | **Filter** | `_type in ["article", "pillarPost", "interview", "siteSettings", "video", "playlist", "videosPage"]` — 7 tipe yang disebut di `app/api/revalidate/route.ts:21-26` | `TERVERIFIKASI` (kode) |
 | **Filter** | **8 tipe** — audit terakhir mencatat filter harus 8 tipe; tipe kedelapan belum terverifikasi di repo (`[PERLU VERIFIKASI]`, kandidat: `demoSubmission` di dataset `submissions`) | `[PERLU VERIFIKASI]` |
-| **Trigger on** | **Create + Update** — tanpa centang Update, menyunting artikel tidak memicu webhook apa pun | `RENCANA` |
+| **Trigger on** | **Create + Update** — tanpa centang Update, menyunting artikel tidak memicu webhook apa pun | **`TERVERIFIKASI` 22 Okt 2026** — publish → halaman segar dalam **2,1 detik** |
 | **Projection** | `{_type, _id}` | `RENCANA` |
 
 **⚠️ Tindakan pemilik.** Pada pemeriksaan terakhir, di layar webhook Sanity
@@ -942,10 +942,10 @@ berurutan:
 1. **Domain `melodialam.id`** — belum resolve; canonical/sitemap/OG masih ke
    `*.vercel.app` (§11 butir 1, `H7`).
 2. **Blob store** — belum dibuat; unggah audio selalu 400 (§11 butir 2).
-3. **Webhook Sanity** — "Trigger on: Update" belum dicentang; filter belum 8
+3. **Webhook Sanity** — "Trigger on: Update" **sudah bekerja** (22 Okt 2026); filter belum 8
    tipe (§11 butir 6, `D8`).
 4. **Resend + Web Analytics** — belum diset/dinyalakan (§11 butir 3–4).
-5. **`SANITY_PREVIEW_SECRET`** — belum ada; pratinjau memakai secret revalidasi
+5. **`SANITY_PREVIEW_SECRET`** — sudah dipasang (22 Okt 2026); pratinjau memakai secret sendiri
    (§11 butir 5).
 6. **CI** — belum ada `.github/`; gate build/lint/test belum otomatis (§4.4).
 7. **Artefak generated** — siapa yang regenerate saat sumber berubah (§12.3
