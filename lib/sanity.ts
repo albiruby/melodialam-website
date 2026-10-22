@@ -21,7 +21,7 @@ import { SANITY_DATASET, SANITY_PROJECT_ID } from "./sanity-project";
  * client needs no environment variable and exists on a fresh checkout. That is
  * deliberate: the articles ARE the site's content, and reading them should not
  * depend on local setup. If Sanity cannot be reached, `lib/articles.ts` falls
- * back to the static articles in `lib/content.ts`.
+ * back to the static articles in `lib/content-fallback.ts`.
  */
 
 /** Pinned so a Sanity API change cannot alter query behaviour underneath us. */

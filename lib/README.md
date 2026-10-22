@@ -17,7 +17,7 @@ di mana mencarinya, tabel di bawah sudah cukup.
 | ticker, tirai kartu, kontak | `site-settings.ts` |
 | nama situs, navigasi, footer | `site.ts` |
 | 292 video hasil scrape | `catalogue.json` (artefak build) → `catalogue.ts` (aksesor) |
-| artikel cadangan saat Sanity tak terjangkau | `content.ts` |
+| artikel cadangan saat Sanity tak terjangkau | `content-fallback.ts` |
 | enum kategori, status demo, genre, batas audio | `taxonomy.ts` |
 
 ---
@@ -56,8 +56,8 @@ klien tidak pernah menarik `next/cache` atau klien Sanity.
 |---|---|
 | `catalogue.json` | hasil scrape kanal YouTube — 292 video, 342 Shorts, 5 playlist. **Artefak generated**, jangan disunting tangan; dibuat ulang dengan `npm run catalogue` |
 | `catalogue.ts` | aksesor bertipe di atas JSON itu: `VIDEOS`, `SHORTS`, `PLAYLISTS`, `VENUES`, `getVideo()`, `viewCount()`, `formatDuration()` |
-| `content.ts` | **fallback statis**, bukan sumber kebenaran: 12 artikel, baris wawancara, ticker. Dipakai hanya saat Sanity tidak dapat dijangkau |
-| `content.test.ts` | sembilan kasus Vitest untuk `content.ts` (`npm test`) |
+| `content-fallback.ts` | **fallback statis**, bukan sumber kebenaran: 12 artikel, baris wawancara, ticker. Dipakai hanya saat Sanity tidak dapat dijangkau |
+| `content-fallback.test.ts` | sembilan kasus Vitest untuk `content-fallback.ts` (`npm test`) |
 
 ## 4. Konstanta bersama
 
@@ -76,7 +76,7 @@ atasnya. Perubahan enum harus dibuat di dua tempat.
 
 1. **CMS menang, statis cadangan.** Setiap pembacaan Sanity punya jalur cadangan
    agar situs tetap tampil tanpa `.env`. Suntingan yang benar-benar dipakai
-   pembaca dilakukan di Studio — menyunting `content.ts` tidak mengubah apa
+   pembaca dilakukan di Studio — menyunting `content-fallback.ts` tidak mengubah apa
    pun di situs yang berjalan.
 2. **Batas server/clien eksplisit.** Hanya `sanity.ts` dan `sanity-project.ts`
    yang aman diimpor dari komponen klien. Berkas lain yang memegang token tidak

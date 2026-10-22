@@ -21,7 +21,7 @@ Cara membaca label (konsisten dengan `docs/TEST-STRATEGY.md`):
 Acuan keputusan: **`ADR-0006`** (Vitest + Playwright, deploy ke Vercel),
 **`ADR-0008`** (Sanity Studio menggantikan Payload). Acuan requirement:
 `BR-001`…`BR-007`, `RISK-001`…`RISK-003`. Acuan audit:
-[`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md). Acuan kontrak:
+[`audit-2026-10-21.md`](audit-2026-10-21.md). Acuan kontrak:
 [`API-CONTRACTS.md`](API-CONTRACTS.md).
 
 ---
@@ -67,8 +67,8 @@ konfigurasi produksi.
 | `npm run catalogue` | `node scripts/build-catalogue.mjs` |
 | `npm run brand` | `node scripts/build-brand.mjs` |
 | `npm run photos` | `node scripts/copy-photos.mjs` |
-| `npm run seed:sanity` | kompilasi `lib/content.ts` + `lib/taxonomy.ts` → jalankan `scripts/seed-sanity.js` |
-| `npm run seed:videos` | `node scripts/seed-videos.js` |
+| `npm run seed:sanity` | kompilasi `lib/content-fallback.ts` + `lib/taxonomy.ts` → jalankan `scripts/seed-sanity.cjs` |
+| `npm run seed:videos` | `node scripts/seed-videos.cjs` |
 
 Tidak ada skrip `typecheck` terpisah; `tsc --noEmit` dijalankan sebagai bagian
 dari `next build` (output build menampilkan tahap "Running TypeScript ...").
@@ -275,7 +275,7 @@ yang memeriksa endpoint produksi). Keberadaan Preview per-PR
 
 | Dimensi | Local | Preview | Production |
 |---|---|---|---|
-| Sumber data editorial | Sanity `production` + fallback `lib/content.ts` | Sanity `production` | Sanity `production` |
+| Sumber data editorial | Sanity `production` + fallback `lib/content-fallback.ts` | Sanity `production` | Sanity `production` |
 | Demo queue | Sanity `submissions` **atau** array in-memory bila token kosong | idem | Sanity `submissions` |
 | Env var dibaca | `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET` | idem + opsional | idem + opsional (`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`) |
 | Secret | ada di `.env` lokal (git-ignored) | Environment Variables Vercel | Environment Variables Vercel |
@@ -374,7 +374,7 @@ npm run start   # next start -p 3100
 Hasil `npm test` yang dijalankan pada fase ini (21 Okt 2026):
 
 ```
-✓ lib/content.test.ts (9 tests) 4ms
+✓ lib/content-fallback.test.ts (9 tests) 4ms
 
 Test Files  1 passed (1)
      Tests  9 passed (9)
@@ -620,7 +620,7 @@ Tidak ada "rollback migrasi" di Sanity; yang ada adalah:
 
 - **Hari ini:** submission hidup di dataset privat `submissions`. Menghapus
   dokumen `demoSubmission` **tidak** menghapus `demoContact` (PII) atau objek
-  audio — lihat `AUDIT-2026-10-21.md` F07. Aksi kurator harus ikut menghapus
+  audio — lihat `audit-2026-10-21.md` F07. Aksi kurator harus ikut menghapus
   keduanya.
 - **Rollback aplikasi tidak menyentuh antrean demo** — antrean bukan bagian
   dari build.
@@ -732,7 +732,7 @@ build `TERVERIFIKASI` (§1.4).
 ## 11. Tindakan yang menunggu pemilik
 
 Daftar ini **bukan** pekerjaan kode — semuanya butuh akses ke dasbor Vercel atau
-Sanity. Statusnya berasal dari `AUDIT-2026-10-21.md` (21 Okt 2026) dan tetap
+Sanity. Statusnya berasal dari `audit-2026-10-21.md` (21 Okt 2026) dan tetap
 perlu dikonfirmasi saat dibaca.
 
 | # | Tindakan | Akibat kalau belum dikerjakan | Status |
@@ -741,7 +741,7 @@ perlu dikonfirmasi saat dibaca.
 | 2 | **Buat Blob store** di proyek Vercel | `BLOB_READ_WRITE_TOKEN` belum ada → `POST /api/demo-audio` menjawab `400` dan form tidak bisa melampirkan audio | `RENCANA` (owner) |
 | 3 | **Set `RESEND_API_KEY`** (+ opsional `DEMO_NOTIFY_TO`) | Notifikasi email ke redaksi **inert**; submission tetap tersimpan, tapi meja redaksi tidak diberi tahu | `RENCANA` (owner) |
 | 4 | **Nyalakan Vercel Web Analytics** di dashboard | `<Analytics />` sudah terpasang, tapi tidak ada data yang terkumpul | `RENCANA` (owner) |
-| 5 | **Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`) | Pratinjau draf memakai fallback `SANITY_REVALIDATE_SECRET` — satu nilai melindungi dua kapabilitas (`AUDIT-2026-10-21.md` F03) | `RENCANA` (owner) |
+| 5 | **Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`) | Pratinjau draf memakai fallback `SANITY_REVALIDATE_SECRET` — satu nilai melindungi dua kapabilitas (`audit-2026-10-21.md` F03) | `RENCANA` (owner) |
 | 6 | **Centang "Update"** di webhook Sanity dan samakan filter ke 8 tipe | Menyunting artikel di Studio **tidak** memicu webhook; konten baru muncul paling cepat setelah jendela cache 1 menit | `RENCANA` (owner) |
 | 7 | **Rotasi `SANITY_REVALIDATE_SECRET`** lalu hapus penerimaan `?secret=` di `/api/revalidate` | Secret lama masih berlaku; secret bisa bocor ke log akses lewat query string | `RENCANA` (owner) |
 | 8 | **Hapus `DATABASE_URL`** dari `.env` lokal | Tidak berbahaya (tidak dibaca kode), tapi membingungkan | `RENCANA` (owner) |
@@ -848,7 +848,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
   `maximumSizeInBytes` 25 MB, `400` bila token tidak ada.
 - `app/api/revalidate/route.ts` — 6 tag, `x-webhook-secret` + fallback
   `?secret=`, `401`/`500`.
-- `app/rss.xml/route.ts`, `app/(site)/sitemap.ts`, `app/robots.ts` — feed,
+- `app/rss.xml/route.ts`, `app/sitemap.ts`, `app/robots.ts` — feed,
   peta situs, aturan perayapan.
 - `app/(site)/journal/route.ts` dan `app/(site)/journal/[slug]/route.ts` —
   redirect `308`.
@@ -862,7 +862,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
   `submissions` (privat).
 - `lib/sanity-server.ts`, `lib/sanity-preview.ts` —Fallback antrean in-memory
   dan fallback secret pratinjau.
-- `lib/taxonomy.ts`, `lib/content.ts` — enum demo, `SEED_DEMOS` (3 entri),
+- `lib/taxonomy.ts`, `lib/content-fallback.ts` — enum demo, `SEED_DEMOS` (3 entri),
   batas audio 25 MB.
 - `next.config.ts` — `cacheComponents`, `partialPrefetching`,
   `poweredByHeader: false`, `images.remotePatterns` (`i.ytimg.com/vi/**` +
@@ -898,7 +898,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
 - `git ls-files` → `lib/catalogue.json`, `app/icon.png`, `app/apple-icon.png`,
   `app/favicon.ico`, `public/brand/melodi-alam-lockup-black.png`, dan **33**
   berkas `public/photos/*.webp` **sudah ter-track**.
-- `docs/AUDIT-2026-10-21.md`, `docs/SANITY-INTEGRATION.md`,
+- `docs/audit-2026-10-21.md`, `docs/SANITY-INTEGRATION.md`,
   `docs/API-CONTRACTS.md`, `docs/DATA-MODEL.md`, `docs/ARCHITECTURE.md`,
   `docs/TEST-STRATEGY.md` — acuan label, gate, `B1`…`B4`, dan temuan audit
   (F01–F08).
@@ -929,7 +929,7 @@ tidak ada perubahan kode yang dilakukan oleh sesi dokumentasi ini (hanya dua
 berkas `.md` di `docs/`). Tidak ada probing ke endpoint produksi. Status
 dashboard Vercel/Sanity (Blob store, Resend, Web Analytics, webhook, domain)
 **tidak diverifikasi ulang** di fase ini — diambil dari
-`AUDIT-2026-10-21.md` dan ditandai `[PERLU VERIFIKASI]` di §11.
+`audit-2026-10-21.md` dan ditandai `[PERLU VERIFIKASI]` di §11.
 
 ---
 

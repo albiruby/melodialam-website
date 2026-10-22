@@ -9,7 +9,7 @@ import {
   SEED_DEMOS,
   type DemoStatus,
   type DemoSubmission,
-} from "@/lib/content";
+} from "@/lib/content-fallback";
 import { submissionsClient } from "@/lib/sanity-server";
 
 /**

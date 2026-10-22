@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { KurasiBrowser } from "@/components/KurasiBrowser";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { allPillarPosts } from "@/lib/pillars";
 
 export const metadata: Metadata = {

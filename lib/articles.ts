@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { ARTICLES, type Article } from "./content";
+import { ARTICLES, type Article } from "./content-fallback";
 import { contentClient, imageUrl } from "./sanity";
 import { isArticleCategory } from "./taxonomy";
 
@@ -13,7 +13,7 @@ import { isArticleCategory } from "./taxonomy";
  *  - what an editor publishes in the Studio shows up on the site without a code
  *    change, and
  *  - if Sanity cannot be reached, the site still renders the twelve articles in
- *    `lib/content.ts` rather than failing.
+ *    `lib/content-fallback.ts` rather than failing.
  *
  * The read client needs no credentials (the dataset is public and the project id
  * is a literal), so Sanity is the default source rather than something you opt

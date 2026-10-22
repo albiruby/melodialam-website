@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/ArticleCards";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { latestStories } from "@/lib/articles";
 import { getSiteSettings } from "@/lib/site-settings";
 

@@ -5,7 +5,7 @@
  * One-off: seed Sanity from this repo's own content files.
  *
  * The source of truth for the twelve articles, the interview rows, the
- * Pahlawan Kota directory and the ticker is still `lib/content.ts`; this copies
+ * Pahlawan Kota directory and the ticker is still `lib/content-fallback.ts`; this copies
  * them into the CMS so an editor can take over. Deterministic `_id`s mean
  * re-running updates rather than duplicates.
  *
@@ -17,7 +17,7 @@ const path = require("node:path");
 
 const BUILD_DIR = path.resolve(process.argv[2] ?? "");
 if (!process.argv[2]) {
-  console.error("Usage: node scripts/seed-sanity.js <compiled-dir>");
+  console.error("Usage: node scripts/seed-sanity.cjs <compiled-dir>");
   process.exit(1);
 }
 

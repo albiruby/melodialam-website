@@ -37,7 +37,7 @@
 | Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated News, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
 | Store utama | Sanity CMS, **dua dataset**: `production` (publik) + `submissions` (privat) | `TERVERIFIKASI` (`lib/sanity-project.ts:31,34`) |
 | Store kedua | `lib/catalogue.json` — katalog YouTube hasil *scrape*, dibangkitkan `npm run catalogue`, **tidak boleh diedit tangan** | `TERVERIFIKASI` (`lib/catalogue.ts:3`) |
-| Store fallback | `lib/content.ts` — 12 artikel, 9 baris wawancara, 4 item ticker, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
+| Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 4 item ticker, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
 | Basis data relasional | **Tidak ada.** Tidak ada Postgres, tidak ada ORM, tidak ada migrasi | `TERVERIFIKASI` (ADR-0008; `package.json` tidak punya `payload`/`pg`/`drizzle`) |
 | Role penulis | Kurator/editor lewat Sanity Studio (dua workspace: **Konten** dan **Submit Karya**) | `TERVERIFIKASI` (`melodialam-sanity/sanity.config.ts`) |
 | Volume konten editorial | 12 artikel (6 foto + 6 reel), 9 baris wawancara, 9 video, 5 playlist, 55 post kurasi, 1 `siteSettings`, 1 `videosPage` | `TERVERIFIKASI` — dihitung ulang dari dataset `production` pada 21 Okt 2026 (lihat §6) |
@@ -99,7 +99,7 @@ Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
 | `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
 | `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
 | `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; bagian "Dari Feed" lalu tidak dirender |
-| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau | `siteSettings` | per-field ke `lib/site.ts` + `lib/content.ts` |
+| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau | `siteSettings` | per-field ke `lib/site.ts` + `lib/content-fallback.ts` |
 | `lib/videos-page.ts` → `getVideosPageCopy()` | judul/catatan bagian `/videos` | `videosPage` | per-field ke konstanta `STATIC` di berkas itu |
 | `app/api/demos/route.ts` | antrean demo | `demoSubmission` (dataset privat) | array in-memory `memoryQueue` berisi 3 `SEED_DEMOS`; kontak disimpan di `memoryContacts` |
 
@@ -107,13 +107,13 @@ Bentuk yang dipakai UI (`TERVERIFIKASI`, dibaca dari `lib/*.ts`):
 
 ```ts
 // lib/articles.ts
-export interface SiteArticle extends Article {   // Article = lib/content.ts
+export interface SiteArticle extends Article {   // Article = lib/content-fallback.ts
   richBody?: unknown[];        // Portable Text; undefined bila artikel statis
   source: "static" | "cms";
   mediaType: "foto" | "reel";
 }
 
-// lib/content.ts
+// lib/content-fallback.ts
 export interface Article {
   slug: string; title: string; category: ArticleCategory;
   date: string;        // label tampil, mis. "10 Oktober 2026"
@@ -166,7 +166,7 @@ Pemakai dan potongannya (`TERVERIFIKASI`):
 | Beranda `app/(site)/page.tsx:28-29` | `latestStories(8)` → 4 pertama (grid 2×2) |
 | `/stories` `app/(site)/stories/page.tsx:18` | `latestStories(8)` → 8 kartu |
 | Detail artikel `app/(site)/stories/[slug]/page.tsx:66` | `latestStories(8)` → blok "More {rubrik}" 3 kartu |
-| Sitemap `app/(site)/sitemap.ts:15` | `latestStories(8)` |
+| Sitemap `app/sitemap.ts:15` | `latestStories(8)` |
 | RSS `app/rss.xml/route.ts:29` | `latestStories(8)` |
 
 Konsekuensinya: **angka daftar cerita tidak bisa berbeda antar halaman**, dan
@@ -606,7 +606,7 @@ diperbaiki):**
 
 - Menghapus dokumen `demoSubmission` di Studio **meninggalkan `demoContact`
   (PII) dan objek audio (publik) hidup selamanya**. Tidak ada trigger, webhook,
-  atau job pembersih. Lihat `docs/AUDIT-2026-10-21.md` temuan F07.
+  atau job pembersih. Lihat `docs/audit-2026-10-21.md` temuan F07.
 - Menghapus dokumen `article` **tidak** menghapus gambar di CDN Sanity; aset
   gambar berdiri sendiri dari dokumennya.
 - Mengubah `slug` artikel mematikan URL lama. Tidak ada redirect otomatis
@@ -676,7 +676,7 @@ Tidak ada Supabase Storage. Penyimpanan objek untuk audio demo memakai
 > formulir menampilkan "Audio gagal diunggah" dan pengunjung dapat mengirim
 > tanpa berkas. Lapis 1 dan 2 sudah aktif.
 
-Yang **belum** ada (`RENCANA`, lihat `docs/AUDIT-2026-10-21.md` F01, F04, F05):
+Yang **belum** ada (`RENCANA`, lihat `docs/audit-2026-10-21.md` F01, F04, F05):
 
 - Server belum menentukan kunci objek maupun `access`; keduanya masih
   diserahkan ke peramban.
@@ -713,7 +713,7 @@ Prinsip yang masih berlaku:
 > `[PERLU VERIFIKASI]` `lib/sanity-server.ts` dan `lib/sanity-preview.ts` tidak
 > memakai `import "server-only"`. Penjaga sekarang adalah konvensi
 > (tidak ada `"use client"` yang menyentuh keduanya), bukan jaminan build.
-> Lihat `docs/AUDIT-2026-10-21.md` §3.
+> Lihat `docs/audit-2026-10-21.md` §3.
 
 ---
 
@@ -775,7 +775,7 @@ dan `kurasi` (post kurasi).
 
 > `RENCANA`: `SANITY_PREVIEW_SECRET` belum di-set, jadi saat ini satu secret
 > melayani dua kapabilitas (baca draf + invalidasi cache), dan secret diterima
-> lewat query string. Lihat `docs/AUDIT-2026-10-21.md` F03.
+> lewat query string. Lihat `docs/audit-2026-10-21.md` F03.
 
 ---
 
@@ -803,7 +803,7 @@ dibaca seolah-olah ada:
 
 ### 12.1 Keadaan lingkungan (per 21 Oktober 2026)
 
-> **Sumber tabel ini: `docs/AUDIT-2026-10-21.md` §5, bukan pemeriksaan ulang.**
+> **Sumber tabel ini: `docs/audit-2026-10-21.md` §5, bukan pemeriksaan ulang.**
 > Status environment Vercel hanya bisa dibaca dengan akses dashboard, jadi
 > nilainya ikut apa adanya dari audit tersebut.
 
@@ -853,7 +853,7 @@ dibaca seolah-olah ada:
   `(site)/stories/[slug]/page.tsx`, `(site)/kurasi/page.tsx`,
   `(site)/videos/page.tsx`, `(site)/bicara-melodi/page.tsx`,
   `(site)/submit/page.tsx`, `(site)/tentang/page.tsx` (sebagian),
-  `(site)/sitemap.ts`, `(site)/journal/route.ts`,
+  `app/sitemap.ts`, `(site)/journal/route.ts`,
   `(site)/journal/[slug]/route.ts`, `(site)/preview/[type]/[slug]/page.tsx`,
   `api/demos/route.ts`, `api/demo-audio/route.ts`, `api/revalidate/route.ts`,
   `rss.xml/route.ts`, `robots.ts` (penuh).
@@ -865,7 +865,7 @@ dibaca seolah-olah ada:
   `prefers-reduced-motion`.
 - `melodi-alam/package.json` — dependensi & skrip.
 - `melodi-alam/docs/adr/0008-sanity-studio-menggantikan-payload.md`,
-  `docs/SANITY-INTEGRATION.md`, `docs/AUDIT-2026-10-21.md`.
+  `docs/SANITY-INTEGRATION.md`, `docs/audit-2026-10-21.md`.
 - `melodi-alam/docs/ARCHITECTURE.md`, `docs/SECURITY-PRIVACY.md`,
   `docs/TEST-STRATEGY.md`, `docs/API-CONTRACTS.md`, `docs/DEPLOYMENT.md` —
   **di-*grep*** untuk istilah usang (RLS, Postgres, `feedArticles`, "6 kartu"),
@@ -892,7 +892,7 @@ dibaca seolah-olah ada:
 - `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`
   (Samsara 101, Interview 143, Arsip & Lainnya 9, Melodi Taman 39), 17 nilai
   `ageBucket` berbeda, 0 `ageBucket` null, 19 kunci `profile`.
-- `npm test` → **9/9 lulus** (`lib/content.test.ts`, Vitest 3.2.7) — termasuk
+- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7) — termasuk
   aturan `BR-004` (waktu baca) dan `pillarDate()`.
 - Pencarian seluruh repo (`app/**`, `components/*.tsx`, `lib/*.ts`) untuk
   `latestStories`, `allPillarPosts`, `allInterviews`,
@@ -904,7 +904,7 @@ dibaca seolah-olah ada:
 - Status privat dataset `submissions` di Sanity Manage (butuh akun) — lihat
   §2 dan §10.
 - Keadaan sebenarnya environment Vercel (daftar env, Blob store, Resend,
-  Web Analytics) — diambil dari `docs/AUDIT-2026-10-21.md`, bukan diukur ulang
+  Web Analytics) — diambil dari `docs/audit-2026-10-21.md`, bukan diukur ulang
   di dokumen ini.
 - Jumlah halaman statis hasil build — **tidak dihitung ulang** di sini. Angka
   yang tercatat di ADR-0008 untuk build 21 Oktober 2026 adalah **33 halaman
@@ -913,7 +913,7 @@ dibaca seolah-olah ada:
 - Perilaku lintas peramban, penilaian SEO nyata, dan indeksasi mesin
   pencari.
 - Efektivitas cache tag di produksi (diasumsikan bekerja sesuai
-  `docs/AUDIT-2026-10-21.md` §4).
+  `docs/audit-2026-10-21.md` §4).
 
 **Selisih yang ditemukan antara acuan dan sumber nyata** — dicatat agar tidak
 menjadi "kebenaran" diam-diam (pemeriksaan ulang per 21 Okt 2026, sore; beberapa

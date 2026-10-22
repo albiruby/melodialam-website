@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- CommonJS on purpose:
-   a one-off script that runs outside the TS build, like scripts/seed-sanity.js. */
+   a one-off script that runs outside the TS build, like scripts/seed-sanity.cjs. */
 /**
  * One-off: seed the curated Melodi Samsara preview as `video` documents.
  *
@@ -13,9 +13,9 @@
  * nine render in the same order but with ages the site recomputes at render
  * instead of captured strings that rot.
  *
- * Dry-run by default; `node scripts/seed-videos.js --apply` writes.
+ * Dry-run by default; `node scripts/seed-videos.cjs --apply` writes.
  * Token: the same `SANITY_API_READ_TOKEN` (an Editor token) that
- * `seed-sanity.js` uses; dataset `production`, public.
+ * `seed-sanity.cjs` uses; dataset `production`, public.
  */
 const fs = require("node:fs");
 const path = require("node:path");

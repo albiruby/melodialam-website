@@ -55,7 +55,7 @@ Konsekuensi yang mengikat:
 
 1. **Tidak ada lagi basis data milik sendiri.** Tidak ada Postgres, tidak ada migrasi,
    tidak ada tabel. Skema hidup di `sanity/schemaTypes/` dan diterapkan oleh Sanity.
-2. **`lib/content.ts` tetap menjadi fallback.** Aturan lama dipertahankan: CMS menang
+2. **`lib/content-fallback.ts` tetap menjadi fallback.** Aturan lama dipertahankan: CMS menang
    saat terkonfigurasi, berkas statis dipakai saat tidak. Checkout bersih tanpa `.env`
    tetap membangun situs yang utuh.
 3. **Token tidak pernah menyentuh bundel klien.** `lib/sanity.ts` tidak memuat token dan
@@ -71,7 +71,7 @@ Konsekuensi yang mengikat:
 | **Tetap di Payload** | Sudah berjalan; artikel CMS sudah render | Beban operasional dan migrasi skema seperti diuraikan di Konteks. |
 | **Sanity dengan satu dataset privat** | Paling sederhana; semua di satu tempat | Artikel ikut kehilangan pembacaan tanpa token dan cache CDN, padahal artikel bukan rahasia. |
 | **Sanity dengan satu dataset publik** | Artikel dapat CDN | Menaruh nomor kontak musisi di dataset yang dapat dibaca publik. Tidak dapat diterima. |
-| **Kembali ke `lib/content.ts` saja** | Nol infrastruktur | Editor non-teknis kembali tidak bisa mempublikasikan apa pun — masalah `USR-003` yang justru alasan seluruh fase ini. |
+| **Kembali ke `lib/content-fallback.ts` saja** | Nol infrastruktur | Editor non-teknis kembali tidak bisa mempublikasikan apa pun — masalah `USR-003` yang justru alasan seluruh fase ini. |
 
 > Catatan penting: ADR-0002 menolak Sanity dengan alasan "menambah satu sistem eksternal,
 > satu deploy, dan satu sumber kebenaran tipe di luar repo". Alasan itu benar untuk Sanity
@@ -92,7 +92,7 @@ Konsekuensi yang mengikat:
 **Negatif / utang**
 
 - **Ketergantungan pada layanan pihak ketiga.** Kalau Sanity tidak dapat dijangkau,
-  pembacaan artikel jatuh ke `lib/content.ts` (12 artikel lama), bukan ke keadaan
+  pembacaan artikel jatuh ke `lib/content-fallback.ts` (12 artikel lama), bukan ke keadaan
   terakhir. Itu fallback yang jujur tetapi bukan cermin dari isi terkini.
 - **Dua workspace di satu Studio** menambah satu konsep yang harus dipahami editor:
   "Konten" dan "Antrean Demo" adalah dua dataset berbeda.

@@ -10,7 +10,7 @@
  * values, because the Studio cannot import from this repo at build time and this
  * repo must not depend on the Studio's. Change one, change the other.
  *
- * `lib/content.ts` re-exports everything here, so existing imports keep working.
+ * `lib/content-fallback.ts` re-exports everything here, so existing imports keep working.
  */
 
 /* --- Articles ------------------------------------------------------------ */

@@ -8,7 +8,7 @@
 > [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md).
 >
 > **Audit 21 Okt 2026.** Laporan audit lengkap (keamanan + codebase + integrasi
-> Sanity/Vercel + SEO) ada di [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md).
+> Sanity/Vercel + SEO) ada di [`audit-2026-10-21.md`](audit-2026-10-21.md).
 > Dokumen ini mengikutinya dan meringkas; salinan artefak audit lengkap ada di
 > `D:\DOCS Project Samsara - Melodi Alam\Melodi Alam Website\Audit Keamanan 2026-10-21\`.
 
@@ -80,7 +80,7 @@ Empat hal yang paling penting:
 | `app/api/revalidate/route.ts` | Autentikasi webhook, pembuangan tag cache |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | Secret pratinjau, perspektif `drafts`, `noindex` |
 | `lib/sanity.ts` · `lib/sanity-server.ts` · `lib/sanity-preview.ts` | Klien(token), dataset, perspektif, fallback secret |
-| `lib/taxonomy.ts` · `lib/content.ts` | Enum demo, batas audio, artikel statis |
+| `lib/taxonomy.ts` · `lib/content-fallback.ts` | Enum demo, batas audio, artikel statis |
 | `components/DemoPortal.tsx` | Form, unggah audio, object URL |
 | `components/VideoModal.tsx` | Embed YouTube |
 | `next.config.ts` | Header keamanan, `images.remotePatterns`, `poweredByHeader` |
@@ -94,7 +94,7 @@ Empat hal yang paling penting:
   dicoba.
 - **Audit terpisah** (skill `security-audit`, mode audit penuh) juga berjalan
   source-level dan tidak mengeksekusi kode target — lihat
-  [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md) §1.
+  [`audit-2026-10-21.md`](audit-2026-10-21.md) §1.
 - **Severity** mengikuti skala Critical / High / Medium / Low / Informational,
   dinilai dari *exploitability realistis × dampak* untuk data yang ada.
 
@@ -594,7 +594,7 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
   `articleCta`; `sanity.config.ts:37,46` — `visionTool()` aktif di **kedua**
   workspace.
 
-**Diverifikasi dengan menjalankan:** `npm test` → 9/9 lulus (`lib/content.test.ts`,
+**Diverifikasi dengan menjalankan:** `npm test` → 9/9 lulus (`lib/content-fallback.test.ts`,
 Vitest 3.2.7); `npm run build` → lulus, **33 halaman statis** (`Next.js 16.4.0`,
 Turbopack).
 

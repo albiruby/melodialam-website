@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { TICKER_ITEMS } from "./content";
+import { TICKER_ITEMS } from "./content-fallback";
 import { SITE } from "./site";
 import { contentClient } from "./sanity";
 
@@ -7,7 +7,7 @@ import { contentClient } from "./sanity";
  * Site-wide copy.
  *
  * Reads the `siteSettings` singleton from Sanity and falls back to the constants
- * in `lib/site.ts` and `lib/content.ts`, so the site renders before an editor has
+ * in `lib/site.ts` and `lib/content-fallback.ts`, so the site renders before an editor has
  * filled the document in — and keeps rendering if Sanity is unreachable.
  *
  * `url` and `locale` are deliberately NOT here: the origin has to come from the

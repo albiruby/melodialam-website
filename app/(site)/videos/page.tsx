@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { VideoRow } from "@/components/VideoRow";
 import { VideoModal } from "@/components/VideoModal";
 import { CHANNEL } from "@/lib/catalogue";

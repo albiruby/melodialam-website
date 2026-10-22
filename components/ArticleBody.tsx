@@ -8,7 +8,7 @@ import { imageUrl } from "@/lib/sanity";
  *
  * - CMS articles carry Portable Text, which goes through `<PortableText>` so
  *   headings, lists, quotes, links and inline images survive.
- * - Static articles (the twelve in `lib/content.ts`) carry plain paragraphs.
+ * - Static articles (the twelve in `lib/content-fallback.ts`) carry plain paragraphs.
  *
  * Both land in the same column width and type scale, so the two sources are
  * visually indistinguishable — which is what lets the migration be gradual.

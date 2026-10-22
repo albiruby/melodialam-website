@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { articleBySlug } from "@/lib/articles";
-import { CATEGORY_LABELS } from "@/lib/content";
+import { CATEGORY_LABELS } from "@/lib/content-fallback";
 import { SITE } from "@/lib/site";
 
 /**

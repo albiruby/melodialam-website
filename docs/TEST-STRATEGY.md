@@ -4,7 +4,7 @@ Dokumen ini menjelaskan **keadaan pengujian saat ini** dan rencana lapisan yang
 belum ada. Satu-satunya suite yang benar-benar berjalan hari ini adalah unit
 test Vitest.
 
-> **Status fase (21 Okt 2026):** ada **satu** berkas test — `lib/content.test.ts`,
+> **Status fase (21 Okt 2026):** ada **satu** berkas test — `lib/content-fallback.test.ts`,
 > 9 kasus — yang dijalankan oleh `npm test` (`vitest run`). Belum ada Playwright,
 > belum ada testing-library, belum ada Coverage, dan **belum ada CI** (repo tidak
 > punya `.github/`). Semua lapisan di luar unit test di dokumen ini ditulis
@@ -41,7 +41,7 @@ Bukti yang dibaca langsung:
   "node"`, `include: ["**/*.test.ts"]`, `exclude: ["node_modules/**",
   ".next/**"]`. Tidak ada setup file, tidak ada coverage, tidak ada reporter
   khusus.
-- Satu-satunya berkas test di repo: `lib/content.test.ts`. **Tidak ada**
+- Satu-satunya berkas test di repo: `lib/content-fallback.test.ts`. **Tidak ada**
   `*.spec.ts`, tidak ada `tests/`, tidak ada `__tests__/`.
 - `npm test` dijalankan pada fase ini: **9 passed / 1 file** (Vitest 3.2.7).
 - `devDependencies`: `@tailwindcss/turbopack`, `@types/node`, `@types/react`,
@@ -74,11 +74,11 @@ dan tidak ada pemantau regresi visual. Pernyataan ini disengaja: dokumen ini
 
 ### 1.2 Yang diuji (in scope)
 
-- Fungsi murni di `lib/content.ts` dan `lib/pillars-shared.ts` serta
+- Fungsi murni di `lib/content-fallback.ts` dan `lib/pillars-shared.ts` serta
   `lib/taxonomy.ts` (§4).
 - Kontrak `app/api/demos/route.ts` (`GET`, `POST`) dan
   `app/api/revalidate/route.ts` (`POST`) — belum ada testnya (§4.4, `RENCANA`).
-- Invariant data: 12 artikel statis di `lib/content.ts`, 9 baris wawancara,
+- Invariant data: 12 artikel statis di `lib/content-fallback.ts`, 9 baris wawancara,
   pool kurasi, dan angka yang tampil di UI (`RENCANA`).
 - Journey UI kritis pada `/`, `/stories`, `/stories/[slug]`, `/bicara-melodi`,
   `/videos`, `/kurasi`, `/submit`, 404 (`RENCANA`, §5).
@@ -109,12 +109,12 @@ Baris "Kondisi" menyatakan apakah risiko itu masih terbuka di kode hari ini.
 | `R1` | `globals.css` + pemindaian Tailwind | Direktori tool baru tanpa `@source not` → **stylesheet gagal dibangun senyap** | **Terbuka** (`@source not` ada untuk `.codegraph`, `.gitnexus`, `.next`) | Gate build + smoke render |
 | `R2` | `next/image` `fill` | Ancestor `static` → gambar ter-*upscale* | **Terbuka** — aturan "induk harus `relative`" berlaku, tapi tidak ada penjaga otomatis | Uji sumber + pengukuran di browser |
 | `R3` | Pembacaan geometri di frame loop | Reflow sinkron → 1 rAF/detik, `IntersectionObserver` mati | **Tertutup di `MarqueeTape`** (`ResizeObserver`, bukan per-frame). `RevealText` membaca `getBoundingClientRect` di event scroll/resize, bukan di loop | Sanity check + assert gejala |
-| `R4` | SSR menyalin state tersembunyi | Judul permanen tak terlihat | **Tertutup untuk `RevealText`** (`initial={false}`). **Masih terbuka untuk `components/Reveal.tsx`**: kelas `reveal-section` mulai di `opacity: 0`, jadi isi section baru terlihat setelah JS jalan | Uji tanpa JS |
+| `R4` | SSR menyalin state tersembunyi | Judul permanen tak terlihat | **Tertutup untuk `RevealText`** (`initial={false}`). **Masih terbuka untuk `components/motion/Reveal.tsx`**: kelas `reveal-section` mulai di `opacity: 0`, jadi isi section baru terlihat setelah JS jalan | Uji tanpa JS |
 | `R5` | Tailwind + interpolasi string | `aspect-[${x}]` → tak ada rule → bingkai kartu runtuh | **Terbuka** | Lint konvensi + ukur tinggi bingkai |
 | `R6` | Validasi `POST /api/demos` | Field wajib / `link` / enum lolos atau salah tolak | **Terbuka** — aturan ada, tidak ada testnya | Unit/integration matriks batas (§4.4) |
 | `R7` | State level-modul di route | `memoryQueue` bocor antar-test → hasil palsu | **Terbuka** (`const memoryQueue` di `app/api/demos/route.ts:30`) | Disiplin fixture (§8.3) |
 | `R8` | Keyboard | Affordance reveal hanya saat hover | **Tertutup** — `globals.css` kini punya `:focus-visible` (1) dan pasangan `:focus-within` (8) | Regression check (jangan sampai hilang lagi) |
-| `R9` | Waktu baca artikel | Aturan `max(1, ceil(words/200))` berubah diam-diam | **Tertutup** — sudah ada di `lib/content.ts` dan dipatok 5 test | Sudah ada (`U-01`…`U-05`) |
+| `R9` | Waktu baca artikel | Aturan `max(1, ceil(words/200))` berubah diam-diam | **Tertutup** — sudah ada di `lib/content-fallback.ts` dan dipatok 5 test | Sudah ada (`U-01`…`U-05`) |
 | `R10` | Audio demo ≤ 25 MB | Tidak ada batas ukuran/tipe | **Tertutup** — `DEMO_AUDIO_MAX_BYTES` ditegakkan di route; `audioUrl` harus `https` + ekstensi sah | Tambahkan test (§4.4) |
 | `R11` | `lib/catalogue.json` | Dimutasi test atau disunting tangan | **Terbuka** | Read-only fixture (§8.2) |
 | `R12` | PII `contact` | Kontak bocor ke UI publik | **Tertutup** — kontak disimpan terpisah (`demoContact` / `memoryContacts`), tidak pernah ada di `entry` | Regression check |
@@ -164,7 +164,7 @@ kecil; jangan menambah lapisan sebelum ada yang benar-benar menyakitkan.
 
 ### 4.1 Suite yang ada (`TERVERIFIKASI`)
 
-`lib/content.test.ts` — 9 kasus, 3 `describe`, lingkungan `node` (tanpa DOM).
+`lib/content-fallback.test.ts` — 9 kasus, 3 `describe`, lingkungan `node` (tanpa DOM).
 
 | ID | `describe` | Yang dipatok | Skor |
 |---|---|---|---|
@@ -194,8 +194,8 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-12` | `lib/catalogue.ts` `formatDuration` | `0` → `""`; `< 3600` → `m:ss`; `≥ 3600` → `h:mm:ss` | Sedang |
 | `U-13` | `lib/catalogue.ts` `topVideos` / `latestVideos` / `getVideo` | `topVideos` menyalin lalu mengurutkan turun dan **tidak memutasi** `VIDEOS`; `getVideo` id tak dikenal → `undefined` | Sedang |
 | `U-14` | `lib/pillars-shared.ts` `PHOTO_PILLARS` / `REEL_PILLARS` | Empat pillar foto dan empat pillar reel; `meme-humor` tidak ada di salah satunya | Rendah |
-| `U-15` | `lib/content.ts` `ARTICLES` | 12 artikel, `slug` unik, `mediaType` hanya `"foto"`/`"reel"` | Tinggi |
-| `U-16` | `lib/content.ts` `INTERVIEW_ROWS` | 9 baris, `videoId` terisi, `slug` unik | Sedang |
+| `U-15` | `lib/content-fallback.ts` `ARTICLES` | 12 artikel, `slug` unik, `mediaType` hanya `"foto"`/`"reel"` | Tinggi |
+| `U-16` | `lib/content-fallback.ts` `INTERVIEW_ROWS` | 9 baris, `videoId` terisi, `slug` unik | Sedang |
 | `U-17` | `lib/taxonomy.ts` enum | `DEMO_GENRES` 6, `DEMO_PROGRAMS` 3, `DEMO_INITIAL_STATUS` = `"IN REVIEW"`, `DEMO_APPROVED_STATUSES` = 2 status | Tinggi |
 | `U-18` | `lib/taxonomy.ts` `DEMO_AUDIO_MAX_BYTES` | `25 * 1024 * 1024` = `26214400`; `DEMO_AUDIO_EXTENSIONS` = `.mp3 .wav .ogg` | Tinggi |
 | `U-19` | `lib/site.ts` `PRIMARY_NAV` | Lima entri: `/`, `/stories`, `/bicara-melodi`, `/videos`, `/kurasi` | Rendah |
@@ -213,7 +213,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
 | `U-23` | `/kurasi` = 6 post per pilar tanpa pencarian/filter | `PILLAR_LIMIT = 6` di `components/KurasiBrowser.tsx`; dengan pencarian/filter naik ke `SEARCH_LIMIT = 48` |
 | `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17. Pilar `similar-song` dan `meme-humor` ada di skema tapi 0 post |
-| `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
+| `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content-fallback.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
 
 > `U-20`…`U-25` butuh data Sanity untuk sebagiannya, jadi lebih tepat jadi
 > integration test dengan stub, atau dipindah jadi smoke test E2E (`E-15`).
@@ -632,7 +632,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `^3.2.7` di `devDependencies`; Playwright, jsdom, dan testing-library tidak ada.
 - `vitest.config.ts` — alias `@`, `environment: "node"`, `include: ["**/*.test.ts"]`,
   tanpa `setupFiles`, tanpa coverage.
-- `lib/content.test.ts` — 9 kasus dalam 3 `describe`; dipetakan ke `U-01`…`U-09`.
+- `lib/content-fallback.test.ts` — 9 kasus dalam 3 `describe`; dipetakan ke `U-01`…`U-09`.
 - `npm test` — **dijalankan**: 9 passed / 1 file (Vitest 3.2.7).
 - `npm run build` — **dijalankan**: Next.js 16.4.0, "Generating static pages
   using 11 workers (33/33)", 33 halaman statis, TypeScript bersih.
@@ -650,7 +650,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   Blob belum siap.
 - `app/api/revalidate/route.ts` — 6 tag (`articles`, `pillar-posts`, `interviews`,
   `siteSettings`, `videos`, `videos-page`), `timingSafeEqual`, 500/401.
-- `lib/content.ts` — `readingTimeMinutes` (`WORDS_PER_MINUTE = 200`),
+- `lib/content-fallback.ts` — `readingTimeMinutes` (`WORDS_PER_MINUTE = 200`),
   `articleReadingTime`, `ARTICLES` (12 artikel, 6 `mediaType: "reel"`),
   `INTERVIEW_ROWS` (9 baris), `TICKER_ITEMS`, `SEED_DEMOS`.
 - `lib/taxonomy.ts` — `ARTICLE_CATEGORY_VALUES` (4), `DEMO_GENRES` (6),
@@ -683,7 +683,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `app/globals.css` — `@source not` (`../.codegraph`, `../.gitnexus`, `../.next`);
   `:focus-visible` global; 8 pasangan `:focus-within`; blok
   `@media (prefers-reduced-motion: reduce)`.
-- `components/Reveal.tsx`, `components/motion/RevealText.tsx`,
+- `components/motion/Reveal.tsx`, `components/motion/RevealText.tsx`,
   `components/motion/MarqueeTape.tsx` — `reveal-section` mulai `opacity: 0`;
   `RevealText` memakai `initial={false}`; `MarqueeTape` mengukur lewat
   `ResizeObserver`.
@@ -709,7 +709,7 @@ dan brief acuan), serta environment Vercel (nilai env tidak dibaca).
    workspace — `[PERLU VERIFIKASI]`.
 2. **Empat release blocker "PRD §14.2"** tidak dapat diverifikasi; pemetaan
    `B1`…`B4` di §6.3 adalah `ASUMSI`. **Butuh teks PRD asli.**
-3. **`R4` belum tuntas.** `RevealText` aman, tetapi `components/Reveal.tsx`
+3. **`R4` belum tuntas.** `RevealText` aman, tetapi `components/motion/Reveal.tsx`
    merender `reveal-section` yang mulai `opacity: 0`. Tanpa JS, isi section
    (termasuk grid `/stories`) tidak terlihat. Perlu keputusan: apakah ini
    diterima, atau `reveal-section` diubah agar degrade ke state terlihat.

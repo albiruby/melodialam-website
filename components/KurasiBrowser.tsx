@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PillarCard, PillarHead, PillarRow } from "./PillarCards";
+import { PillarCard, PillarRow } from "./PillarCards";
+import { PillarHead } from "./PillarHead";
 import { PILLAR_LABELS, PHOTO_PILLARS, REEL_PILLARS, type PillarPost } from "@/lib/pillars-shared";
 
 /**

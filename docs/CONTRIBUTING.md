@@ -86,7 +86,7 @@ Hanya ada **sepuluh** skrip npm. Ini daftar lengkapnya.
 | `npm run build` | Build produksi (Next.js 16.4, Turbopack) |
 | `npm run start` | Menyajikan build produksi di port 3100 |
 | `npm run lint` | ESLint (`eslint-config-next`: core-web-vitals + typescript) |
-| `npm test` | Unit test Vitest — `vitest run`, 9 kasus di `lib/content.test.ts` |
+| `npm test` | Unit test Vitest — `vitest run`, 9 kasus di `lib/content-fallback.test.ts` |
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari `melodi-alam-data.md` |
 | `npm run brand` | Menghasilkan ulang aset merek ke `public/brand` dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
@@ -129,7 +129,7 @@ Sebelum mengirim perubahan, **empat** hal ini harus bersih:
 ```bash
 npx tsc --noEmit    # tanpa keluaran berarti bersih
 npm run lint        # tanpa keluaran berarti bersih
-npm test            # 9 kasus di lib/content.test.ts
+npm test            # 9 kasus di lib/content-fallback.test.ts
 npm run build       # 33 halaman statis
 ```
 
@@ -443,7 +443,7 @@ dan **dijalankan** pada repositori ini.
   daftar lengkap yang ada; tidak ada `test:watch`, `test:e2e`, atau `typecheck`.
 - `npm run lint` — dijalankan, bersih.
 - `npx tsc --noEmit` — dijalankan, bersih.
-- `npm test` — dijalankan, 9 kasus di `lib/content.test.ts` lulus.
+- `npm test` — dijalankan, 9 kasus di `lib/content-fallback.test.ts` lulus.
 - `npm run build` — dijalankan: Next.js 16.4.0 (Turbopack), TypeScript bersih,
   "Generating static pages using 11 workers (33/33)" → **33 halaman statis**.
   Ini menggantikan angka "26 halaman statis" di versi lama dokumen ini.

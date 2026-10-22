@@ -14,7 +14,7 @@
 > `videosByIds` / `videosByVenue` · `demoStoreConfigured` · `draftPreviewConfigured` ·
 > `cardCurtain.featureLabel` / `cardCurtain.featureCta` · `thumbnailFor` ·
 > `interview.image`.
-> `components/motion/ParallaxImage.tsx` **masih ada di repo tetapi tak terpakai**
+> `components/motion/
 > — tidak ada berkas yang mengimpornya.
 
 Dokumen ini menetapkan batas modul, kepemilikan data, arah dependensi, dan alur
@@ -40,7 +40,7 @@ sendiri sudah usang dan ditandai.
 > **Dokumen saudara.** Panduan integrasi web ↔ CMS ada di
 > [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md); keputusan arsitektur di
 > [`adr/`](adr/); hasil audit 21 Okt 2026 di
-> [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md).
+> [`audit-2026-10-21.md`](audit-2026-10-21.md).
 
 ---
 
@@ -71,7 +71,7 @@ Modul data di `lib/` adalah tulang punggung:
 | Modul | Peran | Sumber |
 |---|---|---|
 | `lib/articles.ts` | Lapisan artikel (CMS + fallback statis) | `TERVERIFIKASI` |
-| `lib/content.ts` | Editorial yang ditulis tangan (fallback) | `TERVERIFIKASI` |
+| `lib/content-fallback.ts` | Editorial yang ditulis tangan (fallback) | `TERVERIFIKASI` |
 | `lib/taxonomy.ts` | Kosakata bersama: rubrik, enum demo, batas audio | `TERVERIFIKASI` |
 | `lib/sanity.ts` | Klien Sanity **publik** (tanpa token) | `TERVERIFIKASI` |
 | `lib/sanity-server.ts` | Klien dataset **privat** (memakai token) | `TERVERIFIKASI` |
@@ -186,7 +186,7 @@ Alasan bentuk ini cocok sekarang:
 Biaca/batasan:
 
 - Konten **hanya** bisa berubah lewat Sanity; perubahan kode tetap butuh rebuild.
-- Konten editorial punya **dua sumber**: CMS (utama) dan `lib/content.ts`
+- Konten editorial punya **dua sumber**: CMS (utama) dan `lib/content-fallback.ts`
   (fallback). Keduanya bisa berbeda — fallback bukan cermin keadaan terkini.
 - Tidak ada jalur tulis selain tiga route handler di `app/api/`.
 
@@ -279,7 +279,7 @@ graph TB
     bc["build-catalogue.mjs"]
     bb["build-brand.mjs"]
     cp["copy-photos.mjs"]
-    ss["seed-sanity.js / seed-videos.js"]
+    ss["seed-sanity.cjs / seed-videos.cjs"]
   end
 
   subgraph lib["lib/ (modul data)"]
@@ -301,7 +301,7 @@ graph TB
     pages["(site)/**/page.tsx<br/>(server components)"]
     redirect["(site)/journal/**/route.ts<br/>308 permanen"]
     api["api/demos · api/demo-audio · api/revalidate"]
-    feed["rss.xml/route.ts · (site)/sitemap.ts · robots.ts"]
+    feed["rss.xml/route.ts · app/sitemap.ts · robots.ts"]
   end
 
   subgraph comp["components/"]
@@ -356,7 +356,7 @@ server/klien dan nama tag cache.
 
 | Module ID | Module Name | Responsibility | Owned Data | Dependencies | Public Interface |
 |---|---|---|---|---|---|
-| MOD-001 | `lib/content.ts` + `lib/taxonomy.ts` | Editorial fallback, rubrik, enum demo, batas audio | `ARTICLES` (12), `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3), `ARTICLE_CATEGORY_VALUES`, `DEMO_*` | — | Named const exports + tipe `Article`, `InterviewRow`, `DemoSubmission` |
+| MOD-001 | `lib/content-fallback.ts` + `lib/taxonomy.ts` | Editorial fallback, rubrik, enum demo, batas audio | `ARTICLES` (12), `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3), `ARTICLE_CATEGORY_VALUES`, `DEMO_*` | — | Named const exports + tipe `Article`, `InterviewRow`, `DemoSubmission` |
 | MOD-002 | `lib/articles.ts` | Lapisan artikel: CMS dulu, fallback statis | `ARTICLES_TAG` | MOD-001, MOD-009 | `allArticles()`, `latestStories(count)`, `articleBySlug(slug)`, `staticArticleSlugs()` |
 | MOD-003 | `lib/catalogue.json` | Artefak generated katalog YouTube | 292 video, 342 shorts, 5 playlist, `meta`, `profile`, `counts` | MOD-012 | Berkas JSON (data) |
 | MOD-004 | `lib/catalogue.ts` | Aksesor bertipe di atas MOD-003 | tidak ada (turunan) | MOD-003 | `catalogue`, `CHANNEL`, `COUNTS`, `VIDEOS`, `SHORTS`, `PLAYLISTS`, `VENUES`, `getVideo`, `topVideos`, `latestVideos`, `viewCount`, `formatDuration` |
@@ -382,7 +382,7 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 
 ## 6. Module Specifications
 
-### MOD-001 — `lib/content.ts` + `lib/taxonomy.ts` (TERVERIFIKASI)
+### MOD-001 — `lib/content-fallback.ts` + `lib/taxonomy.ts` (TERVERIFIKASI)
 
 - **Tujuan.** Sumber editorial yang ditulis tangan **dan** tempat kosakata
   bersamaCMS dan Studio.
@@ -397,7 +397,7 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
   yang sama; kedua berkas menyatakan itu di bagian atas. Studio tidak bisa
   mengimpor dari repo ini saat build, dan repo ini tidak boleh bergantung pada
   Studio.
-- **Strategi pengujian.** `lib/content.test.ts` (9 kasus Vitest) mengunci
+- **Strategi pengujian.** `lib/content-fallback.test.ts` (9 kasus Vitest) mengunci
   `readingTimeMinutes`, `pillarDate`, dan `isArticleCategory`.
 
 ### MOD-002 — `lib/articles.ts` (TERVERIFIKASI)
@@ -475,7 +475,7 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 ### MOD-010 — copy situs (TERVERIFIKASI)
 
 - `getSiteSettings()` (`lib/site-settings.ts:101`) membaca singleton
-  `siteSettings` dan jatuh ke konstanta di `lib/site.ts` / `lib/content.ts`.
+  `siteSettings` dan jatuh ke konstanta di `lib/site.ts` / `lib/content-fallback.ts`.
 - `cardCurtain` kini **hanya** `articleLabel` + `articleCta` (label kanan atas
   dan tombol bawah panel hijau). Field `featureLabel` / `featureCta` sudah
   dihapus dari skema Studio.
@@ -503,8 +503,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 | `build-catalogue.mjs` | `lib/catalogue.json` | `../melodi-alam-data.md` (dua kandidat lokasi) |
 | `build-brand.mjs` | `public/brand/**`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` | `../../LOGO2/*.png` |
 | `copy-photos.mjs` | `public/photos/**` | `../../FOTO PLACEHOLDER MELODI ALAM/` |
-| `seed-sanity.js` | dokumen Sanity (artikel, playlist, wawancara, settings) | `lib/content.ts` + `lib/catalogue.json` |
-| `seed-videos.js` | dokumen video Sanity | `lib/catalogue.json` |
+| `seed-sanity.cjs` | dokumen Sanity (artikel, playlist, wawancara, settings) | `lib/content-fallback.ts` + `lib/catalogue.json` |
+| `seed-videos.cjs` | dokumen video Sanity | `lib/catalogue.json` |
 | `gdrive-auth.mjs` · `gdrive-fetch.mjs` | kredensial + arsip foto Google Drive | API Drive (bukan bagian dari build situs) |
 
 ---
@@ -523,7 +523,7 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 | R6 | `lib/catalogue.ts` dan generator harus diubah bersamaan bila bentuk data berubah | `TERVERIFIKASI` (ADR-0004) |
 | R7 | Hanya `lib/sanity-server.ts` dan `lib/sanity-preview.ts` yang boleh membaca token; keduanya **tidak boleh** diimpor komponen klien | `TERVERIFIKASI` (graf impor) · `RENCANA`: tambahkan `import "server-only"` |
 | R8 | Hanya `lib/pillars-shared.ts` (bukan `lib/pillars.ts`) yang boleh diimpor komponen klien | `TERVERIFIKASI` |
-| R9 | Tidak ada modul yang boleh memiliki dua sumber kebenaran untuk entitas yang sama | `TERVERIFIKASI` untuk CMS-vs-CMS; `ASUMSI` untuk CMS-vs-fallback (`lib/content.ts` memang sengaja berbeda isinya) |
+| R9 | Tidak ada modul yang boleh memiliki dua sumber kebenaran untuk entitas yang sama | `TERVERIFIKASI` untuk CMS-vs-CMS; `ASUMSI` untuk CMS-vs-fallback (`lib/content-fallback.ts` memang sengaja berbeda isinya) |
 
 **Pencegahan siklus.** Tidak ada siklus hari ini: `lib/` adalah daun graf dan
 `site-settings → sanity → sanity-project` satu arah. Arah yang dilarang ke
@@ -555,7 +555,7 @@ privat), dan modul klien → modul yang memegang token.
 ```mermaid
 flowchart LR
   S["Sanity article<br/>(production)"] --> L["latestStories(8)<br/>lib/articles.ts:216"]
-  F["lib/content.ts<br/>ARTICLES (fallback)"] --> L
+  F["lib/content-fallback.ts<br/>ARTICLES (fallback)"] --> L
   L --> H["Beranda /<br/>4 kartu pertama"]
   L --> ST["/stories<br/>8 kartu"]
   L --> SM["/sitemap.xml<br/>8 URL"]
@@ -735,7 +735,7 @@ di-invalidate dengan `revalidateTag(tag, "max")`.
 
 - MOD-012 → MOD-003: skema JSON di §8.3. Perubahan bentuk wajib disertai
   perubahan MOD-004 (R6).
-- MOD-005 → MOD-001: `lib/content.ts` meng-*re-export* `lib/taxonomy.ts` supaya
+- MOD-005 → MOD-001: `lib/content-fallback.ts` meng-*re-export* `lib/taxonomy.ts` supaya
   impor lama tetap bekerja.
 - MOD-002 → MOD-011: `latestStories(8)` adalah satu-satunya daftar cerita yang
   boleh dipakai halaman mana pun.
@@ -767,34 +767,36 @@ melodi-alam/
 │   │   ├── preview/[type]/[slug]/page.tsx   /preview/<type>/<slug> — pratinjau draf
 │   │   ├── journal/route.ts          308 → /stories
 │   │   ├── journal/[slug]/route.ts   308 → /stories/<slug>
-│   │   └── sitemap.ts                /sitemap.xml
 │   ├── api/
 │   │   ├── demos/route.ts            GET + POST antrean demo
 │   │   ├── demo-audio/route.ts       POST token unggah Vercel Blob
 │   │   └── revalidate/route.ts       POST invalidasi 6 tag cache
 │   ├── rss.xml/route.ts              /rss.xml
 │   ├── robots.ts                     /robots.txt
+│   ├── sitemap.ts                     /sitemap.xml
 │   ├── globals.css                   Tailwind v4 @theme + @utility + @source not
 │   └── icon.png / apple-icon.png / favicon.ico   (generated, MOD-012)
 ├── components/
-│   ├── ArticleCards.tsx              ArticleCard, FrontCard (server)
+│   ├── ArticleCards.tsx              ArticleCard (server)
+│   ├── FrontCard.tsx                 kartu Latest News di beranda (server)
 │   ├── ArticleBody.tsx               PortableText + paragraf statis (server)
-│   ├── PillarCards.tsx               PillarCard, PillarRow, PillarHead (server)
+│   ├── PillarCards.tsx               PillarCard, PillarRow (server)
+│   ├── PillarHead.tsx                kepala seksi pillar (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)
 │   ├── SiteFooter.tsx · Ticker.tsx · MelodiAlamLockup.tsx   (server)
-│   ├── SiteHeader.tsx · ScrollProgress.tsx · Reveal.tsx      (client)
+│   ├── SubmitLink.tsx                tombol ke /submit (server)
+│   ├── SiteHeader.tsx · ScrollProgress.tsx   (client)
 │   ├── VideoModal.tsx · WatchLink.tsx · YoutubeThumb.tsx     (client)
 │   ├── KurasiBrowser.tsx · DemoPortal.tsx                    (client)
-│   └── motion/                       MotionRoot, RevealText, CountUp, MarqueeTape,
-│                                     ParallaxImage (TAK TERPAKAI)
+│   └── motion/                       MotionRoot, RevealText, CountUp, MarqueeTape
 ├── lib/
-│   ├── articles.ts · content.ts · taxonomy.ts
+│   ├── articles.ts · content-fallback.ts · taxonomy.ts
 │   ├── sanity.ts · sanity-server.ts · sanity-preview.ts · sanity-project.ts
 │   ├── pillars.ts · pillars-shared.ts
 │   ├── videos.ts · videos-page.ts · interviews.ts
 │   ├── site.ts · site-settings.ts
 │   ├── catalogue.json (GENERATED) · catalogue.ts
-│   └── content.test.ts               9 kasus Vitest
+│   └── content-fallback.test.ts               9 kasus Vitest
 ├── scripts/                          build-catalogue, build-brand, copy-photos,
 │                                     seed-sanity, seed-videos, gdrive-*
 ├── public/
@@ -838,7 +840,7 @@ melodi-alam/
 | Metadata/SEO | `app/(site)/**` | `TERVERIFIKASI` — canonical absolut, JSON-LD, OG per artikel, sitemap, RSS | Pasang domain sendiri (`RENCANA`) |
 | Aksesibilitas | `globals.css` + komponen | `TERVERIFIKASI` — `:focus-visible` global + pasangan `:focus-within` untuk tiap reveal | `ACC-001`…`ACC-003` terpenuhi |
 | CSP | `next.config.ts` | `TERVERIFIKASI` — CSP *enforced* sebagian + penuh *report-only* | Naikkan ke *enforced* setelah dibaca (`RENCANA`) |
-| Testing | `lib/content.test.ts` | `TERVERIFIKASI` — Vitest 9 kasus; `npm run lint` bersih | Tambah Playwright + CI (`RENCANA`, ADR-0006) |
+| Testing | `lib/content-fallback.test.ts` | `TERVERIFIKASI` — Vitest 9 kasus; `npm run lint` bersih | Tambah Playwright + CI (`RENCANA`, ADR-0006) |
 | Build/deploy | `next.config.ts` | `TERVERIFIKASI` — build statis 33 halaman | Vercel (`RENCANA` — webhook, Blob, Resend) |
 | Observability | `@vercel/analytics` | `TERVERIFIKASI` — `<Analytics />` terpasang; **belum dinyalakan** di dashboard | Nyalakan (`RENCANA`) |
 
@@ -887,7 +889,7 @@ Ringkasannya yang relevan dengan arsitektur:
 
 - **Decision.** Sanity Studio headless, di repo terpisah `melodialam-sanity`,
   dengan dua dataset: `production` (publik, tanpa token) dan `submissions`
-  (privat, wajib token). `lib/content.ts` tetap sebagai fallback.
+  (privat, wajib token). `lib/content-fallback.ts` tetap sebagai fallback.
 - **Konsekuensi positif.** Tidak ada basis data untuk dijaga; editor punya
   Studio dengan pratinjau dan riwayat versi; artikel tetap tanpa token.
 - **Konsekuensi negatif.** Ketergantungan pada layanan pihak ketiga; fallback
@@ -912,7 +914,7 @@ Ringkasannya yang relevan dengan arsitektur:
 | ARCH-RISK-002 | Batas server/client salah tempat → markup ter-render server membawa state tersembunyi | `TERVERIFIKASI` — aturan: SSR merender keadaan akhir, animasi hanya memperkaya | Review komponen client baru terhadap aturan ini |
 | ARCH-RISK-003 | `catalogue.json` diedit tangan → drift dari scrape | `TERVERIFIKASI` — ADR-0004 | Jaga generator sebagai satu-satunya penulis |
 | ARCH-RISK-004 | Fallback antrean demo in-memory hilang antar-instance | `TERVERIFIKASI` — array proses-lokal | Hilangkan cabangnya begitu token tersedia (`RENCANA`) |
-| ARCH-RISK-005 | Dua sumber kebenaran editorial (CMS vs `lib/content.ts`) | `TERVERIFIKASI` — disengaja | Jaga `lib/content.ts` sebagai fallback, bukan sebagai sumber |
+| ARCH-RISK-005 | Dua sumber kebenaran editorial (CMS vs `lib/content-fallback.ts`) | `TERVERIFIKASI` — disengaja | Jaga `lib/content-fallback.ts` sebagai fallback, bukan sebagai sumber |
 | ARCH-RISK-006 | Fallback statis tidak mencerminkan isi terkini bila Sanity mati | `TERVERIFIKASI` — konsekuensi ADR-0008 | `cacheLife("minutes")` + webhook revalidasi |
 | ARCH-RISK-007 | `audioUrl` diterima dari host mana pun | `TERVERIFIKASI` — `app/api/demos/route.ts:249` | Batasi host ke store Blob sendiri (`RENCANA`, temuan F01) |
 | ARCH-RISK-008 | Token unggah Blob diterbitkan tanpa batas | `TERVERIFIKASI` — `app/api/demo-audio/route.ts` | Server yang menentukan key + akses; bucket privat (`RENCANA`, temuan F04) |
@@ -930,7 +932,7 @@ Ringkasannya yang relevan dengan arsitektur:
   sehingga `IntersectionObserver` berhenti dan konten tertahan `opacity: 0` —
   karena itu digantikan `ResizeObserver` di `MarqueeTape`. (b) Jangan memanggang
   keadaan tersembunyi ke HTML server-rendered; aturannya SSR merender keadaan
-  akhir. (c) `ParallaxImage` menyelesaikan preferensi reduced motion di CSS
+  akhir.
   (`.parallax-layer`), bukan di branch render, karena server tidak bisa tahu
   preferensi pengguna.
 - **Pipeline artefak generated (`TERVERIFIKASI`).** `catalogue.json` dihasilkan
@@ -984,7 +986,7 @@ konstanta fallback.
 - [x] Struktur repo sesuai arsitektur yang didokumentasikan (§10).
 - [x] Arsitektur sesuai kebutuhan operasional & kemampuan tim (satu app, tim kecil).
 - [x] Tidak ada komponen yang ada hanya demi "best practice" — kecuali
-      `ParallaxImage`, yang **sisa** dan tercatat sebagai utang (§1, §13).
+      `ParallaxImage` — **sudah dibuang 22 Okt 2026**.
 - [ ] **Terbuka:** endpoint moderasi kurator (§3.2, Open Questions).
 - [ ] **Terbuka:** branch fallback antrean demo yang tidak menyaring status
       (ARCH-RISK-004).
@@ -1023,7 +1025,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   `Response.redirect(..., 308)`.
 - `app/(site)/preview/[type]/[slug]/page.tsx` — `noindex`, `instant = false`,
   `secretMatches`, `perspective: "drafts"`, tipe `journal` dan `kurasi`.
-- `app/(site)/sitemap.ts` — 7 halaman + `latestStories(8)`.
+- `app/sitemap.ts` — 7 halaman + `latestStories(8)`.
 - `app/rss.xml/route.ts` — `latestStories(8)`, header cache.
 - `app/robots.ts` — `disallow: "/api/"`.
 - `app/api/demos/route.ts` — GET/POST, cap field, validasi, status
@@ -1038,12 +1040,12 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   `dash-reveal-prefix`, `video-action-reveal`), blok `prefers-reduced-motion`.
 - `components/*` — 13 berkas ber-`"use client"` (SiteHeader, ScrollProgress,
   Reveal, VideoModal, WatchLink, YoutubeThumb, KurasiBrowser, DemoPortal,
-  motion/MotionRoot, motion/RevealText, motion/CountUp, motion/MarqueeTape,
-  motion/ParallaxImage) dan 7 berkas server (ArticleCards, ArticleBody,
+  motion/MotionRoot, motion/RevealText, motion/CountUp, motion/MarqueeTape
+  motion/
   PillarCards, VideoRow, SiteFooter, Ticker, MelodiAlamLockup).
 - `lib/*` — articles, content, taxonomy, sanity, sanity-server, sanity-preview,
   sanity-project, pillars, pillars-shared, videos, videos-page, interviews,
-  site-settings, site, catalogue, catalogue.json, content.test.ts.
+  site-settings, site, catalogue, catalogue.json, content-fallback.test.ts.
 - `scripts/*` — 7 berkas; sumber, keluaran, dan baris pertamanya dibaca.
 - `melodialam-sanity/sanity/schemaTypes/` — `index.ts`, `article.ts`,
   `pillarPost.ts`, `siteSettings.ts`, `videosPage.ts`.
@@ -1056,7 +1058,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   on-demand; `/preview/[type]/[slug]` = `◐`; `opengraph-image` dan
   `twitter-image` = `ƒ`. Halaman daftar menampilkan `Revalidate 1m · Expire 1h`.
 - `npm run lint` → **bersih**, tanpa keluaran.
-- `npm test` → **9/9 lulus** (`lib/content.test.ts`).
+- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`).
 - `lib/catalogue.json` → 292 video, 342 shorts, 5 playlist,
   `scrapedAt = "14 Oktober 2026"`, `byVenue` = Samsara 101 / Interview 143 /
   Taman 39 / Arsip 9.
@@ -1068,9 +1070,9 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 - Kondisi produksi Vercel dan Sanity: isi env, status Blob store, status Resend,
   status domain `melodialam.id`, status Web Analytics, dan konfigurasi webhook
   Sanity ("Trigger on: Create **+ Update**") — semuanya diambil dari
-  `docs/AUDIT-2026-10-21.md` dan **tidak** diverifikasi ulang di sini.
+  `docs/audit-2026-10-21.md` dan **tidak** diverifikasi ulang di sini.
 - Jumlah dokumen nyata di Sanity (`pillarPost` 55 post, `article` 6 foto + 6
-  reel) — berasal dari `docs/SANITY-INTEGRATION.md` dan `docs/AUDIT-2026-10-21.md`,
+  reel) — berasal dari `docs/SANITY-INTEGRATION.md` dan `docs/audit-2026-10-21.md`,
   bukan dari pengukuran langsung. Di mana pun jumlah itu disebut di dokumen ini,
   nilainya ditandai `[PERLU VERIFIKASI]`.
 - `docs/PRD-REFERENCE.md` masih memuat baris usang (menyebut `VideosBrowser`,
@@ -1096,7 +1098,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 4. **`dynamicParams` pada `/stories/[slug]`.** Dibiarkan default: artikel yang
    hanya ada di Sanity dirender on-demand lalu di-*cache*. Perlu dipastikan
    apakah itu yang diinginkan, atau `dynamicParams = false` yang lebih ketat.
-5. **`ParallaxImage`.** Komponen masih ada di `components/motion/` tetapi tidak
+5. **`
    diimpor siapa pun. Dibuang, atau ada rencana memakainya kembali?
 6. **Playwright.** ADR-0006 menyebut Vitest + Playwright; Playwright belum
    terpasang dan belum ada CI. Kasus E2E mana yang pertama menjadi syarat

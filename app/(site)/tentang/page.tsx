@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {

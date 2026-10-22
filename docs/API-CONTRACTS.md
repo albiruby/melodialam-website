@@ -25,10 +25,10 @@ Label status:
 Acuan requirement: **`BR-001`** (batas berkas audio + tipe berkas),
 **`RISK-001`** (kontrol penyalahgunaan). Acuan skema data:
 [`DATA-MODEL.md`](DATA-MODEL.md), [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
-Acuan audit: [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md).
+Acuan audit: [`audit-2026-10-21.md`](audit-2026-10-21.md).
 
 > **Catatan cakupan.** Repo ini punya **empat route handler** (`app/api/**`),
-> satu generator metadata (`app/robots.ts`, `app/(site)/sitemap.ts`), satu
+> satu generator metadata (`app/robots.ts`, `app/sitemap.ts`), satu
 > route XML (`app/rss.xml/route.ts`), dan **dua route handler pengalihan
 > 308** di `app/(site)/journal/`. Semua ada di §3–§4. Tidak ada endpoint lain;
 > apa pun yang tidak ada di sini **tidak ada**.
@@ -618,7 +618,7 @@ dari tanggal artikel (bukan jam terbit sebenarnya). `enclosure` selalu
 | Properti | Nilai |
 |---|---|
 | Tujuan | Peta situs untuk mesin pencari |
-| Method & path | `GET /sitemap.xml` (`app/(site)/sitemap.ts`) |
+| Method & path | `GET /sitemap.xml` (`app/sitemap.ts`) |
 | Auth | Tidak ada |
 | Sumber data | `latestStories(8)` + daftar halaman statis hard-coded |
 
@@ -712,7 +712,7 @@ halaman, jadi build menandainya `ƒ` (Dynamic).
 
 ### 5.1 Skema bersama
 
-**`DemoSubmission`** — `lib/taxonomy.ts` (diekspor ulang dari `lib/content.ts`):
+**`DemoSubmission`** — `lib/taxonomy.ts` (diekspor ulang dari `lib/content-fallback.ts`):
 
 | Field | Tipe | Null? | Sumber |
 |---|---|---|---|
@@ -810,7 +810,7 @@ yang dibuat-buat tidak wajib sopan pada pemeriksaan browser.
 
 ### 6.2 Enum penuh
 
-`lib/taxonomy.ts` (`as const`, diekspor ulang oleh `lib/content.ts`):
+`lib/taxonomy.ts` (`as const`, diekspor ulang oleh `lib/content-fallback.ts`):
 
 ```
 DEMO_GENRES = [
@@ -1369,7 +1369,7 @@ dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
 - `app/rss.xml/route.ts` (**73 baris, penuh**) — `latestStories(8)`; `xml()`;
   `rfc822()` pada `+07:00`; header `Cache-Control` dan `Content-Type`;
   `<enclosure type="image/jpeg">`.
-- `app/(site)/sitemap.ts` (**43 baris, penuh**) — 7 halaman statis + artikel
+- `app/sitemap.ts` (**43 baris, penuh**) — 7 halaman statis + artikel
   dari `latestStories(8)`.
 - `app/robots.ts` (**18 baris, penuh**) — `allow: "/"`, `disallow: "/api/"`,
   `sitemap`, `host`.
@@ -1380,7 +1380,7 @@ dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
 - `lib/taxonomy.ts` — `DEMO_AUDIO_MAX_BYTES` (25 MB), `DEMO_AUDIO_TYPES`,
   `DEMO_AUDIO_EXTENSIONS`, `DEMO_GENRES` (6), `DEMO_PROGRAMS` (3),
   `DEMO_STATUSES` (4), `DEMO_INITIAL_STATUS`, `DEMO_APPROVED_STATUSES`.
-- `lib/content.ts` — `SEED_DEMOS` (3 entri: `seed-shroomeater` status
+- `lib/content-fallback.ts` — `SEED_DEMOS` (3 entri: `seed-shroomeater` status
   `SHORTLISTED (SAMSARA)`, `seed-skyline` status `APPROVED (ARTICLE)`,
   `seed-pelabuhan-senja` status `IN REVIEW`).
 - `lib/sanity-server.ts` — `submissionsClient` null bila
@@ -1452,7 +1452,7 @@ moderasi kurator (tidak ada endpoint-nya). `POST /api/demos` dengan body
    sebelum ditetapkan sebagai kontrak.
 7. **Rotasi `SANITY_REVALIDATE_SECRET` + `SANITY_PREVIEW_SECRET` terpisah.**
    Sekarang satu nilai melindungi dua kapabilitas (lihat
-   `AUDIT-2026-10-21.md` F03). Selain itu, penerimaan `?secret=` di
+   `audit-2026-10-21.md` F03). Selain itu, penerimaan `?secret=` di
    `/api/revalidate` sebaiknya dihapus — header saja.
 8. **`queueLength` yang ambigu.** Jalur Sanity mengembalikan jumlah submission
    *approved*; jalur in-memory mengembalikan panjang antrean modul (termasuk

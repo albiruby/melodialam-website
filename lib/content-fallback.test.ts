@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { articleReadingTime, readingTimeMinutes, type Article } from "./content";
+import { articleReadingTime, readingTimeMinutes, type Article } from "./content-fallback";
 import { pillarDate } from "./pillars";
 import { isArticleCategory } from "./taxonomy";
 

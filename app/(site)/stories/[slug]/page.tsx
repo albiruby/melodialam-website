@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content";
+import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content-fallback";
 import { articleBySlug, latestStories, staticArticleSlugs } from "@/lib/articles";
 import { SITE } from "@/lib/site";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -10,7 +10,7 @@ import { ArticleBody } from "@/components/ArticleBody";
 import { ArticleCard } from "@/components/ArticleCards";
 
 /**
- * The twelve articles in `lib/content.ts` are prerendered here. Articles that
+ * The twelve articles in `lib/content-fallback.ts` are prerendered here. Articles that
  * live only in Sanity are rendered on demand — `dynamicParams` defaults to
  * true, so publishing in the Studio shows up at /stories/<slug> without a
  * rebuild and without touching this list.

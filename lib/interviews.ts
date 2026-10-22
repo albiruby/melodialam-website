@@ -1,5 +1,5 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { INTERVIEW_ROWS } from "./content";
+import { INTERVIEW_ROWS } from "./content-fallback";
 import { contentClient } from "./sanity";
 
 /**
@@ -84,7 +84,7 @@ export async function allInterviews(): Promise<SiteInterview[]> {
 
     if (rows.length > 0) return rows;
   } catch {
-    // Sanity unreachable: the rows in lib/content.ts still fill the index.
+    // Sanity unreachable: the rows in lib/content-fallback.ts still fill the index.
   }
 
   return STATIC;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { DemoPortal } from "@/components/DemoPortal";
 
 export const metadata: Metadata = {

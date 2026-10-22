@@ -193,7 +193,7 @@ Dipakai untuk angka urut besar pada baris video dan pada baris pilar.
 | `reveal-section` + `is-visible` | `opacity: 0` → `1` dan `translateY(32px)` → `0`, 0.85s dengan `--ease-editorial` |
 | `stagger-item` | Animasi `cardEntrance` (`opacity`, `translateY`, `scale`) dengan `animation-delay` dari inline style |
 
-`reveal-section` dipasang lewat `components/Reveal.tsx`, yang memakai
+`reveal-section` dipasang lewat `components/motion/Reveal.tsx`, yang memakai
 `IntersectionObserver` dan langsung menampilkan konten saat `prefers-reduced-motion`.
 
 > **Aturan yang wajib dipatuhi:** keadaan tersembunyi **tidak boleh** ter-*bake* ke HTML
@@ -203,7 +203,7 @@ Dipakai untuk angka urut besar pada baris video dan pada baris pilar.
 >
 > `components/motion/RevealText.tsx` sudah mengikuti aturan ini: mask-nya
 > di-*arm* di klien dengan `initial={false}`, sehingga HTML hasil server
-> memuat judul yang sudah terbaca. `components/Reveal.tsx` **belum** —
+> memuat judul yang sudah terbaca. `components/motion/Reveal.tsx` **belum** —
 > `reveal-section` mulai di `opacity: 0` dan baru menjadi `is-visible` setelah
 > `IntersectionObserver` menyala di klien. Akibatnya isi `/stories` dan `/kurasi`
 > tidak terlihat tanpa JavaScript. Lihat temuan terbuka #8 di §11.
@@ -259,7 +259,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 
 | Komponen | Elemen link | Isi | Dipakai di |
 |---|---|---|---|
-| `FrontCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA ↗" | Beranda — grid 2×2, 4 kartu |
+| `FrontCard` (`components/FrontCard.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA ↗" | Beranda — grid 2×2, 4 kartu |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
 | `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul, tanggal, "Buka di IG ↗" | Beranda — strip 4 kurasi; `/kurasi` — grid pilar foto |
 | `PillarRow` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Nomor urut, thumb dengan rasio gambar sendiri, "Dari Feed • tanggal", judul, "IG ↗" | `/kurasi` — blok TONTON |
@@ -368,7 +368,7 @@ Dua lapis, keduanya wajib:
 **Pengecualian yang disengaja:** nilai scroll-linked seperti parallax adalah `style`
 motion value, bukan animasi, sehingga `MotionConfig` tidak menyentuhnya. Komponen yang
 menurunkannya wajib memeriksa `useReducedMotion` sendiri — lihat
-`components/motion/ParallaxImage.tsx`. **Catatan:** `ParallaxImage` masih ada di
+— `ParallaxImage` **sudah dihapus (22 Okt 2026)**, tidak ada importer.
 repo tetapi **tidak dipakai** satu pun halaman saat ini; ia bertahan sebagai
 pola yang bisa dipasang kembali.
 

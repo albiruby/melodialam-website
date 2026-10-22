@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
+import { Reveal } from "@/components/motion/Reveal";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { allInterviews } from "@/lib/interviews";

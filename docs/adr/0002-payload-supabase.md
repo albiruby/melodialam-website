@@ -10,7 +10,7 @@
 
 ## Konteks
 
-Konten editorial hari ini adalah kode. `lib/content.ts` memuat 12 artikel beserta
+Konten editorial hari ini adalah kode. `lib/content-fallback.ts` memuat 12 artikel beserta
 seluruh baris wawancara, genre, dan item ruang; `lib/catalogue.json` adalah artefak
 *generated* dari hasil scrape kanal YouTube. Untuk pembaca ini bekerja baik: seluruh
 situs terbangun statis dan cepat.
@@ -39,7 +39,7 @@ Konsekuensi arsitektural yang mengikat:
    langkah sinkronisasi antar-sistem. Batasan modulnya ada di `docs/ARCHITECTURE.md`.
 2. **Konten tetap terbaca saat *build*.** Halaman tetap dapat di-*render* statis dengan
    membaca dari Postgres pada waktu build; sifat statis situs dipertahankan.
-3. **`lib/content.ts` dibekukan sebagai sumber kebenaran selama migrasi.** Migrasi
+3. **`lib/content-fallback.ts` dibekukan sebagai sumber kebenaran selama migrasi.** Migrasi
    dilakukan per-halaman, bukan serentak, dan berkas itu menjadi *read-only* sampai
    halaman terakhir pindah. Lihat `ARCH-RISK-005` di `docs/ARCHITECTURE.md`.
 
@@ -48,7 +48,7 @@ Konsekuensi arsitektural yang mengikat:
 | Alternatif | Pertimbangan | Kenapa tidak dipilih |
 |---|---|---|
 | **Sanity Studio** (di-*hosting* terpisah) | *Onboarding* editor paling mulus, kolaborasi *real-time*, pratinjau bagus | Menambah satu sistem eksternal, satu *deploy*, dan satu sumber kebenaran tipe di luar repo. Untuk tim sekecil ini, biaya operasionalnya tidak sebanding. |
-| **Tetap di repo** (`lib/content.ts` / MDX) | Nol infrastruktur tambahan; sudah berjalan | Editor non-teknis tidak bisa mempublikasikan apa pun. Tidak menyelesaikan masalah `USR-003`, yang justru alasan utama fase ini. |
+| **Tetap di repo** (`lib/content-fallback.ts` / MDX) | Nol infrastruktur tambahan; sudah berjalan | Editor non-teknis tidak bisa mempublikasikan apa pun. Tidak menyelesaikan masalah `USR-003`, yang justru alasan utama fase ini. |
 | **WordPress headless** | Familiar bagi banyak tim redaksi | Menambah satu *stack* (PHP) dan satu *deploy* yang tidak berhubungan dengan Next.js; tipe data tidak pernah benar-benar sinkron dengan kode. |
 | **Payload di repo terpisah** | Pemisahan tanggung jawab yang lebih tegas | Dua deploy yang harus dijaga serempak, dan tipe koleksi tidak lagi satu paket dengan aplikasi yang memakainya. |
 
@@ -84,7 +84,7 @@ Konsekuensi arsitektural yang mengikat:
 ## Catatan Verifikasi
 
 - `TERVERIFIKASI`: hari ini tidak ada `payload` maupun klien Supabase di
-  `package.json`; konten memang hidup di `lib/content.ts`; tidak ada berkas `.env`.
+  `package.json`; konten memang hidup di `lib/content-fallback.ts`; tidak ada berkas `.env`.
 - `RENCANA`: seluruh keputusan di atas. **Fase ini hanya dokumen** — tidak ada paket
   yang dipasang dan tidak ada kode yang diubah.
 - `[PERLU VERIFIKASI]`: dukungan resmi Payload 3 pada Next.js `16.4.0` secara spesifik,

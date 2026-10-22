@@ -11,7 +11,7 @@ import { MotionConfig } from "motion/react";
  *
  * Scroll-linked values are the exception: they are `style` motion values rather
  * than animations, so components that derive them check `useReducedMotion`
- * themselves. See ParallaxImage.
+ * themselves.
  */
 export function MotionRoot({ children }: { children: React.ReactNode }) {
   return <MotionConfig reducedMotion="user">{children}</MotionConfig>;

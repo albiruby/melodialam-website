@@ -11,7 +11,7 @@ Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara
 
 > Direktori `/pahlawan-kota` dan `/spaces` sudah dihapus; `pahlawanRow` disimpan
 > sebagai arsip di Sanity, `GENRE_ROWS`/`SPACE_ITEMS` diarsipkan di
-> `lib/content.ts`. Halaman `/videos/arsip` (katalog 292 video) juga dihapus —
+> `lib/content-fallback.ts`. Halaman `/videos/arsip` (katalog 292 video) juga dihapus —
 > `/videos` kini hanya merender seleksi sesi yang hidup sebagai dokumen `video`.
 
 ---
@@ -48,7 +48,7 @@ npm run dev -- -p 4321
 ### Variabel lingkungan
 
 Situs **berjalan penuh tanpa `.env`**: artikel dibaca dari Sanity (dataset `production`
-publik) dan `lib/content.ts` dipakai sebagai jaring pengaman bila Sanity tak
+publik) dan `lib/content-fallback.ts` dipakai sebagai jaring pengaman bila Sanity tak
 terjangkau. Hanya antrean demo dan pratinjau draf yang butuh kredensial.
 
 ```bash
@@ -109,7 +109,7 @@ Build produksi menghasilkan **33 halaman statis**.
 | `npm run build` | Build produksi |
 | `npm run start` | Menyajikan build produksi di port 3100 |
 | `npm run lint` | ESLint |
-| `npm test` | Unit test (Vitest) — `lib/content.test.ts`, 9 kasus |
+| `npm test` | Unit test (Vitest) — `lib/content-fallback.test.ts`, 9 kasus |
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari hasil scrape |
 | `npm run brand` | Menghasilkan ulang aset merek dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
@@ -148,7 +148,7 @@ Build produksi menghasilkan **33 halaman statis**.
 app/            Route, layout, dan route handler; app/(site)
 components/     Komponen UI; components/motion/ untuk primitif gerak
 lib/            Lapisan data: articles.ts, sanity.ts, sanity-server.ts,
-                sanity-preview.ts, sanity-project.ts, taxonomy.ts, content.ts,
+                sanity-preview.ts, sanity-project.ts, taxonomy.ts, content-fallback.ts,
                 catalogue.ts, site.ts, pillars.ts, videos.ts, interviews.ts
                 → peta lengkapnya di lib/README.md
 scripts/        Generator untuk katalog, aset merek, dan foto; seed ke Sanity
@@ -157,7 +157,7 @@ docs/           Dokumentasi pengembangan (mulai dari docs/README.md)
 ```
 
 `lib/articles.ts` adalah lapisan data artikel: ia membaca **Sanity** dan jatuh ke
-`lib/content.ts` kalau Sanity tidak dapat dijangkau. Karena itu artikel yang ditulis di
+`lib/content-fallback.ts` kalau Sanity tidak dapat dijangkau. Karena itu artikel yang ditulis di
 Studio langsung render di situs tanpa ubah kode. `lib/catalogue.json` adalah artefak
 **generated** dan tidak boleh disunting tangan.
 
@@ -195,7 +195,7 @@ Mulai dari [`docs/README.md`](docs/README.md).
 |---|---|
 | [`docs/SANITY-INTEGRATION.md`](docs/SANITY-INTEGRATION.md) | **Integrasi web ↔ CMS: tulis di Studio, render di halaman mana** |
 | [`docs/SECURITY-PRIVACY.md`](docs/SECURITY-PRIVACY.md) | Temuan keamanan, PII, kontrol anti-penyalahgunaan |
-| [`docs/AUDIT-2026-10-21.md`](docs/AUDIT-2026-10-21.md) | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO |
+| [`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md) | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO |
 | [`docs/PRD-REFERENCE.md`](docs/PRD-REFERENCE.md) | Ketertelusuran requirement PRD → status implementasi |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Batas modul, alur data, arsitektur target |
 | [`docs/DATA-MODEL.md`](docs/DATA-MODEL.md) | Entitas, skema data, migrasi |
@@ -216,7 +216,7 @@ Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md).
 | Area | Status |
 |---|---|
 | UI *Neo-Brutalist Editorial*, animasi, interaksi hover | Berjalan |
-| Artikel, pillar, video, playlist, wawancara | Sanity (dataset `production`, publik) + fallback `lib/content.ts` |
+| Artikel, pillar, video, playlist, wawancara | Sanity (dataset `production`, publik) + fallback `lib/content-fallback.ts` |
 | Antrean demo | Sanity dataset **privat** `submissions`, dimoderasi; fallback array proses-lokal tanpa token |
 | Pratinjau draf | Ada (`/preview/<type>/<slug>`), belum ada tombol "Buka pratinjau" di dalam Studio |
 | Unggah audio demo | Kodenya ada, **belum hidup** — Blob store belum dibuat di Vercel |
@@ -227,7 +227,7 @@ Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md).
 | Uji otomatis | Unit test Vitest saja (`npm test`, 9 kasus); belum ada uji end-to-end |
 
 Temuan audit yang masih terbuka (F01–F10, semuanya `needs_validation`) ada di
-[`docs/AUDIT-2026-10-21.md`](docs/AUDIT-2026-10-21.md) dan
+[`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md) dan
 [`docs/SECURITY-PRIVACY.md`](docs/SECURITY-PRIVACY.md).
 
 Kontribusi: baca [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) lebih dulu.
@@ -247,7 +247,7 @@ Isi README ini dicek terhadap repo `melodi-alam` pada **21 Oktober 2026**:
   dan dari `.env.example`.
 - **Teknologi & versi** — dari `package.json` (`0.2.0`).
 - **Jumlah halaman statis** — `npm run build` → **33 halaman statis**.
-- **Unit test** — `npm test` → **9/9 lulus** (`lib/content.test.ts`, Vitest 3.2.7).
+- **Unit test** — `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
 - **Tidak diverifikasi** — isi dashboard Vercel dan Sanity: status Blob store, Resend,
   anggota project, "Trigger on" webhook, dan apakah `melodialam.id` sudah diarahkan.
   Klaim soal domain memakai nilai `NEXT_PUBLIC_SITE_URL` di Vercel

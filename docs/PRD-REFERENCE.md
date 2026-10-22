@@ -58,7 +58,7 @@ bukan "kayaknya ada". Kalau tidak bisa dipastikan, labelnya
 |---|---|---|---|
 | `FR-001` | ~~1 artikel hero penuh + 3 artikel sub-grid~~ → **4 kartu grid 2×2** (keputusan 20 Okt 2026) | `BERTENTANGAN` | Beranda membuka dengan grid 2×2 **empat** kartu `FrontCard` (`app/(site)/page.tsx:64-68`), diambil dari `latestStories(8)` → 4 pertama. Kartu pertama diberi badge "Cover Story" (`components/ArticleCards.tsx:155`) tetapi **ukuran dan posisinya sama** dengan tiga lainnya — tidak ada lagi satu kartu hero selebar layar. |
 | `FR-002` | Grid artikel 4 kolom berselang-seling (kolom ganjil gambar-dulu, genap judul-dulu), filter kategori, pencarian real-time, *empty state* + `Reset Filter` | `BERTENTANGAN` | Grid 4 kolom + pola berselang-seling **ada**: `/stories` merender 8 kartu `ArticleCard` dengan `titleFirst={i % 2 === 1}` (`app/(site)/stories/page.tsx:30-41`). **Filter dan pencarian tidak ada di halaman ini** — komponen `JournalBrowser` (filter kategori + pencarian substring) **dihapus** dari repo. Pencarian kini hidup di **`/kurasi`**: kotak cari + chip pillar + *empty state* ("Belum ada post yang cocok") di `components/KurasiBrowser.tsx`. |
-| `FR-003` | Pembaca artikel penuh: rubrik, kota, tanggal, estimasi waktu baca, penulis, gambar, seluruh paragraf, tautan YouTube, tutup via `✕` / backdrop / `Escape`, *scroll-lock* | `SEBAGIAN` | Artikel adalah **route** `/stories/<slug>`, bukan drawer (ADR-0001) — jadi tidak ada `✕`, backdrop, `Escape`, atau scroll-lock; navigasi browser yang menggantikannya. **Estimasi waktu baca sudah ada** (`articleReadingTime()` → "N menit baca", `lib/content.ts:57-70`, diuji di `lib/content.test.ts`). **Kota tidak ada** — tidak ada field kota di `article`. **Penulis tidak per-artikel**: footer menulis "SUMBER: REDAKSI MELODI ALAM (@MELODI.ALAM)" dan JSON-LD memakai `Organization`. **Tautan YouTube tidak ada** field-nya. |
+| `FR-003` | Pembaca artikel penuh: rubrik, kota, tanggal, estimasi waktu baca, penulis, gambar, seluruh paragraf, tautan YouTube, tutup via `✕` / backdrop / `Escape`, *scroll-lock* | `SEBAGIAN` | Artikel adalah **route** `/stories/<slug>`, bukan drawer (ADR-0001) — jadi tidak ada `✕`, backdrop, `Escape`, atau scroll-lock; navigasi browser yang menggantikannya. **Estimasi waktu baca sudah ada** (`articleReadingTime()` → "N menit baca", `lib/content-fallback.ts:57-70`, diuji di `lib/content-fallback.test.ts`). **Kota tidak ada** — tidak ada field kota di `article`. **Penulis tidak per-artikel**: footer menulis "SUMBER: REDAKSI MELODI ALAM (@MELODI.ALAM)" dan JSON-LD memakai `Organization`. **Tautan YouTube tidak ada** field-nya. |
 | `FR-004` | Indeks wawancara tipografi kontras: nama artis *Serif*, judul *Bold Uppercase Sans*, tag miring berkurung di bawah kanan foto | `BERTENTANGAN` | `/bicara-melodi` merender 9 episode Season 3 (9 dokumen Sanity `interview` + 9 baris statis sebagai fallback). **Judul** memang *bold uppercase* ✓ dan **tag berkurung** ada (`({caption} ↗)` dalam `font-serif italic`) ✓. **Nama artis bukan Serif**: memakai `font-display`, dan `--font-display` = Red Hat Display (sans-serif) — Serif (`--font-serif` = Instrument Serif) dipakai untuk caption dan strapline. |
 | `FR-005` | Daftar video bernomor dengan state awal `Gambar — Headline — Deskripsi` dan hover `[ ▶ ] — [ M \| WATCH ↗ ]`, filter program `ALL`/`MELODI SAMSARA`/`BICARA MELODI`/`MELODI TAMAN`, paginasi | `BERTENTANGAN` | Komponen `VideosBrowser` **dihapus**. `/videos` kini = **Melodi Samsara**: 9 sesi bernomor (`VideoRow`: nomor, thumbnail, judul, durasi, Featuring, tombol Watch), baris "Sesi lainnya ada di kanal YouTube", lalu **5 playlist**. **Tanpa filter program, tanpa paginasi, tanpa baris deskripsi.** Bagian **"Bicara Melodi" dihapus dari `/videos`** — episodenya punya halaman sendiri `/bicara-melodi`. Reveal aksi bekerja pada hover **dan** `:focus-within` (`app/globals.css:392-393`) ✓ |
 | `FR-006` | Formulir demo 7 bagian: metadata band, kota, genre, kontak PIC, tautan EPK, file audio `.mp3`/`.wav`/`.ogg` maks 25 MB + cerita lagu, tujuan kurasi radio | `TERVERIFIKASI` | Form `/submit` (`components/DemoPortal.tsx`) punya **9 bagian** berlabel (01)–(09): nama band, kota, judul lagu/EP, genre (select), tujuan submit (select), link streaming/EPK, kontak WhatsApp/email manajer, file audio opsional, cerita singkat — semua elemen PRD ada. **Audio opsional via Vercel Blob** (`/api/demo-audio` → signed upload), maks 25 MB dan tipe dipaksa di peramban **dan** server. **Kontak kini tersimpan** — di dokumen `demoContact` terpisah di dataset privat `submissions`, bukan lagi dibuang. |
@@ -73,7 +73,7 @@ bukan "kayaknya ada". Kalau tidak bisa dipastikan, labelnya
 | `BR-001` | File demo hanya audio (`audio/mpeg`, `audio/wav`, `audio/ogg`, ekstensi `.mp3`/`.wav`) dan ≤ 25 MB (25 × 1024 × 1024 byte); tolak instan di klien dan server | `TERVERIFIKASI` | `DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024` (`lib/taxonomy.ts:76`), plus `DEMO_AUDIO_TYPES` dan `DEMO_AUDIO_EXTENSIONS`. Tiga lapis: peramban (`onPickAudio`), server (`POST /api/demos`), dan token unggah (`handleUpload` dengan `allowedContentTypes` + `maximumSizeInBytes`). **Catatan:** `audio/x-wav` juga diterima. |
 | `BR-002` | Kiriman baru berstatus awal `IN REVIEW`; hanya kurator boleh mengubahnya ke `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)`; pengirim publik tidak dapat mengubah status | `TERVERIFIKASI` | `DEMO_STATUSES` = 4 nilai: `IN REVIEW`, `SHORTLISTED (SAMSARA)`, `APPROVED (ARTICLE)`, `ARCHIVED`. Kiriman publik **selalu** dibuat `IN REVIEW` — `DEMO_INITIAL_STATUS` dipaksa di `app/api/demos/route.ts:306`, request tidak bisa menentukan status. Kurator memindahkannya di Studio (workspace "Submit Karya"). Antrean publik hanya membaca dua status disetujui (`APPROVED_QUERY`). |
 | `BR-003` | Pada desktop ≥ 1024px: indeks genap → `[Gambar → Judul → Excerpt]`, indeks ganjil → `[Judul → Gambar → Excerpt]`; mobile boleh diseragamkan | `TERVERIFIKASI` (dengan catatan) | `ArticleCard` punya prop `titleFirst` dan pemanggilnya **aktif**: `titleFirst={i % 2 === 1}` (`app/(site)/stories/page.tsx:35`) → kartu ke-1, 3, 5 (index 0, 2, 4) **gambar dulu**, ke-2, 4, 6, 8 **judul dulu**. Cocok dengan PRD bila "indeks" dibaca 0-based; **terbalik** bila dibaca 1-based. |
-| `BR-004` | Waktu baca = `max(1, ceil(jumlah kata ÷ 200))`, atau ditetapkan editor; minimum `1 min read` | `TERVERIFIKASI` (sebagian) | `readingTimeMinutes()` di `lib/content.ts:57` menghitung **judul + ringkasan + isi**, lalu `max(1, ceil(words / 200))`. Dipakai di kartu artikel ("N menit") dan header detail ("N menit baca"). Diuji di `lib/content.test.ts` (9 kasus lulus). **Cabang "ditetapkan editor" tidak diimplementasikan** — nilainya selalu dihitung. |
+| `BR-004` | Waktu baca = `max(1, ceil(jumlah kata ÷ 200))`, atau ditetapkan editor; minimum `1 min read` | `TERVERIFIKASI` (sebagian) | `readingTimeMinutes()` di `lib/content-fallback.ts:57` menghitung **judul + ringkasan + isi**, lalu `max(1, ceil(words / 200))`. Dipakai di kartu artikel ("N menit") dan header detail ("N menit baca"). Diuji di `lib/content-fallback.test.ts` (9 kasus lulus). **Cabang "ditetapkan editor" tidak diimplementasikan** — nilainya selalu dihitung. |
 
 ---
 
@@ -131,7 +131,7 @@ atau menghapus perilaku hover-nya.
 
 | ID | Risiko | Status mitigasi |
 |---|---|---|
-| `RISK-001` | Spam / unggahan berbahaya pada form demo | `RENCANA` — `POST /api/demos` dan `POST /api/demo-audio` **tidak punya** rate limit, CAPTCHA, idempotensi, atau autentikasi. Tiap kiriman = 2 tulis Sanity + 1 email. Rencana ada di `docs/AUDIT-2026-10-21.md` §7 (P0) |
+| `RISK-001` | Spam / unggahan berbahaya pada form demo | `RENCANA` — `POST /api/demos` dan `POST /api/demo-audio` **tidak punya** rate limit, CAPTCHA, idempotensi, atau autentikasi. Tiap kiriman = 2 tulis Sanity + 1 email. Rencana ada di `docs/audit-2026-10-21.md` §7 (P0) |
 | `RISK-002` | Beban bandwidth & biaya penyimpanan dari unggahan WAV/MP3 | `RENCANA` — unggahan **belum pernah terjadi** di produksi: `BLOB_READ_WRITE_TOKEN` belum di-set, jadi `POST /api/demo-audio` menjawab 400. Kebijakan retensi 90 hari belum ada dan tidak ada job pembersih objek |
 | `RISK-003` | Pembatasan pemutaran embed pada sebagian video YouTube | `SEBAGIAN` — `components/VideoModal.tsx` memuat tautan **"Buka Langsung di YouTube ↗"** di panel modal sebagai jalan keluar. **Belum ada** fallback otomatis saat embed gagal (tidak ada penanganan `onError` pada `<iframe>`) |
 
@@ -156,7 +156,7 @@ Keputusan tambahan yang belum ada di PRD:
 
 | Topik | Jawaban | ADR | Status |
 |---|---|---|---|
-| Test & hosting | **Vitest, deploy Vercel** | [ADR-0006](adr/0006-vitest-playwright-vercel.md) | `SEBAGIAN` — **Vitest** terpasang dan punya 9 kasus di `lib/content.test.ts`; **Playwright tidak terpasang** dan tidak ada `.github/` → **belum ada CI** |
+| Test & hosting | **Vitest, deploy Vercel** | [ADR-0006](adr/0006-vitest-playwright-vercel.md) | `SEBAGIAN` — **Vitest** terpasang dan punya 9 kasus di `lib/content-fallback.test.ts`; **Playwright tidak terpasang** dan tidak ada `.github/` → **belum ada CI** |
 | Katalog video: CMS atau build-time | **Tetap build-time (generated JSON)** | [ADR-0004](adr/0004-katalog-video-build-time.md) | `TERVERIFIKASI` — `lib/catalogue.json` (292 video, 342 Shorts, 5 playlist) tetap jadi arsip cadangan; Sanity menimpa per `youtubeId` |
 | Tipografi | Inter + Red Hat Display + Instrument Serif + JetBrains Mono | [ADR-0007](adr/0007-tipografi-inter-red-hat-display.md) | `TERVERIFIKASI` — lihat §5 `--font-display` / `--font-serif` |
 
@@ -246,7 +246,7 @@ Selain `OQ-001`/`OQ-002` yang sudah dijawab di §8.
 
 - `lib/articles.ts` (penuh) — `SiteArticle`, `latestStories()`,
   `articleBySlug()`, `ARTICLES_TAG`, `mediaType` mapping.
-- `lib/content.ts` (penuh) — `Article`, `ARTICLES` (12, 6 foto + 6 reel),
+- `lib/content-fallback.ts` (penuh) — `Article`, `ARTICLES` (12, 6 foto + 6 reel),
   `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3),
   `readingTimeMinutes()` / `articleReadingTime()`.
 - `lib/taxonomy.ts` (penuh) — `ARTICLE_CATEGORY_VALUES`, `CATEGORY_LABELS`,
@@ -277,7 +277,7 @@ Selain `OQ-001`/`OQ-002` yang sudah dijawab di §8.
 - `package.json` — dependensi & skrip; dikonfirmasi **tidak ada** `payload`,
   `pg`, `drizzle`, `playwright`, atau `puppeteer`; `vitest` ada.
 - `docs/adr/0008-sanity-studio-menggantikan-payload.md`,
-  `docs/SANITY-INTEGRATION.md`, `docs/AUDIT-2026-10-21.md`.
+  `docs/SANITY-INTEGRATION.md`, `docs/audit-2026-10-21.md`.
 - `docs/ARCHITECTURE.md`, `docs/SECURITY-PRIVACY.md`, `docs/TEST-STRATEGY.md`,
   `docs/API-CONTRACTS.md`, `docs/DEPLOYMENT.md` — **di-*grep*** untuk istilah
   usang (RLS, Postgres, `feedArticles`, "6 kartu"), bukan dibaca penuh.
@@ -297,7 +297,7 @@ perspektif `published`, API `2026-05-19`, 21 Oktober 2026):
 
 **Dijalankan:**
 
-- `npm test` → **9/9 lulus** (`lib/content.test.ts`, Vitest 3.2.7).
+- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
 - `node -e` (read-only) atas `lib/catalogue.json` untuk menghitung `counts`,
   `byVenue`, nilai `ageBucket`, dan jumlah kunci `profile`.
 
@@ -314,7 +314,7 @@ perspektif `published`, API `2026-05-19`, 21 Oktober 2026):
   mengikat di §1–§7 berasal dari kutipan tersebut dan sebaiknya ditinjau
   pemilik produk.
 - Keadaan dashboard Vercel (Web Analytics, Blob store, Resend) dan pengaturan
-  webhook Sanity — diambil dari `docs/AUDIT-2026-10-21.md`, bukan diukur ulang.
+  webhook Sanity — diambil dari `docs/audit-2026-10-21.md`, bukan diukur ulang.
 
 **Perlu tindakan pemilik:** berkas PRD asli sebaiknya dimasukkan ke repo sebagai
 `docs/PRD.md` agar ketertelusuran ini dapat diverifikasi terhadap teks sumber,

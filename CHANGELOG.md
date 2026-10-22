@@ -34,7 +34,7 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 - Tipe konten: `siteSettings`, `article`, `interview`, `video`, `playlist`,
   `pillarPost`, `videosPage` pada dataset `production` (publik), serta
   `demoSubmission` dan `demoContact` pada dataset `submissions` (privat).
-- Isi statis di `lib/content.ts` bertahan sebagai fallback bila Sanity tak
+- Isi statis di `lib/content-fallback.ts` bertahan sebagai fallback bila Sanity tak
   terjangkau, sehingga halaman tetap tampil.
 - Webhook Sanity memanggil `POST /api/revalidate` dengan enam tag, sehingga
   satu kali Publish membersihkan cache konten yang relevan.
@@ -67,7 +67,7 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 
 **Alat bantu**
 
-- Vitest terpasang; `npm test` menjalankan sembilan kasus di `lib/content.test.ts`.
+- Vitest terpasang; `npm test` menjalankan sembilan kasus di `lib/content-fallback.test.ts`.
 - `@vercel/analytics` terpasang di layout.
 - `lib/README.md` — peta per berkas: pertanyaan → berkas, batas server/klien, dan
   nama tag cache.
@@ -97,6 +97,14 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   area kartu bisa diklik.
 - `/kurasi` dipanggil Curated News, dan bagian footer "#FaktaMusik & Esai
   Skena" mengarah ke `/stories`.
+- **Nama berkas dirapikan** (22 Okt 2026), tanpa mengubah satu pun URL publik:
+  `lib/content.ts` → `lib/content-fallback.ts` (dan tesnya ikut), `Reveal.tsx` →
+  `motion/Reveal.tsx`, `app/(site)/sitemap.ts` → `app/sitemap.ts` (ikut
+  konvensi Next, seperti `robots.ts`), `AUDIT-2026-10-21.md` →
+  `audit-2026-10-21.md`, `scripts/seed-*.js` → `scripts/seed-*.cjs` (CommonJS
+  dinyatakan eksplisit), `FrontCard` → `components/FrontCard.tsx`,
+  `PillarHead` → `components/PillarHead.tsx`, `SubmitLink` →
+  `components/SubmitLink.tsx`.
 
 ### Removed
 
@@ -111,6 +119,8 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   `interview.image`.
 - Field `cardCurtain.featureLabel` dan `cardCurtain.featureCta` (juga di
   Studio), serta field Bicara Melodi di `videosPage`.
+- `components/motion/ParallaxImage.tsx` — komponen gerak yang tidak pernah
+  dipakai siapa pun.
 - Export mati `feedArticles()` di `lib/articles.ts` — embodying aturan lama
   "hanya foto feed" yang sudah digantikan `latestStories(8)` — serta
   `latestVideos()` dan `topVideos()` di `lib/videos.ts`, yang namanya bentrok
@@ -135,7 +145,7 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 - Audit keamanan 21 Oktober 2026 menghasilkan sepuluh temuan
   (F01–F10). Audit berjalan tanpa sandbox sistem operasi, sehingga **tidak
   satu pun temuan terkonfirmasi**; semuanya berstatus `needs_validation` dan
-  belum diperbaiki. Ringkasan ada di `docs/AUDIT-2026-10-21.md`, artefak
+  belum diperbaiki. Ringkasan ada di `docs/audit-2026-10-21.md`, artefak
   lengkapnya disalin ke folder audit tim.
 - `SANITY_REVALIDATE_SECRET` sempat muncul utuh di log percakapan, jadi wajib
   dirotasi. Selama `SANITY_PREVIEW_SECRET` belum diset, rute pratinjau masih
@@ -176,7 +186,7 @@ multi-halaman, terhubung ke katalog YouTube yang di-scrape dan ke set aset merek
 
 **Konten**
 
-- `lib/content.ts` memuat 12 artikel lengkap dengan isi multi-paragraf, ditambah baris
+- `lib/content-fallback.ts` memuat 12 artikel lengkap dengan isi multi-paragraf, ditambah baris
   wawancara, baris genre, item ruang, item ticker, dan data seed demo.
 - `lib/catalogue.json` — katalog **generated** berisi 292 video, 342 Shorts, 5 playlist,
   dan angka profil kanal. Dihasilkan dari hasil scrape kanal YouTube.

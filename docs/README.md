@@ -23,7 +23,7 @@ terpisah `melodialam-sanity`). Yang benar hari ini:
 
 - Antarmuka *Neo-Brutalist Editorial* berjalan penuh di sisi klien.
 - **Artikel, pillar, video, playlist, dan wawancara** dibaca dari Sanity Studio
-  (dataset `production`, publik), dengan `lib/content.ts` sebagai fallback — lihat
+  (dataset `production`, publik), dengan `lib/content-fallback.ts` sebagai fallback — lihat
   [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md).
 - **Studio Sanity** berada di repo terpisah, `melodialam-sanity`, bukan di sini. Repo ini
   hanya membaca.
@@ -68,7 +68,7 @@ Semua tercakup di bawah ini.
 | [`DATA-MODEL.md`](DATA-MODEL.md) | Engineer backend | Dua dataset Sanity (`production` publik, `submissions` privat) + katalog JSON cadangan; tanpa tabel/RLS/migrasi | `TERVERIFIKASI` |
 | [`API-CONTRACTS.md`](API-CONTRACTS.md) | Engineer, integrator | Kontrak endpoint HTTP yang benar-benar ada di repo, dibaca dari kodenya | `TERVERIFIKASI` |
 | [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) | Engineer, pemilik produk | Tinjauan defensif: inventaris PII, kontrol anti-penyalahgunaan, dan status temuan audit F01–F10 | `TERVERIFIKASI` |
-| [`AUDIT-2026-10-21.md`](AUDIT-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026; 10 temuan, semuanya `needs_validation` | `TERVERIFIKASI` (source-level; tanpa sandbox OS) |
+| [`audit-2026-10-21.md`](audit-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026; 10 temuan, semuanya `needs_validation` | `TERVERIFIKASI` (source-level; tanpa sandbox OS) |
 
 ### Implementasi
 
@@ -117,7 +117,7 @@ Delapan catatan keputusan arsitektur, semuanya berstatus `DITERIMA`.
 **Menjelang rilis** — `TEST-STRATEGY.md` → `DEPLOYMENT.md` → `SECURITY-PRIVACY.md` →
 `PRD-REFERENCE.md` §9 (release blockers).
 
-**Meninjau keamanan** — `AUDIT-2026-10-21.md` → `SECURITY-PRIVACY.md` §4 (temuan
+**Meninjau keamanan** — `audit-2026-10-21.md` → `SECURITY-PRIVACY.md` §4 (temuan
 F01–F10) → `SECURITY-PRIVACY.md` §8 (urutan remediasi).
 
 ---
@@ -155,7 +155,7 @@ tahu mana yang sudah teruji.
 - Risiko arsitektural di `ARCHITECTURE.md` memakai namespace terpisah: `ARCH-RISK-001`.
   Ini disengaja supaya tidak tertukar dengan `RISK-*` milik PRD.
 - Keputusan: `ADR-000N`.
-- Temuan audit keamanan: `F01`–`F10` (lihat `AUDIT-2026-10-21.md`).
+- Temuan audit keamanan: `F01`–`F10` (lihat `audit-2026-10-21.md`).
 - Temuan tinjauan dokumen `SECURITY-PRIVACY.md`: `SEC-Fxx`.
 
 ---
@@ -183,7 +183,7 @@ Tiga hal berikut memengaruhi hampir semua dokumen, dan sengaja disebut di depan.
 Dokumen ini dicek terhadap isi folder `docs/` dan isi repo `melodi-alam` pada
 **21 Oktober 2026**.
 
-- **Daftar file** — `docs/` berisi 13 berkas di root: `README.md`, `AUDIT-2026-10-21.md`,
+- **Daftar file** — `docs/` berisi 13 berkas di root: `README.md`, `audit-2026-10-21.md`,
   `API-CONTRACTS.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `DATA-MODEL.md`,
   `DEPLOYMENT.md`, `DESIGN-SYSTEM.md`, `FRONTEND-PLAN.md`, `PRD-REFERENCE.md`,
   `SANITY-INTEGRATION.md`, `SECURITY-PRIVACY.md`, `TEST-STRATEGY.md`; plus
@@ -197,7 +197,7 @@ Dokumen ini dicek terhadap isi folder `docs/` dan isi repo `melodi-alam` pada
 - **Rute dan perintah** — `../README.md` diverifikasi ke `app/` (daftar route handler dan
   halaman), `package.json` (daftar skrip), dan `next.config.ts`.
 - **Kondisi build** — `npm run build` → lulus, **33 halaman statis**; `npm test` →
-  9/9 lulus (`lib/content.test.ts`).
+  9/9 lulus (`lib/content-fallback.test.ts`).
 - **Tidak diperiksa** — isi dashboard Vercel/Sanity (status Blob store, Resend,
   anggota project, "Trigger on" webhook), dan apakah domain `melodialam.id` sudah
   diarahkan.

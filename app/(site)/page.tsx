@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Reveal } from "@/components/Reveal";
-import { FrontCard } from "@/components/ArticleCards";
+import { Reveal } from "@/components/motion/Reveal";
+import { FrontCard } from "@/components/FrontCard";
 import { PillarCard } from "@/components/PillarCards";
 import { latestStories } from "@/lib/articles";
 import { allPillarPosts } from "@/lib/pillars";

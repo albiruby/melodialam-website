@@ -50,11 +50,11 @@ repo ini tidak boleh bergantung pada repo Studio.
 
 ## 2. Model mental
 
-> **1. Sanity menang; `lib/content.ts` adalah jaring pengaman.**
+> **1. Sanity menang; `lib/content-fallback.ts` adalah jaring pengaman.**
 >
 > - Artikel yang Anda publish di Studio muncul di situs **tanpa ubah kode**.
 > - Kalau Sanity tidak dapat dijangkau, situs merender **12 artikel statis** dari
->   `lib/content.ts` (`ARTICLES`, `lib/content.ts:93`) alih-alih gagal.
+>   `lib/content-fallback.ts` (`ARTICLES`, `lib/content-fallback.ts:93`) alih-alih gagal.
 > - Kalau slug-nya bentrok, versi Sanity yang menang — jadi migrasi bisa bertahap:
 >   seed satu artikel ke Sanity, ia langsung mengambil alih.
 
@@ -120,7 +120,7 @@ antar halaman:
 | Beranda `/` — blok "Latest News" | 4 pertama | `app/(site)/page.tsx:28-29` |
 | Halaman `/stories` — grid 4 kolom | 8 | `app/(site)/stories/page.tsx:18` |
 | Blok "More {rubrik}" di detail artikel | 3 dari 8 | `app/(site)/stories/[slug]/page.tsx:66-69` |
-| Sitemap | 8 | `app/(site)/sitemap.ts:15` |
+| Sitemap | 8 | `app/sitemap.ts:15` |
 | RSS `/rss.xml` | 8 | `app/rss.xml/route.ts:29` |
 
 > Catatan: `feedArticles()` pernah ada di `lib/articles.ts` (hanya
@@ -224,7 +224,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)` yang publik |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/(site)/tentang/page.tsx` | — | profil, ekosistem, kanal, kontak & partnership (statis) |
-| `app/(site)/sitemap.ts` · `app/rss.xml/route.ts` | `latestStories(8)` | sitemap & RSS ikut artikel yang diterbitkan dari Studio |
+| `app/sitemap.ts` · `app/rss.xml/route.ts` | `latestStories(8)` | sitemap & RSS ikut artikel yang diterbitkan dari Studio |
 | `app/api/revalidate/route.ts` | — | menerima webhook, membuang 6 tag cache |
 | `app/api/demo-audio/route.ts` | `@vercel/blob/client` `handleUpload` | token unggah audio demo (maks 25 MB, hanya audio) |
 
@@ -288,7 +288,7 @@ Keluaran Portable Text adalah tag "telanjang" — `<p>`, `<h2>`, `<ul>`, `<block
 sumber (statis dan Sanity).
 
 `ArticleBody` memilih otomatis: ada `richBody` → Portable Text; tidak ada → paragraf
-biasa dari `lib/content.ts`.
+biasa dari `lib/content-fallback.ts`.
 
 Gambar di dalam isi dirender dengan `<img>` biasa, bukan `next/image`: CDN Sanity
 sudah meresize dan mengonversi formatnya (`auto=format` di `lib/sanity.ts`), dan blok
@@ -513,7 +513,7 @@ Sengaja, bukan lupa:
 | **Webhook: "Trigger on" Update** | Per pemeriksaan terakhir hanya Create yang tercentang → menyunting artikel terbit tidak memicu revalidasi. Tindakan pemilik (`RENCANA`). |
 | **Domain produksi** | `melodialam.id` belum resolve, jadi `NEXT_PUBLIC_SITE_URL` menunjuk ke `https://melodialam-website.vercel.app` dan semua canonical/sitemap/OG ikut ke sana. |
 | **Web Analytics** | `@vercel/analytics` terpasang dan `<Analytics />` dirender (`app/(site)/layout.tsx:181`), tetapi belum dinyalakan di dashboard Vercel. |
-| **Uji otomatis end-to-end** | Hanya unit test Vitest (`lib/content.test.ts`); belum ada CI — repo tidak punya `.github/`. |
+| **Uji otomatis end-to-end** | Hanya unit test Vitest (`lib/content-fallback.test.ts`); belum ada CI — repo tidak punya `.github/`. |
 
 ---
 
@@ -545,7 +545,7 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
 - **`latestStories(8)`** (`lib/articles.ts:216-221`) — daftar foto dulu lalu reel;
   dipakai beranda (`app/(site)/page.tsx:28`), `/stories`
   (`app/(site)/stories/page.tsx:18`), blok "More" (`app/(site)/stories/[slug]/page.tsx:66`),
-  sitemap (`app/(site)/sitemap.ts:15`), dan RSS (`app/rss.xml/route.ts:29`).
+  sitemap (`app/sitemap.ts:15`), dan RSS (`app/rss.xml/route.ts:29`).
   `feedArticles()` **tidak pernah** punya pemanggil, dan sudah dihapus dari
 `lib/articles.ts` pada 21 Okt 2026.
 - **`mediaType`** — `melodialam-sanity/sanity/schemaTypes/article.ts:45-60`: nilai
@@ -579,7 +579,7 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
   (`:193-194`).
 - **Studio** — `sanity.config.ts:37,46`: `visionTool()` aktif di workspace `submissions`
   juga (temuan audit F08).
-- **Komando lokal** — `npm test` → 9/9 lulus (`lib/content.test.ts`, Vitest 3.2.7);
+- **Komando lokal** — `npm test` → 9/9 lulus (`lib/content-fallback.test.ts`, Vitest 3.2.7);
   `npm run build` → lulus, **33 halaman statis** (Next.js 16.4.0, Turbopack), 3
   route handler dinamis + 2 route gambar dinamis.
 

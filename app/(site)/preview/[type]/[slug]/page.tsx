@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ArticleBody } from "@/components/ArticleBody";
-import { CATEGORY_LABELS } from "@/lib/content";
+import { CATEGORY_LABELS } from "@/lib/content-fallback";
 import { imageUrl } from "@/lib/sanity";
 import { draftClient, previewSecret, secretMatches } from "@/lib/sanity-preview";
 

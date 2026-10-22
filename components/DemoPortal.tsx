@@ -8,7 +8,7 @@ import {
   DEMO_AUDIO_TYPES,
   DEMO_GENRES,
   DEMO_PROGRAMS,
-} from "@/lib/content";
+} from "@/lib/content-fallback";
 
 interface ApiError {
   error?: string;

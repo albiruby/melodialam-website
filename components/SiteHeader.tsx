@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
 import { MelodiAlamLockup } from "./MelodiAlamLockup";
-import { SubmitLink } from "./Ticker";
+import { SubmitLink } from "./SubmitLink";
 
 /** Brand copy comes from the `siteSettings` singleton, passed down by the layout. */
 export function SiteHeader({
