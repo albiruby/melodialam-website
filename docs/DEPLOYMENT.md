@@ -324,7 +324,7 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
   oleh `.gitignore` (pola `.env*` dengan pengecualian `!.env.example`). Baris
   34–36 `.gitignore` memastikan **template ikut ter-commit** tetapi berkas
   rahasia tidak.
-- **CI (ada, 22 Okt 2026):** `.github/workflows/ci.yml` menjalankan lint, typecheck, test, dan build pada setiap push ke `main` dan setiap pull request. Tidak butuh secret — dataset `production` bisa dibaca tanpa token. Bila nanti butuh secret, secret disimpan di
+- **CI (ada, 22 Okt 2026):** `.github/workflows/ci.yml` menjalankan `npm run lint`, `npx next typegen`, `npx tsc --noEmit`, `npm test`, dan `npm run build` pada setiap push ke `main` dan setiap pull request. Langkah `next typegen` wajib: tipe rute (`PageProps`) dibuat oleh Next.js dan berkas-nya tidak ikut ter-commit. Tidak butuh secret — dataset `production` bisa dibaca tanpa token. Bila nanti butuh secret, secret disimpan di
   GitHub Actions Secrets.
 
 ### 3.4 Sisa era Supabase di `.env` lokal (`TERVERIFIKASI`)

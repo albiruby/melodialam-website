@@ -454,7 +454,7 @@ dan **dijalankan** pada repositori ini.
 - `.env.example` — 10 variabel (§1). `.env` lokal ada dan mengabaikan
   `.gitignore`; isinya tidak dibaca atau ditampilkan di dokumen ini.
 - `.gitignore` — mengabaikan `.env*` kecuali `.env.example`, plus `/.next/`.
-- `.github/workflows/ci.yml` — ada: lint, `tsc --noEmit`, `npm test`, `npm run build` pada setiap push ke `main` dan setiap pull request.
+- `.github/workflows/ci.yml` — ada: `npm run lint`, `npx next typegen`, `npx tsc --noEmit`, `npm test`, `npm run build` pada setiap push ke `main` dan setiap pull request. `next typegen` diperlukan karena tipe rute dibuat Next.js dan tidak ikut ter-commit.
 - `git log` — konvensi commit: satu baris imperatif dalam bahasa Inggris,
   disusul paragraf alasan. Contoh: `Move the Stories page to /stories`,
   `Give every YouTube thumbnail the best frame YouTube has`.
