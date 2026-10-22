@@ -770,10 +770,10 @@ dan `kurasi` (post kurasi).
 - Tanpa secret yang cocok → **404** (bukan 403), supaya draf tidak bisa dibaca
   tanpa secret.
 - `robots: { index: false, follow: false }`.
-- Secret: `SANITY_PREVIEW_SECRET`, atau jika kosong jatuh ke
-  `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`).
+- Secret: `SANITY_PREVIEW_SECRET` saja (`lib/sanity-preview.ts:38-40`). Tidak ada
+  fallback ke `SANITY_REVALIDATE_SECRET` sejak 22 Okt 2026.
 
-> `RENCANA`: `SANITY_PREVIEW_SECRET` belum di-set, jadi saat ini satu secret
+> `TERVERIFIKASI` 22 Okt 2026: `SANITY_PREVIEW_SECRET` sudah di-set, jadi saat ini satu secret
 > melayani dua kapabilitas (baca draf + invalidasi cache), dan secret diterima
 > lewat query string. Lihat `docs/audit-2026-10-21.md` F03.
 
@@ -795,7 +795,7 @@ dibaca seolah-olah ada:
 | Idempotensi kirim (`Idempotency-Key`) | `RENCANA` | F02 |
 | Blob store + `BLOB_READ_WRITE_TOKEN` | `RENCANA` | Belum ada → unggah audio 400 |
 | Notifikasi email (`RESEND_API_KEY`) | `RENCANA` | Kodenya ada (`app/api/demos/route.ts:134-191`) tapi **inert** tanpa key |
-| `SANITY_PREVIEW_SECRET` terpisah | `RENCANA` | Saat ini jatuh ke `SANITY_REVALIDATE_SECRET` |
+| `SANITY_PREVIEW_SECRET` terpisah | `TERVERIFIKASI` | Sudah dipasang; fallback sudah dihapus (22 Okt 2026) |
 | Webhook Sanity "Trigger on: Update" | `RENCANA` | Yang tercentang hanya "Create" |
 | Pillar `similar-song` berisi post | `RENCANA` | Skema dan set sudah siap; 0 post |
 | Pillar `meme-humor` dirender | **Perlu perbaikan skema** | Ada di skema & label, tapi tidak ada di `PHOTO_PILLARS`/`REEL_PILLARS` → tidak akan pernah tampil |
@@ -812,7 +812,7 @@ dibaca seolah-olah ada:
 | `NEXT_PUBLIC_SITE_URL` | Ada | Canonical, sitemap, dan OG memakai origin `vercel.app` selama `melodialam.id` belum resolve |
 | `SANITY_API_READ_TOKEN` | Ada | Tanpa ini `submissionsClient` = `null` → antrean demo jatuh ke array in-memory (3 seed) dan **kiriman tidak tersimpan** |
 | `SANITY_REVALIDATE_SECRET` | Ada | Tanpa ini `POST /api/revalidate` menjawab 500 dan pratinjau ikut mati |
-| `SANITY_PREVIEW_SECRET` | Belum | Pratinjau memakai secret revalidate |
+| `SANITY_PREVIEW_SECRET` | Sudah | Terpisah dari secret revalidasi |
 | `BLOB_READ_WRITE_TOKEN` | Belum | Unggah audio 400 |
 | `RESEND_API_KEY` | Belum | Notifikasi email tidak terkirim |
 

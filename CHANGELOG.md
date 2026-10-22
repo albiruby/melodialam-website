@@ -147,9 +147,18 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   satu pun temuan terkonfirmasi**; semuanya berstatus `needs_validation` dan
   belum diperbaiki. Ringkasan ada di `docs/audit-2026-10-21.md`, artefak
   lengkapnya disalin ke folder audit tim.
-- `SANITY_REVALIDATE_SECRET` sempat muncul utuh di log percakapan, jadi wajib
-  dirotasi. Selama `SANITY_PREVIEW_SECRET` belum diset, rute pratinjau masih
-  memakai secret yang sama — bukan pemisahan yang semestinya.
+- **F03 ditutup.** `SANITY_PREVIEW_SECRET` sekarang menjadi secret sendiri
+  untuk pratinjau draf, dan fallback ke `SANITY_REVALIDATE_SECRET` dihapus
+  dari `lib/sanity-preview.ts`. Secret revalidasi yang pernah terekspos di log
+  percakapan **sudah dirotasi**; nilai lama ditahan sebentar lewat
+  `SANITY_REVALIDATE_SECRET_PREVIOUS` supaya webhook Sanity tetap jalan
+  sampai dasbornya diarahkan ke secret baru.
+- Pratinjau draf menjawab **404** untuk secret yang salah. Pemeriksaan secret
+  dipindah ke `proxy.ts` (root), yang berjalan sebelum halaman dirender —
+  sebelumnya `notFound()` muncul setelah respons mulai mengalir, jadi
+  pembacanya mendapat halaman 404 dengan status **200**.
+- `DATABASE_URL` — sisa era Supabase yang tidak dibaca kode mana pun —
+  dihapus dari `.env` lokal.
 
 ### Known Issues
 

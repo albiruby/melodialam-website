@@ -277,7 +277,7 @@ yang memeriksa endpoint produksi). Keberadaan Preview per-PR
 |---|---|---|---|
 | Sumber data editorial | Sanity `production` + fallback `lib/content-fallback.ts` | Sanity `production` | Sanity `production` |
 | Demo queue | Sanity `submissions` **atau** array in-memory bila token kosong | idem | Sanity `submissions` |
-| Env var dibaca | `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET` | idem + opsional | idem + opsional (`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`) |
+| Env var dibaca | `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET`, `SANITY_PREVIEW_SECRET` | idem + opsional | idem + opsional (`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`) |
 | Secret | ada di `.env` lokal (git-ignored) | Environment Variables Vercel | Environment Variables Vercel |
 | Media | `public/photos/*` + `cdn.sanity.io` | idem | idem + Vercel Blob (belum) |
 | Domain | `localhost:3100` | `*.vercel.app` auto | `melodialam-website.vercel.app`; `melodialam.id` **belum resolve** |
@@ -299,7 +299,8 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
 | `NEXT_PUBLIC_SITE_URL` | client + server | Tidak | **Ya** di produksi | Canonical origin, sitemap, RSS, `robots.txt`, OG. Kosong → jatuh ke literal `https://melodialam.id` (`lib/site.ts:18`) |
 | `SANITY_API_READ_TOKEN` | server saja | **YA** | **Ya** | Grant read pada dataset privat `submissions` + write. Kosong → demo queue jatuh ke array in-memory dan pratinjau draf selalu 404 |
 | `SANITY_REVALIDATE_SECRET` | server saja | **YA** | **Ya** | Shared secret webhook `POST /api/revalidate`. Kosong → route menjawab `500` |
-| `SANITY_PREVIEW_SECRET` | server saja | **YA** | Tidak | Secret pratinjau draf. Kosong → **fallback** ke `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`) |
+| `SANITY_PREVIEW_SECRET` | server saja | **YA** | Tidak | Secret pratinjau draf, **terpisah** dari secret revalidasi (tanpa fallback). Kosong → pratinjau selalu 404 |
+| `SANITY_REVALIDATE_SECRET_PREVIOUS` | server saja | Tidak | Tidak | Nilai secret revalidasi **sebelum** rotasi. Hanya masa transisi: hapus setelah webhook Sanity memakai secret baru |
 | `BLOB_READ_WRITE_TOKEN` | server saja | **YA** | Tidak | Token unggah audio. Kosong → `POST /api/demo-audio` menjawab `400` |
 | `RESEND_API_KEY` | server saja | **YA** | Tidak | Notifikasi email redaksi. Kosong → notifikasi **inert** (tidak ada panggilan HTTP) |
 | `DEMO_NOTIFY_TO` | server saja | Tidak | Tidak | Override penerima notifikasi, dipisah koma. Default `melodialam.ip@gmail.com,helfan@infia.co` |
@@ -309,7 +310,7 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
 
 | Variable | Status | Catatan |
 |---|---|---|
-| `DATABASE_URL` | **Tidak dibaca kode mana pun** (`TERVERIFIKASI`) | Sisa era Supabase. **Masih tertulis di `.env` lokal** — boleh dihapus (§3.4) |
+| `DATABASE_URL` | **Tidak dibaca kode mana pun** (`TERVERIFIKASI`) | Sisa era Supabase. **Sudah dihapus dari `.env` lokal** (22 Okt 2026) |
 | `PAYLOAD_SECRET` | Tidak ada | Era Payload. Kode Payload sudah dihapus seluruhnya |
 | `NEXT_PUBLIC_SUPABASE_URL` · `NEXT_PUBLIC_SUPABASE_ANON_KEY` · `SUPABASE_SERVICE_ROLE_KEY` | Tidak ada | Era Supabase |
 
@@ -328,9 +329,9 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
 
 ### 3.4 Sisa era Supabase di `.env` lokal (`TERVERIFIKASI`)
 
-Berkas `.env` lokal memuat `DATABASE_URL` yang **tidak dibaca satu pun modul**.
-Nilai itu sisa konfigurasi era Supabase dan tidak punya efek; menghapusnya
-membuat `.env` lokal mencerminkan bentuk yang benar.
+Baris `DATABASE_URL` **sudah dihapus** dari `.env` lokal (22 Okt 2026). Nilai itu
+sisa konfigurasi era Supabase yang **tidak dibaca satu pun modul**, dan
+menghapus barisnya membuat `.env` lokal mencerminkan bentuk yang benar.
 
 `.env.example` (yang **sudah** di-commit) memuat **sepuluh variabel**:
 `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET`, `SANITY_PREVIEW_SECRET`
@@ -579,8 +580,8 @@ Route membuang **enam** tag cache sekaligus: `articles`, `pillar-posts`,
 ### 7.3 Pratinjau draf (`TERVERIFIKASI`)
 
 Rute `/preview/<type>/<slug>?secret=…` membaca perspektif `drafts` dengan
-token. **`SANITY_PREVIEW_SECRET` belum di-set**, sehingga pratinjau memakai
-fallback `SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`) — satu
+token. **`SANITY_PREVIEW_SECRET` sudah di-set** (22 Okt 2026) dan **terpisah** dari
+secret revalidasi (`lib/sanity-preview.ts:38-40`) — satu
 nilai melindungi dua kapabilitas. Lihat §11 butir 5.
 
 ---
@@ -741,10 +742,10 @@ perlu dikonfirmasi saat dibaca.
 | 2 | **Buat Blob store** di proyek Vercel | `BLOB_READ_WRITE_TOKEN` belum ada → `POST /api/demo-audio` menjawab `400` dan form tidak bisa melampirkan audio | `RENCANA` (owner) |
 | 3 | **Set `RESEND_API_KEY`** (+ opsional `DEMO_NOTIFY_TO`) | Notifikasi email ke redaksi **inert**; submission tetap tersimpan, tapi meja redaksi tidak diberi tahu | `RENCANA` (owner) |
 | 4 | **Nyalakan Vercel Web Analytics** di dashboard | `<Analytics />` sudah terpasang, tapi tidak ada data yang terkumpul | `RENCANA` (owner) |
-| 5 | **Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`) | Pratinjau draf memakai fallback `SANITY_REVALIDATE_SECRET` — satu nilai melindungi dua kapabilitas (`audit-2026-10-21.md` F03) | `RENCANA` (owner) |
+| 5 | ~~**Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`)~~ | **Selesai 22 Okt 2026** — sudah dipasang; fallback sudah dihapus (`audit-2026-10-21.md` F03) | — |
 | 6 | **Centang "Update"** di webhook Sanity dan samakan filter ke 8 tipe | Menyunting artikel di Studio **tidak** memicu webhook; konten baru muncul paling cepat setelah jendela cache 1 menit | `RENCANA` (owner) |
-| 7 | **Rotasi `SANITY_REVALIDATE_SECRET`** lalu hapus penerimaan `?secret=` di `/api/revalidate` | Secret lama masih berlaku; secret bisa bocor ke log akses lewat query string | `RENCANA` (owner) |
-| 8 | **Hapus `DATABASE_URL`** dari `.env` lokal | Tidak berbahaya (tidak dibaca kode), tapi membingungkan | `RENCANA` (owner) |
+| 7 | **Arahkan webhook Sanity ke secret revalidasi yang baru**, lalu hapus `SANITY_REVALIDATE_SECRET_PREVIOUS` | Rotasi sudah dilakukan 22 Okt 2026; selama variabel transisi masih ada, secret lama juga diterima | `RENCANA` (owner) |
+| 8 | ~~**Hapus `DATABASE_URL`** dari `.env` lokal~~ | **Selesai 22 Okt 2026** | `RENCANA` (owner) |
 
 ---
 

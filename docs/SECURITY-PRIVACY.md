@@ -50,9 +50,10 @@ Empat hal yang paling penting:
    bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
    terkonfirmasi*.
 3. **`SANITY_REVALIDATE_SECRET` pernah terekspos di log percakapan** di luar repo.
-   Nilai itu harus dianggap bocor dan **wajib dirotasi**. Selama
-   `SANITY_PREVIEW_SECRET` belum diset, pratinjau draf jatuh ke
-   `SANITY_REVALIDATE_SECRET` yang sama (F03).
+   Nilai itu **sudah dirotasi** (22 Okt 2026): secret lama masih diterima
+   sebentar lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` sampai webhook Sanity
+   diarahkan ke secret baru. Pratinjau draf sekarang memakai secret sendiri,
+   `SANITY_PREVIEW_SECRET` (F03 ditutup).
 4. **PII dan audio tidak pernah keluar ke jalur baca publik.** Kueri antrean
    hanya membaca status yang disetujui dan hanya memproyeksikan field tertentu
    (`app/api/demos/route.ts:122-133`). Yang bocor ke pihak ketiga adalah **email
@@ -197,13 +198,13 @@ Resend / Sanity.
 |---|---|---|---|---|
 | F01 | `audioUrl` diterima dari host mana pun, lalu disimpan ke dokumen yang dikurasi **dan** dikirim ke email redaksi | **High** | `needs_validation` — **ditutup 21 Okt 2026** *(lihat §4.1: host kini dibatasi ke store Blob milik operator)* | bandingkan host dengan store Blob milik operator; tolak selain itu dengan `422` |
 | F02 | `POST /api/demos` tanpa rate limit/quota/CAPTCHA/idempotensi; tiap permintaan = 2 tulis Sanity + 1 email berbayar | **High** | `needs_validation` — belum diperbaiki | rate limit per IP di edge + Turnstile + `Idempotency-Key` |
-| F03 | satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | `needs_validation` — belum diperbaiki | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
+| F03 | ~~satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | `needs_validation` — belum diperbaiki | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
 | F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | `needs_validation` — belum diperbaiki | server yang menentukan key + access; bucket privat + signed URL; nama file di-sanitasi |
 | F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | `needs_validation` — belum diperbaiki | grant sekali-pakai dari `/api/demos` + job pembersihan |
 | F06 | tanpa token, antrean fallback dilayani **tanpa** filter status (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
 | F07 | hapus submission di Studio meninggalkan `demoContact` (PII) dan objek audio (publik) hidup selamanya | **Low** | `needs_validation` — belum diperbaiki | aksi hapus kurator yang ikut menghapus kontak + objek; tetapkan tanggal retensi |
 | F08 | `visionTool()` aktif di workspace `submissions` → GROQ bebas atas dataset privat bagi siapa pun yang punya akses workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
-| F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | `needs_validation` — belum diperbaiki | hapus dari `.env`; rotasi password di akun Supabase |
+| F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | `needs_validation` — **sebagian ditutup**: barisnya sudah dihapus dari `.env` (22 Okt 2026); rotasi password di akun Supabase belum | hapus dari `.env` (**selesai**); rotasi password di akun Supabase |
 | F10 | error mentah Sanity ditulis penuh ke log operator tiap kegagalan tulis | **Informational** | `needs_validation` — belum diperbaiki | log ringkas: status, tipe error, id kiriman |
 
 **Rekap severity:** Critical 0 · High 2 · Medium 3 · Low 3 · Informational 1 ·
@@ -237,7 +238,7 @@ jumlah. Satu permintaan yang sah = 2 dokumen Sanity (`demoSubmission` +
 atau bucket di rute), Turnstile, `Idempotency-Key`.
 
 **F03 — satu secret untuk dua kapabilitas.**
-`lib/sanity-preview.ts:38-40`:
+`lib/sanity-preview.ts:38-40` Reading draft used to fall back:
 `process.env.SANITY_PREVIEW_SECRET ?? process.env.SANITY_REVALIDATE_SECRET ?? null`.
 Selama `SANITY_PREVIEW_SECRET` **belum diset**, pratinjau draf memakai nilai yang
 sama dengan secret webhook. `app/api/revalidate/route.ts:57-60` juga menerima
@@ -247,6 +248,16 @@ di luar repo (`git log --all -- .env` kosong, jadi bukan kebocoran repo) — tap
 eksposur di luar repo tetap berarti nilai itu harus dianggap bocor dan
 **dirotasi**. Perbaikan: secret terpisah untuk pratinjau, header saja untuk
 webhook, lalu rotasi nilai lama.
+
+> **Perkembangan 22 Okt 2026.** Tiga bagian dari perbaikan ini sudah dikerjakan:
+> `SANITY_PREVIEW_SECRET` dipasang sebagai secret terpisah dan **fallback-nya
+> dihapus** dari `lib/sanity-preview.ts`; `SANITY_REVALIDATE_SECRET` sudah
+> **dirotasi** (nilai lama ditahan sebentar lewat
+> `SANITY_REVALIDATE_SECRET_PREVIOUS` sampai webhook Sanity diarahkan ke nilai
+> baru); dan rute pratinjau menjawab **404** untuk secret yang salah, karena
+> pemeriksaannya dipindah ke `proxy.ts` yang berjalan sebelum halaman dirender.
+> Yang tersisa: hapus `SANITY_REVALIDATE_SECRET_PREVIOUS` setelah webhook
+> diperbarui, dan cabut penerimaan `?secret=` di `/api/revalidate`.
 
 **F04/F05 — kapabilitas unggah Blob tidak terikat server.**
 `app/api/demo-audio/route.ts:23-35` memanggil `handleUpload` tanpa
@@ -279,7 +290,7 @@ menjalankan GROQ bebas atas dataset privat. Perbaikan: matikan di workspace
 privat; audit daftar anggota & peran project.
 
 **F09 — sisa password Supabase di `.env`.**
-`DATABASE_URL` masih ada di `.env` lokal, sementara **0** rujukan kode
+`DATABASE_URL` **sudah dihapus** dari `.env` lokal (22 Okt 2026), dan memang **0** rujukan kode
 memakainya (`grep DATABASE_URL` di `*.ts|*.tsx|mjs|js` → 0 hasil). Ini sisa
 layanan yang sudah ditinggalkan, tetapi passwordnya masih hidup di file.
 Perbaikan: hapus barisnya dari `.env`, lalu rotasi password di akun Supabase.
@@ -404,7 +415,7 @@ sebagai klaim keadaan sekarang.
 | Kontrol | Kenapa | Status |
 |---|---|---|
 | **Rotasi `SANITY_REVALIDATE_SECRET`** | nilai pernah terekspos di log percakapan | `RENCANA` — **P0** |
-| **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | `RENCANA` — **P0** |
+| **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | **`TERVERIFIKASI`** — dipasang, fallback dihapus, `SANITY_REVALIDATE_SECRET` dirotasi (22 Okt 2026) |
 | **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | `RENCANA` |
 | **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
 | **Rate limit + Turnstile + `Idempotency-Key`** | F02 | `RENCANA` |
@@ -413,7 +424,7 @@ sebagai klaim keadaan sekarang.
 | **Filter status di jalur fallback**; tanpa store → `503` | F06 | `RENCANA` |
 | **Aksi hapus kurator berantai** (kiriman + kontak + objek) | F07 | `RENCANA` |
 | **Matikan `visionTool` di workspace `submissions`** | F08 | `RENCANA` |
-| **Hapus `DATABASE_URL` + rotasi password Supabase** | F09 | `RENCANA` |
+| **Hapus `DATABASE_URL` + rotasi password Supabase** | F09 | **sebagian** — baris di `.env` sudah dihapus (22 Okt 2026); rotasi password di akun Supabase tetap `RENCANA` |
 | **Log ringkas tanpa payload** | F10 | `RENCANA` |
 | **Bucket privat + signed URL berumur pendek** untuk audio | kebocoran lewat URL | `RENCANA` |
 | **Job retensi** (arsip audio 90 hari, hapus kontak bersama kiriman) | retensi | `RENCANA` |

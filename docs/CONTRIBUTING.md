@@ -48,7 +48,7 @@ cp .env.example .env
 | `NEXT_PUBLIC_SITE_URL` | ya untuk lokal | Origin untuk canonical, sitemap, dan robots. Templat mengisinya `http://localhost:3100` |
 | `SANITY_API_READ_TOKEN` | opsional | Membaca dataset privat `submissions` (antrean demo + kontak manajer) dan draf untuk `/preview/<type>/<slug>`. Tanpa ini route demo jatuh ke antrean in-memory dan pratinjau draf tidak punya sumber |
 | `SANITY_REVALIDATE_SECRET` | wajib untuk produksi | Dibagikan dengan webhook Sanity yang menunjuk `POST /api/revalidate`. Tanpa ini route menolak semua permintaan |
-| `SANITY_PREVIEW_SECRET` | opsional | Secret yang harus dibawa tautan pratinjau. Kalau tidak diset, rute pratinjau memakai `SANITY_REVALIDATE_SECRET` — jadi satu kebocoran membuka keduanya |
+| `SANITY_PREVIEW_SECRET` | opsional | Secret yang harus dibawa tautan pratinjau. **Terpisah** dari `SANITY_REVALIDATE_SECRET`; tanpa fallback. Kalau kosong, pratinjau selalu 404 |
 | `BLOB_READ_WRITE_TOKEN` | opsional | Token unggah audio demo ke Vercel Blob. Tanpa ini route `/api/demo-audio` menjawab 400 dan formulir mengirim tanpa audio |
 | `RESEND_API_KEY` | opsional | Notifikasi email "demo baru masuk". Tanpa ini submission tetap tersimpan, email yang dilewati |
 | `DEMO_NOTIFY_TO` | opsional | Tujuan notifikasi email redaksi. Default ada di `app/api/demos/route.ts`: `melodialam.ip@gmail.com,helfan@infia.co` |

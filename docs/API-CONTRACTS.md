@@ -180,14 +180,14 @@ tidak dikendalikan oleh kode ini**; tidak diklaim di sini (`[PERLU VERIFIKASI]`)
 | `NEXT_PUBLIC_SITE_URL` | client + server | `SITE.url` jatuh ke literal `https://melodialam.id` (`lib/site.ts:18`) | Canonical origin, sitemap, RSS, `robots.txt`, OG memakai nilai itu |
 | `SANITY_API_READ_TOKEN` | server saja | `submissionsClient = null` → `/api/demos` memakai antrean in-memory; `draftClient = null` → `/preview/...` selalu 404 | Antrean demo + kontak hidup di dataset privat `submissions`; pratinjau draf aktif |
 | `SANITY_REVALIDATE_SECRET` | server saja | `POST /api/revalidate` → `500` | Route bekerja; juga dipakai sebagai **fallback** secret pratinjau |
-| `SANITY_PREVIEW_SECRET` | server saja | Pratinjau memakai fallback `SANITY_REVALIDATE_SECRET` | Pratinjau memakai secret terpisah |
+| `SANITY_PREVIEW_SECRET` | server saja | Pratinjau memakai secret sendiri, tanpa fallback | Pratinjau memakai secret terpisah |
 | `BLOB_READ_WRITE_TOKEN` | server saja | `POST /api/demo-audio` → `400` | Token unggah terbit |
 | `RESEND_API_KEY` | server saja | Notifikasi email **inert** (tidak ada panggilan HTTP) | Notifikasi email dikirim ke redaksi |
 | `DEMO_NOTIFY_TO` | server saja | Default `melodialam.ip@gmail.com,helfan@infia.co` | Override penerima, dipisah koma |
 | `DEMO_NOTIFY_FROM` | server saja | Default `Melodi Alam <onboarding@resend.dev>` | Override pengirim |
 
-`DATABASE_URL` **tidak dibaca kode mana pun** di repo ini. Kalau masih ada di
-berkas `.env` lokal, itu sisa era Supabase dan boleh dihapus — lihat
+`DATABASE_URL` **tidak dibaca kode mana pun** di repo ini, dan barisnya **sudah
+dihapus** dari `.env` lokal (22 Okt 2026). Sisa era Supabase; lihat
 [`DEPLOYMENT.md`](DEPLOYMENT.md) §3.
 
 ---
@@ -522,7 +522,7 @@ formulir tanpa audio.
 | Tujuan | Membuang cache 6 tag saat Sanity Studio mem-publish |
 | Method & path | `POST /api/revalidate` |
 | Auth | Shared secret `SANITY_REVALIDATE_SECRET` |
-| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan) |
+| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan). Selama rotasi, nilai **sebelumnya** juga diterima lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` |
 | Efek samping | `revalidateTag(tag, "max")` untuk 6 tag |
 
 **Tag yang dibuang** (`route.ts:30-37`):
@@ -1385,8 +1385,8 @@ dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
   `seed-pelabuhan-senja` status `IN REVIEW`).
 - `lib/sanity-server.ts` — `submissionsClient` null bila
   `SANITY_API_READ_TOKEN` kosong.
-- `lib/sanity-preview.ts` — `previewSecret()` =
-  `SANITY_PREVIEW_SECRET ?? SANITY_REVALIDATE_SECRET ?? null`.
+- `lib/sanity-preview.ts` — `previewSecret()` = `SANITY_PREVIEW_SECRET` saja. Fallback
+  ke `SANITY_REVALIDATE_SECRET` dihapus 22 Okt 2026 (F03).
 - `components/DemoPortal.tsx` — `upload()` ke `handleUploadUrl: "/api/demo-audio"`
   dengan `access: "public"`; `payload.audioSize = String(audioFile.size)`
   (string); `POST /api/demos` mengirim JSON; `ApiError` hanya membaca
@@ -1450,7 +1450,10 @@ moderasi kurator (tidak ada endpoint-nya). `POST /api/demos` dengan body
    ini praktis mati — tapi filter status di fallback tetap lebih aman.
 6. **Rate limit & idempotensi.** Belum ada angkanya. Perlu data spam nyata
    sebelum ditetapkan sebagai kontrak.
-7. **Rotasi `SANITY_REVALIDATE_SECRET` + `SANITY_PREVIEW_SECRET` terpisah.**
+7. ~~**Rotasi `SANITY_REVALIDATE_SECRET` + `SANITY_PREVIEW_SECRET` terpisah.**~~
+   **Selesai 22 Okt 2026**: secret baru dipasang di Vercel, fallback pratinjau
+   dihapus, dan `SANITY_REVALIDATE_SECRET_PREVIOUS` dipakai sebagai masa transisi
+   sampai webhook Sanity diarahkan ke secret baru.
    Sekarang satu nilai melindungi dua kapabilitas (lihat
    `audit-2026-10-21.md` F03). Selain itu, penerimaan `?secret=` di
    `/api/revalidate` sebaiknya dihapus — header saja.

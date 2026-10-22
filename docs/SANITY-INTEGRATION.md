@@ -389,7 +389,7 @@ keterangan singkat tiap baris. Ringkasnya:
 |---|---|---|
 | `SANITY_API_READ_TOKEN` | `lib/sanity-server.ts:22`, `lib/sanity-preview.ts:17` | antrean demo jatuh ke array proses-lokal; pratinjau draf 404 |
 | `SANITY_REVALIDATE_SECRET` | `app/api/revalidate/route.ts:48`, `lib/sanity-preview.ts:39` | route revalidasi menjawab 500 |
-| `SANITY_PREVIEW_SECRET` | `lib/sanity-preview.ts:39` | pratinjau memakai `SANITY_REVALIDATE_SECRET` |
+| `SANITY_PREVIEW_SECRET` | `lib/sanity-preview.ts:39`, `proxy.ts` | pratinjau draf; **terpisah** dari secret revalidasi — tidak ada fallback |
 | `BLOB_READ_WRITE_TOKEN` | `@vercel/blob` (dipasang Vercel saat Blob store dibuat) | `POST /api/demo-audio` menjawab 400 |
 | `RESEND_API_KEY` | `app/api/demos/route.ts:177` | notifikasi email **inert** (kode jalan, panggilan dilewati) |
 | `DEMO_NOTIFY_TO` · `DEMO_NOTIFY_FROM` | `app/api/demos/route.ts:180,184` | dipakai default (dua alamat partnership, pengirim `onboarding@resend.dev`) |
@@ -439,11 +439,11 @@ di tata letak situs:
 - `/preview/journal/<slug-artikel>?secret=…`
 - `/preview/kurasi/<kode-post-ig>?secret=…` (mis. `DeY9hGEib-w`)
 
-`secret` diambil dari `SANITY_PREVIEW_SECRET`; kalau env itu kosong, route memakai
-`SANITY_REVALIDATE_SECRET` (`lib/sanity-preview.ts:38-40`). Tanpa secret yang cocok,
+`secret` diambil dari `SANITY_PREVIEW_SECRET` saja — **tidak ada fallback** ke
+`SANITY_REVALIDATE_SECRET` sejak 22 Okt 2026. Tanpa secret yang cocok,
 route menjawab 404 — halaman ini `noindex`, dan draf bukan untuk dibaca publik.
 
-> **RENCANA.** Pasang `SANITY_PREVIEW_SECRET` yang **berbeda** dari
+> **TERVERIFIKASI 22 Okt 2026.** `SANITY_PREVIEW_SECRET` sudah dipasang, dan **berbeda** dari
 > `SANITY_REVALIDATE_SECRET`, lalu rotasi nilai `SANITY_REVALIDATE_SECRET` yang lama
 > (nilainya pernah terekspos di log percakapan — lihat
 > [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) §4.1). Selama env itu kosong, satu
@@ -562,9 +562,11 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
   privat `submissions`, `perspective: "published"`) dan `lib/sanity-preview.ts:17`
   (dataset publik `production`, `perspective: "drafts"`). `lib/sanity.ts` tidak
   memegang token sama sekali.
-- **Fallback secret pratinjau** — `lib/sanity-preview.ts:38-40`; dibandingkan
-  constant-time (`:43-50`); dipakai di `app/(site)/preview/[type]/[slug]/page.tsx:106`
-  dengan `robots: { index: false, follow: false }` (`:22`).
+- **Secret pratinjau** — `lib/sanity-preview.ts:38-40` (`SANITY_PREVIEW_SECRET`
+  saja, tanpa fallback sejak 22 Okt 2026); dibandingkan constant-time
+  (`:43-50`); dipakai di `proxy.ts` dan
+  `app/(site)/preview/[type]/[slug]/page.tsx:106` dengan
+  `robots: { index: false, follow: false }` (`:22`).
 - **Revalidasi** — `app/api/revalidate/route.ts`: 6 tag (`:30-37`), secret dari
   header `x-webhook-secret` atau `?secret=` (`:57-60`), perbandingan constant-time
   (`:39-45`), `401` kalau tidak cocok.

@@ -143,7 +143,7 @@ Target yang **sudah diambil** dan tidak dibuka ulang:
 | `NEXT_PUBLIC_SITE_URL` | `lib/site.ts:18` | untuk produksi | Origin kanonik. Default kode `https://melodialam.id` |
 | `SANITY_API_READ_TOKEN` | `lib/sanity-server.ts:22`, `lib/sanity-preview.ts:17` | opsional | Tanpa ini: antrean demo jatuh ke array in-memory, pratinjau 404 |
 | `SANITY_REVALIDATE_SECRET` | `app/api/revalidate/route.ts:48`, `lib/sanity-preview.ts:39` | untuk webhook | Fallback secret pratinjau bila `SANITY_PREVIEW_SECRET` kosong |
-| `SANITY_PREVIEW_SECRET` | `lib/sanity-preview.ts:39` | opsional | Secret pratinjau draf terpisah |
+| `SANITY_PREVIEW_SECRET` | `lib/sanity-preview.ts:39`, `proxy.ts` | wajib untuk pratinjau | Secret pratinjau draf, **terpisah** dari secret revalidasi |
 | `BLOB_READ_WRITE_TOKEN` | dibaca `@vercel/blob/client` di `app/api/demo-audio/route.ts` | untuk unggah audio | Tanpa ini rute menjawab `400` |
 | `RESEND_API_KEY` | `app/api/demos/route.ts:146` | opsional | Tanpa ini notifikasi email inert |
 | `DEMO_NOTIFY_TO` · `DEMO_NOTIFY_FROM` | `app/api/demos/route.ts:149-153` | opsional | Default: dua alamat partnership / `onboarding@resend.dev` |
@@ -765,6 +765,7 @@ melodi-alam/
 │   │   ├── tentang/page.tsx          /tentang — profil, ekosistem, kontak
 │   │   ├── submit/page.tsx           /submit — formulir demo
 │   │   ├── preview/[type]/[slug]/page.tsx   /preview/<type>/<slug> — pratinjau draf
+│   │   │                               (secret dicek di proxy.ts, sebelum render)
 │   │   ├── journal/route.ts          308 → /stories
 │   │   ├── journal/[slug]/route.ts   308 → /stories/<slug>
 │   ├── api/
@@ -894,8 +895,8 @@ Ringkasannya yang relevan dengan arsitektur:
   Studio dengan pratinjau dan riwayat versi; artikel tetap tanpa token.
 - **Konsekuensi negatif.** Ketergantungan pada layanan pihak ketiga; fallback
   statis bukan cermin isi terkini; PII kini berada di CMS (mitigasi: dataset
-  privat); satu secret dipakai untuk dua kapabilitas sampai `SANITY_PREVIEW_SECRET`
-  dipasang (temuan F03).
+  privat); dulu satu secret dipakai untuk dua kapabilitas, sampai `SANITY_PREVIEW_SECRET`
+  dipasang dan secret revalidasi dirotasi (22 Okt 2026, temuan F03).
 - **Status.** `TERVERIFIKASI` (terimplementasikan).
 
 ---
@@ -919,7 +920,7 @@ Ringkasannya yang relevan dengan arsitektur:
 | ARCH-RISK-007 | `audioUrl` diterima dari host mana pun | `TERVERIFIKASI` — `app/api/demos/route.ts:249` | Batasi host ke store Blob sendiri (`RENCANA`, temuan F01) |
 | ARCH-RISK-008 | Token unggah Blob diterbitkan tanpa batas | `TERVERIFIKASI` — `app/api/demo-audio/route.ts` | Server yang menentukan key + akses; bucket privat (`RENCANA`, temuan F04) |
 | ARCH-RISK-009 | `POST /api/demos` tanpa rate limit | `TERVERIFIKASI` — tidak ada pembatas | Rate limit per IP + idempotensi key (`RENCANA`, temuan F02) |
-| ARCH-RISK-010 | Secret dipakai untuk dua kapabilitas (draf + revalidasi) | `TERVERIFIKASI` — `lib/sanity-preview.ts:39` | Pasang `SANITY_PREVIEW_SECRET` terpisah (`RENCANA`, temuan F03) |
+| ARCH-RISK-010 | ~~Secret dipakai untuk dua kapabilitas (draf + revalidasi)~~ | **Tertutup 22 Okt 2026** — `lib/sanity-preview.ts:39` | Pasang `SANITY_PREVIEW_SECRET` terpisah (`RENCANA`, temuan F03) |
 
 ### 13.2 Constraints arsitektural dari temuan terukur
 
@@ -1024,6 +1025,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 - `app/(site)/journal/route.ts` dan `app/(site)/journal/[slug]/route.ts` —
   `Response.redirect(..., 308)`.
 - `app/(site)/preview/[type]/[slug]/page.tsx` — `noindex`, `instant = false`,
+  secret dicek lebih dulu di `proxy.ts` (root) sehingga secret salah menjawab 404;
   `secretMatches`, `perspective: "drafts"`, tipe `journal` dan `kurasi`.
 - `app/sitemap.ts` — 7 halaman + `latestStories(8)`.
 - `app/rss.xml/route.ts` — `latestStories(8)`, header cache.
