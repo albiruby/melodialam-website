@@ -510,7 +510,7 @@ Sengaja, bukan lupa:
 | **UI kurator demo** | Status diubah dari Studio (workspace **Submit Karya**). Alur persetujuan khusus (`ADR-0005` butuh ini sebagai prasyarat rilis) belum dibangun. |
 | **Blob store di Vercel** | `BLOB_READ_WRITE_TOKEN` belum ada karena belum ada store yang dihubungkan → `POST /api/demo-audio` menjawab 400. Satu-satunya bagian alur audio yang belum hidup. |
 | **Notifikasi email** | Kode ada (`app/api/demos/route.ts:165-222`) tapi **inert** sampai `RESEND_API_KEY` diset; alamat tujuan default adalah dua alamat partnership (`DEMO_NOTIFY_TO`). |
-| **Webhook: "Trigger on" Update** | Per pemeriksaan terakhir hanya Create yang tercentang → menyunting artikel terbit tidak memicu revalidasi. Tindakan pemilik (`RENCANA`). |
+| **Webhook: "Trigger on" Update** | **TERVERIFIKASI 22 Okt 2026** — publish → halaman segar dalam 2,1 detik → Update memang memicu |idak memicu revalidasi. Tindakan pemilik (`RENCANA`). |
 | **Domain produksi** | `melodialam.id` belum resolve, jadi `NEXT_PUBLIC_SITE_URL` menunjuk ke `https://melodialam-website.vercel.app` dan semua canonical/sitemap/OG ikut ke sana. |
 | **Web Analytics** | `@vercel/analytics` terpasang dan `<Analytics />` dirender (`app/(site)/layout.tsx:181`), tetapi belum dinyalakan di dashboard Vercel. |
 | **Uji otomatis end-to-end** | Hanya unit test Vitest (`lib/content-fallback.test.ts`); belum ada CI — repo tidak punya `.github/`. |
@@ -587,5 +587,5 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji
 secara logika), keadaan sebenarnya Blob store & Resend di akun Vercel, status
-"Trigger on" webhook (hanya **Create** yang tercentang pada pemeriksaan terakhir),
+"Trigger on" webhook (**Create + Update** — sudah terverifikasi 22 Okt 2026: publish → halaman segar dalam 2,1 detik),
 dan apakah `melodialam.id` sudah diarahkan.
