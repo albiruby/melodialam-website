@@ -791,8 +791,8 @@ dibaca seolah-olah ada:
 | Audit keputusan moderasi (`reviewed_by`, `reviewed_at`) | `RENCANA` | Tidak ada fieldnya di skema |
 | Retensi PII terjadwal | `RENCANA` | Tidak ada job penghapus untuk kiriman `IN REVIEW`/`ARCHIVED` |
 | Penghapusan kontak + audio saat kiriman dihapus | `RENCANA` | F07 |
-| Rate limit / CAPTCHA pada `POST /api/demos` & `/api/demo-audio` | `RENCANA` | F02; tiap kiriman = 2 tulis Sanity + 1 email |
-| Idempotensi kirim (`Idempotency-Key`) | `RENCANA` | F02 |
+| Rate limit pada `POST /api/demos` & `/api/demo-audio` | **`TERVERIFIKASI`** 22 Okt 2026 (5/jam & 20/jam per IP) | F02; tiap kiriman = 2 tulis Sanity + 1 email |
+| Idempotensi kirim (`Idempotency-Key`) | **`TERVERIFIKASI`** 22 Okt 2026 | F02 |
 | Blob store + `BLOB_READ_WRITE_TOKEN` | `RENCANA` | Belum ada → unggah audio 400 |
 | Notifikasi email (`RESEND_API_KEY`) | `RENCANA` | Kodenya ada (`app/api/demos/route.ts:134-191`) tapi **inert** tanpa key |
 | `SANITY_PREVIEW_SECRET` terpisah | `TERVERIFIKASI` | Sudah dipasang; fallback sudah dihapus (22 Okt 2026) |
@@ -892,7 +892,7 @@ dibaca seolah-olah ada:
 - `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`
   (Samsara 101, Interview 143, Arsip & Lainnya 9, Melodi Taman 39), 17 nilai
   `ageBucket` berbeda, 0 `ageBucket` null, 19 kunci `profile`.
-- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7) — termasuk
+- `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7) — termasuk
   aturan `BR-004` (waktu baca) dan `pillarDate()`.
 - Pencarian seluruh repo (`app/**`, `components/*.tsx`, `lib/*.ts`) untuk
   `latestStories`, `allPillarPosts`, `allInterviews`,

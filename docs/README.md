@@ -32,8 +32,9 @@ terpisah `melodialam-sanity`). Yang benar hari ini:
   `demoContact`, berkas audio di Vercel Blob.
 - **Katalog video** tetap artefak build-time di dalam repo (ADR-0004); `/videos` hanya
   merender seleksi yang hidup di Sanity.
-- **Unit test** sudah ada: satu berkas, 9 kasus (`npm test`). Playwright, uji
-  end-to-end, coverage, dan **CI** (`RENCANA`, ADR-0006) belum.
+- **Unit test** sudah ada: tiga berkas, 20 kasus (`npm test`), dan **CI** GitHub
+  Actions sudah jalan pada setiap push ke `main` (lint + typecheck + test + build).
+  Playwright, uji end-to-end, dan coverage belum.
 - Yang masih `RENCANA` di luar kode: Blob store di Vercel, `RESEND_API_KEY`, domain
   `melodialam.id`, dan pengaktifan Web Analytics.
 
@@ -82,7 +83,7 @@ Semua tercakup di bawah ini.
 
 | Dokumen | Untuk | Isi | Status |
 |---|---|---|---|
-| [`TEST-STRATEGY.md`](TEST-STRATEGY.md) | Engineer, QA | Keadaan pengujian saat ini (satu berkas unit test Vitest, 9 kasus) + lapisan yang belum ada | `TERVERIFIKASI` (unit test) · `RENCANA` (Playwright, E2E, coverage, CI) |
+| [`TEST-STRATEGY.md`](TEST-STRATEGY.md) | Engineer, QA | Keadaan pengujian saat ini (tiga berkas unit test Vitest, 20 kasus) + lapisan yang belum ada | `TERVERIFIKASI` (unit test) · `RENCANA` (Playwright, E2E, coverage, CI) |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Engineer, operator | Build nyata, environment Vercel, deploy & rollback, hazard deploy | `TERVERIFIKASI` |
 
 ### Keputusan
@@ -197,7 +198,7 @@ Dokumen ini dicek terhadap isi folder `docs/` dan isi repo `melodi-alam` pada
 - **Rute dan perintah** — `../README.md` diverifikasi ke `app/` (daftar route handler dan
   halaman), `package.json` (daftar skrip), dan `next.config.ts`.
 - **Kondisi build** — `npm run build` → lulus, **33 halaman statis**; `npm test` →
-  9/9 lulus (`lib/content-fallback.test.ts`).
+  20/20 lulus (`lib/content-fallback.test.ts`).
 - **Tidak diperiksa** — isi dashboard Vercel/Sanity (status Blob store, Resend,
   anggota project, "Trigger on" webhook), dan apakah domain `melodialam.id` sudah
   diarahkan.

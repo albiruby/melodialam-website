@@ -67,12 +67,39 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 
 **Alat bantu**
 
-- Vitest terpasang; `npm test` menjalankan sembilan kasus di `lib/content-fallback.test.ts`.
+- Vitest terpasang; `npm test` menjalankan dua puluh kasus di tiga berkas
+  (`lib/content-fallback.test.ts`, `lib/rate-limit.test.ts`,
+  `lib/idempotency.test.ts`).
 - `@vercel/analytics` terpasang di layout.
 - `lib/README.md` — peta per berkas: pertanyaan → berkas, batas server/klien, dan
   nama tag cache.
 
+**CI**
+
+- `.github/workflows/ci.yml` — lint, typecheck, test, dan build pada setiap push
+  ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
+  bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
+
+**Perlindungan endpoint demo**
+
+- Rate limit per IP: 5 kiriman per jam di `POST /api/demos`, 20 token unggah
+  per jam di `POST /api/demo-audio`. Batasannya per instance fungsi (serverless
+  tidak berbagi memori), jadi cukup menahan skrip, bukan pengganti quota
+  global — begitu paket Vercel memungkinkan, aturan ini pindah ke edge.
+- `Idempotency-Key` di `POST /api/demos`: percobaan ulang atau klik ganda
+  mendapat jawaban yang sama, bukan baris kedua di antrean.
+- Honeypot di formulir demo: field yang tak pernah dilihat orang, dan kiriman
+  yang mengisinya dibuang tanpa jawaban yang berbeda.
+
 ### Changed
+
+- `/api/revalidate` sekarang memverifikasi **tanda tangan Sanity**
+  (`sanity-webhook-signature`, HMAC-SHA256 atas `<timestamp>.<raw body>`)
+  selain header `x-webhook-secret`, dan **penerimaan `?secret=` di query**
+  dihapus — secret tidak lagi pernah masuk URL dan access log.
+- Halaman `/submit` di-*prerender* lagi: `crypto.randomUUID()` tidak boleh
+  dipanggil saat render server, jadi kunci idempotensi dibuat saat formulir
+  dikirim, bukan saat komponen dibuat.
 
 - **Beranda** membuka diri pada grid 2×2 berisi empat kartu Latest News,
   diikuti strip Curated News berisi empat post kurasi terbaru.

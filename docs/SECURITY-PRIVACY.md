@@ -44,7 +44,7 @@ Empat hal yang paling penting:
 
 1. **Satu temuan sudah tertutup; sisanya masih terbuka.** Pada laporan audit
    21 Okt 2026, kesepuluh temuan F01–F10 tercatat terbuka. **F01 ditutup** lewat
-   allow-list host Blob (lihat §4.1); F02–F10 belum disentuh.
+   allow-list host Blob (lihat §4.1). F02 ditutup sebagian: rate limit per IP, `Idempotency-Key`, dan honeypot (22 Okt 2026); F03–F10 belum disentuh.
 2. **Audit berjalan tanpa sandbox OS**, jadi tidak ada satu pun kode target yang
    dieksekusi. Semua temuan berstatus `needs_validation` — **belum terkonfirmasi**,
    bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
@@ -419,7 +419,7 @@ sebagai klaim keadaan sekarang.
 | **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | **`TERVERIFIKASI`** — dipasang, fallback dihapus, `SANITY_REVALIDATE_SECRET` dirotasi (22 Okt 2026) |
 | **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | `RENCANA` |
 | **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
-| **Rate limit + Turnstile + `Idempotency-Key`** | F02 | `RENCANA` |
+| **Rate limit + `Idempotency-Key`** | F02 | **`TERVERIFIKASI`** 22 Okt 2026 — 5 kiriman/jam per IP di `POST /api/demos`, 20 token/jam di `POST /api/demo-audio`, `Idempotency-Key` + honeypot. Turnstile masih `RENCANA` |
 | **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | `RENCANA` |
 | **Server menentukan key + access object Blob**; nama file di-sanitasi | F04 | `RENCANA` |
 | **Filter status di jalur fallback**; tanpa store → `503` | F06 | `RENCANA` |
@@ -606,7 +606,7 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
   `articleCta`; `sanity.config.ts:37,46` — `visionTool()` aktif di **kedua**
   workspace.
 
-**Diverifikasi dengan menjalankan:** `npm test` → 9/9 lulus (`lib/content-fallback.test.ts`,
+**Diverifikasi dengan menjalankan:** `npm test` → 20/20 lulus (`lib/content-fallback.test.ts`,
 Vitest 3.2.7); `npm run build` → lulus, **33 halaman statis** (`Next.js 16.4.0`,
 Turbopack).
 

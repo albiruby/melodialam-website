@@ -5,10 +5,12 @@ belum ada. Satu-satunya suite yang benar-benar berjalan hari ini adalah unit
 test Vitest.
 
 > **Status fase (21 Okt 2026):** ada **satu** berkas test — `lib/content-fallback.test.ts`,
-> 9 kasus — yang dijalankan oleh `npm test` (`vitest run`). Belum ada Playwright,
-> belum ada testing-library, belum ada Coverage, dan **belum ada CI** (repo tidak
-> punya `.github/`). Semua lapisan di luar unit test di dokumen ini ditulis
-> sebagai `RENCANA`, bukan sebagai kondisi yang sudah ada.
+> 20 kasus — yang dijalankan oleh `npm test` (`vitest run`). Belum ada Playwright,
+> belum ada testing-library, belum ada Coverage, dan belum ada uji end-to-end.
+> **CI sudah ada** (`.github/workflows/ci.yml`): lint, typecheck, test, dan build
+> pada setiap push ke `main` dan setiap pull request. Lapisan di luar unit test
+> dan CI di dokumen ini ditulis sebagai `RENCANA`, bukan sebagai kondisi yang
+> sudah ada.
 
 Stack keputusan: **Vitest** untuk unit/logika (`ADR-0006`). Playwright untuk E2E
 masih **rencana** — belum terpasang, tidak ada `playwright.config.*`, dan tidak
@@ -29,7 +31,7 @@ Cara membaca label:
 
 ### 1.1 Keadaan saat ini (`TERVERIFIKASI`)
 
-**Ada satu suite unit test: 9 kasus di 1 berkas. Tidak ada apa pun di atas
+**Ada satu suite unit test: 20 kasus di 1 berkas. Tidak ada apa pun di atas
 level itu.**
 
 Bukti yang dibaca langsung:
@@ -54,7 +56,7 @@ Bukti yang dibaca langsung:
 - `package-lock.json` memuat `"@playwright/test": "^1.51.1"` **hanya** sebagai
   `peerDependencies` opsional milik paket `next` (`peerDependenciesMeta.optional
   = true`). Itu bukan instalasi dan bukan dependensi proyek.
-- Direktori `.github/` **tidak ada** → belum ada CI.
+- Direktori `.github/` **ada** → `.github/workflows/ci.yml` menjalankan lint, typecheck, test, dan build pada setiap push ke `main` dan setiap pull request.
 
 **Gerbang otomatis yang benar-benar ada hari ini, tiga:**
 
@@ -62,7 +64,7 @@ Bukti yang dibaca langsung:
 |---|---|---|
 | Lint | `npm run lint` (→ `eslint`) | `TERVERIFIKASI` — dijalankan, bersih |
 | Type-check | `npx tsc --noEmit` | `TERVERIFIKASI` — dijalankan, bersih. Tidak punya skrip sendiri; `npm run build` juga menjalankan TypeScript |
-| Unit test | `npm test` (→ `vitest run`) | `TERVERIFIKASI` — 9/9 lulus |
+| Unit test | `npm test` (→ `vitest run`) | `TERVERIFIKASI` — 20/20 lulus |
 
 Ditambah build produksi `npm run build` (Next.js 16.4.0, Turbopack) yang
 menghasilkan **33 halaman statis** (`TERVERIFIKASI` — dijalankan pada fase ini;
@@ -147,7 +149,7 @@ Piramida saat ini sangat kecil: hanya lapisan unit yang ada.
 | Level | Peran | Tooling | Status | Contoh nyata |
 |---|---|---|---|---|
 | Static | Tipe, lint, konvensi | `npx tsc --noEmit`, `npm run lint` | **`TERVERIFIKASI`** | `npm run build`; larangan `aspect-[${...}]`; `@source not` lengkap |
-| Unit | Logika murni, invarian data | **Vitest 3.2** (`npm test`) | **`TERVERIFIKASI`** | `readingTimeMinutes`, `pillarDate`, `isArticleCategory` (9 kasus) |
+| Unit | Logika murni, invarian data | **Vitest 3.2** (`npm test`) | **`TERVERIFIKASI`** | `readingTimeMinutes`, `pillarDate`, `isArticleCategory` (20 kasus) |
 | Integration | Route handler dengan `Request`/`Response` nyata | Vitest (impor `POST`/`GET` langsung) | **`RENCANA`** | Matriks `POST /api/demos` (§4.4) |
 | Component | Interaksi komponen klien terisolasi | Vitest + jsdom + React Testing Library | **`RENCANA`** | `KurasiBrowser` (cari + chip), `SiteHeader` (drawer), `DemoPortal` (validasi klien) |
 | E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`RENCANA`** | Buka artikel; modal video; kirim demo |
@@ -164,7 +166,7 @@ kecil; jangan menambah lapisan sebelum ada yang benar-benar menyakitkan.
 
 ### 4.1 Suite yang ada (`TERVERIFIKASI`)
 
-`lib/content-fallback.test.ts` — 9 kasus, 3 `describe`, lingkungan `node` (tanpa DOM).
+`lib/content-fallback.test.ts` — 20 kasus, 3 `describe`, lingkungan `node` (tanpa DOM).
 
 | ID | `describe` | Yang dipatok | Skor |
 |---|---|---|---|
@@ -632,7 +634,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `^3.2.7` di `devDependencies`; Playwright, jsdom, dan testing-library tidak ada.
 - `vitest.config.ts` — alias `@`, `environment: "node"`, `include: ["**/*.test.ts"]`,
   tanpa `setupFiles`, tanpa coverage.
-- `lib/content-fallback.test.ts` — 9 kasus dalam 3 `describe`; dipetakan ke `U-01`…`U-09`.
+- `lib/content-fallback.test.ts` — 20 kasus dalam 3 `describe`; dipetakan ke `U-01`…`U-09`.
 - `npm test` — **dijalankan**: 9 passed / 1 file (Vitest 3.2.7).
 - `npm run build` — **dijalankan**: Next.js 16.4.0, "Generating static pages
   using 11 workers (33/33)", 33 halaman statis, TypeScript bersih.
@@ -689,7 +691,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `ResizeObserver`.
 - `next.config.ts` — `cacheComponents`, `partialPrefetching`, CSP, remote patterns
   `i.ytimg.com` + `cdn.sanity.io`, loader Turbopack untuk CSS.
-- `.github/` — **tidak ada** → belum ada CI.
+- `.github/workflows/ci.yml` — ada: lint, `tsc --noEmit`, `npm test`, `npm run build`.
 - `CHANGELOG.md` (entri `0.2.0`) — konfirmasi jumlah post kurasi per pilar
   (total 55), 9 sesi panggung, 5 playlist, 12 artikel (6 foto + 6 reel), dan
   daftar komponen yang dihapus.
@@ -727,5 +729,6 @@ dan brief acuan), serta environment Vercel (nilai env tidak dibaca).
    diunduh di mesin ini.
 8. **Dokumen lain masih menyebut kondisi lama.** `docs/DEPLOYMENT.md` dan
    `docs/ARCHITECTURE.md` masih menulis "belum ada yang ter-deploy" dan
-   "belum ada CI", padahal deploy produksi berjalan otomatis dari `main`.
+   "belum ada CI", padahal deploy produksi berjalan otomatis dari `main` —
+kini CI GitHub Actions sudah ada (22 Okt 2026).
    `[PERLU VERIFIKASI]` apakah dokumen itu memang disengaja atau tertinggal.

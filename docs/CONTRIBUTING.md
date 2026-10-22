@@ -7,7 +7,7 @@ di bawah sudah diverifikasi.
 > `melodialam-sanity`), bukan Payload/Supabase — kode Payload sudah dihapus
 > lama lalu dan tidak ada lagi skrip `payload *` di repo ini. Situs memakai
 > `next/image` untuk gambar Sanity dan lokal, **tidak** untuk thumbnail YouTube,
-> dan **belum ada CI** (repo tidak punya `.github/`). Token dan utility ada di
+> dan **sudah ada CI** (`.github/workflows/ci.yml`: lint, typecheck, test, build). Token dan utility ada di
 > [`docs/DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md).
 
 ---
@@ -86,7 +86,7 @@ Hanya ada **sepuluh** skrip npm. Ini daftar lengkapnya.
 | `npm run build` | Build produksi (Next.js 16.4, Turbopack) |
 | `npm run start` | Menyajikan build produksi di port 3100 |
 | `npm run lint` | ESLint (`eslint-config-next`: core-web-vitals + typescript) |
-| `npm test` | Unit test Vitest — `vitest run`, 9 kasus di `lib/content-fallback.test.ts` |
+| `npm test` | Unit test Vitest — `vitest run`, 20 kasus di `lib/content-fallback.test.ts` |
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari `melodi-alam-data.md` |
 | `npm run brand` | Menghasilkan ulang aset merek ke `public/brand` dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
@@ -129,7 +129,7 @@ Sebelum mengirim perubahan, **empat** hal ini harus bersih:
 ```bash
 npx tsc --noEmit    # tanpa keluaran berarti bersih
 npm run lint        # tanpa keluaran berarti bersih
-npm test            # 9 kasus di lib/content-fallback.test.ts
+npm test            # 20 kasus di lib/content-fallback.test.ts
 npm run build       # 33 halaman statis
 ```
 
@@ -443,7 +443,7 @@ dan **dijalankan** pada repositori ini.
   daftar lengkap yang ada; tidak ada `test:watch`, `test:e2e`, atau `typecheck`.
 - `npm run lint` — dijalankan, bersih.
 - `npx tsc --noEmit` — dijalankan, bersih.
-- `npm test` — dijalankan, 9 kasus di `lib/content-fallback.test.ts` lulus.
+- `npm test` — dijalankan, 20 kasus di `lib/content-fallback.test.ts` lulus.
 - `npm run build` — dijalankan: Next.js 16.4.0 (Turbopack), TypeScript bersih,
   "Generating static pages using 11 workers (33/33)" → **33 halaman statis**.
   Ini menggantikan angka "26 halaman statis" di versi lama dokumen ini.
@@ -454,7 +454,7 @@ dan **dijalankan** pada repositori ini.
 - `.env.example` — 10 variabel (§1). `.env` lokal ada dan mengabaikan
   `.gitignore`; isinya tidak dibaca atau ditampilkan di dokumen ini.
 - `.gitignore` — mengabaikan `.env*` kecuali `.env.example`, plus `/.next/`.
-- `.github/` — **tidak ada** → belum ada CI.
+- `.github/workflows/ci.yml` — ada: lint, `tsc --noEmit`, `npm test`, `npm run build` pada setiap push ke `main` dan setiap pull request.
 - `git log` — konvensi commit: satu baris imperatif dalam bahasa Inggris,
   disusul paragraf alasan. Contoh: `Move the Stories page to /stories`,
   `Give every YouTube thumbnail the best frame YouTube has`.

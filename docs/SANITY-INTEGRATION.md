@@ -513,7 +513,7 @@ Sengaja, bukan lupa:
 | **Webhook: "Trigger on" Update** | **TERVERIFIKASI 22 Okt 2026** — publish → halaman segar dalam 2,1 detik → Update memang memicu |idak memicu revalidasi. Tindakan pemilik (`RENCANA`). |
 | **Domain produksi** | `melodialam.id` belum resolve, jadi `NEXT_PUBLIC_SITE_URL` menunjuk ke `https://melodialam-website.vercel.app` dan semua canonical/sitemap/OG ikut ke sana. |
 | **Web Analytics** | `@vercel/analytics` terpasang dan `<Analytics />` dirender (`app/(site)/layout.tsx:181`), tetapi belum dinyalakan di dashboard Vercel. |
-| **Uji otomatis end-to-end** | Hanya unit test Vitest (`lib/content-fallback.test.ts`); belum ada CI — repo tidak punya `.github/`. |
+| **Uji otomatis end-to-end** | Unit test Vitest ada (3 berkas, 20 kasus) dan CI GitHub Actions sudah jalan (lint + typecheck + test + build pada setiap push). Uji end-to-end belum. |
 
 ---
 
@@ -581,7 +581,7 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
   (`:193-194`).
 - **Studio** — `sanity.config.ts:37,46`: `visionTool()` aktif di workspace `submissions`
   juga (temuan audit F08).
-- **Komando lokal** — `npm test` → 9/9 lulus (`lib/content-fallback.test.ts`, Vitest 3.2.7);
+- **Komando lokal** — `npm test` → 20/20 lulus (`lib/content-fallback.test.ts`, Vitest 3.2.7);
   `npm run build` → lulus, **33 halaman statis** (Next.js 16.4.0, Turbopack), 3
   route handler dinamis + 2 route gambar dinamis.
 

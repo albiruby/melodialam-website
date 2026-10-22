@@ -277,7 +277,7 @@ dari logikanya sendiri.
   yakni status belum disetujui ikut terbaca. Jalur Sanity tidak punya masalah ini.
 2. **Tanpa paginasi.** Dibatasi 100 baris, tapi tidak ada cara meminta halaman
    berikutnya.
-3. **Tanpa autentikasi dan tanpa rate limit.**
+3. **Tanpa autentikasi, dengan rate limit per IP.**
 4. **Tanpa filter/sortir/pencarian** selain urutan `submittedAt desc` yang
    dipatok server.
 5. **Tidak ada konsumen di repo** (§1.1) — mengubah bentuk respons tidak
@@ -435,7 +435,7 @@ though the last two are stored on the Sanity document.
 
 **Celah `TERVERIFIKASI` (dibuktikan dari kode):**
 
-1. **Tidak ada autentikasi, rate limit, atau idempotensi** pada operasi tulis
+1. **Tanpa autentikasi, tetapi dengan rate limit, `Idempotency-Key`, dan honeypot** pada operasi tulis
    publik. Satu permintaan = 2 tulis Sanity + 1 email berbayar.
 2. **Fallback in-memory janji yang tidak disimpan.** Tanpa
    `SANITY_API_READ_TOKEN`, submission hanya hidup di memori satu instance
@@ -506,7 +506,7 @@ formulir tanpa audio.
 
 **Celah `TERVERIFIKASI`:**
 
-1. **Token terbit untuk siapa pun.** Tidak ada verifikasi pengguna, rate limit,
+1. **Token terbit untuk siapa pun.** Tidak ada verifikasi pengguna, tetapi rate limit
    atau kuota → siapa pun bisa menulis objek ke store milik operator.
 2. **`access` ditentukan klien.** `DemoPortal` mengunggah dengan
    `access: "public"`, dan token tidak mengikat `access` — server tidak
@@ -839,7 +839,7 @@ DEMO_STATUSES = [
 | Rate limit per-IP | Membatasi spam ke `POST /api/demos` | `RENCANA` |
 | Honeypot field tersembunyi | Menangkap bot naif | `RENCANA` |
 | CAPTCHA (mis. Turnstile) bila spam terbukti | Gerbang manusia | `RENCANA`, `[PERLU VERIFIKASI]` pilihan vendor |
-| Header `Idempotency-Key` | Mencegah entri ganda saat retry | `RENCANA` |
+| Header `Idempotency-Key` | Mencegah entri ganda saat retry | **`TERVERIFIKASI`** 22 Okt 2026 — dikirim formulir, dibaca server |
 | Rotasi `audioUrl` ke host Blob milik operator | Mencegah audio dari host asing | `RENCANA` |
 | Server menentukan `access` + key objek | Menjaga bucket tetap privat | `RENCANA` |
 | Granti satu usage token unggah | Mencegah abuse storage | `RENCANA` |

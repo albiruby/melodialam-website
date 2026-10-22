@@ -324,7 +324,7 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
   oleh `.gitignore` (pola `.env*` dengan pengecualian `!.env.example`). Baris
   34–36 `.gitignore` memastikan **template ikut ter-commit** tetapi berkas
   rahasia tidak.
-- **CI (`RENCANA`):** belum ada CI (§4.4). Bila dibangun, secret disimpan di
+- **CI (ada, 22 Okt 2026):** `.github/workflows/ci.yml` menjalankan lint, typecheck, test, dan build pada setiap push ke `main` dan setiap pull request. Tidak butuh secret — dataset `production` bisa dibaca tanpa token. Bila nanti butuh secret, secret disimpan di
   GitHub Actions Secrets.
 
 ### 3.4 Sisa era Supabase di `.env` lokal (`TERVERIFIKASI`)
@@ -367,7 +367,7 @@ Sanity bukan variabel lingkungan (lihat `lib/sanity-project.ts`).
 ```bash
 npm ci          # install sesuai package-lock.json
 npm run lint    # eslint
-npm test        # vitest run → 9 kasus, 1 file
+npm test        # vitest run → 20 kasus, 1 file
 npm run build   # next build → 33 halaman statis
 npm run start   # next start -p 3100
 ```
@@ -375,7 +375,7 @@ npm run start   # next start -p 3100
 Hasil `npm test` yang dijalankan pada fase ini (21 Okt 2026):
 
 ```
-✓ lib/content-fallback.test.ts (9 tests) 4ms
+✓ lib/content-fallback.test.ts (20 tests) 4ms
 
 Test Files  1 passed (1)
      Tests  9 passed (9)
@@ -403,7 +403,7 @@ Urutan ini **wajib** dan sudah diuji:
 
 1. `npm ci` — `package-lock.json` ada.
 2. `npm run lint` — harus hijau.
-3. `npm test` — 9 kasus Vitest.
+3. `npm test` — 20 kasus Vitest.
 4. `npm run build` — 33 halaman statis. **Jangan** menjalankan
    `npm run catalogue` / `brand` / `photos` di runner: sumbernya di luar repo
    dan skripnya `process.exit(1)` bila sumber tidak ada (§1.5).
@@ -911,7 +911,7 @@ Pemeriksaan yang **dijalankan**:
   disalin di §1.3 (**33** halaman, compile 960 ms, TypeScript 2.6 s, generate
   1.78 s, 11 worker, `next.config.ts` 49 ms). Tabel rute identik di kedua
   run.
-- `npm test` → `vitest run` 3.2.7, **1 file / 9 kasus lulus**, durasi ~1 s.
+- `npm test` → `vitest run` 3.2.7, **1 file / 20 kasus lulus**, durasi ~1 s.
 - `node -v` → `v24.15.0`; `npm -v` → `11.12.1`; `package.json` → `engines`
   tidak ada, versi paket `0.2.0`.
 - Pencarian rekursif `.github` → hanya di dalam `node_modules`; **tidak ada**
@@ -924,7 +924,7 @@ Pemeriksaan yang **dijalankan**:
   byte; `app/apple-icon.png` 42.766 byte; `app/favicon.ico` 9.535 byte;
   `public/brand/melodi-alam-lockup-black.png` 87.030 byte.
 
-**Tidak** dijalankan / tidak diklaim: tidak ada CI yang dijalankan, tidak ada
+**Tidak** dijalankan / tidak diklaim: CI GitHub Actions belum pernah berjalan di repo ini (ditambahkan 22 Okt 2026), tidak ada
 deploy, tidak ada `.env` dibuat atau diubah, tidak ada dependensi dipasang,
 tidak ada perubahan kode yang dilakukan oleh sesi dokumentasi ini (hanya dua
 berkas `.md` di `docs/`). Tidak ada probing ke endpoint produksi. Status

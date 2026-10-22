@@ -15,6 +15,21 @@ interface ApiError {
   errors?: Record<string, string>;
 }
 
+/**
+ * A fresh key for one submission.
+ *
+ * `crypto.randomUUID` needs a secure context, which the site is (https, or
+ * localhost in development). If it is missing, the key falls back to a
+ * timestamp and a random suffix — weaker, but it still separates one attempt
+ * from the next.
+ */
+function newIdempotencyKey(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return `demo-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
 export function DemoPortal() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [banner, setBanner] = useState<string | null>(null);
@@ -23,6 +38,16 @@ export function DemoPortal() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const audioUrl = useRef<string | null>(null);
+
+  /**
+   * The key that makes one submission one submission.
+   *
+   * It stays the same across retries of the same attempt and changes only
+   * after a submission succeeds. It is made on the first send rather than
+   * while rendering, because a random value produced during the server
+   * render would be baked into the page.
+   */
+  const idempotencyKey = useRef<string | null>(null);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [audioName, setAudioName] = useState<string | null>(null);
   const [audioSize, setAudioSize] = useState(0);
@@ -110,8 +135,7 @@ export function DemoPortal() {
       // The file goes straight to Vercel Blob, not through this request: a
       // 25 MB body would never clear the function's limit. The submission then
       // carries the URL, so the desk can play it from the Studio.
-      if (audioFile) {
-        try {
+      if (audioFile) {        try {
           const blob = await upload(`demo-audio/${Date.now()}-${audioFile.name}`, audioFile, {
             access: "public",
             handleUploadUrl: "/api/demo-audio",
@@ -128,7 +152,13 @@ export function DemoPortal() {
 
       const res = await fetch("/api/demos", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          // The same key for every attempt at this one submission, so a double
+          // click or a retry after a dropped connection cannot become two rows
+          // in the queue. A new key is made only after a submission succeeds.
+          "Idempotency-Key": (idempotencyKey.current ??= newIdempotencyKey()),
+        },
         body: JSON.stringify(payload),
       });
       const data = (await res.json()) as ApiError;
@@ -152,6 +182,9 @@ export function DemoPortal() {
         setBanner("Demo berhasil dikirim dan sudah masuk antrean tinjauan kurator.");
         formRef.current?.reset();
         clearAudio();
+        // The submission went through, so the next one is a different one and
+        // needs a different key.
+        idempotencyKey.current = null;
       }
     } catch {
       setBannerIsError(true);
@@ -323,6 +356,24 @@ export function DemoPortal() {
               className={`${inputClass} h-auto py-3`}
             />
           </Field>
+
+          {/*
+            The honeypot. A visitor never sees this field and never fills it;
+            a script that fills everything it finds does, and the server drops
+            that submission without telling it. It is off screen rather than
+            `display:none`, and it is not part of the accessibility tree, so
+            it cannot be reached with a keyboard either.
+          */}
+          <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-0 w-0 overflow-hidden">
+            <label htmlFor="demo-company-registration">Company registration</label>
+            <input
+              id="demo-company-registration"
+              name="companyRegistration"
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
             <p className="max-w-md text-xs text-neutral-500">

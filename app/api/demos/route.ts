@@ -10,6 +10,8 @@ import {
   type DemoStatus,
   type DemoSubmission,
 } from "@/lib/content-fallback";
+import { recall, remember } from "@/lib/idempotency";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { submissionsClient } from "@/lib/sanity-server";
 
 /**
@@ -37,6 +39,15 @@ const MAX_FIELD = 500;
 /** The whole submission is a few kilobytes of text; anything larger is abuse. */
 const MAX_BODY_BYTES = 16 * 1024;
 
+/**
+ * How many submissions one client may send, and over which window.
+ *
+ * A band sends a few demos, not dozens, so five an hour is generous for a
+ * person and hostile to a script.
+ */
+const DEMO_SUBMISSIONS_PER_WINDOW = 5;
+const DEMO_WINDOW_MS = 60 * 60 * 1000;
+
 interface DemoBody {
   artist?: unknown;
   city?: unknown;
@@ -49,6 +60,8 @@ interface DemoBody {
   audioName?: unknown;
   audioSize?: unknown;
   audioUrl?: unknown;
+  /** Honeypot. Always empty for a real visitor; never rendered. */
+  companyRegistration?: unknown;
 }
 
 function str(value: unknown, max = MAX_FIELD): string {
@@ -222,6 +235,26 @@ async function notifyNewSubmission(entry: {
 }
 
 export async function POST(request: Request) {
+  // A repeated send carries the same key and gets the same answer, so a retry
+  // never becomes a second row. This is checked before the rate limit, because
+  // a retry is not a new submission.
+  const idempotencyKey = request.headers.get("idempotency-key");
+  const remembered = recall(idempotencyKey);
+  if (remembered) {
+    return NextResponse.json(remembered.body, { status: remembered.status });
+  }
+
+  // F02: this is the one endpoint anyone may call without a secret. Each
+  // accepted call costs a Sanity write and, once Resend is connected, a paid
+  // email, so the number of calls per client is capped.
+  const limit = rateLimit(`demos:${clientIp(request)}`, DEMO_SUBMISSIONS_PER_WINDOW, DEMO_WINDOW_MS);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Terlalu banyak kiriman dari alamat ini. Coba lagi nanti." },
+      { status: 429, headers: { "retry-after": String(limit.retryAfter) } },
+    );
+  }
+
   const raw = await request.text();
   if (raw.length > MAX_BODY_BYTES) {
     return NextResponse.json({ error: "Kiriman terlalu besar." }, { status: 413 });
@@ -251,6 +284,22 @@ export async function POST(request: Request) {
   const audioName = str(body.audioName, 200);
   const audioSize = bytes(body.audioSize);
   const audioUrl = str(body.audioUrl, 500);
+
+  // The honeypot. A real visitor never sees this field and never fills it;
+  // a script that fills every field it finds does. The answer looks like
+  // success and nothing is written, so the script learns nothing.
+  if (str(body.companyRegistration, 200)) {
+    console.warn("[api/demos] kiriman dibuang karena honeypot terisi.");
+    return NextResponse.json(
+      {
+        ok: true,
+        entry: { id: id(), artist, city, title, genre, program, link, story, status: DEMO_INITIAL_STATUS, submittedAt: new Date().toISOString().slice(0, 10) },
+        queueLength: 0,
+        note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
+      },
+      { status: 201 },
+    );
+  }
 
   const errors: Record<string, string> = {};
   if (!artist) errors.artist = "Nama band atau solois wajib diisi.";
@@ -317,15 +366,15 @@ export async function POST(request: Request) {
     memoryContacts.set(entry.id, contact);
     memoryQueue.unshift(entry);
 
-    return NextResponse.json(
-      {
-        ok: true,
-        entry,
-        queueLength: memoryQueue.length,
-        note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
-      },
-      { status: 201 },
-    );
+    const responseBody = {
+      ok: true,
+      entry,
+      queueLength: memoryQueue.length,
+      note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
+    };
+    remember(idempotencyKey, 201, responseBody);
+
+    return NextResponse.json(responseBody, { status: 201 });
   }
 
   let createdId = "";
@@ -401,13 +450,13 @@ export async function POST(request: Request) {
     // The submission is already stored; a failed count must not fail the request.
   }
 
-  return NextResponse.json(
-    {
-      ok: true,
-      entry,
-      queueLength: approvedCount,
-      note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
-    },
-    { status: 201 },
-  );
+  const responseBody = {
+    ok: true,
+    entry,
+    queueLength: approvedCount,
+    note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
+  };
+  remember(idempotencyKey, 201, responseBody);
+
+  return NextResponse.json(responseBody, { status: 201 });
 }

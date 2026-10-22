@@ -134,7 +134,7 @@ Target yang **sudah diambil** dan tidak dibuka ulang:
   *report-only*), `images.remotePatterns` hanya `i.ytimg.com/vi/**` dan
   `cdn.sanity.io/images/**`, dan aturan Turbopack untuk `*.css`.
 - **Alias path** `@/*` → root proyek (`tsconfig.json` `paths`).
-- **Tidak ada `.github/`** → belum ada CI di repo ini (`TERVERIFIKASI`).
+- **CI ada** di `.github/workflows/ci.yml`: lint, typecheck, test, dan build pada setiap push ke `main` dan setiap pull request (`TERVERIFIKASI`).
 
 ### 2.3 Environment variables
 
@@ -397,7 +397,7 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
   yang sama; kedua berkas menyatakan itu di bagian atas. Studio tidak bisa
   mengimpor dari repo ini saat build, dan repo ini tidak boleh bergantung pada
   Studio.
-- **Strategi pengujian.** `lib/content-fallback.test.ts` (9 kasus Vitest) mengunci
+- **Strategi pengujian.** `lib/content-fallback.test.ts`, `lib/rate-limit.test.ts`, `lib/idempotency.test.ts` (20 kasus Vitest) mengunci
   `readingTimeMinutes`, `pillarDate`, dan `isArticleCategory`.
 
 ### MOD-002 — `lib/articles.ts` (TERVERIFIKASI)
@@ -797,7 +797,9 @@ melodi-alam/
 │   ├── videos.ts · videos-page.ts · interviews.ts
 │   ├── site.ts · site-settings.ts
 │   ├── catalogue.json (GENERATED) · catalogue.ts
-│   └── content-fallback.test.ts               9 kasus Vitest
+│   ├── content-fallback.test.ts               9 kasus Vitest
+│   ├── rate-limit.test.ts                     7 kasus Vitest
+│   └── idempotency.test.ts                    4 kasus Vitest
 ├── scripts/                          build-catalogue, build-brand, copy-photos,
 │                                     seed-sanity, seed-videos, gdrive-*
 ├── public/
@@ -835,13 +837,13 @@ melodi-alam/
 | Validasi input | `app/api/demos/route.ts` | `TERVERIFIKASI` — `str()`, enum, regex `link`, batas audio | Tetap di route |
 | Keamanan/PII | `lib/sanity-server.ts` | `TERVERIFIKASI` — `demoContact` terpisah, dataset privat | Perketat `audioUrl` agar hanya host Blob sendiri (`RENCANA`, temuan F01) |
 | Batas token | `lib/sanity-server.ts`, `lib/sanity-preview.ts` | `TERVERIFIKASI` — dijaga graf impor | `import "server-only"` (`RENCANA`) |
-| Rate limit & idempotensi | — | Tidak ada (`TERVERIFIKASI`) | Wajib sebelum produksi (`RENCANA`, temuan F02) |
+| Rate limit & idempotensi | `lib/rate-limit.ts`, `lib/idempotency.ts` | Ada (`TERVERIFIKASI` 22 Okt 2026) — 5 kiriman/jam per IP, `Idempotency-Key`, honeypot | Pindahkan ke edge/Redis saat paket memungkinkan |
 | Error handling | Per-komponen | `TERVERIFIKASI` — `catch` + banner di `DemoPortal`; fallback diam di semua pembacaan CMS | Standarkan (`RENCANA`) |
 | Konfigurasi/env | `lib/site.ts`, `lib/sanity*.ts` | `TERVERIFIKASI` — 7 env yang dibaca | Lengkapi Blob + Resend (`RENCANA`) |
 | Metadata/SEO | `app/(site)/**` | `TERVERIFIKASI` — canonical absolut, JSON-LD, OG per artikel, sitemap, RSS | Pasang domain sendiri (`RENCANA`) |
 | Aksesibilitas | `globals.css` + komponen | `TERVERIFIKASI` — `:focus-visible` global + pasangan `:focus-within` untuk tiap reveal | `ACC-001`…`ACC-003` terpenuhi |
 | CSP | `next.config.ts` | `TERVERIFIKASI` — CSP *enforced* sebagian + penuh *report-only* | Naikkan ke *enforced* setelah dibaca (`RENCANA`) |
-| Testing | `lib/content-fallback.test.ts` | `TERVERIFIKASI` — Vitest 9 kasus; `npm run lint` bersih | Tambah Playwright + CI (`RENCANA`, ADR-0006) |
+| Testing | `lib/content-fallback.test.ts` | `TERVERIFIKASI` — Vitest 20 kasus; `npm run lint` bersih | Tambah Playwright + CI (`RENCANA`, ADR-0006) |
 | Build/deploy | `next.config.ts` | `TERVERIFIKASI` — build statis 33 halaman | Vercel (`RENCANA` — webhook, Blob, Resend) |
 | Observability | `@vercel/analytics` | `TERVERIFIKASI` — `<Analytics />` terpasang; **belum dinyalakan** di dashboard | Nyalakan (`RENCANA`) |
 
@@ -919,7 +921,7 @@ Ringkasannya yang relevan dengan arsitektur:
 | ARCH-RISK-006 | Fallback statis tidak mencerminkan isi terkini bila Sanity mati | `TERVERIFIKASI` — konsekuensi ADR-0008 | `cacheLife("minutes")` + webhook revalidasi |
 | ARCH-RISK-007 | `audioUrl` diterima dari host mana pun | `TERVERIFIKASI` — `app/api/demos/route.ts:249` | Batasi host ke store Blob sendiri (`RENCANA`, temuan F01) |
 | ARCH-RISK-008 | Token unggah Blob diterbitkan tanpa batas | `TERVERIFIKASI` — `app/api/demo-audio/route.ts` | Server yang menentukan key + akses; bucket privat (`RENCANA`, temuan F04) |
-| ARCH-RISK-009 | `POST /api/demos` tanpa rate limit | `TERVERIFIKASI` — tidak ada pembatas | Rate limit per IP + idempotensi key (`RENCANA`, temuan F02) |
+| ARCH-RISK-009 | ~~`POST /api/demos` tanpa rate limit~~ | **Tertutup sebagian 22 Okt 2026** — rate limit per IP + `Idempotency-Key` + honeypot; batasnya masih per instance | Rate limit per IP + idempotensi key (`RENCANA`, temuan F02) |
 | ARCH-RISK-010 | ~~Secret dipakai untuk dua kapabilitas (draf + revalidasi)~~ | **Tertutup 22 Okt 2026** — `lib/sanity-preview.ts:39` | Pasang `SANITY_PREVIEW_SECRET` terpisah (`RENCANA`, temuan F03) |
 
 ### 13.2 Constraints arsitektural dari temuan terukur
@@ -982,7 +984,7 @@ konstanta fallback.
       `400/413/422/503/201`).
 - [x] Keamanan diterapkan di batas yang benar (validasi di route handler;
       PII di dataset privat).
-- [x] Pengujian dapat memverifikasi modul kritis (9 kasus Vitest — `npm test`
+- [x] Pengujian dapat memverifikasi modul kritis (20 kasus Vitest — `npm test`
       lulus saat revisi ini ditulis).
 - [x] Struktur repo sesuai arsitektur yang didokumentasikan (§10).
 - [x] Arsitektur sesuai kebutuhan operasional & kemampuan tim (satu app, tim kecil).
@@ -1060,7 +1062,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   on-demand; `/preview/[type]/[slug]` = `◐`; `opengraph-image` dan
   `twitter-image` = `ƒ`. Halaman daftar menampilkan `Revalidate 1m · Expire 1h`.
 - `npm run lint` → **bersih**, tanpa keluaran.
-- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`).
+- `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`).
 - `lib/catalogue.json` → 292 video, 342 shorts, 5 playlist,
   `scrapedAt = "14 Oktober 2026"`, `byVenue` = Samsara 101 / Interview 143 /
   Taman 39 / Arsip 9.
@@ -1103,7 +1105,8 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 5. **`
    diimpor siapa pun. Dibuang, atau ada rencana memakainya kembali?
 6. **Playwright.** ADR-0006 menyebut Vitest + Playwright; Playwright belum
-   terpasang dan belum ada CI. Kasus E2E mana yang pertama menjadi syarat
+   terpasang, dan CI GitHub Actions sudah jalan (lint + typecheck + test + build).
+Kasus E2E mana yang pertama menjadi syarat
    rilis?
 7. **Detail konfigurasi Vercel.** Bucket name, kebijakan akses blob, dan
    alamat tujuan notifikasi email belum ditetapkan — perlu keputusan pemilik

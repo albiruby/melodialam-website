@@ -73,7 +73,7 @@ bukan "kayaknya ada". Kalau tidak bisa dipastikan, labelnya
 | `BR-001` | File demo hanya audio (`audio/mpeg`, `audio/wav`, `audio/ogg`, ekstensi `.mp3`/`.wav`) dan ≤ 25 MB (25 × 1024 × 1024 byte); tolak instan di klien dan server | `TERVERIFIKASI` | `DEMO_AUDIO_MAX_BYTES = 25 * 1024 * 1024` (`lib/taxonomy.ts:76`), plus `DEMO_AUDIO_TYPES` dan `DEMO_AUDIO_EXTENSIONS`. Tiga lapis: peramban (`onPickAudio`), server (`POST /api/demos`), dan token unggah (`handleUpload` dengan `allowedContentTypes` + `maximumSizeInBytes`). **Catatan:** `audio/x-wav` juga diterima. |
 | `BR-002` | Kiriman baru berstatus awal `IN REVIEW`; hanya kurator boleh mengubahnya ke `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)`; pengirim publik tidak dapat mengubah status | `TERVERIFIKASI` | `DEMO_STATUSES` = 4 nilai: `IN REVIEW`, `SHORTLISTED (SAMSARA)`, `APPROVED (ARTICLE)`, `ARCHIVED`. Kiriman publik **selalu** dibuat `IN REVIEW` — `DEMO_INITIAL_STATUS` dipaksa di `app/api/demos/route.ts:306`, request tidak bisa menentukan status. Kurator memindahkannya di Studio (workspace "Submit Karya"). Antrean publik hanya membaca dua status disetujui (`APPROVED_QUERY`). |
 | `BR-003` | Pada desktop ≥ 1024px: indeks genap → `[Gambar → Judul → Excerpt]`, indeks ganjil → `[Judul → Gambar → Excerpt]`; mobile boleh diseragamkan | `TERVERIFIKASI` (dengan catatan) | `ArticleCard` punya prop `titleFirst` dan pemanggilnya **aktif**: `titleFirst={i % 2 === 1}` (`app/(site)/stories/page.tsx:35`) → kartu ke-1, 3, 5 (index 0, 2, 4) **gambar dulu**, ke-2, 4, 6, 8 **judul dulu**. Cocok dengan PRD bila "indeks" dibaca 0-based; **terbalik** bila dibaca 1-based. |
-| `BR-004` | Waktu baca = `max(1, ceil(jumlah kata ÷ 200))`, atau ditetapkan editor; minimum `1 min read` | `TERVERIFIKASI` (sebagian) | `readingTimeMinutes()` di `lib/content-fallback.ts:57` menghitung **judul + ringkasan + isi**, lalu `max(1, ceil(words / 200))`. Dipakai di kartu artikel ("N menit") dan header detail ("N menit baca"). Diuji di `lib/content-fallback.test.ts` (9 kasus lulus). **Cabang "ditetapkan editor" tidak diimplementasikan** — nilainya selalu dihitung. |
+| `BR-004` | Waktu baca = `max(1, ceil(jumlah kata ÷ 200))`, atau ditetapkan editor; minimum `1 min read` | `TERVERIFIKASI` (sebagian) | `readingTimeMinutes()` di `lib/content-fallback.ts:57` menghitung **judul + ringkasan + isi**, lalu `max(1, ceil(words / 200))`. Dipakai di kartu artikel ("N menit") dan header detail ("N menit baca"). Diuji di `lib/content-fallback.test.ts` (20 kasus lulus). **Cabang "ditetapkan editor" tidak diimplementasikan** — nilainya selalu dihitung. |
 
 ---
 
@@ -131,7 +131,7 @@ atau menghapus perilaku hover-nya.
 
 | ID | Risiko | Status mitigasi |
 |---|---|---|
-| `RISK-001` | Spam / unggahan berbahaya pada form demo | `RENCANA` — `POST /api/demos` dan `POST /api/demo-audio` **tidak punya** rate limit, CAPTCHA, idempotensi, atau autentikasi. Tiap kiriman = 2 tulis Sanity + 1 email. Rencana ada di `docs/audit-2026-10-21.md` §7 (P0) |
+| `RISK-001` | Spam / unggahan berbahaya pada form demo | **Sebagian tertutup 22 Okt 2026** — rate limit, `Idempotency-Key`, dan honeypot sudah ada; CAPTCHA belum — `POST /api/demos` dan `POST /api/demo-audio` **tidak punya** rate limit, CAPTCHA, idempotensi, atau autentikasi. Tiap kiriman = 2 tulis Sanity + 1 email. Rencana ada di `docs/audit-2026-10-21.md` §7 (P0) |
 | `RISK-002` | Beban bandwidth & biaya penyimpanan dari unggahan WAV/MP3 | `RENCANA` — unggahan **belum pernah terjadi** di produksi: `BLOB_READ_WRITE_TOKEN` belum di-set, jadi `POST /api/demo-audio` menjawab 400. Kebijakan retensi 90 hari belum ada dan tidak ada job pembersih objek |
 | `RISK-003` | Pembatasan pemutaran embed pada sebagian video YouTube | `SEBAGIAN` — `components/VideoModal.tsx` memuat tautan **"Buka Langsung di YouTube ↗"** di panel modal sebagai jalan keluar. **Belum ada** fallback otomatis saat embed gagal (tidak ada penanganan `onError` pada `<iframe>`) |
 
@@ -156,7 +156,7 @@ Keputusan tambahan yang belum ada di PRD:
 
 | Topik | Jawaban | ADR | Status |
 |---|---|---|---|
-| Test & hosting | **Vitest, deploy Vercel** | [ADR-0006](adr/0006-vitest-playwright-vercel.md) | `SEBAGIAN` — **Vitest** terpasang dan punya 9 kasus di `lib/content-fallback.test.ts`; **Playwright tidak terpasang** dan tidak ada `.github/` → **belum ada CI** |
+| Test & hosting | **Vitest, deploy Vercel** | [ADR-0006](adr/0006-vitest-playwright-vercel.md) | `SEBAGIAN` — **Vitest** terpasang dan punya 20 kasus di `lib/content-fallback.test.ts`; **Playwright tidak terpasang** dan tidak ada `.github/` → **belum ada CI** |
 | Katalog video: CMS atau build-time | **Tetap build-time (generated JSON)** | [ADR-0004](adr/0004-katalog-video-build-time.md) | `TERVERIFIKASI` — `lib/catalogue.json` (292 video, 342 Shorts, 5 playlist) tetap jadi arsip cadangan; Sanity menimpa per `youtubeId` |
 | Tipografi | Inter + Red Hat Display + Instrument Serif + JetBrains Mono | [ADR-0007](adr/0007-tipografi-inter-red-hat-display.md) | `TERVERIFIKASI` — lihat §5 `--font-display` / `--font-serif` |
 
@@ -297,7 +297,7 @@ perspektif `published`, API `2026-05-19`, 21 Oktober 2026):
 
 **Dijalankan:**
 
-- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
+- `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
 - `node -e` (read-only) atas `lib/catalogue.json` untuk menghitung `counts`,
   `byVenue`, nilai `ageBucket`, dan jumlah kunci `profile`.
 

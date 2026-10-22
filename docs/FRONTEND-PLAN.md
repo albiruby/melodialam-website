@@ -161,7 +161,7 @@ bundel klien.
 | Cabang fallback `GET /api/demos` tidak menyaring status | Antrean `IN REVIEW` bisa terbaca publik bila token tidak ada | `TERVERIFIKASI` (audit F06) |
 | `audioUrl` diterima dari host mana pun | Submit bisa mengarahkan kurator ke host asing | `TERVERIFIKASI` (audit F01) |
 | Token unggah Blob diterbitkan tanpa batas | Objek bisa ditulis tanpa ada yang membersihkannya | `TERVERIFIKASI` (audit F04) |
-| `POST /api/demos` tanpa rate limit | Dua tulis Sanity + satu email per request | `TERVERIFIKASI` (audit F02) |
+| `POST /api/demos` ~~tanpa rate limit~~ | Dua tulis Sanity + satu email per request | **Tertutup sebagian 22 Okt 2026** — rate limit + `Idempotency-Key` + honeypot (audit F02) |
 | Drawer navigasi tanpa tutup via `Escape`, tanpa `aria-current` di nav mobile | Penyimpangan keyboard/mobile | `TERVERIFIKASI` (§10.2) |
 | `GET /api/demos` tidak dikonsumsi UI mana pun | Endpoint hidup tanpa konsumen | `TERVERIFIKASI` (§7.1) |
 
@@ -705,8 +705,9 @@ sequenceDiagram
 - **Cabang fallback tidak menyaring status.** Tanpa
   `SANITY_API_READ_TOKEN`, `GET /api/demos` mengembalikan seluruh `memoryQueue`,
   termasuk entri `IN REVIEW` (`TERVERIFIKASI`, audit F06).
-- **Tidak ada rate limit, quota, CAPTCHA, atau idempotensi** pada `POST`
-  (`TERVERIFIKASI`, audit F02).
+- **Rate limit, `Idempotency-Key`, dan honeypot** sudah ada pada `POST`
+  (`TERVERIFIKASI` 22 Okt 2026). CAPTCHA dan quota global belum — biayanya
+  lebih besar daripada gunanya pada volume sekarang (audit F02).
 
 ### 8.3 Alur C — Modal video (`TERVERIFIKASI`)
 
@@ -858,7 +859,7 @@ yang dieksekusi pada fase DOCS ini.
 | FE-B1 | Saring status pada cabang fallback `GET /api/demos`, atau hapus cabangnya | `app/api/demos/route.ts` | — | `IN REVIEW` tak pernah terbaca publik | unit/integrasi |
 | FE-B2 | Batasi host `audioUrl` ke store Blob milik operator | `app/api/demos/route.ts` | FE-C1 | URL asing → `422` | integrasi |
 | FE-B3 | Pasang Blob store privat; server menentukan key + `access` | `app/api/demo-audio/route.ts` | — | objects tidak bisa ditulis tanpa batas | E2E unggah |
-| FE-B4 | Rate limit + `Idempotency-Key` pada `POST /api/demos` | `app/api/demos/route.ts` | — | Request berulang tidak menggandakan data | integrasi |
+| FE-B4 | ~~Rate limit + `Idempotency-Key` pada `POST /api/demos`~~ | `app/api/demos/route.ts` | — | **Tertutup 22 Okt 2026** — Request berulang tidak menggandakan data | integrasi |
 | FE-C1 | Tutup `Escape` + focus management untuk drawer mobile | `components/SiteHeader.tsx` | — | `Escape` menutup; fokus masuk drawer | E2E keyboard |
 | FE-C2 | Tambahkan `aria-current` pada nav mobile | `components/SiteHeader.tsx` | — | Halaman aktif ditandai | uji a11y |
 | FE-D1 | Allowlist skema pada `marks.link` di Portable Text | `components/ArticleBody.tsx` | — | Hanya `http/https/mailto/tel` | unit |
@@ -884,7 +885,7 @@ dashboard.
 
 ## 12. Testing Plan
 
-Runner terpasang: **Vitest** (`npm test`, 9 kasus di `lib/content-fallback.test.ts`).
+Runner terpasang: **Vitest** (`npm test`, 20 kasus di `lib/content-fallback.test.ts`).
 Runner E2E: **Playwright belum terpasang** (`RENCANA`, ADR-0006).
 
 | Level | Sasaran | Contoh kasus | Status |
@@ -1027,7 +1028,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   paths") dan `/preview/[type]/[slug]`; `ƒ` untuk `/journal`, `/journal/[slug]`,
   `opengraph-image`, `twitter-image`, dan ketiga route API.
 - `npm run lint` → **bersih**, tanpa keluaran.
-- `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, 3 ms).
+- `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, 3 ms).
 
 **Tidak dijalankan / tidak diperiksa:**
 

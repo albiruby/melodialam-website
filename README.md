@@ -109,7 +109,7 @@ Build produksi menghasilkan **33 halaman statis**.
 | `npm run build` | Build produksi |
 | `npm run start` | Menyajikan build produksi di port 3100 |
 | `npm run lint` | ESLint |
-| `npm test` | Unit test (Vitest) — `lib/content-fallback.test.ts`, 9 kasus |
+| `npm test` | Unit test (Vitest) — `lib/content-fallback.test.ts`, 20 kasus |
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari hasil scrape |
 | `npm run brand` | Menghasilkan ulang aset merek dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
@@ -224,7 +224,7 @@ Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md).
 | Web Analytics | `@vercel/analytics` terpasang, **belum dinyalakan** di dashboard Vercel |
 | Domain | `melodialam.id` **belum resolve** → canonical, sitemap, OG, dan `robots.host` masih menunjuk ke `https://melodialam-website.vercel.app` |
 | CI/CD | **Belum ada** — repo tidak punya `.github/`, tidak ada workflow yang menjalankan build atau test |
-| Uji otomatis | Unit test Vitest saja (`npm test`, 9 kasus); belum ada uji end-to-end |
+| Uji otomatis | Unit test Vitest saja (`npm test`, 20 kasus); belum ada uji end-to-end |
 
 Temuan audit yang masih terbuka (F01–F10, semuanya `needs_validation`) ada di
 [`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md) dan
@@ -247,7 +247,7 @@ Isi README ini dicek terhadap repo `melodi-alam` pada **21 Oktober 2026**:
   dan dari `.env.example`.
 - **Teknologi & versi** — dari `package.json` (`0.2.0`).
 - **Jumlah halaman statis** — `npm run build` → **33 halaman statis**.
-- **Unit test** — `npm test` → **9/9 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
+- **Unit test** — `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
 - **Tidak diverifikasi** — isi dashboard Vercel dan Sanity: status Blob store, Resend,
   anggota project, "Trigger on" webhook, dan apakah `melodialam.id` sudah diarahkan.
   Klaim soal domain memakai nilai `NEXT_PUBLIC_SITE_URL` di Vercel

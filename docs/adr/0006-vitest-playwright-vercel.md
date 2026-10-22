@@ -108,8 +108,11 @@ Yang mengikat:
 - `[PERLU VERIFIKASI]`: dukungan Vercel untuk Next.js `16.4.0` beserta Cache Components
   dan Partial Prefetching.
 - **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): **Vitest sudah terpasang** — `npm test`
-  menjalankan sembilan kasus di `lib/content-fallback.test.ts` — dan `@vercel/analytics` ikut
-  terpasang di layout. Vercel dipakai sebagai hosting: deploy otomatis dari `main` ke
-  `melodialam-website.vercel.app`. Dua hal yang **belum**: `@playwright/test` tidak
-  terpasang, dan repositori tetap tidak punya direktori `.github/`, jadi belum ada
-  pipeline CI.
+  menjalankan dua puluh kasus di tiga berkas (`lib/content-fallback.test.ts`,
+  `lib/rate-limit.test.ts`, `lib/idempotency.test.ts`) — dan `@vercel/analytics` ikut
+  terpasang di layout. **CI GitHub Actions juga sudah ada** (22 Okt 2026):
+  `.github/workflows/ci.yml` menjalankan lint, typecheck, test, dan build pada setiap
+  push ke `main` dan setiap pull request. Playwright dan E2E belum. Vercel dipakai
+  sebagai hosting: deploy otomatis dari `main` ke
+  `melodialam-website.vercel.app`. Satu hal yang **belum**: `@playwright/test` tidak terpasang, jadi belum ada
+uji end-to-end. CI GitHub Actions sendiri sudah ada (lihat pembaruan di atas).

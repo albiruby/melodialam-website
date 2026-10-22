@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto";
+import { createHmac, timingSafeEqual } from "node:crypto";
 import { revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { ARTICLES_TAG } from "@/lib/articles";
@@ -36,6 +36,14 @@ const CONTENT_TAGS = [
   VIDEOS_PAGE_TAG,
 ];
 
+/**
+ * How far apart the clocks may be and the signature is still accepted.
+ *
+ * The timestamp is part of what is signed, so a captured request cannot be
+ * replayed forever.
+ */
+const SIGNATURE_WINDOW_SECONDS = 300;
+
 function secretsMatch(provided: string, expected: string): boolean {
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
@@ -59,6 +67,45 @@ function acceptedSecrets(): string[] {
   return [live, previous].filter((value): value is string => Boolean(value));
 }
 
+/**
+ * Whether Sanity's own signature proves the request came from Sanity.
+ *
+ * When a webhook has a secret, Sanity signs the raw body with it and sends
+ * the result in `sanity-webhook-signature: t=<timestamp>,v1=<signature>`,
+ * where the signature is an HMAC-SHA256 of `<timestamp>.<raw body>`. The
+ * secret itself never travels, so it cannot be read out of a proxy log.
+ *
+ * The body has to be the raw bytes, exactly as they arrived: parsing it
+ * first and re-serialising it would change the bytes and break the
+ * comparison.
+ */
+function signatureIsValid(rawBody: string, header: string | null, secret: string): boolean {
+  if (!header) return false;
+
+  const parts = new Map<string, string>();
+  for (const piece of header.split(",")) {
+    const [key, value] = piece.trim().split("=");
+    if (key && value) parts.set(key, value);
+  }
+
+  const timestamp = parts.get("t");
+  const signature = parts.get("v1");
+  if (!timestamp || !signature) return false;
+
+  const seconds = Number(timestamp);
+  if (!Number.isFinite(seconds)) return false;
+  if (Math.abs(Date.now() / 1000 - seconds) > SIGNATURE_WINDOW_SECONDS) return false;
+
+  const expected = createHmac("sha256", secret)
+    .update(`${timestamp}.${rawBody}`)
+    .digest("base64url");
+
+  const provided = Buffer.from(signature);
+  const computed = Buffer.from(expected);
+  if (provided.length !== computed.length) return false;
+  return timingSafeEqual(provided, computed);
+}
+
 export async function POST(request: Request) {
   const secrets = acceptedSecrets();
 
@@ -69,12 +116,20 @@ export async function POST(request: Request) {
     );
   }
 
-  const provided =
-    request.headers.get("x-webhook-secret") ??
-    new URL(request.url).searchParams.get("secret") ??
-    "";
+  // The raw body, read before anything else: the signature covers exactly
+  // these bytes.
+  const rawBody = await request.text();
 
-  if (!secrets.some((expected) => secretsMatch(provided, expected))) {
+  const signature = request.headers.get("sanity-webhook-signature");
+  const header = request.headers.get("x-webhook-secret");
+
+  // Either proof is accepted: Sanity's signature, or the shared secret in a
+  // header. The signature is the stronger of the two, because the secret
+  // itself never leaves Sanity.
+  const signed = secrets.some((secret) => signatureIsValid(rawBody, signature, secret));
+  const headed = header !== null && secrets.some((secret) => secretsMatch(header, secret));
+
+  if (!signed && !headed) {
     return NextResponse.json({ error: "Secret tidak cocok." }, { status: 401 });
   }
 

@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { DEMO_AUDIO_MAX_BYTES, DEMO_AUDIO_TYPES } from "@/lib/taxonomy";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 
 /**
  * Signed uploads for a demo's audio file.
@@ -17,6 +18,17 @@ import { DEMO_AUDIO_MAX_BYTES, DEMO_AUDIO_TYPES } from "@/lib/taxonomy";
  * submits without the file.
  */
 export async function POST(request: Request): Promise<NextResponse> {
+  // F04/F05: this endpoint mints upload tokens, and every token can be used to
+  // write into our storage. Minting them is cheap, so it is capped per
+  // client: a person picking one file needs a token or two, not fifty.
+  const limit = rateLimit(`demo-audio:${clientIp(request)}`, 20, 60 * 60 * 1000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Terlalu banyak percobaan unggah dari alamat ini. Coba lagi nanti." },
+      { status: 429, headers: { "retry-after": String(limit.retryAfter) } },
+    );
+  }
+
   const body = (await request.json()) as HandleUploadBody;
 
   try {
