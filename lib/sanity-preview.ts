@@ -31,12 +31,14 @@ export const draftClient = token
 /**
  * The secret a preview link has to carry.
  *
- * `SANITY_PREVIEW_SECRET` when it is set, otherwise the revalidate secret —
- * both are editorial secrets the team already has, so the preview works
- * without a second environment variable to copy around.
+ * `SANITY_PREVIEW_SECRET` and nothing else. It used to fall back to
+ * `SANITY_REVALIDATE_SECRET` so the preview would work without a second
+ * variable to copy around - but that made one secret unlock two unrelated
+ * capabilities, and the revalidate secret had already leaked once. The
+ * fallback is gone: reading a draft now needs its own secret.
  */
 export function previewSecret(): string | null {
-  return process.env.SANITY_PREVIEW_SECRET ?? process.env.SANITY_REVALIDATE_SECRET ?? null;
+  return process.env.SANITY_PREVIEW_SECRET ?? null;
 }
 
 /** Constant-time comparison, so a wrong secret cannot be probed byte by byte. */

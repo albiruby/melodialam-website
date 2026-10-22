@@ -44,10 +44,25 @@ function secretsMatch(provided: string, expected: string): boolean {
   return timingSafeEqual(a, b);
 }
 
-export async function POST(request: Request) {
-  const expected = process.env.SANITY_REVALIDATE_SECRET;
+/**
+ * The secrets this route accepts.
+ *
+ * `SANITY_REVALIDATE_SECRET` is the live one. `SANITY_REVALIDATE_SECRET_PREVIOUS`
+ * is the value it had before a rotation, accepted for a short window so the
+ * Sanity webhook keeps working while the dashboard is updated to the new
+ * secret. Remove that variable once the webhook has been switched over -
+ * a secret that is no longer needed should not still open the door.
+ */
+function acceptedSecrets(): string[] {
+  const live = process.env.SANITY_REVALIDATE_SECRET;
+  const previous = process.env.SANITY_REVALIDATE_SECRET_PREVIOUS;
+  return [live, previous].filter((value): value is string => Boolean(value));
+}
 
-  if (!expected) {
+export async function POST(request: Request) {
+  const secrets = acceptedSecrets();
+
+  if (!secrets.length) {
     return NextResponse.json(
       { error: "SANITY_REVALIDATE_SECRET belum diset di server." },
       { status: 500 },
@@ -59,7 +74,7 @@ export async function POST(request: Request) {
     new URL(request.url).searchParams.get("secret") ??
     "";
 
-  if (!secretsMatch(provided, expected)) {
+  if (!secrets.some((expected) => secretsMatch(provided, expected))) {
     return NextResponse.json({ error: "Secret tidak cocok." }, { status: 401 });
   }
 
