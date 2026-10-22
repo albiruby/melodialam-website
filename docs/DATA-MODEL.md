@@ -94,7 +94,7 @@ Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
 | Lapisan | Fungsi | Sumber utama | Fallback kalau Sanity gagal |
 |---|---|---|---|
 | `lib/articles.ts` → `allArticles()`, `latestStories(n)`, `articleBySlug(slug)` | daftar & detail artikel | `article` | `ARTICLES` statis (12), diurutkan `dateISO` desc |
-| `lib/articles.ts` → `feedArticles()` | **tidak dipakai halaman mana pun lagi** (terbukti lewat pencarian seluruh repo) | `article` | idem |
+| `lib/articles.ts` → `feedArticles()` | **sudah dihapus** (21 Okt 2026) — pemanggilnya tidak pernah ada | `article` | idem |
 | `lib/interviews.ts` → `allInterviews()` | baris Bicara Melodi | `interview` | `INTERVIEW_ROWS` statis (9) — dipakai hanya bila hasil CMS **0 baris** |
 | `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
 | `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
@@ -267,10 +267,12 @@ Empat reel lain — `wsatcc-kisah-dari-selatan-jakarta`,
 beranda, `/stories`, sitemap, RSS, maupun blok "More". Halaman
 `/stories/<slug>`-nya sendiri tetap hidup.
 
-> **Catatan desain yang sekarang usang.** `SANITY-INTEGRATION.md` §3 masih
+> **Catatan desain yang sudah usang.** `SANITY-INTEGRATION.md` §3 pernah
 > menyatakan bahwa `feedArticles()` yang dipakai beranda dan `/stories`, dan
-> masih menyebut "grid 6 kartu". Keduanya sudah tidak benar: halaman-halaman
-> sekarang memakai `latestStories(8)`, dan `/stories` menampilkan 8 kartu.
+> pernah menyebut "grid 6 kartu". Keduanya sudah tidak benar: halaman-halaman
+> sekarang memakai `latestStories(8)`, `/stories` menampilkan 8 kartu, dan
+> `feedArticles()` sendiri sudah dihapus (21 Okt 2026) karena tidak pernah ada
+> pemanggilnya.
 
 ### 4.3 `interview` — 9 dokumen (index Bicara Melodi)
 
@@ -893,7 +895,7 @@ dibaca seolah-olah ada:
 - `npm test` → **9/9 lulus** (`lib/content.test.ts`, Vitest 3.2.7) — termasuk
   aturan `BR-004` (waktu baca) dan `pillarDate()`.
 - Pencarian seluruh repo (`app/**`, `components/*.tsx`, `lib/*.ts`) untuk
-  `feedArticles`, `latestStories`, `allPillarPosts`, `allInterviews`,
+  `latestStories`, `allPillarPosts`, `allInterviews`,
   `allVideos`, `allPlaylists`, `getSiteSettings`, `getVideosPageCopy` — dipakai
   untuk memetakan read model.
 
@@ -917,12 +919,13 @@ dibaca seolah-olah ada:
 menjadi "kebenaran" diam-diam (pemeriksaan ulang per 21 Okt 2026, sore; beberapa
 dokumen lain sedang direvisi bersamaan, jadi daftar ini berumur pendek):
 
-1. `docs/SANITY-INTEGRATION.md` §3/§6 masih menyebut `feedArticles()` (5×) dan
-   "grid 6 kartu" (2×). Kenyataannya semua halaman memakai `latestStories(8)`
-   dan `/stories` menampilkan 8 kartu.
-2. `docs/ARCHITECTURE.md:358,415` masih mendaftarkan dan menjelaskan
-   `feedArticles()` sebagai bagian API; fungsi itu sekarang **tidak dipakai
-   halaman mana pun**.
+1. ~~`docs/SANITY-INTEGRATION.md` §3/§6 masih menyebut `feedArticles()` dan
+   "grid 6 kartu".~~ **Tertutup 21 Okt 2026**: sekarang semua halaman memakai
+   `latestStories(8)`, `/stories` menampilkan 8 kartu, dan `feedArticles()`
+   dihapus dari `lib/articles.ts`.
+2. ~~`docs/ARCHITECTURE.md` mendaftarkan dan menjelaskan `feedArticles()`
+   sebagai bagian API.~~ **Tertutup 21 Okt 2026**: entri tersebut dihapus dari
+   tabel modul dan dari daftar API.
 3. Dokumen `siteSettings` live masih menyimpan `cardCurtain.featureLabel` dan
    `featureCta` yang sudah tidak ada di skema.
 4. `videosPage` live punya `samsaraNote: ""` (kosong → catatan disembunyikan),
@@ -930,8 +933,9 @@ dokumen lain sedang direvisi bersamaan, jadi daftar ini berumur pendek):
    keadaan yang berbeda, dan kode membedakannya (§4.7).
 5. `pillarPost.likes` ada di skema tapi tidak diproyeksi kueri situs.
 6. `meme-humor` ada di skema dan label, tapi tidak masuk set pillar mana pun.
-7. `lib/articles.ts` masih mengekspor `feedArticles()` yang tidak dipakai
-   halaman mana pun.
+7. ~~`lib/articles.ts` masih mengekspor `feedArticles()`.~~ **Tertutup 21 Okt
+   2026**: fungsi itu dihapus, bersama `latestVideos()`/`topVideos()` di
+   `lib/videos.ts` yang namanya bentrok dengan namesake-nya di `lib/catalogue.ts`.
 8. Angka `byVenue` katalog arsip berbeda dari versi dokumen lama
    (`Interview` 143, bukan 118; `Arsip & Lainnya` 9, bukan 34) karena katalog
    dibangkitkan ulang.

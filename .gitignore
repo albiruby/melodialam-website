@@ -42,8 +42,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Payload's local-disk upload fallback — runtime data, not source. Real uploads
-# belong in Supabase Storage (S3_* vars); files written here vanish on redeploy.
+# Local-disk upload fallback - runtime data, not source. Real uploads belong to
+# Vercel Blob (BLOB_READ_WRITE_TOKEN); files written here vanish on redeploy.
 /media
 
 # CommonJS output from `npm run seed:sanity`; deleted by the script when it ends.

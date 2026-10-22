@@ -660,7 +660,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `getVideo`, `VENUES`, `COUNTS`, `VIDEOS`, `SHORTS`, `PLAYLISTS`. `videosByVenue`,
   `videosByIds`, dan `thumbnailFor` **sudah dihapus**.
 - `lib/articles.ts` — `latestStories(count = 8)` (foto dulu, lalu reel),
-  `feedArticles`, `articleBySlug`, `staticArticleSlugs`, `ARTICLES_TAG`.
+  `articleBySlug`, `staticArticleSlugs`, `ARTICLES_TAG`.
 - `lib/pillars-shared.ts` / `lib/pillars.ts` — `PILLAR_LABELS`, `PHOTO_PILLARS` (4),
   `REEL_PILLARS` (4), `pillarDate`, `allPillarPosts`.
 - `lib/site-settings.ts` — `cardCurtain` = `articleLabel` + `articleCta`;

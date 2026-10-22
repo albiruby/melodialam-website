@@ -123,7 +123,7 @@ antar halaman:
 | Sitemap | 8 | `app/(site)/sitemap.ts:15` |
 | RSS `/rss.xml` | 8 | `app/rss.xml/route.ts:29` |
 
-> Catatan: `feedArticles()` masih ada di `lib/articles.ts:223-226` (hanya
+> Catatan: `feedArticles()` pernah ada di `lib/articles.ts` (hanya
 > menyaring cerita foto) tapi **tidak dipanggil siapa pun** saat ini. Jangan
 > menambahkan pemanggilan baru ke sana — pakailah `latestStories()`.
 
@@ -361,7 +361,7 @@ sudah tidak ada di sini — jangan tambahkan kembali.
 **7. `.valid()` tidak ada di `StringRule` Sanity v6.**
 Validasi keanggotaan enum pakai `rule.custom(...)`, bukan `rule.valid(...)`.
 
-**8. `feedArticles()` sudah tidak terpakai.**
+**8. `feedArticles()` sudah tidak terpakai — dan sudah dihapus (21 Okt 2026).**
 Ia masih diekspor dari `lib/articles.ts`, tapi tidak dipanggil halaman mana pun.
 Pemakaian yang benar adalah `latestStories()` (§3).
 
@@ -546,7 +546,8 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
   dipakai beranda (`app/(site)/page.tsx:28`), `/stories`
   (`app/(site)/stories/page.tsx:18`), blok "More" (`app/(site)/stories/[slug]/page.tsx:66`),
   sitemap (`app/(site)/sitemap.ts:15`), dan RSS (`app/rss.xml/route.ts:29`).
-  `feedArticles()` (`lib/articles.ts:223`) **tidak** punya pemanggil.
+  `feedArticles()` **tidak pernah** punya pemanggil, dan sudah dihapus dari
+`lib/articles.ts` pada 21 Okt 2026.
 - **`mediaType`** — `melodialam-sanity/sanity/schemaTypes/article.ts:45-60`: nilai
   `foto` / `reel`, `initialValue: "foto"`. Badge "Reel" di
   `components/ArticleCards.tsx:73-75`.

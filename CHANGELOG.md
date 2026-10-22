@@ -69,6 +69,8 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 
 - Vitest terpasang; `npm test` menjalankan sembilan kasus di `lib/content.test.ts`.
 - `@vercel/analytics` terpasang di layout.
+- `lib/README.md` — peta per berkas: pertanyaan → berkas, batas server/klien, dan
+  nama tag cache.
 
 ### Changed
 
@@ -109,6 +111,10 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   `interview.image`.
 - Field `cardCurtain.featureLabel` dan `cardCurtain.featureCta` (juga di
   Studio), serta field Bicara Melodi di `videosPage`.
+- Export mati `feedArticles()` di `lib/articles.ts` — embodying aturan lama
+  "hanya foto feed" yang sudah digantikan `latestStories(8)` — serta
+  `latestVideos()` dan `topVideos()` di `lib/videos.ts`, yang namanya bentrok
+  dengan namesake-nya di `lib/catalogue.ts`.
 
 ### Fixed
 

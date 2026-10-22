@@ -98,16 +98,6 @@ function formatAge(from: Date, now: Date): string {
   return `${Math.floor(days / 365)}y ago`;
 }
 
-/** "1.8K" → 1800, so both sources can be sorted by real magnitude. */
-function parseViews(value: string): number {
-  const match = value.trim().match(/^([\d.]+)\s*([KM])?$/i);
-  if (!match) return -1;
-  const base = Number(match[1]);
-  if (Number.isNaN(base)) return -1;
-  const suffix = (match[2] ?? "").toUpperCase();
-  return suffix === "K" ? base * 1_000 : suffix === "M" ? base * 1_000_000 : base;
-}
-
 /** 1800 → "1.8K", matching how the catalogue already writes it. */
 function formatViews(value: number): string {
   if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
@@ -264,18 +254,6 @@ export async function allPlaylists(): Promise<SitePlaylist[]> {
     count: p.count,
     url: p.url,
   }));
-}
-
-/**
- * `allVideos()` is already newest-first — curated entries then the archive — so
- * these are slices, not sorts.
- */
-export function latestVideos(videos: SiteVideo[], n: number): SiteVideo[] {
-  return videos.slice(0, n);
-}
-
-export function topVideos(videos: SiteVideo[], n: number): SiteVideo[] {
-  return [...videos].sort((a, b) => parseViews(b.views) - parseViews(a.views)).slice(0, n);
 }
 
 export function videoById(videos: SiteVideo[], id: string): SiteVideo | undefined {

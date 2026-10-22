@@ -220,11 +220,6 @@ export async function latestStories(count = 8): Promise<SiteArticle[]> {
   return [...photo, ...reel].slice(0, count);
 }
 
-export async function feedArticles(): Promise<SiteArticle[]> {
-  const articles = await allArticles();
-  return articles.filter((a) => a.mediaType !== "reel");
-}
-
 export async function articleBySlug(slug: string): Promise<SiteArticle | null> {
   "use cache";
   cacheLife("minutes");

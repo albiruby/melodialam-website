@@ -244,7 +244,7 @@ Selain `OQ-001`/`OQ-002` yang sudah dijawab di §8.
 
 **Diperiksa dengan membaca kode** (21 Oktober 2026):
 
-- `lib/articles.ts` (penuh) — `SiteArticle`, `latestStories()`, `feedArticles()`,
+- `lib/articles.ts` (penuh) — `SiteArticle`, `latestStories()`,
   `articleBySlug()`, `ARTICLES_TAG`, `mediaType` mapping.
 - `lib/content.ts` (penuh) — `Article`, `ARTICLES` (12, 6 foto + 6 reel),
   `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3),
@@ -324,11 +324,11 @@ bukan terhadap ringkasan.
 ulang per 21 Okt 2026, sore — beberapa dokumen lain sedang direvisi
 bersamaan, jadi daftar ini berumur pendek):
 
-1. `docs/SANITY-INTEGRATION.md` §3/§6 masih menyebut `feedArticles()` (5×) dan
+1. ~~`docs/SANITY-INTEGRATION.md` §3/§6 masih menyebut `feedArticles()`~~ **Tertutup
+   21 Okt 2026** — sebutan itu dihapus dan `feedArticles()` dihapus dari kode.
    "grid 6 kartu" (2×); kenyataannya semua halaman memakai `latestStories(8)`
    dan `/stories` menampilkan 8 kartu.
 2. `docs/ARCHITECTURE.md:358,415` masih mendaftarkan dan menjelaskan
-   `feedArticles()` sebagai bagian API; fungsi itu sekarang **tidak dipakai
    halaman mana pun**.
 3. `docs/SECURITY-PRIVACY.md` sudah diberi catatan bahwa istilah RLS/Postgres/
    Storage Supabase tidak berlaku lagi; dokumen ini konsisten dengan catatan

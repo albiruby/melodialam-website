@@ -350,19 +350,21 @@ graph TB
 
 ## 5. Module Inventory
 
-Modul saat ini (TERVERIFIKASI):
+Modul saat ini (TERVERIFIKASI). Peta singkat per berkas ada di
+[`lib/README.md`](../lib/README.md) —(question → berkas) plus batas
+server/klien dan nama tag cache.
 
 | Module ID | Module Name | Responsibility | Owned Data | Dependencies | Public Interface |
 |---|---|---|---|---|---|
 | MOD-001 | `lib/content.ts` + `lib/taxonomy.ts` | Editorial fallback, rubrik, enum demo, batas audio | `ARTICLES` (12), `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3), `ARTICLE_CATEGORY_VALUES`, `DEMO_*` | — | Named const exports + tipe `Article`, `InterviewRow`, `DemoSubmission` |
-| MOD-002 | `lib/articles.ts` | Lapisan artikel: CMS dulu, fallback statis | `ARTICLES_TAG` | MOD-001, MOD-009 | `allArticles()`, `latestStories(count)`, `feedArticles()`, `articleBySlug(slug)`, `staticArticleSlugs()` |
+| MOD-002 | `lib/articles.ts` | Lapisan artikel: CMS dulu, fallback statis | `ARTICLES_TAG` | MOD-001, MOD-009 | `allArticles()`, `latestStories(count)`, `articleBySlug(slug)`, `staticArticleSlugs()` |
 | MOD-003 | `lib/catalogue.json` | Artefak generated katalog YouTube | 292 video, 342 shorts, 5 playlist, `meta`, `profile`, `counts` | MOD-012 | Berkas JSON (data) |
 | MOD-004 | `lib/catalogue.ts` | Aksesor bertipe di atas MOD-003 | tidak ada (turunan) | MOD-003 | `catalogue`, `CHANNEL`, `COUNTS`, `VIDEOS`, `SHORTS`, `PLAYLISTS`, `VENUES`, `getVideo`, `topVideos`, `latestVideos`, `viewCount`, `formatDuration` |
 | MOD-005 | `lib/sanity.ts` | Klien Sanity dataset **publik**, tanpa token | `SANITY_API_VERSION`, `contentClient` | MOD-010 | `contentClient.fetch`, `imageUrl(source, {width,height})` |
 | MOD-006 | `lib/sanity-server.ts` | Klien dataset **privat** `submissions` | `submissionsClient` (null tanpa token) | MOD-005, MOD-010 | `submissionsClient` |
 | MOD-007 | `lib/sanity-preview.ts` | Baca draf + verifikasi secret | `draftClient`, `previewSecret()`, `secretMatches()` | MOD-005, MOD-010 | ketiganya |
 | MOD-008 | `lib/pillars.ts` / `lib/pillars-shared.ts` | Kurasi Instagram per pillar | `PILLARS_TAG`; label, set pillar, `PillarPost`, `pillarDate()` | MOD-005 | `allPillarPosts()` (server) + kosakata (shared) |
-| MOD-009 | `lib/videos.ts` · `lib/videos-page.ts` · `lib/interviews.ts` | Video, playlist, copy halaman, indeks wawancara | `VIDEOS_TAG`, `VIDEOS_PAGE_TAG`, `INTERVIEWS_TAG` | MOD-001, MOD-004, MOD-005 | `allVideos()`, `allPlaylists()`, `videoById()`, `latestVideos()`, `topVideos()`, `getVideosPageCopy()`, `allInterviews()` |
+| MOD-009 | `lib/videos.ts` · `lib/videos-page.ts` · `lib/interviews.ts` | Video, playlist, copy halaman, indeks wawancara | `VIDEOS_TAG`, `VIDEOS_PAGE_TAG`, `INTERVIEWS_TAG` | MOD-001, MOD-004, MOD-005 | `allVideos()`, `allPlaylists()`, `videoById()`, `getVideosPageCopy()`, `allInterviews()` |
 | MOD-010 | `lib/site-settings.ts` · `lib/site.ts` | Copy situs, nav, tautan luar | `SETTINGS_TAG`, `SITE`, `PRIMARY_NAV`, `SUBMIT_NAV`, `FOOTER_RUBRIKS`, `EXTERNAL_LINKS` | MOD-001, MOD-005 | `getSiteSettings()`, konstanta navigasi |
 | MOD-011 | `app/` pages & route handlers | Presentasi rute, metadata, penulisan antrean | lihat §9 | MOD-002, MOD-006, MOD-007, MOD-008, MOD-009, MOD-010 | Rute HTTP |
 | MOD-012 | `scripts/` | Generator artefak build-time + seeder | `lib/catalogue.json`, `public/brand/**`, `public/photos/**`, ikon app | sumber sibling di workspace | Skrip CLI (`npm run catalogue/brand/photos/seed:sanity/seed:videos`) |
@@ -412,7 +414,6 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
   - `latestStories(count = 8)` — **sumber tunggal daftar cerita**: foto dulu
     (terbaru), lalu reel (terbaru). Dipakai beranda (4 pertama), `/stories` (8),
     sitemap (8), RSS (8), dan blok "More" di detail artikel.
-  - `feedArticles()` — hanya artikel `mediaType !== "reel"`.
   - `articleBySlug(slug)` — CMS dulu, lalu statis.
   - `staticArticleSlugs()` — 12 slug untuk `generateStaticParams`.
 

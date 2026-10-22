@@ -1,5 +1,12 @@
 /**
- * Editorial content for the Melodi Alam site.
+ * The static fallback copy of the editorial content.
+ *
+ * THIS IS NOT THE SOURCE OF TRUTH. The live site reads Sanity; this file only
+ * comes into play when Sanity cannot be reached, so a checkout without a
+ * `.env` still builds and still renders. Editing an article here therefore
+ * changes nothing on the deployed site — the change has to be made in the
+ * Studio. What lives here is what a reader sees in that degraded state, so it
+ * is kept to twelve articles, the interview rows, and the ticker.
  *
  * Article bodies are arrays of plain strings rather than raw HTML, so nothing
  * from the content layer can inject markup. They render through

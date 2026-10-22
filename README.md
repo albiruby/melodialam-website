@@ -150,6 +150,7 @@ components/     Komponen UI; components/motion/ untuk primitif gerak
 lib/            Lapisan data: articles.ts, sanity.ts, sanity-server.ts,
                 sanity-preview.ts, sanity-project.ts, taxonomy.ts, content.ts,
                 catalogue.ts, site.ts, pillars.ts, videos.ts, interviews.ts
+                → peta lengkapnya di lib/README.md
 scripts/        Generator untuk katalog, aset merek, dan foto; seed ke Sanity
 public/         Aset statis; brand/ dan photos/ adalah artefak generated
 docs/           Dokumentasi pengembangan (mulai dari docs/README.md)
