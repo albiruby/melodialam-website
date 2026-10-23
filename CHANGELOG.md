@@ -93,6 +93,15 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 
 ### Changed
 
+- **Node.js 24.22.1** dipin di `.nvmrc` dan `package.json`
+  (`engines.node: ">=24.22.1 <25"`); CI membaca `.nvmrc`, dan project Vercel
+  memakai `24.x` — sama dengan project Samsara Group.
+- **Next.js 16.4.0 → 16.4.2.** Versi lama masuk tiga advisory, satu
+  **critical**: RCE tanpa autentikasi di Image Optimization saat SVG dipakai.
+  Dua lainnya: DoS di Server Actions dan RCE di fungsi `use cache` — yang
+  terakhir relevan langsung, karena `lib/articles.ts` dan modul pembaca lain
+  memakai `use cache`. Build sekarang menolak jalan di versi rentan
+  (`SecurityFatalError`), jadi upgrade ini juga yang membuat deploy bisa jalan.
 - `/api/revalidate` sekarang memverifikasi **tanda tangan Sanity**
   (`sanity-webhook-signature`, HMAC-SHA256 atas `<timestamp>.<raw body>`)
   selain header `x-webhook-secret`, dan **penerimaan `?secret=` di query**

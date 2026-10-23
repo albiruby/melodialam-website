@@ -87,7 +87,7 @@ Konsekuensi arsitektural yang mengikat:
   `package.json`; konten memang hidup di `lib/content-fallback.ts`; tidak ada berkas `.env`.
 - `RENCANA`: seluruh keputusan di atas. **Fase ini hanya dokumen** — tidak ada paket
   yang dipasang dan tidak ada kode yang diubah.
-- `[PERLU VERIFIKASI]`: dukungan resmi Payload 3 pada Next.js `16.4.0` secara spesifik,
+- `[PERLU VERIFIKASI]`: dukungan resmi Payload 3 pada Next.js `16.4.2` secara spesifik,
   dan apakah panel adminnya bertabrakan dengan route handler `/api/demos` yang sudah
   ada (lihat Open Questions di `docs/API-CONTRACTS.md`).
 - **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): Payload CMS 3 sempat diimplementasikan

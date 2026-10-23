@@ -27,7 +27,9 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          # The version comes from .nvmrc, so the machine, CI and the
+          # deployment all read the same number.
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Install dependencies

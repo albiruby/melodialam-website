@@ -50,7 +50,7 @@ Bukti yang dibaca langsung:
   `@types/react-dom`, `eslint`, `eslint-config-next`, `sharp`, `tailwindcss`,
   `typescript`, **`vitest ^3.2.7`**. `dependencies`: `@portabletext/react`,
   `@sanity/client`, `@sanity/image-url`, `@vercel/analytics`, `@vercel/blob`,
-  `motion`, `next 16.4.0`, `react 19.3.0`, `react-dom 19.3.0`.
+  `motion`, `next 16.4.2`, `react 19.3.0`, `react-dom 19.3.0`.
   **Tidak ada** `jsdom`, `@testing-library/*`, `@playwright/test`,
   `@vitest/coverage-v8`.
 - `package-lock.json` memuat `"@playwright/test": "^1.51.1"` **hanya** sebagai
@@ -66,7 +66,7 @@ Bukti yang dibaca langsung:
 | Type-check | `npx tsc --noEmit` | `TERVERIFIKASI` — dijalankan, bersih. Tidak punya skrip sendiri; `npm run build` juga menjalankan TypeScript |
 | Unit test | `npm test` (→ `vitest run`) | `TERVERIFIKASI` — 20/20 lulus |
 
-Ditambah build produksi `npm run build` (Next.js 16.4.0, Turbopack) yang
+Ditambah build produksi `npm run build` (Next.js 16.4.2, Turbopack) yang
 menghasilkan **33 halaman statis** (`TERVERIFIKASI` — dijalankan pada fase ini;
 rinciannya di §9.2).
 
@@ -636,7 +636,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   tanpa `setupFiles`, tanpa coverage.
 - `lib/content-fallback.test.ts` — 20 kasus dalam 3 `describe`; dipetakan ke `U-01`…`U-09`.
 - `npm test` — **dijalankan**: 9 passed / 1 file (Vitest 3.2.7).
-- `npm run build` — **dijalankan**: Next.js 16.4.0, "Generating static pages
+- `npm run build` — **dijalankan**: Next.js 16.4.2, "Generating static pages
   using 11 workers (33/33)", 33 halaman statis, TypeScript bersih.
 - `npm run lint` — **dijalankan**: bersih.
 - `npx tsc --noEmit` — **dijalankan**: bersih.

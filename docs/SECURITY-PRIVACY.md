@@ -531,7 +531,7 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
 - **Bukan penilaian kepatuhan.** UU PDP (atau yurisdiksi lain) memerlukan
   penasihat hukum.
 - **Supply chain belum diperiksa.** `npm audit` tidak dijalankan; status
-  kerentanan `next@16.4.0`, `react@19.3.0`, `motion` `[PERLU VERIFIKASI]`.
+  kerentanan `next@16.4.2`, `react@19.3.0`, `motion` `[PERLU VERIFIKASI]`.
 - **Header platform.** Sebagian header mungkin disuntik Vercel; konfirmasi lewat
   respons produksi.
 - **Temuan bergantung pada fakta saat ini.** Kalau layout data atau secret
@@ -607,7 +607,7 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
   workspace.
 
 **Diverifikasi dengan menjalankan:** `npm test` → 20/20 lulus (`lib/content-fallback.test.ts`,
-Vitest 3.2.7); `npm run build` → lulus, **33 halaman statis** (`Next.js 16.4.0`,
+Vitest 3.2.7); `npm run build` → lulus, **33 halaman statis** (`Next.js 16.4.2`,
 Turbopack).
 
 **Tidak diperiksa (butuh akses akun):** status Blob store & Resend di Vercel,

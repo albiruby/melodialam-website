@@ -582,7 +582,7 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
 - **Studio** — `sanity.config.ts:37,46`: `visionTool()` aktif di workspace `submissions`
   juga (temuan audit F08).
 - **Komando lokal** — `npm test` → 20/20 lulus (`lib/content-fallback.test.ts`, Vitest 3.2.7);
-  `npm run build` → lulus, **33 halaman statis** (Next.js 16.4.0, Turbopack), 3
+  `npm run build` → lulus, **33 halaman statis** (Next.js 16.4.2, Turbopack), 3
   route handler dinamis + 2 route gambar dinamis.
 
 Belum diperiksa: perilaku saat Sanity tidak dapat dijangkau (fallback statis diuji

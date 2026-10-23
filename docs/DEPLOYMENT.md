@@ -33,13 +33,13 @@ Acuan keputusan: **`ADR-0006`** (Vitest + Playwright, deploy ke Vercel),
 | Aspek | Nilai | Bukti |
 |---|---|---|
 | Jenis aplikasi | Web SSR/static hybrid — Next.js App Router | `package.json` |
-| Framework | Next.js `16.4.0`, Turbopack | `package.json`, output build |
+| Framework | Next.js `16.4.2`, Turbopack | `package.json`, output build |
 | Runtime | React `19.3.0` | `package.json` |
 | Bahasa | TypeScript `^5` | `package.json` |
 | Gaya | Tailwind CSS `^4` via `@tailwindcss/turbopack` | `package.json`, `next.config.ts` |
-| Lint | ESLint `^9` + `eslint-config-next` `16.4.0` | `package.json` |
+| Lint | ESLint `^9` + `eslint-config-next` `16.4.2` | `package.json` |
 | Versi paket | `0.2.0` (`package.json`) | `TERVERIFIKASI` |
-| Node/npm lokal (terukur) | Node `v24.15.0`, npm `11.12.1` | dijalankan saat fase ini |
+| Node/npm (dipin) | Node `24.22.1` (`.nvmrc`, `engines.node`), npm `11.19.1` | `TERVERIFIKASI` 23 Okt 2026 |
 | Hosting | **Vercel** (produksi + preview) | `TERVERIFIKASI` (audit 21 Okt 2026) |
 | CMS | **Sanity Studio** — dataset `production` (publik) + `submissions` (privat) | `lib/sanity-project.ts` |
 | Port dev/start | **3100** (sengaja bukan 3000) | `package.json` |
@@ -82,7 +82,7 @@ nyata (disalin apa adanya):
 > melodi-alam@0.2.0 build
 > next build
 
-▲ Next.js 16.4.0 (Turbopack)
+▲ Next.js 16.4.2 (Turbopack)
 - Environments: .env
 ✓ Running next.config.ts took 49ms
 - Cache Components enabled
@@ -394,7 +394,7 @@ Test Files  1 passed (1)
 | Install | `npm ci` | `RENCANA` |
 | Build command | `npm run build` | `RENCANA` |
 | Output | default (`.next`) | `RENCANA` |
-| Node runtime | perlu dikonfirmasi terhadap default Vercel untuk Next `16.4.0` + Cache Components | `[PERLU VERIFIKASI]` |
+| Node runtime | perlu dikonfirmasi terhadap default Vercel untuk Next `16.4.2` + Cache Components | `[PERLU VERIFIKASI]` |
 | Root directory | repo ini adalah subfolder dari workspace | `[PERLU VERIFIKASI]` |
 
 ### 4.3 Urutan build yang aman (`TERVERIFIKASI`)
@@ -443,7 +443,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: .nvmrc   # RENCANA: belum ada .nvmrc
+          node-version-file: .nvmrc
           cache: npm
       - run: npm ci
       - run: npm run lint
@@ -456,9 +456,10 @@ Caching (`RENCANA`): `actions/setup-node` dengan `cache: npm` (key dari
 `node_modules` mentah (risiko native module `sharp` tidak cocok platform) —
 `sharp` dipakai skrip build saja, bukan runtime.
 
-Matriks OS/node (`RENCANA`): runner `ubuntu-latest`; Node versi yang dipin
-(lokal terukur `v24.15.0`) — **belum ada pin** di `package.json`
-(`engines` tidak ada), dan default Vercel `[PERLU VERIFIKASI]`.
+Matriks OS/node (`TERVERIFIKASI`): runner `ubuntu-latest`; Node dari `.nvmrc`
+(`24.22.1`), CI memakai `node-version-file: .nvmrc`, dan `package.json` memuat
+`engines.node: ">=24.22.1 <25"`. Project Vercel memakai `24.x` — sama dengan
+project Samsara Group.
 
 ---
 
@@ -808,7 +809,7 @@ dampak SEO besar, dan tidak terlihat dari kode karena nilainya datang dari env.
 | ID | Risiko | Dampak | Mitigasi |
 |---|---|---|---|
 | `D1` | Clean checkout tidak dapat di-build | Rilis pertama gagal | **Selesai** — artefak generated sudah di-commit (§1.5) |
-| `D2` | Next `16.4.0` + Cache Components tak cocok runtime Vercel | Build/`◐` berbeda dari lokal | `[PERLU VERIFIKASI]` |
+| `D2` | Next `16.4.2` + Cache Components tak cocok runtime Vercel | Build/`◐` berbeda dari lokal | `[PERLU VERIFIKASI]` |
 | `D3` | `SANITY_API_READ_TOKEN` bocor ke client | Kritis (akses dataset privat + seluruh PII kontak) | §3.5: tanpa `NEXT_PUBLIC_`, server-only |
 | `D4` | Blob store belum ada | Unggah audio selalu 400 | §11 butir 2 |
 | `D5` | Queue demo in-memory bila token kosong | Submission hilang saat restart | Pastikan token ter-set di produksi |
@@ -822,9 +823,10 @@ dampak SEO besar, dan tidak terlihat dari kode karena nilainya datang dari env.
 1. **Artefak generated:siapa yang regenerate?** Sumbernya di luar repo, jadi
    hanya mesin developer yang bisa. Siapa yang bertanggung jawab saat data
    katalog berubah?
-2. **Versi Node di Vercel.** Lokal `v24.15.0`; default Vercel
-   `[PERLU VERIFIKASI]`. Perlukah `.nvmrc`/`engines`?
-3. **Next.js 16.4.0 di Vercel.** Dukungan penuh (termasuk Cache Components)
+2. ~~**Versi Node di Vercel.**~~ **Selesai 23 Okt 2026**: `.nvmrc` (24.22.1),
+   `engines.node` di `package.json`, CI lewat `node-version-file`, dan project
+   Vercel diset `24.x` — sama dengan project Samsara Group.
+3. **Next.js 16.4.2 di Vercel.** Dukungan penuh (termasuk Cache Components)
    belum dikonfirmasi `[PERLU VERIFIKASI]`.
 4. **Domain produksi.** `melodialam.id` sudah dibeli tetapi belum resolve;
    `melodialam.com` milik pihak lain (parked) dan tidak dipakai.
@@ -870,7 +872,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
   `cdn.sanity.io/images/**`), header keamanan (CSP enforced + report-only
   dengan `connect-src` ke host Vercel Blob), HSTS.
 - `package.json` — **10 skrip** persis seperti §1.2; dependensi
-  (`next 16.4.0`, `react 19.3.0`, `@sanity/client ^8.9.0`, `@vercel/analytics
+  (`next 16.4.2`, `react 19.3.0`, `@sanity/client ^8.9.0`, `@vercel/analytics
   ^2.0.1`, `@vercel/blob ^2.8.2`, `vitest ^3.2.7`); **tanpa** `payload`,
   `supabase`, `express`, atau `graphql` terpasang.
 - `.env.example` — **enam variabel**: `SANITY_API_READ_TOKEN`,
@@ -912,7 +914,7 @@ Pemeriksaan yang **dijalankan**:
   1.78 s, 11 worker, `next.config.ts` 49 ms). Tabel rute identik di kedua
   run.
 - `npm test` → `vitest run` 3.2.7, **1 file / 20 kasus lulus**, durasi ~1 s.
-- `node -v` → `v24.15.0`; `npm -v` → `11.12.1`; `package.json` → `engines`
+- `node -v` → `v24.22.1`; `npm -v` → `11.19.1`; `package.json` → `engines`/
   tidak ada, versi paket `0.2.0`.
 - Pencarian rekursif `.github` → hanya di dalam `node_modules`; **tidak ada**
   `.github/` di root proyek.

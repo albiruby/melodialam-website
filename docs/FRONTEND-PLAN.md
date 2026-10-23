@@ -58,7 +58,7 @@ dan halaman profil (*Tentang*). Bagian dari PT Infia Pariwara Nusantara
 
 | Item | Nilai |
 |---|---|
-| Framework | Next.js `16.4.0`, App Router, Turbopack |
+| Framework | Next.js `16.4.2`, App Router, Turbopack |
 | React | `19.3.0` |
 | Bahasa | TypeScript `^5`, alias `@/*` → root proyek |
 | Styling | Tailwind CSS `^4` via `@tailwindcss/turbopack`; token di `app/globals.css` `@theme` |

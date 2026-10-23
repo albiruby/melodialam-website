@@ -18,7 +18,8 @@ Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara
 
 ## Menjalankan
 
-Prasyarat: **Node.js >= 20**.
+Prasyarat: **Node.js 24.22.1** — versinya dicatat di `.nvmrc` dan di
+`package.json` (`engines.node: ">=24.22.1 <25"`).
 
 ```bash
 npm install
@@ -82,7 +83,7 @@ yang jatuh ke memori, karena `lib/sanity-server.ts` mengembalikan `null` tanpa t
 
 | Komponen | Versi |
 |---|---|
-| Next.js (App Router, Turbopack, Cache Components) | `16.4.0` |
+| Next.js (App Router, Turbopack, Cache Components) | `16.4.2` |
 | React | `19.3.0` |
 | TypeScript | `^5` |
 | Tailwind CSS | `^4` |

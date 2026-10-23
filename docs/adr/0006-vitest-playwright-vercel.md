@@ -105,7 +105,7 @@ Yang mengikat:
   `docs/FRONTEND-PLAN.md`.
 - `RENCANA`: seluruh keputusan alat dan CI. **Fase ini hanya dokumen** — tidak ada paket
   dipasang, tidak ada berkas uji dibuat, tidak ada CI ditambahkan.
-- `[PERLU VERIFIKASI]`: dukungan Vercel untuk Next.js `16.4.0` beserta Cache Components
+- `[PERLU VERIFIKASI]`: dukungan Vercel untuk Next.js `16.4.2` beserta Cache Components
   dan Partial Prefetching.
 - **Pembaruan 21 Okt 2026** (`TERVERIFIKASI`): **Vitest sudah terpasang** — `npm test`
   menjalankan dua puluh kasus di tiga berkas (`lib/content-fallback.test.ts`,

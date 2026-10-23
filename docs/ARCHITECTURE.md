@@ -47,7 +47,7 @@ sendiri sudah usang dan ditandai.
 ## 1. Architecture Overview
 
 Melodi Alam adalah **satu aplikasi Next.js 16 App Router** (`TERVERIFIKASI`,
-`package.json` → `next@16.4.0`, `react@19.3.0`, Turbopack). Tidak ada backend
+`package.json` → `next@16.4.2`, `react@19.3.0`, Turbopack). Tidak ada backend
 terpisah, tidak ada basis data milik sendiri, dan tidak ada service eksternal
 yang wajib hidup agar situs render.
 
@@ -121,7 +121,7 @@ Target yang **sudah diambil** dan tidak dibuka ulang:
 
 ### 2.2 Confirmed constraints (TERVERIFIKASI)
 
-- **Stack terkunci:** Next.js `16.4.0`, React `19.3.0`, TypeScript `^5`, Tailwind
+- **Stack terkunci:** Next.js `16.4.2`, React `19.3.0`, TypeScript `^5`, Tailwind
   CSS `^4` lewat `@tailwindcss/turbopack`, `motion@^14.2.0`, `sharp@^0.35.5`,
   `@sanity/client@^8.9.0`, `@sanity/image-url@^2.1.1`, `@portabletext/react@^8.0.1`,
   `@vercel/analytics@^2.0.1`, `@vercel/blob@^2.8.2`, Vitest `^3.2.7`.

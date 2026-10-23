@@ -16,8 +16,8 @@ di bawah sudah diverifikasi.
 
 | Prasyarat | Versi | Catatan |
 |---|---|---|
-| Node.js | `>= 20` | Terukur `v24.15.0` di mesin ini. `package.json` **tidak** punya field `engines`, jadi tidak ada versi yang dipaksakan — pasang versi LTS |
-| npm | disertakan bersama Node | Terukur `11.12.1` |
+| Node.js | `24.22.1` | Dicatat di `.nvmrc` dan `package.json` (`engines.node: ">=24.22.1 <25"`). Terukur `v24.22.1` di mesin ini; CI membaca `.nvmrc`, jadi mesin, CI, dan Vercel membaca angka yang sama |
+| npm | disertakan bersama Node | Terukur `11.19.1` |
 | Git | `>= 2.40` | |
 
 ```bash
@@ -444,13 +444,13 @@ dan **dijalankan** pada repositori ini.
 - `npm run lint` — dijalankan, bersih.
 - `npx tsc --noEmit` — dijalankan, bersih.
 - `npm test` — dijalankan, 20 kasus di `lib/content-fallback.test.ts` lulus.
-- `npm run build` — dijalankan: Next.js 16.4.0 (Turbopack), TypeScript bersih,
+- `npm run build` — dijalankan: Next.js 16.4.2 (Turbopack), TypeScript bersih,
   "Generating static pages using 11 workers (33/33)" → **33 halaman statis**.
   Ini menggantikan angka "26 halaman statis" di versi lama dokumen ini.
 - `npm run start` — memakai build yang sama dengan `npm run build`, di port 3100.
-- `node -v` → `v24.15.0`; `npm -v` → `11.12.1`. `package.json` **tidak** punya
-  field `engines`, jadi angka `>= 20` adalah syarat minimum yang ditetapkan
-  repo, bukan hasil `engines`.
+- `node -v` → `v24.22.1`; `npm -v` → `11.19.1`. Versi dipin di `.nvmrc` dan di
+  `package.json` (`engines.node: ">=24.22.1 <25"`), jadi mesin, CI, dan Vercel
+  membaca angka yang sama.
 - `.env.example` — 10 variabel (§1). `.env` lokal ada dan mengabaikan
   `.gitignore`; isinya tidak dibaca atau ditampilkan di dokumen ini.
 - `.gitignore` — mengabaikan `.env*` kecuali `.env.example`, plus `/.next/`.
