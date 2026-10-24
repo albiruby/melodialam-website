@@ -80,6 +80,17 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
   bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
 
+**Pagination, backup, dan pipeline (24 Okt 2026)**
+
+- `/stories/page/2` — halaman lanjutan berisi 4 artikel yang sebelumnya hanya
+  bisa dibuka lewat URL-nya sendiri. Halaman 1 tetap 8 kartu yang sama;
+  sitemap kini memuat **semua 12 artikel** + halaman lanjutan.
+- `npm run backup` — ekspor kedua dataset Sanity ke `backups/<tanggal>/`
+  (gitignored: ekspor `submissions` memuat kontak).
+- CI untuk repo Studio (`typecheck` + `sanity build`) dan Dependabot mingguan
+  untuk npm + GitHub Actions.
+- Vitest 3 → 5 (advisory dev-only tertutup); 20/20 tes tetap lulus.
+- Tautan Instagram di header tetap tampil di ponsel (ikon saja).
 **CSP ditegakkan, ikon kanal, dan pembersihan data (24 Okt 2026)**
 
 - **CSP penuh kini ditegakkan**, bukan report-only: `default-src 'self'`,

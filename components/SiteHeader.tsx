@@ -58,15 +58,17 @@ export function SiteHeader({
 
         <div className="order-3 col-span-1 flex items-center justify-end gap-3">
           {/* Icon and word together: the mark is recognised at a glance, the
-              word tells a reader who does not recognise it where the link goes. */}
+              word tells a reader who does not recognise it where the link goes.
+              On phones only the mark shows — the word would crowd the menu
+              button out of the row. */}
           <a
             href="https://www.instagram.com/melodi.alam/?hl=en"
             target="_blank"
             rel="noreferrer"
-            className="nav-link-anim hidden items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest sm:flex"
+            className="nav-link-anim flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
           >
             <InstagramIcon className="h-4 w-4" />
-            <span>Instagram</span>
+            <span className="hidden sm:inline">Instagram</span>
           </a>
           <button
             type="button"

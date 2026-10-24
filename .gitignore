@@ -54,3 +54,7 @@ next-env.d.ts
 /.codegraph
 /.gitnexus
 /.playwright-mcp
+
+# Sanity exports from `npm run backup` - the submissions export holds
+# contact details, so it must never reach the repository.
+/backups/

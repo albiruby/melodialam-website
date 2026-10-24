@@ -12,7 +12,8 @@
     "brand": "node scripts/build-brand.mjs",
     "photos": "node scripts/copy-photos.mjs",
     "seed:sanity": "node node_modules/typescript/bin/tsc lib/content-fallback.ts lib/taxonomy.ts lib/site.ts --outDir .seed-build --module commonjs --target es2022 --moduleResolution node --skipLibCheck --esModuleInterop && node scripts/seed-sanity.cjs .seed-build",
-    "seed:videos": "node scripts/seed-videos.cjs"
+    "seed:videos": "node scripts/seed-videos.cjs",
+    "backup": "node scripts/export-sanity.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",
@@ -35,7 +36,7 @@
     "sharp": "^0.35.5",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^3.2.7"
+    "vitest": "^5.0.5"
   },
   "engines": {
     "node": ">=24.22.1 <25"

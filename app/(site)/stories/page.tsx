@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArticleCard } from "@/components/ArticleCards";
 import { Reveal } from "@/components/motion/Reveal";
-import { latestStories } from "@/lib/articles";
+import { StoriesGrid } from "@/components/StoriesGrid";
 import { getSiteSettings } from "@/lib/site-settings";
+import { storyPage } from "@/lib/story-pages";
 
 export const metadata: Metadata = {
   title: "Stories",
@@ -13,9 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function StoriesPage() {
-  // The same list the home page opens with, extended to eight so the grid
-  // closes as two full rows of four.
-  const [articles, settings] = await Promise.all([latestStories(8), getSiteSettings()]);
+  const [{ articles, pages }, settings] = await Promise.all([storyPage(1), getSiteSettings()]);
 
   return (
     <Reveal>
@@ -26,20 +24,18 @@ export default async function StoriesPage() {
         </span>
       </div>
 
-      {/* One pool, newest first — no filters, no search, no counter. */}
-      <div className="grid grid-cols-1 gap-8 border-b border-ink pb-10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-        {articles.map((article, i) => (
-          <div key={article.slug} className="relative">
-            <ArticleCard
-              article={article}
-              titleFirst={i % 2 === 1}
-              index={i}
-              readLabel={settings.cardCurtain.articleLabel}
-              noteCta={settings.cardCurtain.articleCta}
-            />
-          </div>
-        ))}
-      </div>
+      <StoriesGrid articles={articles} settings={settings} />
+
+      {pages > 1 ? (
+        <div className="flex items-center justify-end border-b border-ink py-3 font-mono text-[11px] uppercase tracking-wider">
+          <Link
+            href="/stories/page/2"
+            className="nav-link-anim font-bold text-ink transition-colors hover:text-forest"
+          >
+            Halaman 2 →
+          </Link>
+        </div>
+      ) : null}
 
       {/* ---------- Dari Feed → Curated News ---------- */}
       <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-500">
