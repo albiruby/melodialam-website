@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FOOTER_RUBRIKS } from "@/lib/site";
 import type { SiteSettings } from "@/lib/site-settings";
+import { InstagramIcon, TiktokIcon, YoutubeIcon } from "./BrandIcons";
 import { MelodiAlamLockup } from "./MelodiAlamLockup";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
@@ -65,25 +66,31 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               href="https://www.instagram.com/melodi.alam/?hl=en"
               target="_blank"
               rel="noreferrer"
-              className="border border-ink bg-white px-3 py-1.5 font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              aria-label="Instagram Melodi Alam"
+              title="Instagram"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              Instagram ↗
+              <InstagramIcon className="h-5 w-5" />
             </a>
             <a
               href="https://www.youtube.com/@melodialam/videos"
               target="_blank"
               rel="noreferrer"
-              className="border border-ink bg-white px-3 py-1.5 font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              aria-label="YouTube Melodi Alam"
+              title="YouTube"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              YouTube ↗
+              <YoutubeIcon className="h-5 w-5" />
             </a>
             <a
               href="https://www.tiktok.com/@melodi.alam"
               target="_blank"
               rel="noreferrer"
-              className="border border-ink bg-white px-3 py-1.5 font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              aria-label="TikTok Melodi Alam"
+              title="TikTok"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              TikTok ↗
+              <TiktokIcon className="h-5 w-5" />
             </a>
           </div>
 
@@ -91,14 +98,14 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             <strong>Contact for partnership:</strong>
             <br />
             <a
-              href="mailto:melodialam.ip@gmail.com"
+              href={`mailto:${settings.contactEmail}`}
               className="underline transition-colors hover:text-forest"
             >
-              melodialam.ip@gmail.com
+              {settings.contactEmail}
             </a>
             {" / "}
-            <a href="mailto:helfan@infia.co" className="underline transition-colors hover:text-forest">
-              helfan@infia.co
+            <a href={`mailto:${settings.partnerEmail}`} className="underline transition-colors hover:text-forest">
+              {settings.partnerEmail}
             </a>
           </p>
         </div>

@@ -80,6 +80,20 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
   bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
 
+**CSP ditegakkan, ikon kanal, dan pembersihan data (24 Okt 2026)**
+
+- **CSP penuh kini ditegakkan**, bukan report-only: `default-src 'self'`,
+  `img-src` terbatas ke `i.ytimg.com` + `cdn.sanity.io` + `data:`/`blob:`,
+  `frame-src` hanya YouTube, `connect-src` hanya origin sendiri + Blob +
+  Vercel Insights. `script-src` tetap `'unsafe-inline'` karena nonce akan
+  memaksa seluruh halaman dinamis — situs ini hampir seluruhnya prerendered.
+- Nav `Melodi Samsara` tidak lagi membawa badge `YT`.
+- Logo asli (inline SVG, monochrome) untuk Instagram, YouTube, dan TikTok di
+  header, footer, dan daftar kanal `/tentang` — menggantikan teks `IG ↗` dsb.
+- Footer membaca `contactEmail`/`partnerEmail` dari `siteSettings`, sama
+  seperti `/tentang`.
+- 18 field `duration` yatim (nama field yang salah; skema memakai
+  `durationSeconds`) dibuang dari dokumen `video` dan `interview`.
 **Perlindungan & kelengkapan (24 Okt 2026)**
 
 - GET /api/demos menyaring status disetujui di **kedua** jalur (Sanity dan cadangan memori) — sebelumnya jalur cadangan mengembalikan seluruh antrean termasuk IN REVIEW (F06).

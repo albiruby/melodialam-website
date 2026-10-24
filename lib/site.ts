@@ -30,7 +30,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/", label: "Latest News" },
   { href: "/stories", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
-  { href: "/videos", label: "Melodi Samsara", badge: "YT" },
+  { href: "/videos", label: "Melodi Samsara" },
   { href: "/kurasi", label: "Curated News" },
 ];
 

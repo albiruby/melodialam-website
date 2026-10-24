@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { InstagramIcon, TiktokIcon, YoutubeIcon } from "@/components/BrandIcons";
 import { getSiteSettings } from "@/lib/site-settings";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 
@@ -38,6 +39,13 @@ const PILLARS = [
 const CHANNELS = EXTERNAL_LINKS.filter((link) =>
   ["Instagram", "YouTube", "Threads", "TikTok", "Linktree"].includes(link.label),
 );
+
+/** The three marks worth drawing; Threads and Linktree stay as words. */
+const CHANNEL_ICONS: Record<string, (props: { className?: string }) => React.ReactElement> = {
+  Instagram: InstagramIcon,
+  YouTube: YoutubeIcon,
+  TikTok: TiktokIcon,
+};
 
 export default async function TentangPage() {
   // The two addresses an editor is most likely to change, so they live in the
@@ -134,8 +142,14 @@ export default async function TentangPage() {
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+                  className="flex items-center gap-1.5 border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
                 >
+                  {CHANNEL_ICONS[link.label] ? (
+                    (() => {
+                      const Icon = CHANNEL_ICONS[link.label];
+                      return <Icon className="h-3.5 w-3.5" />;
+                    })()
+                  ) : null}
                   {link.label} ↗
                 </a>
               ))}

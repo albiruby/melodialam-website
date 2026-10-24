@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
+import { InstagramIcon } from "./BrandIcons";
 import { MelodiAlamLockup } from "./MelodiAlamLockup";
 import { SubmitLink } from "./SubmitLink";
 
@@ -60,9 +61,11 @@ export function SiteHeader({
             href="https://www.instagram.com/melodi.alam/?hl=en"
             target="_blank"
             rel="noreferrer"
-            className="nav-link-anim hidden text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest sm:block"
+            aria-label="Instagram Melodi Alam"
+            title="Instagram"
+            className="hidden text-ink transition-colors hover:text-forest sm:block"
           >
-            IG ↗
+            <InstagramIcon className="h-5 w-5" />
           </a>
           <button
             type="button"
