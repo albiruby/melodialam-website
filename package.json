@@ -14,7 +14,8 @@
     "seed:sanity": "node node_modules/typescript/bin/tsc lib/content-fallback.ts lib/taxonomy.ts lib/site.ts --outDir .seed-build --module commonjs --target es2022 --moduleResolution node --skipLibCheck --esModuleInterop && node scripts/seed-sanity.cjs .seed-build",
     "seed:videos": "node scripts/seed-videos.cjs",
     "backup": "node scripts/export-sanity.mjs",
-    "purge-demos": "node scripts/purge-demos.mjs"
+    "purge-demos": "node scripts/purge-demos.mjs",
+    "smoke": "node scripts/smoke.mjs"
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",

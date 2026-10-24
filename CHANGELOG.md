@@ -91,6 +91,9 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   menjalankan). Sebelumnya menghapus kiriman meninggalkan keduanya.
 - **`/api/health`** — menjawab 200 bila Sanity terjangkau, 503 bila tidak; titik
   yang bisa dipantau uptime monitor.
+- **`npm run smoke`** + langkah CI: memeriksa 15 rute, redirect `/journal`, isi
+  halaman 2 Stories, jumlah artikel di sitemap, antrean publik, dan `/api/health`
+  terhadap server yang benar-benar berjalan.
 - `meme-humor` masuk `PHOTO_PILLARS`: sebelumnya pilar itu ada di skema dan label
   tetapi tidak di daftar mana pun, sehingga post dengannya tidak akan pernah
   tampil.

@@ -56,3 +56,17 @@ jobs:
         run: npm run build
         env:
           NEXT_PUBLIC_SITE_URL: https://melodialam-website.vercel.app
+
+      # Serve the build and ask it the questions a deploy can break quietly:
+      # every route answers, the old /journal still redirects, page 2 of
+      # Stories exists, the sitemap lists what it should.
+      - name: Smoke test the built site
+        env:
+          NEXT_PUBLIC_SITE_URL: https://melodialam-website.vercel.app
+        run: |
+          npm run start &
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:3100/api/health > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/smoke.mjs http://localhost:3100
