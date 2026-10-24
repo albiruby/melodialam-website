@@ -60,7 +60,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
   const article = await articleBySlug(slug);
   if (!article) notFound();
 
-  // Same desk first, then topped up from the rest of the journal, so a category
+  // Same desk first, then topped up from the rest of Stories, so a category
   // with only one other article still fills the three-column grid. Only feed
   // photos are offered — the sections carry feed photos only.
   const [every, settings] = await Promise.all([latestStories(8), getSiteSettings()]);
@@ -173,7 +173,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
 
       {/* Footer */}
       <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-ink pt-4 text-xs font-mono">
-        <span>{every.length} artikel di journal • kurasi redaksi</span>
+        <span>{every.length} artikel di Stories • kurasi redaksi</span>
         <a
           href="https://www.instagram.com/melodi.alam/?hl=en"
           target="_blank"

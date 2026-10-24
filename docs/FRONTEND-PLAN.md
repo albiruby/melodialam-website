@@ -175,7 +175,7 @@ Semua halaman berada di bawah satu root layout (`app/(site)/layout.tsx`) sehingg
 `<main id="main" tabIndex={-1}">` → `SiteFooter` → `<Analytics />`.
 
 Navigasi utama (`lib/site.ts:29`): `Latest News` (`/`) · `Stories` (`/stories`) ·
-`Bicara Melodi` (`/bicara-melodi`) · `Melodi Samsara` (`/videos`, badge "YT") ·
+`Bicara Melodi` (`/bicara-melodi`) · `Melodi Samsara` (`/videos`) ·
 `Curated News` (`/kurasi`), plus tombol `Submit Karya` ke `/submit`.
 
 ### 3.1 Struktur rute saat ini (TERVERIFIKASI)
@@ -363,7 +363,7 @@ menjelaskan alasan teknis nyata, bukan estetika.
 Catatan `SiteHeader` (`TERVERIFIKASI`): drawer ditutup **pada tap** link
 (`onClick={closeDrawer}`), bukan di `useEffect`, dengan komentar eksplisit bahwa
 ini menghindari cascading render saat navigasi dari dalam drawer. Nav desktop
-memakai `aria-current="page"` via `isActive()`; badge nav (`YT`) dirender bila
+memakai `aria-current="page"` via `isActive()`; badge nav tidak lagi dipakai — label `YT` di samping `Melodi Samsara` dihapus 24 Okt 2026
 ada. Nav mobile **tidak** memakai `aria-current` — lihat §10.2.
 
 Catatan `Ticker` (`TERVERIFIKASI`): `Ticker` adalah server component yang

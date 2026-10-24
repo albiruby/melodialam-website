@@ -92,11 +92,7 @@ export function SiteHeader({
             }`}
           >
             <span>{item.label}</span>
-            {item.badge ? (
-              <span className="bg-ink px-1.5 py-0.5 text-[10px] font-mono text-white">
-                {item.badge}
-              </span>
-            ) : null}
+            
           </Link>
         ))}
         <SubmitLink />

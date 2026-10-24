@@ -94,6 +94,9 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   tidak mengenali lambangnya tetap tahu tautan itu ke mana.
 - Footer membaca `contactEmail`/`partnerEmail` dari `siteSettings`, sama
   seperti `/tentang`.
+- Label beranda dan halaman artikel masih menulis "artikel di journal" — kini
+  "artikel di Stories"; komponen halaman `JournalPage` menjadi `StoriesPage`;
+  prop `badge` yang tidak lagi dipakai dibuang dari nav.
 - 18 field `duration` yatim (nama field yang salah; skema memakai
   `durationSeconds`) dibuang dari dokumen `video` dan `interview`.
 **Perlindungan & kelengkapan (24 Okt 2026)**

@@ -22,8 +22,7 @@ export const SITE = {
 export interface NavItem {
   href: string;
   label: string;
-  /** Small uppercase badge rendered after the label. */
-  badge?: string;
+  /** Small uppercase badge rendered after the label. */
 }
 
 export const PRIMARY_NAV: NavItem[] = [

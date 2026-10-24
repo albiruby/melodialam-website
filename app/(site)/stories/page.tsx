@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/stories" },
 };
 
-export default async function JournalPage() {
+export default async function StoriesPage() {
   // The same list the home page opens with, extended to eight so the grid
   // closes as two full rows of four.
   const [articles, settings] = await Promise.all([latestStories(8), getSiteSettings()]);

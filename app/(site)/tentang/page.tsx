@@ -47,6 +47,12 @@ const CHANNEL_ICONS: Record<string, (props: { className?: string }) => React.Rea
   TikTok: TiktokIcon,
 };
 
+/** Draws the mark for a channel, or nothing when it has none. */
+function ChannelIcon({ label }: { label: string }) {
+  const Icon = CHANNEL_ICONS[label];
+  return Icon ? <Icon className="h-3.5 w-3.5" /> : null;
+}
+
 export default async function TentangPage() {
   // The two addresses an editor is most likely to change, so they live in the
   // CMS; the rest of the brand copy stays in code.
@@ -144,12 +150,7 @@ export default async function TentangPage() {
                   rel="noreferrer"
                   className="flex items-center gap-1.5 border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
                 >
-                  {CHANNEL_ICONS[link.label] ? (
-                    (() => {
-                      const Icon = CHANNEL_ICONS[link.label];
-                      return <Icon className="h-3.5 w-3.5" />;
-                    })()
-                  ) : null}
+                  {CHANNEL_ICONS[link.label] ? <ChannelIcon label={link.label} /> : null}
                   {link.label} ↗
                 </a>
               ))}

@@ -69,7 +69,7 @@ export default async function HomePage() {
 
         <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
           <span>
-            <CountUp to={stories.length} /> artikel di journal • <CountUp to={curatedVideos} />{" "}
+            <CountUp to={stories.length} /> artikel di Stories • <CountUp to={curatedVideos} />{" "}
             sesi panggung
           </span>
           <Link
