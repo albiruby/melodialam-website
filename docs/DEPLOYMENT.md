@@ -163,6 +163,9 @@ Tabel ini adalah **tabel rute resmi** untuk smoke test dan Environ.
 | `/kurasi` | `○` Static | "Curated News" — kotak cari + chip per pillar | `allPillarPosts()` |
 | `/bicara-melodi` | `○` Static | 9 episode wawancara Season 3 | `allInterviews()` + `lib/catalogue.json` |
 | `/videos` | `○` Static | **Melodi Samsara** — 9 baris sesi + 5 playlist | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` |
+| `/privasi` | `●` Static | Kebijakan privasi (data form demo, penyimpanan, hak penghapusan) | `siteSettings` | — |
+| `/ketentuan` | `●` Static | Ketentuan pengiriman karya | `siteSettings` | — |
+| `/api/health` | `ƒ` Dynamic | 200 bila Sanity terjangkau, 503 bila tidak — titik untuk uptime monitor | `lib/sanity.ts` | — |
 | `/submit` | `○` Static | Formulir demo 9 bagian (termasuk unggah audio opsional) | `POST /api/demos` |
 | `/preview/<type>/<slug>?secret=…` | `◐` Partial Prerender | Pratinjau draf (`journal` atau `kurasi`), `noindex`, 404 bila secret salah | Sanity `perspective: "drafts"` |
 | `/journal` | `ƒ` **Dynamic** | **308 permanen** → `/stories` | route handler |

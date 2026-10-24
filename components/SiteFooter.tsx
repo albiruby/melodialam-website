@@ -115,6 +115,18 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         <span>© 2017–2026 {settings.name} • INFIA PARIWARA NUSANTARA</span>
         <span>DESIGN SYSTEM: SWISS EDITORIAL BRUTALISM</span>
       </div>
+        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-3 px-4 py-4 font-mono text-[10px] uppercase tracking-wider text-neutral-500 sm:px-8">
+          <span>© 2026 Melodi Alam</span>
+          <div className="flex gap-4">
+            <Link href="/privasi" className="transition-colors hover:text-forest">
+              Kebijakan Privasi
+            </Link>
+            <Link href="/ketentuan" className="transition-colors hover:text-forest">
+              Ketentuan
+            </Link>
+          </div>
+        </div>
+
     </footer>
   );
 }

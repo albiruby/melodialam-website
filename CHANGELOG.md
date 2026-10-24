@@ -80,6 +80,20 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
   bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
 
+**Privasi, pembersihan data, dan pilar (24 Okt 2026)**
+
+- **`/privasi` + `/ketentuan`** — dua halaman yang menjelaskan persis apa yang
+  dikumpulkan formulir demo, di mana disimpan, siapa yang bisa melihatnya, dan
+  cara meminta penghapusan. Ditautkan dari form submit dan kaki situs, masuk
+  sitemap. Ditulis dari kode, bukan template; bukan nasihat hukum.
+- **`npm run purge-demos`** — menghapus kiriman demo lama **beserta** kontak
+  manajer dan berkas audionya (dry run secara default, `--apply` untuk
+  menjalankan). Sebelumnya menghapus kiriman meninggalkan keduanya.
+- **`/api/health`** — menjawab 200 bila Sanity terjangkau, 503 bila tidak; titik
+  yang bisa dipantau uptime monitor.
+- `meme-humor` masuk `PHOTO_PILLARS`: sebelumnya pilar itu ada di skema dan label
+  tetapi tidak di daftar mana pun, sehingga post dengannya tidak akan pernah
+  tampil.
 **Pagination, backup, dan pipeline (24 Okt 2026)**
 
 - `/stories/page/2` — halaman lanjutan berisi 4 artikel yang sebelumnya hanya

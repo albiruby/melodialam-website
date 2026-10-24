@@ -17,7 +17,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, { pages: storyPages }] = await Promise.all([allArticles(), storyPage(1)]);
   const lastArticle = articles[0]?.dateISO ?? new Date().toISOString().slice(0, 10);
 
-  const pages: { path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" }[] = [
+  const pages: { path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" | "yearly" }[] = [
     { path: "", priority: 1, changeFrequency: "daily" },
     { path: "/stories", priority: 0.9, changeFrequency: "daily" },
     ...Array.from({ length: Math.max(0, storyPages - 1) }, (_, i) => ({
@@ -30,6 +30,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/bicara-melodi", priority: 0.7, changeFrequency: "weekly" },
     { path: "/tentang", priority: 0.5, changeFrequency: "monthly" },
     { path: "/submit", priority: 0.6, changeFrequency: "monthly" },
+    { path: "/privasi", priority: 0.3, changeFrequency: "yearly" as const },
+    { path: "/ketentuan", priority: 0.3, changeFrequency: "yearly" as const },
   ];
 
   return [

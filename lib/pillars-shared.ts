@@ -19,7 +19,7 @@ export const PILLAR_LABELS: Record<string, string> = {
 };
 
 /** Photo pillars render on Stories; reel pillars render on Videos. */
-export const PHOTO_PILLARS = ["fakta-musik", "lirik", "trivia", "kutipan"];
+export const PHOTO_PILLARS = ["fakta-musik", "lirik", "trivia", "kutipan", "meme-humor"];
 export const REEL_PILLARS = ["rekomendasi", "ulas-melodi", "clipper", "similar-song"];
 
 export interface PillarPost {
