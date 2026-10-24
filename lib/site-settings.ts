@@ -44,6 +44,10 @@ export interface SiteSettings {
   description: string;
   /** The small note beside a section heading. Never carries a date. */
   curationNote: string;
+  /** Where readers write about the site itself. */
+  contactEmail: string;
+  /** Where partnership offers go. */
+  partnerEmail: string;
   cardCurtain: CardCurtainCopy;
   tickerItems: TickerItem[];
   /** Where the values came from, for the admin UI and for debugging. */
@@ -58,6 +62,8 @@ const STATIC: SiteSettings = {
   est: SITE.est,
   description: SITE.description,
   curationNote: "kurasi redaksi",
+  contactEmail: "melodialam.ip@gmail.com",
+  partnerEmail: "helfan@infia.co",
   cardCurtain: {
     articleLabel: "READ STORY",
     articleCta: "Buka Catatan Redaksi",
@@ -76,6 +82,8 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   curationNote,
   cardCurtain{ articleLabel, articleCta },
   tickerItems[]{ label, href }
+  contactEmail,
+  partnerEmail
 }`;
 
 interface SettingsDoc {
@@ -91,6 +99,8 @@ interface SettingsDoc {
     articleCta?: string;
   };
   tickerItems?: { label?: string; href?: string }[];
+  contactEmail?: string;
+  partnerEmail?: string;
 }
 
 /** An empty field in the CMS means "not filled in yet", not "blank it out". */
@@ -124,6 +134,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     est: or(doc.est, STATIC.est),
     description: or(doc.description, STATIC.description),
     curationNote: or(doc.curationNote, STATIC.curationNote),
+    contactEmail: or(doc.contactEmail, STATIC.contactEmail),
+    partnerEmail: or(doc.partnerEmail, STATIC.partnerEmail),
     cardCurtain: {
       articleLabel: or(doc.cardCurtain?.articleLabel, STATIC.cardCurtain.articleLabel),
       articleCta: or(doc.cardCurtain?.articleCta, STATIC.cardCurtain.articleCta),

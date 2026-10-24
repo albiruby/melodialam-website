@@ -148,8 +148,15 @@ const APPROVED_QUERY = /* groq */ `*[_type == "demoSubmission" && status in $app
 const APPROVED_COUNT_QUERY = /* groq */ `count(*[_type == "demoSubmission" && status in $approved])`;
 
 export async function GET() {
+  // The public queue is moderated: only rows a curator has approved are
+  // readable. Without a token the fallback used to hand back the whole queue,
+  // including IN REVIEW rows — the same rule has to hold on both paths.
+  const approvedStatuses: readonly string[] = DEMO_APPROVED_STATUSES;
+  const approved = (row: QueuedDemo) => approvedStatuses.includes(row.status);
+
   if (!submissionsClient) {
-    return NextResponse.json({ queue: memoryQueue, count: memoryQueue.length });
+    const queue = memoryQueue.filter(approved);
+    return NextResponse.json({ queue, count: queue.length });
   }
 
   try {
@@ -162,7 +169,8 @@ export async function GET() {
     return NextResponse.json({ queue: rows.map(toPublicRow), count: rows.length });
   } catch {
     // The queue is a convenience, not a page: fall back rather than 500.
-    return NextResponse.json({ queue: memoryQueue, count: memoryQueue.length });
+    const queue = memoryQueue.filter(approved);
+    return NextResponse.json({ queue, count: queue.length });
   }
 }
 
@@ -405,7 +413,13 @@ export async function POST(request: Request) {
     createdId = created._id;
   } catch (error) {
     // A broken token or an unreachable dataset must not crash the public form.
-    console.error("[api/demos] gagal menyimpan ke Sanity:", error);
+    // Log the shape of the failure, not its raw message: the message can carry
+    // the query, the document and whatever the transport decided to include.
+    const failure = error as { name?: string; statusCode?: number };
+    console.error("[api/demos] gagal menyimpan ke Sanity:", {
+      name: failure?.name ?? "Error",
+      status: failure?.statusCode ?? "tidak ada",
+    });
     return NextResponse.json(
       { error: "Pengiriman demo sedang tidak bisa disimpan. Coba lagi nanti." },
       { status: 503 },

@@ -4,6 +4,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { VideoRow } from "@/components/VideoRow";
 import { VideoModal } from "@/components/VideoModal";
 import { CHANNEL } from "@/lib/catalogue";
+import { SITE } from "@/lib/site";
 import { allPlaylists, allVideos } from "@/lib/videos";
 import { getVideosPageCopy } from "@/lib/videos-page";
 
@@ -16,6 +17,20 @@ export const metadata: Metadata = {
 
 /** The live sessions shown before the rest stay on the channel — nine of them. */
 const SAMSARA_PREVIEW = 9;
+
+/**
+ * Seconds as an ISO 8601 duration, the shape schema.org expects.
+ *
+ * A video of 13:36 becomes "PT13M36S"; a round minute stays "PT13M", because
+ * a zero-seconds suffix is noise.
+ */
+function isoDuration(totalSeconds: number): string {
+  const seconds = Math.max(0, Math.round(totalSeconds));
+  const minutes = Math.floor(seconds / 60);
+  const rest = seconds % 60;
+  if (minutes === 0) return `PT${rest}S`;
+  return rest === 0 ? `PT${minutes}M` : `PT${minutes}M${rest}S`;
+}
 
 function SectionHead({
   title,
@@ -66,6 +81,32 @@ export default async function VideosPage() {
   // page, so they are not repeated here.
   const samsara = videos.filter((v) => v.venue === "Melodi Samsara");
   const samsaraPreview = samsara.slice(0, SAMSARA_PREVIEW);
+
+  // Structured data for the sessions on this page. The videos live on YouTube,
+  // so each entry points at the embed and at this page's anchor rather than
+  // pretending there is a page per video.
+  const videoJsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: copy.samsaraTitle,
+    url: `${SITE.url}/videos`,
+    numberOfItems: samsaraPreview.length,
+    itemListElement: samsaraPreview.map((video, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "VideoObject",
+        "@id": `${SITE.url}/videos#${video.id}`,
+        name: video.title,
+        description: `${video.venue} — ${video.featuring.join(", ") || "Melodi Alam"}`,
+        thumbnailUrl: [`https://i.ytimg.com/vi/${video.id}/maxresdefault.jpg`],
+        duration: isoDuration(video.seconds),
+        embedUrl: `https://www.youtube-nocookie.com/embed/${video.id}`,
+        url: `${SITE.url}/videos#${video.id}`,
+        publisher: { "@id": `${SITE.url}/#organization` },
+      },
+    })),
+  });
 
   return (
     <>
@@ -143,6 +184,8 @@ export default async function VideosPage() {
       </div>
 
       <VideoModal />
+
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: videoJsonLd }} />
     </>
   );
 }

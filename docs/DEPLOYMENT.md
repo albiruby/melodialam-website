@@ -82,7 +82,7 @@ nyata (disalin apa adanya):
 > melodi-alam@0.2.0 build
 > next build
 
-▲ Next.js 16.4.2 (Turbopack)
+▲ Next.js 16.4.3 (Turbopack)
 - Environments: .env
 ✓ Running next.config.ts took 49ms
 - Cache Components enabled
@@ -826,7 +826,7 @@ dampak SEO besar, dan tidak terlihat dari kode karena nilainya datang dari env.
 2. ~~**Versi Node di Vercel.**~~ **Selesai 23 Okt 2026**: `.nvmrc` (24.22.1),
    `engines.node` di `package.json`, CI lewat `node-version-file`, dan project
    Vercel diset `24.x` — sama dengan project Samsara Group.
-3. **Next.js 16.4.2 di Vercel.** Dukungan penuh (termasuk Cache Components)
+3. **Next.js 16.4.3 di Vercel.** Dukungan penuh (termasuk Cache Components)
    belum dikonfirmasi `[PERLU VERIFIKASI]`.
 4. **Domain produksi.** `melodialam.id` sudah dibeli tetapi belum resolve;
    `melodialam.com` milik pihak lain (parked) dan tidak dipakai.

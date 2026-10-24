@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { getSiteSettings } from "@/lib/site-settings";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -38,7 +39,10 @@ const CHANNELS = EXTERNAL_LINKS.filter((link) =>
   ["Instagram", "YouTube", "Threads", "TikTok", "Linktree"].includes(link.label),
 );
 
-export default function TentangPage() {
+export default async function TentangPage() {
+  // The two addresses an editor is most likely to change, so they live in the
+  // CMS; the rest of the brand copy stays in code.
+  const settings = await getSiteSettings();
   return (
     <Reveal>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
@@ -93,17 +97,17 @@ export default function TentangPage() {
             </p>
             <p className="mt-2 text-sm">
               <a
-                href="mailto:melodialam.ip@gmail.com"
+                href={`mailto:${settings.contactEmail}`}
                 className="font-bold underline transition-colors hover:text-forest"
               >
-                melodialam.ip@gmail.com
+                {settings.contactEmail}
               </a>
               <span className="mx-1 text-neutral-400">/</span>
               <a
-                href="mailto:helfan@infia.co"
+                href={`mailto:${settings.partnerEmail}`}
                 className="font-bold underline transition-colors hover:text-forest"
               >
-                helfan@infia.co
+                {settings.partnerEmail}
               </a>
             </p>
 

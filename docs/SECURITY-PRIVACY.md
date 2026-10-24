@@ -44,7 +44,7 @@ Empat hal yang paling penting:
 
 1. **Satu temuan sudah tertutup; sisanya masih terbuka.** Pada laporan audit
    21 Okt 2026, kesepuluh temuan F01–F10 tercatat terbuka. **F01 ditutup** lewat
-   allow-list host Blob (lihat §4.1). F02 ditutup sebagian: rate limit per IP, `Idempotency-Key`, dan honeypot (22 Okt 2026); F03–F10 belum disentuh.
+   allow-list host Blob (lihat §4.1). F02 ditutup sebagian (rate limit per IP, `Idempotency-Key`, honeypot); **F06, F08, dan F10 ditutup** 24 Okt 2026; F03–F05 dan F07 belum disentuh.
 2. **Audit berjalan tanpa sandbox OS**, jadi tidak ada satu pun kode target yang
    dieksekusi. Semua temuan berstatus `needs_validation` — **belum terkonfirmasi**,
    bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
@@ -200,11 +200,11 @@ Resend / Sanity.
 | F03 | ~~satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | `needs_validation` — belum diperbaiki | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
 | F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | `needs_validation` — belum diperbaiki | server yang menentukan key + access; bucket privat + signed URL; nama file di-sanitasi |
 | F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | `needs_validation` — belum diperbaiki | grant sekali-pakai dari `/api/demos` + job pembersihan |
-| F06 | tanpa token, antrean fallback dilayani **tanpa** filter status (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
+| F06 | ~~tanpa token, antrean fallback dilayani **tanpa** filter status~~ — **DITUTUP 24 Okt 2026**: kedua cabang menyaring status disetujui | (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
 | F07 | hapus submission di Studio meninggalkan `demoContact` (PII) dan objek audio (publik) hidup selamanya | **Low** | `needs_validation` — belum diperbaiki | aksi hapus kurator yang ikut menghapus kontak + objek; tetapkan tanggal retensi |
-| F08 | `visionTool()` aktif di workspace `submissions` → GROQ bebas atas dataset privat bagi siapa pun yang punya akses workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
+| F08 | ~~`visionTool()` aktif di workspace `submissions`~~ — **DITUTUP 24 Okt 2026**: `visionTool` dihapus dari workspace itu, Studio di-deploy ulang | workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
 | F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | `needs_validation` — **sebagian ditutup**: barisnya sudah dihapus dari `.env` (22 Okt 2026); rotasi password di akun Supabase belum | hapus dari `.env` (**selesai**); rotasi password di akun Supabase |
-| F10 | error mentah Sanity ditulis penuh ke log operator tiap kegagalan tulis | **Informational** | `needs_validation` — belum diperbaiki | log ringkas: status, tipe error, id kiriman |
+| F10 | ~~error mentah Sanity ditulis penuh ke log~~ — **DITUTUP 24 Okt 2026**: log mencatat nama error + status saja | **Informational** | `needs_validation` — belum diperbaiki | log ringkas: status, tipe error, id kiriman |
 
 **Rekap severity:** Critical 0 · High 2 · Medium 3 · Low 3 · Informational 1 ·
 operasional 1 (**total 10**).
@@ -269,7 +269,7 @@ di dalam key. Token juga bisa dicetak tanpa batas (F05). Perbaikan: server yang
 menentukan key + access, bucket privat + signed URL, grant sekali-pakai, dan job
 pembersihan objek.
 
-**F06 — jalur fallback melewati moderasi.**
+**F06 — jalur fallback melewati moderasi.** *(Ditutup 24 Okt 2026: `GET /api/demos` kini menyaring status disetujui di jalur Sanity maupun jalur memori.)*
 Tanpa `SANITY_API_READ_TOKEN`, `submissionsClient` bernilai `null`
 (`lib/sanity-server.ts:24-33`) dan route memakai array proses-lokal.
 `GET` mengembalikan **seluruh** array tanpa filter status

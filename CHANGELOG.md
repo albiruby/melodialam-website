@@ -80,6 +80,15 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
   bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
 
+**Perlindungan & kelengkapan (24 Okt 2026)**
+
+- GET /api/demos menyaring status disetujui di **kedua** jalur (Sanity dan cadangan memori) — sebelumnya jalur cadangan mengembalikan seluruh antrean termasuk IN REVIEW (F06).
+- isionTool dihapus dari workspace submissions; Studio di-deploy ulang (F08).
+- Log kegagalan tulis Sanity hanya mencatat nama error + status, bukan pesan mentah (F10).
+- /videos kini membawa JSON-LD ItemList berisi 9 VideoObject (durasi ISO 8601) — video bisa tampil kaya di hasil pencarian.
+- siteSettings punya contactEmail dan partnerEmail; halaman /tentang membacanya dari CMS, bukan hardcode.
+- Dependensi: next 16.4.3, eslint-config-next 16.4.3, @sanity/client 8.11, motion 14.6, react/react-dom 19.3.1, @types/node 24.
+
 **Perlindungan endpoint demo**
 
 - Rate limit per IP: 5 kiriman per jam di `POST /api/demos`, 20 token unggah
