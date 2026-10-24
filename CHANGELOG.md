@@ -90,6 +90,8 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
 - Nav `Melodi Samsara` tidak lagi membawa badge `YT`.
 - Logo asli (inline SVG, monochrome) untuk Instagram, YouTube, dan TikTok di
   header, footer, dan daftar kanal `/tentang` — menggantikan teks `IG ↗` dsb.
+  Di header, ikon Instagram tetap disertai kata `INSTAGRAM` supaya pembaca yang
+  tidak mengenali lambangnya tetap tahu tautan itu ke mana.
 - Footer membaca `contactEmail`/`partnerEmail` dari `siteSettings`, sama
   seperti `/tentang`.
 - 18 field `duration` yatim (nama field yang salah; skema memakai

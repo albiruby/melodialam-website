@@ -57,15 +57,16 @@ export function SiteHeader({
         </div>
 
         <div className="order-3 col-span-1 flex items-center justify-end gap-3">
+          {/* Icon and word together: the mark is recognised at a glance, the
+              word tells a reader who does not recognise it where the link goes. */}
           <a
             href="https://www.instagram.com/melodi.alam/?hl=en"
             target="_blank"
             rel="noreferrer"
-            aria-label="Instagram Melodi Alam"
-            title="Instagram"
-            className="hidden text-ink transition-colors hover:text-forest sm:block"
+            className="nav-link-anim hidden items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest sm:flex"
           >
-            <InstagramIcon className="h-5 w-5" />
+            <InstagramIcon className="h-4 w-4" />
+            <span>Instagram</span>
           </a>
           <button
             type="button"
