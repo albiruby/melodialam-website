@@ -410,9 +410,12 @@ Di sanity.io/manage → project → **API → Webhooks**:
 - **Trigger on**: **Create + Update** — publish hasil edit adalah update; tanpa centang Update, menyunting artikel tidak memicu webhook
 - **Projection**: `{_type, _id}`
 
-Header yang dikirim Sanity adalah `x-webhook-secret` (route juga menerima `?secret=`
-sebagai cadangan). Webhook tanpa secret akan ditolak 401 — endpoint revalidasi terbuka
-adalah cara mudah menjadikan cache sebagai sasaran serangan.
+Isi kolom **Secret** webhook; Sanity lalu mengirim tanda tangan
+`sanity-webhook-signature` (HMAC-SHA256 atas `<timestamp>.<body>`, jendela ±5
+menit). Route juga menerima header `x-webhook-secret` sebagai cadangan untuk
+pemanggil manual — header itu dihapus dari webhook Sanity 25 Okt 2026. Tanpa
+bukti identitas, webhook ditolak 401 — endpoint revalidasi terbuka adalah cara
+mudah menjadikan cache sebagai sasaran serangan.
 
 **Soal jumlah tipe di filter.** Dataset `production` punya **8** tipe dokumen
 (`melodialam-sanity/sanity/schemaTypes/index.ts:26-35`): tujuh di atas, ditambah
@@ -567,9 +570,9 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
   (`:43-50`); dipakai di `proxy.ts` dan
   `app/(site)/preview/[type]/[slug]/page.tsx:106` dengan
   `robots: { index: false, follow: false }` (`:22`).
-- **Revalidasi** — `app/api/revalidate/route.ts`: 6 tag (`:30-37`), secret dari
-  header `x-webhook-secret` atau `?secret=` (`:57-60`), perbandingan constant-time
-  (`:39-45`), `401` kalau tidak cocok.
+- **Revalidasi** — `app/api/revalidate/route.ts`: 6 tag, tanda tangan
+  `sanity-webhook-signature` (HMAC-SHA256, jendela ±5 menit) atau header
+  `x-webhook-secret` cadangan, perbandingan constant-time, `401` kalau tidak cocok.
 - **Audio** — `app/api/demo-audio/route.ts:23-35` (`allowedContentTypes`,
   `maximumSizeInBytes`, `addRandomSuffix`); unggah peramban dengan
   `access: "public"` dan nama file asli di key (`components/DemoPortal.tsx:115-121`);

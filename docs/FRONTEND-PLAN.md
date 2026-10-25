@@ -221,7 +221,7 @@ Tabel rute juga memuat `/_not-found`, `/_global-error`, `/icon.png`,
 | ROUTE-005 | — | publik | `allVideos()` → arsip katalog; `allPlaylists()` → `PLAYLISTS` katalog |
 | ROUTE-006 | — | publik | `allPillarPosts()` → `[]`; bagian tidak dirender |
 | ROUTE-010 | — | publik (tanpa auth) | `400` body bukan JSON · `413` body > 16 KB · `422` validasi gagal · `503` Sanity privat gagal menulis · `201` sukses |
-| ROUTE-012 | header `x-webhook-secret` atau query `secret` | ber-secret | `500` bila env belum diset · `401` bila secret salah |
+| ROUTE-012 | tanda tangan `sanity-webhook-signature` (HMAC) atau header `x-webhook-secret` | ber-secret | `500` bila env belum diset · `401` bila bukti tidak cocok |
 
 **Tidak ada** rute terproteksi selain pratinjau dan revalidasi, dan tidak ada
 state di URL selain `?secret=` pada dua rute tersebut. Pencarian kurasi **tidak**
@@ -727,8 +727,9 @@ dipertahankan.
 `POST /api/demo-audio` → `handleUpload`; tipe dibatasi ke 3 MIME audio, ukuran
 25 MB, `addRandomSuffix: true`; tanpa token → `400`.
 
-`POST /api/revalidate` → secret lewat header `x-webhook-secret` atau query
-`secret`, dibandingkan constant-time; `500` (env kosong), `401` (secret salah),
+`POST /api/revalidate` → tanda tangan `sanity-webhook-signature` (HMAC-SHA256,
+jendela ±5 menit) atau header `x-webhook-secret` cadangan, dibandingkan
+constant-time; `500` (env kosong), `401` (bukti tidak cocok),
 `200 { revalidated, tags }` (6 tag).
 
 ### 8.5 Integrasi CMS (TERVERIFIKASI)

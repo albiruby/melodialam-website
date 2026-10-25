@@ -196,14 +196,14 @@ Resend / Sanity.
 | # | Temuan | Severity bila terkonfirmasi | Status (per laporan audit) | Perbaikan terkecil |
 |---|---|---|---|---|
 | F01 | `audioUrl` diterima dari host mana pun, lalu disimpan ke dokumen yang dikurasi **dan** dikirim ke email redaksi | **High** | `needs_validation` — **ditutup 21 Okt 2026** *(lihat §4.1: host kini dibatasi ke store Blob milik operator)* | bandingkan host dengan store Blob milik operator; tolak selain itu dengan `422` |
-| F02 | `POST /api/demos` tanpa rate limit/quota/CAPTCHA/idempotensi; tiap permintaan = 2 tulis Sanity + 1 email berbayar | **High** | `needs_validation` — belum diperbaiki | rate limit per IP di edge + Turnstile + `Idempotency-Key` |
-| F03 | ~~satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | `needs_validation` — belum diperbaiki | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
+| F02 | `POST /api/demos` tanpa rate limit/quota/CAPTCHA/idempotensi; tiap permintaan = 2 tulis Sanity + 1 email berbayar | **High** | **sebagian ditutup 24 Okt 2026** — rate limit per IP + `Idempotency-Key` + honeypot; Turnstile belum | rate limit per IP di edge + Turnstile + `Idempotency-Key` |
+| F03 | ~~satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | **ditutup 25 Okt 2026** — `SANITY_PREVIEW_SECRET` terpisah (22 Okt), `?secret=` dicabut, webhook memakai `sanity-webhook-signature` | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
 | F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | `needs_validation` — belum diperbaiki | server yang menentukan key + access; bucket privat + signed URL; nama file di-sanitasi |
 | F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | `needs_validation` — belum diperbaiki | grant sekali-pakai dari `/api/demos` + job pembersihan |
 | F06 | ~~tanpa token, antrean fallback dilayani **tanpa** filter status~~ — **DITUTUP 24 Okt 2026**: kedua cabang menyaring status disetujui | (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
 | F07 | hapus submission di Studio meninggalkan `demoContact` (PII) dan objek audio (publik) hidup selamanya | **Low** | `needs_validation` — belum diperbaiki | aksi hapus kurator yang ikut menghapus kontak + objek; tetapkan tanggal retensi |
 | F08 | ~~`visionTool()` aktif di workspace `submissions`~~ — **DITUTUP 24 Okt 2026**: `visionTool` dihapus dari workspace itu, Studio di-deploy ulang | workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
-| F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | `needs_validation` — **sebagian ditutup**: barisnya sudah dihapus dari `.env` (22 Okt 2026); rotasi password di akun Supabase belum | hapus dari `.env` (**selesai**); rotasi password di akun Supabase |
+| F09 | `DATABASE_URL` berisi password Supabase untuk layanan yang sudah tidak dipakai | **Low–Medium (operasional)** | **ditutup 25 Okt 2026** — barisnya dihapus dari `.env` (22 Okt) dan project Supabase `melodi-alam` dihapus (25 Okt) | hapus dari `.env` (**selesai**); hapus project Supabase (**selesai**) |
 | F10 | ~~error mentah Sanity ditulis penuh ke log~~ — **DITUTUP 24 Okt 2026**: log mencatat nama error + status saja | **Informational** | `needs_validation` — belum diperbaiki | log ringkas: status, tipe error, id kiriman |
 
 **Rekap severity:** Critical 0 · High 2 · Medium 3 · Low 3 · Informational 1 ·
@@ -256,9 +256,10 @@ webhook, lalu rotasi nilai lama.
 > 8,2 detik). Rute pratinjau menjawab **404** untuk secret yang salah, karena
 > pemeriksaannya dipindah ke `proxy.ts` yang berjalan sebelum halaman dirender.
 >
-> **Yang tersisa:** cabut penerimaan `?secret=` di `/api/revalidate`, dan
-> pertimbangkan verifikasi tanda tangan `sanity-webhook-signature` sebagai ganti
-> header buatan sendiri.
+> **Selesai 25 Okt 2026:** `?secret=` sudah dicabut dan webhook Sanity kini
+> memakai tanda tangan `sanity-webhook-signature` (HMAC-SHA256, jendela ±5
+> menit) lewat kolom **Secret**; header buatan sendiri tidak dipakai lagi.
+> Dibuktikan: publish → kartu muncul di `/kurasi` produksi dalam 4,8 detik.
 
 **F04/F05 — kapabilitas unggah Blob tidak terikat server.**
 `app/api/demo-audio/route.ts:23-35` memanggil `handleUpload` tanpa
@@ -415,9 +416,9 @@ sebagai klaim keadaan sekarang.
 
 | Kontrol | Kenapa | Status |
 |---|---|---|
-| **Rotasi `SANITY_REVALIDATE_SECRET`** | nilai pernah terekspos di log percakapan | `RENCANA` — **P0** |
+| **Rotasi `SANITY_REVALIDATE_SECRET`** | nilai pernah terekspos di log percakapan | **`TERVERIFIKASI`** 25 Okt 2026 — nilai baru, webhook HMAC, publish tampil 4,8 detik |
 | **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | **`TERVERIFIKASI`** — dipasang, fallback dihapus, `SANITY_REVALIDATE_SECRET` dirotasi (22 Okt 2026) |
-| **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | `RENCANA` |
+| **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | **`TERVERIFIKASI`** — rute hanya menerima HMAC/header |
 | **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
 | **Rate limit + `Idempotency-Key`** | F02 | **`TERVERIFIKASI`** 22 Okt 2026 — 5 kiriman/jam per IP di `POST /api/demos`, 20 token/jam di `POST /api/demo-audio`, `Idempotency-Key` + honeypot. Turnstile masih `RENCANA` |
 | **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | `RENCANA` |
@@ -449,8 +450,9 @@ sebagai klaim keadaan sekarang.
 
 ### 8.1 P0 — sebelum menyalakan fitur baru
 
-1. **Rotasi `SANITY_REVALIDATE_SECRET`** dan pasang `SANITY_PREVIEW_SECRET`
-   terpisah; hapus penerimaan `?secret=` di kedua rute. (F03)
+1. ~~**Rotasi `SANITY_REVALIDATE_SECRET`** dan pasang `SANITY_PREVIEW_SECRET`
+   terpisah; hapus penerimaan `?secret=` di kedua rute. (F03)~~ **Selesai
+   25 Okt 2026** — HMAC `sanity-webhook-signature`, `?secret=` dicabut.
 2. **Pasang Blob store** di Vercel → `BLOB_READ_WRITE_TOKEN` ikut terpasang,
    lalu perbaiki `app/api/demo-audio/route.ts` (server menentukan key + access)
    dan `app/api/demos/route.ts` (tolak `audioUrl` dari host asing — allow-list
@@ -490,9 +492,9 @@ sebagai klaim keadaan sekarang.
 
 | # | Cek | Acuan | Fase |
 |---|---|---|---|
-| C1 | `SANITY_REVALIDATE_SECRET` sudah dirotasi | F03 | `RENCANA` |
-| C2 | `SANITY_PREVIEW_SECRET` diset & berbeda | F03 | `RENCANA` |
-| C3 | `?secret=` tidak lagi diterima | F03 | `RENCANA` |
+| C1 | `SANITY_REVALIDATE_SECRET` sudah dirotasi | F03 | **`TERVERIFIKASI`** 25 Okt 2026 |
+| C2 | `SANITY_PREVIEW_SECRET` diset & berbeda | F03 | **`TERVERIFIKASI`** 22 Okt 2026 |
+| C3 | `?secret=` tidak lagi diterima | F03 | **`TERVERIFIKASI`** 25 Okt 2026 |
 | C4 | `audioUrl` menolak host di luar store operator | F01 | `TERVERIFIKASI` — host asing → `422` |
 | C5 | Rate limit + `429`/`Retry-After` di `POST /api/demos` & `/api/demo-audio` | F02 | `RENCANA` |
 | C6 | `Idempotency-Key` didukung | F02 | `RENCANA` |
@@ -565,10 +567,10 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
   pemeriksaan identitas (`:23`); `allowedContentTypes` + `maximumSizeInBytes` +
   `addRandomSuffix` (`:26-30`); `onUploadCompleted` kosong (`:31-34`); `400` +
   log error mentah (`:38-43`).
-- `app/api/revalidate/route.ts` (**69 baris, penuh**) — 6 tag di `CONTENT_TAGS`
-  (`:30-37`); `timingSafeEqual` dengan cek panjang (`:39-45`); secret dibaca dari
-  header `x-webhook-secret` **atau** `?secret=` (`:57-60`); `401` kalau tidak
-  cocok (`:62-64`).
+- `app/api/revalidate/route.ts` — 6 tag di `CONTENT_TAGS`; `timingSafeEqual`
+  dengan cek panjang; `signatureIsValid()` untuk `sanity-webhook-signature`
+  (HMAC-SHA256, jendela ±5 menit) dan `secretsMatch()` untuk header
+  `x-webhook-secret` cadangan; `401` kalau tidak ada bukti yang cocok.
 - `app/(site)/preview/[type]/[slug]/page.tsx` (**202 baris, penuh**) — `robots:
   { index: false, follow: false }` (`:22`); `instant = false` (`:31`); 404 kalau
   secret tidak cocok (`:106`); perspektif `drafts` lewat `draftClient`; tipe

@@ -717,9 +717,11 @@ peramban; ini temuan audit F04 (`RENCANA` untuk diperbaiki).
 
 ### 9.4 `POST /api/revalidate` (TERVERIFIKASI)
 
-Secret dibaca dari header `x-webhook-secret` atau query `secret`, dibandingkan
-constant-time dengan `SANITY_REVALIDATE_SECRET`. Tanpa env → `500`; secret
-salah → `401`; benar → `200 { revalidated: true, tags: [...] }` dan enam tag
+Bukti identitas berupa tanda tangan `sanity-webhook-signature` (HMAC-SHA256
+atas `<timestamp>.<body>`, jendela ±5 menit) dari kolom **Secret** webhook
+Sanity, atau header `x-webhook-secret` untuk pemanggil manual; keduanya
+dibandingkan constant-time dengan `SANITY_REVALIDATE_SECRET`. Tanpa env → `500`;
+tidak ada bukti yang cocok → `401`; benar → `200 { revalidated: true, tags: [...] }` dan enam tag
 di-invalidate dengan `revalidateTag(tag, "max")`.
 
 ### 9.5 `GET /rss.xml` · `/sitemap.xml` · `/robots.txt` (TERVERIFIKASI)

@@ -96,6 +96,18 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   (`video.url` — dari dokumen `video` CMS / katalog).
 - `dev.cmd` tidak lagi gagal parse: pesan Node 24.22.1 sebelumnya memuat
   tanda kurung di dalam blok `if` batch.
+- **Project Supabase `melodi-alam` dihapus (25 Okt 2026)** — sisa era
+  Payload/Supabase yang sudah digantikan ADR-0008 (Sanity + Vercel Blob);
+  `DATABASE_URL`-nya sudah dibuang dari `.env` pada 22 Okt dan tidak ada kode
+  situs yang membacanya. Penghapusan ini menutup item rotasi kredensial
+  Supabase pada daftar tindakan pemilik.
+- **Webhook revalidate pindah ke tanda tangan HMAC (25 Okt 2026).** Webhook
+  Sanity kini memakai kolom **Secret** → header `sanity-webhook-signature`
+  (HMAC-SHA256 atas `<timestamp>.<body>`, jendela ±5 menit); header
+  `x-webhook-secret` lama dihapus dan secret dirotasi. Dibuktikan end-to-end:
+  publish → kartu muncul di `/kurasi` produksi dalam 4,8 detik.
+  `SANITY_REVALIDATE_SECRET_PREVIOUS` dihapus dari Vercel.
+
 **Privasi, pembersihan data, dan pilar (24 Okt 2026)**
 
 - **`/privasi` + `/ketentuan`** — dua halaman yang menjelaskan persis apa yang

@@ -752,9 +752,10 @@ Semua lapisan baca memakai Cache Components Next.js: `"use cache"` +
 Enam tag. `POST /api/revalidate` membuang keenam-enam-nya sekaligus
 (`app/api/revalidate/route.ts:30-36`) dengan `revalidateTag(tag, "max")`.
 
-Rute revalidasi menolak apa pun yang tidak bisa membuktikan secret-nya:
-secret dibaca dari header `x-webhook-secret` atau query `?secret=`, dibandingkan
-dengan `timingSafeEqual`, dan `SANITY_REVALIDATE_SECRET` yang kosong membuat
+Rute revalidasi menolak apa pun yang tidak bisa membuktikan identitasnya:
+tanda tangan `sanity-webhook-signature` (HMAC-SHA256, jendela ±5 menit) atau
+header `x-webhook-secret` cadangan, keduanya dibandingkan dengan
+`timingSafeEqual`, dan `SANITY_REVALIDATE_SECRET` yang kosong membuat
 rute menjawab **500** (bukan diam-diam membiarkan cache kosong).
 
 > `RENCANA` / perlu diperbaiki: webhook Sanity idealnya memicu **Create +

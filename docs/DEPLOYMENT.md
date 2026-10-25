@@ -573,9 +573,12 @@ Dipasang di `sanity.io/manage` → project → **API → Webhooks**:
 adalah **update**, sehingga tanpa centang Update konten hasil suntingan tidak
 segera muncul di situs. Perbaiki di dashboard Sanity, bukan di kode.
 
-Header yang dikirim Sanity adalah `x-webhook-secret`; route juga menerima
-`?secret=` sebagai cadangan (`app/api/revalidate/route.ts:57-60`). Webhook tanpa
-secret ditolak `401` — endpoint revalidasi terbuka adalah cara mudah menjadikan
+Isi kolom **Secret** pada webhook Sanity (Advanced settings); Sanity lalu
+mengirim tanda tangan `sanity-webhook-signature` (HMAC-SHA256, jendela ±5
+menit). Header buatan `x-webhook-secret` masih diterima route sebagai cadangan
+untuk pemanggil manual, tetapi webhook Sanity tidak lagi memakainya (dihapus
+25 Okt 2026). Webhook tanpa bukti identitas ditolak `401` — endpoint revalidasi
+terbuka adalah cara mudah menjadikan
 cache sebagai sasaran serangan.
 
 Route membuang **enam** tag cache sekaligus: `articles`, `pillar-posts`,
@@ -852,8 +855,8 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
   (https + ekstensi), `demoContact` terpisah, `503` bila Sanity gagal.
 - `app/api/demo-audio/route.ts` — token unggah Blob, `allowedContentTypes`,
   `maximumSizeInBytes` 25 MB, `400` bila token tidak ada.
-- `app/api/revalidate/route.ts` — 6 tag, `x-webhook-secret` + fallback
-  `?secret=`, `401`/`500`.
+- `app/api/revalidate/route.ts` — 6 tag, `sanity-webhook-signature` (HMAC)
+  dengan `x-webhook-secret` cadangan, `401`/`500`.
 - `app/rss.xml/route.ts`, `app/sitemap.ts`, `app/robots.ts` — feed,
   peta situs, aturan perayapan.
 - `app/(site)/journal/route.ts` dan `app/(site)/journal/[slug]/route.ts` —

@@ -522,7 +522,7 @@ formulir tanpa audio.
 | Tujuan | Membuang cache 6 tag saat Sanity Studio mem-publish |
 | Method & path | `POST /api/revalidate` |
 | Auth | Shared secret `SANITY_REVALIDATE_SECRET` |
-| Header secret | `x-webhook-secret` (utama) atau `?secret=` (cadangan). Selama rotasi, nilai **sebelumnya** juga diterima lewat `SANITY_REVALIDATE_SECRET_PREVIOUS` (sudah dikosongkan 22 Okt 2026) |
+| Bukti identitas | Tanda tangan `sanity-webhook-signature` (HMAC-SHA256 atas `<timestamp>.<body>`, jendela ±5 menit) memakai secret dari kolom **Secret** webhook Sanity; `x-webhook-secret` tetap diterima sebagai cadangan untuk pemanggil manual. `?secret=` dihapus; `SANITY_REVALIDATE_SECRET_PREVIOUS` dihapus dari Vercel 25 Okt 2026 |
 | Efek samping | `revalidateTag(tag, "max")` untuk 6 tag |
 
 **Tag yang dibuang** (`route.ts:30-37`):
@@ -558,13 +558,16 @@ formulir tanpa audio.
 { "error": "Secret tidak cocok." }
 ```
 
-**Catatan `[PERLU VERIFIKASI]`** — tidak ada webhook yang benar-benar terpasang
-di dashboard Sanity dari sisi repo ini; pemasangan dilakukan manual. Konfigurasi
-yang direncanakan (`RENCANA`): filter 8 tipe `_type`, "Trigger on: **Create + Update**",
-projection `{_type, _id}`. Lihat [`DEPLOYMENT.md`](DEPLOYMENT.md) §7.2.
+**Status `TERVERIFIKASI` (25 Okt 2026)** — webhook terpasang di dashboard
+Sanity: filter 8 tipe `_type`, "Trigger on: **Create + Update + Delete**",
+projection `{_type, _id}`, dan bukti identitas lewat kolom **Secret**
+(`sanity-webhook-signature`, HMAC-SHA256). Uji end-to-end: publish → kartu
+muncul di `/kurasi` produksi dalam 4,8 detik. Lihat
+[`DEPLOYMENT.md`](DEPLOYMENT.md) §7.2.
 
-**Celah `TERVERIFIKASI`:** secret diterima juga lewat query string (`?secret=`),
-sehingga bisa bocor ke log akses dan riwayat peramban.
+**Celah `?secret=` — ditutup.** Rute tidak lagi menerima secret lewat query
+string; bukti identitasnya tanda tangan HMAC atau header `x-webhook-secret`
+untuk pemanggil manual.
 
 ### 4.5 `API-05` — `GET /rss.xml`
 
@@ -1055,18 +1058,14 @@ paths:
       operationId: revalidateContentCache
       summary: Buang cache 6 tag konten
       description: >
-        Dipanggil webhook Sanity. Membandingkan `x-webhook-secret` (atau
-        query `?secret=`) dengan SANITY_REVALIDATE_SECRET secara constant-time.
+        Dipanggil webhook Sanity. Menerima tanda tangan
+        `sanity-webhook-signature` (HMAC-SHA256 atas `<timestamp>.<body>`,
+        jendela ±5 menit) dari kolom Secret webhook, atau header
+        `x-webhook-secret` sebagai cadangan untuk pemanggil manual.
       tags: [cache]
       security:
+        - webhookSignature: []
         - webhookSecret: []
-      parameters:
-        - name: secret
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Cadangan bila header `x-webhook-secret` tidak dipakai.
       responses:
         '200':
           description: Cache dibuang.
@@ -1177,6 +1176,10 @@ paths:
               example: "/stories/senja-di-jalan-braga"
 components:
   securitySchemes:
+    webhookSignature:
+      type: apiKey
+      in: header
+      name: sanity-webhook-signature
     webhookSecret:
       type: apiKey
       in: header
@@ -1362,10 +1365,11 @@ dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
   `maximumSizeInBytes` = `DEMO_AUDIO_MAX_BYTES`; `addRandomSuffix: true`;
   `onUploadCompleted` kosong; `catch` → `400` dengan pesan "Unggah audio belum
   bisa diproses. Coba lagi nanti."
-- `app/api/revalidate/route.ts` (**69 baris, penuh**) — `timingSafeEqual`;
-  `CONTENT_TAGS` 6 tag; header `x-webhook-secret` dengan fallback query
-  `?secret=`; `500` bila `SANITY_REVALIDATE_SECRET` kosong; `401` bila tidak
-  cocok; `revalidateTag(tag, "max")`.
+- `app/api/revalidate/route.ts` — `signatureIsValid()` (HMAC-SHA256,
+  `timingSafeEqual`, jendela ±5 menit) dan `secretsMatch()` untuk header
+  `x-webhook-secret` cadangan; `CONTENT_TAGS` 6 tag; `500` bila
+  `SANITY_REVALIDATE_SECRET` kosong; `401` bila tidak ada bukti yang cocok;
+  `revalidateTag(tag, "max")`.
 - `app/rss.xml/route.ts` (**73 baris, penuh**) — `latestStories(8)`; `xml()`;
   `rfc822()` pada `+07:00`; header `Cache-Control` dan `Content-Type`;
   `<enclosure type="image/jpeg">`.
@@ -1453,10 +1457,10 @@ moderasi kurator (tidak ada endpoint-nya). `POST /api/demos` dengan body
 7. ~~**Rotasi `SANITY_REVALIDATE_SECRET` + `SANITY_PREVIEW_SECRET` terpisah.**~~
    **Selesai 22 Okt 2026**: secret baru dipasang di Vercel, fallback pratinjau
    dihapus, dan `SANITY_REVALIDATE_SECRET_PREVIOUS` dipakai sebagai masa transisi
-   sampai webhook Sanity diarahkan ke secret baru.
-   Sekarang satu nilai melindungi dua kapabilitas (lihat
-   `audit-2026-10-21.md` F03). Selain itu, penerimaan `?secret=` di
-   `/api/revalidate` sebaiknya dihapus — header saja.
+   sampai webhook Sanity diarahkan ke secret baru. **Ditutup 25 Okt 2026**:
+   webhook pindah ke kolom **Secret** (`sanity-webhook-signature`, HMAC),
+   header `x-webhook-secret` lama dihapus, `?secret=` tidak diterima lagi, dan
+   `SANITY_REVALIDATE_SECRET_PREVIOUS` dihapus dari Vercel.
 8. **`queueLength` yang ambigu.** Jalur Sanity mengembalikan jumlah submission
    *approved*; jalur in-memory mengembalikan panjang antrean modul (termasuk
    entri `IN REVIEW`). Satu nama, dua makna — perlu diseragamkan atau diberi
