@@ -2,10 +2,15 @@ import Image from "next/image";
 import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars-shared";
 
 /**
- * Cards for the "Dari Feed" sections — curated Instagram posts.
+ * Cards for the "Dari Feed" sections — curated Instagram posts, photo and reel
+ * alike. Both kinds render as the same card: one uniform 4:5 frame with the
+ * post's cover, the title, and a bottom row where the date and "Buka di IG"
+ * sit on one line.
  *
- * `PillarCard` is the photo-pillar card (4:5 art, Stories side and the home
- * teaser); `PillarRow` is the reel-pillar row (vertical thumb, Videos side).
+ * The card is `h-full` with `mt-auto` on that bottom row so cards in the same
+ * grid line up even when one title is two lines and another is five — the
+ * caption does not push the date row to different heights.
+ *
  * Both open the original post on Instagram — the slides and the video live
  * there.
  */
@@ -21,7 +26,7 @@ export function PillarCard({
   // One uniform 4:5 frame for every card. The covers are the posts' own 4:5
   // slides, so `object-cover` fills the frame exactly — no crop, no gaps.
   return (
-    <a href={post.igUrl} target="_blank" rel="noreferrer" className="group flex flex-col">
+    <a href={post.igUrl} target="_blank" rel="noreferrer" className="group flex h-full flex-col">
       <div className="relative aspect-[4/5] w-full overflow-hidden border border-ink bg-paper">
         {post.image ? (
           <Image
@@ -48,54 +53,10 @@ export function PillarCard({
       >
         {post.title}
       </h4>
-      <div className="mt-1.5 flex items-center justify-between font-mono text-[10px] uppercase text-neutral-500">
+      <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-mono text-[10px] uppercase text-neutral-500">
         <span>{pillarDate(post.date)}</span>
-        <span className="transition-colors group-hover:text-forest">Buka di IG ↗</span>
+        <span className="transition-colors group-hover:text-forest">Buka di IG</span>
       </div>
-    </a>
-  );
-}
-
-export function PillarRow({ post, index }: { post: PillarPost; index: number }) {
-  // The thumb frame follows the image's own ratio, so nothing is cropped.
-  const ratio =
-    post.imageWidth && post.imageHeight ? `${post.imageWidth} / ${post.imageHeight}` : "9 / 16";
-
-  return (
-    <a
-      href={post.igUrl}
-      target="_blank"
-      rel="noreferrer"
-      className="group flex items-center gap-5 px-3 py-4 transition-all duration-300 hover:bg-paper"
-    >
-      <span className="text-outline-muted w-8 shrink-0 font-mono text-2xl font-bold">
-        {String(index + 1).padStart(2, "0")}
-      </span>
-      <div
-        className="relative h-24 shrink-0 overflow-hidden border border-ink bg-neutral-900 sm:h-28"
-        style={{ aspectRatio: ratio }}
-      >
-        {post.image ? (
-          <Image
-            src={post.image}
-            alt={post.title}
-            fill
-            sizes="120px"
-            className="editorial-img object-cover"
-          />
-        ) : null}
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="font-mono text-[10px] uppercase text-neutral-500">
-          Dari Feed • {pillarDate(post.date)}
-        </div>
-        <h4 className="mt-0.5 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest">
-          {post.title}
-        </h4>
-      </div>
-      <span className="shrink-0 font-mono text-xs font-bold uppercase tracking-wider transition-colors group-hover:text-forest">
-        IG ↗
-      </span>
     </a>
   );
 }

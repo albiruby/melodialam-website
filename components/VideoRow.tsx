@@ -55,19 +55,21 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
           ▶
         </WatchButton>
         <span className="select-none font-mono text-sm font-bold text-neutral-400">—</span>
-        <div className="inline-flex items-center gap-2.5 border border-ink bg-white px-3.5 py-2 shadow-[4px_4px_0px_#0D0D0D] transition-colors group-hover:border-forest">
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center bg-forest font-serif text-xs font-bold italic text-white">
-            M
-          </span>
+        <a
+          href={video.url}
+          target="_blank"
+          rel="noreferrer"
+          title={`Tonton ${video.title} di YouTube`}
+          className="inline-flex items-center border border-ink bg-white px-3.5 py-2 shadow-[4px_4px_0px_#0D0D0D] transition-colors hover:border-forest"
+        >
           <div className="text-left leading-none">
             <span className="block font-mono text-[9px] uppercase text-neutral-500">
               Melodi Alam
             </span>
             <span className="block text-sm font-black uppercase tracking-wider text-ink">
-              Watch ↗
-            </span>
+              Watch</span>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   );

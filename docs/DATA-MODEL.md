@@ -408,7 +408,7 @@ Copy untuk kepala bagian halaman Melodi Samsara. Di-pin di struktur Studio
 |---|---|---|---|---|---|
 | `samsaraTitle` | string | tidak | 60 | Judul bagian sesi — jadi `h1` halaman | "Melodi Samsara" |
 | `samsaraNote` | string | tidak | 60 | Catatan kecil di samping judul. **Kosong ⇒ dihitung otomatis** ("N sesi panggung") | — |
-| `samsaraLinkLabel` | string | tidak | 60 | Label tautan ke kanal YouTube. `↗` ditambahkan situs | "YouTube Channel" |
+| `samsaraLinkLabel` | string | tidak | 60 | Label tautan ke kanal YouTube (tanpa `↗`; panah dilepas 25 Okt 2026) | "YouTube Channel" |
 | `playlistsTitle` | string | tidak | 60 | Judul bagian playlist | "Playlists" |
 | `playlistsNote` | string | tidak | 60 | Catatan kecil. Kosong ⇒ dihitung otomatis ("5 playlist publik • melodialam") | — |
 

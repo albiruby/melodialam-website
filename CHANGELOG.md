@@ -80,6 +80,22 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   ke `main` dan setiap pull request. Tidak butuh secret: dataset `production`
   bisa dibaca tanpa token, dan halaman yang butuh satu jatuh ke konten statis.
 
+**Gaya CTA & kartu (25 Okt 2026)**
+
+- **Panah `↗` dilepas dari seluruh CTA situs** (30 tempat): tombol, tautan
+  seksi, footer, modal. Label dari CMS (`videosPage.samsaraLinkLabel`,
+  `samsaraNote`, dst.) memang tidak pernah memuat panah — panahnya hiasan kode.
+  Panah `←`/`→` pada pager Stories tetap (penunjuk arah, bukan dekorasi).
+- Reel kurasi kini **kartu yang sama** dengan pilar foto — `PillarRow`
+  dihapus; kaki kartu (`tanggal • Buka di IG`) `mt-auto` supaya sejajar
+  bawah walau panjang judul berbeda.
+- Modal video tidak lagi memotong layar: panel `max-h-[calc(100dvh-2rem)]`
+  dan pemutar mengisi ruang tersisa di antara header dan footer.
+- Tombol `M | WATCH` pada baris sesi: badge logo `M` hilang, seluruh
+  "Melodi Alam / WATCH" kini jadi tautan **langsung** ke video di YouTube
+  (`video.url` — dari dokumen `video` CMS / katalog).
+- `dev.cmd` tidak lagi gagal parse: pesan Node 24.22.1 sebelumnya memuat
+  tanda kurung di dalam blok `if` batch.
 **Privasi, pembersihan data, dan pilar (24 Okt 2026)**
 
 - **`/privasi` + `/ketentuan`** — dua halaman yang menjelaskan persis apa yang

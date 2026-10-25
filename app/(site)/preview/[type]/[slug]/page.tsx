@@ -92,7 +92,7 @@ function Banner({ kind, id }: { kind: string; id: string }) {
         rel="noreferrer"
         className="border border-white px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors hover:bg-white hover:text-ink"
       >
-        Buka di Studio ↗
+        Buka di Studio
       </a>
     </div>
   );
@@ -190,7 +190,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
               rel="noreferrer"
               className="mt-4 inline-block font-mono text-xs uppercase tracking-wider underline hover:text-forest"
             >
-              Buka post di Instagram ↗
+              Buka post di Instagram
             </a>
           </div>
         </div>

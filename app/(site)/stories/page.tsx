@@ -44,7 +44,7 @@ export default async function StoriesPage() {
           href="/kurasi"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Curated News ↗
+          Curated News
         </Link>
       </div>
     </Reveal>

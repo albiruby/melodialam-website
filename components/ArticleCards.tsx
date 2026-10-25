@@ -116,8 +116,7 @@ function CardImage({
         </p>
         <div className="hover-reveal-tag flex items-center justify-between border-t border-white/20 pt-2 text-[11px] uppercase">
           <span>{noteCta}</span>
-          <span>↗</span>
-        </div>
+</div>
       </div>
     </div>
   );

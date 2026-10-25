@@ -259,11 +259,10 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 
 | Komponen | Elemen link | Isi | Dipakai di |
 |---|---|---|---|
-| `FrontCard` (`components/FrontCard.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA ↗" | Beranda — grid 2×2, 4 kartu |
+| `FrontCard` (`components/FrontCard.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA" | Beranda — grid 2×2, 4 kartu |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
-| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul, tanggal, "Buka di IG ↗" | Beranda — strip 4 kurasi; `/kurasi` — grid pilar foto |
-| `PillarRow` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Nomor urut, thumb dengan rasio gambar sendiri, "Dari Feed • tanggal", judul, "IG ↗" | `/kurasi` — blok TONTON |
-| `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ M Watch ↗ ]` | `/videos` — 9 baris sesi |
+| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 4 kurasi; `/kurasi` — SEMUA pilar, foto dan reel, sebagai kartu |
+| `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo) | `/videos` — 9 baris sesi |
 
 Aturan yang menyertainya:
 
@@ -271,8 +270,8 @@ Aturan yang menyertainya:
   memakai konstanta `COVER_FRAME = "aspect-[4/5]"`, dan `PillarCard` memakai
   `aspect-[4/5]` langsung. Gambar diisi dengan `object-cover` supaya slide asli
   post terisi penuh tanpa celah.
-- **`PillarRow` memakai rasio gambar sendiri** (`imageWidth`/`imageHeight`, default
-  `9 / 16`) karena thumb pilar reel adalah video vertikal, bukan slide feed.
+- **Kaki kartu pilar sejajar bawah** — `PillarCard` memakai `h-full` + `mt-auto` pada baris tanggal/IG, sehingga kartu dengan judul dua baris dan judul enam baris tetap sebaris kakinya. Reel kurasi ikut kartu ini; frame 4:5 memotong sampul vertikal di tengah — cover slide feed (4:5) tampil utuh.
+
 - **Baris video bukan satu link** karena ia membuka modal video. `WatchLink`
   tetap menyimpan `href` YouTube asli supaya baris bisa dipakai tanpa
   JavaScript, dan `WatchButton` memakai `aria-label="Putar <judul>"`.
@@ -306,9 +305,9 @@ Ini diminta secara eksplisit dan **tidak boleh** diganti dengan perilaku generik
 | Aturan | Perilaku | Status |
 |---|---|---|
 | `DEC-002` | Tajuk hierarki dan strip kategori: state awal teks murni tanpa `—`; `—` muncul menggeser teks saat hover | **Belum terpasang di UI** — `dash-reveal-item`/`dash-reveal-prefix` ada di `globals.css` tetapi dipakai 0× |
-| `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan gugus `[ ▶ ] — [ M WATCH ↗ ]` | Terimplementasi pada baris video (`video-action-reveal`) |
+| `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan gugus `[ ▶ ] — [ WATCH ]` | Terimplementasi pada baris video (`video-action-reveal`) |
 | Seksi 9.3C | Hover thumbnail artikel: tirai gelap naik dari bawah + bingkai siku di sudut | Terimplementasi (`hover-reveal-curtain` + `corner-frame`) |
-| Kartu satu link | Seluruh area kartu bisa diklik, termasuk teks | Terimplementasi (`FrontCard`, `ArticleCard`, `PillarCard`, `PillarRow`) |
+| Kartu satu link | Seluruh area kartu bisa diklik, termasuk teks | Terimplementasi (`FrontCard`, `ArticleCard`, `PillarCard`) |
 
 ### 6.1 Aksesibilitas fokus (`ACC-002`) — sudah tertutup
 
@@ -335,7 +334,7 @@ tidak memakai `box-shadow` kabur. Pola yang benar-benar dipakai:
 |---|---|---|
 | CTA utama hijau | `SubmitLink` di `components/Ticker.tsx`, dipakai di nav desktop | `bg-forest px-3.5 py-1.5 font-bold text-white`, hover `bg-ink` + `hover:shadow-[3px_3px_0px_#0D0D0D]` |
 | CTA utama hitam | Nav mobile (`components/SiteHeader.tsx`) dan tombol kirim demo (`components/DemoPortal.tsx`) | `bg-ink … text-white`, hover `bg-forest` |
-| Tombol sekunder | Judul artikel, "Semua artikel ↗", "Semua kurasi ↗", "Curated News ↗" | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
+| Tombol sekunder | Judul artikel, "Semua artikel ", "Semua kurasi ", "Curated News " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
 | Chip filter | `components/KurasiBrowser.tsx` | `border border-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider`; aktif `bg-ink text-white`, tidak aktif `hover:bg-paper` |
 | Tombol Play | `components/VideoRow.tsx` | `rounded-full border border-ink bg-ink text-white`, hover `bg-forest` — satu-satunya elemen bulat di situs |
 | Kartu playlist | `app/(site)/videos/page.tsx` | `brutalist-card … border border-ink bg-paper p-4` |
@@ -438,11 +437,7 @@ kebutuhan jelas justru menambah permukaan yang harus dijaga.
   yang saling menimpa.
 - Pakai `next/image` untuk gambar Sanity dan gambar lokal; **jangan** untuk
   thumbnail YouTube (§5.9).
-- Isi frame 4:5 dengan `object-cover`; biarkan `PillarRow` memakai rasio
-  gambar aslinya.
-
-**Jangan**
-
+- Isi frame 4:5 dengan `object-cover` untuk SEMUA kartu pilar — tidak ada lagi baris khusus reel.
 - Menambah `rounded-*` pada kartu, bingkai, atau kolom formulir.
 - Menambah `shadow-*` yang kabur.
 - Menaruh teks badan pada `font-display`.
@@ -497,7 +492,7 @@ seperti axe atau pemeriksa kontras.
 - Nol rujukan `Plus_Jakarta_Sans` yang tersisa.
 
 **Pola kartu diverifikasi dari kode:** `FrontCard` dan `ArticleCard` memakai satu
-`<Link>`; `PillarCard` dan `PillarRow` memakai satu `<a>`; `VideoRow` bukan satu
+`<Link>`; `PillarCard` memakai satu `<a>`; `VideoRow` bukan satu
 link dan memakai `WatchButton` + `WatchLink`. Sampul artikel dan pilar memakai
 `aspect-[4/5]` + `object-cover`.
 

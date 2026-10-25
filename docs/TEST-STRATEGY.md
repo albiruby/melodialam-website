@@ -40,8 +40,8 @@ Bukti yang dibaca langsung:
   `test`, `catalogue`, `brand`, `photos`, `seed:sanity`, `seed:videos`.
   Skrip `test` = `vitest run`.
 - `vitest.config.ts` (`TERVERIFIKASI`): alias `@` → root repo, `environment:
-  "node"`, `include: ["**/*.test.ts"]`, `exclude: ["node_modules/**",
-  ".next/**"]`. Tidak ada setup file, tidak ada coverage, tidak ada reporter
+ $1node"`, `include: ["**/*.test.ts"]`, `exclude: ["node_modules/**",
+ $1.next/**"]`. Tidak ada setup file, tidak ada coverage, tidak ada reporter
   khusus.
 - Satu-satunya berkas test di repo: `lib/content-fallback.test.ts`. **Tidak ada**
   `*.spec.ts`, tidak ada `tests/`, tidak ada `__tests__/`.
@@ -265,7 +265,7 @@ Tabel batas yang wajib ditulis sebagai test (`I-01`…`I-14`):
 | `program` tak dikenal | di luar enum | `422 errors.program` | `I-07` |
 | `genre`/`program` kosong | `""` | **lolos** (kondisional) → `201` | `I-08` |
 | Cap field | `artist` 121 char; `city` 81; `title` 161; `genre` 61; `program` 81; `link` 501; `contact` 161; `story` 2001 | tersimpan 120/80/160/60/80/500/160/2000 | `I-09` |
-| Trim | `"  Skyline  "` | `"Skyline"` | `I-09b` |
+| Trim | `"  Skyline $1` | `"Skyline"` | `I-09b` |
 | Tipe salah | `artist: 42` | `""` → `422` wajib | `I-09c` |
 | Audio format salah | `audioName: "demo.aac"` | `422 errors.audioName` | `I-13` |
 | Audio terlalu besar | `audioSize: 26214401` | `422 errors.audioName` | `I-14` |
@@ -669,9 +669,9 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `curationNote` fallback `"kurasi redaksi"`.
 - `components/ArticleCards.tsx` — `COVER_FRAME = "aspect-[4/5]"`, `ArticleCard`
   (satu `<Link>`, `titleFirst`, badge "Reel"), `FrontCard` (satu `<Link>`, sampul
-  4:5 di kiri, "BACA SELENGKAPNYA ↗").
+  4:5 di kiri, "BACA SELENGKAPNYA ").
 - `components/PillarCards.tsx` — `PillarCard` (satu `<a>`, 4:5 `object-cover`),
-  `PillarRow`, `PillarHead`.
+  `PillarHead`.
 - `components/KurasiBrowser.tsx` — `PILLAR_LIMIT = 6`, `SEARCH_LIMIT = 48`, kotak
   cari, chip per pillar, blok BACA/TONTON.
 - `components/YoutubeThumb.tsx` — `srcset` 320w/480w/1280w, fallback
@@ -729,6 +729,6 @@ dan brief acuan), serta environment Vercel (nilai env tidak dibaca).
    diunduh di mesin ini.
 8. **Dokumen lain masih menyebut kondisi lama.** `docs/DEPLOYMENT.md` dan
    `docs/ARCHITECTURE.md` masih menulis "belum ada yang ter-deploy" dan
-   "belum ada CI", padahal deploy produksi berjalan otomatis dari `main` —
+ $1belum ada CI", padahal deploy produksi berjalan otomatis dari `main` —
 kini CI GitHub Actions sudah ada (22 Okt 2026).
    `[PERLU VERIFIKASI]` apakah dokumen itu memang disengaja atau tertinggal.

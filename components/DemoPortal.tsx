@@ -386,13 +386,7 @@ export function DemoPortal() {
               className="group flex items-center gap-4 bg-ink px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:-translate-y-1 hover:bg-forest hover:shadow-[5px_5px_0px_#0D0D0D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest active:translate-y-0 disabled:opacity-50"
             >
               <span>{pending ? "Mengirim…" : "Kirim Demo Sekarang"}</span>
-              <span
-                aria-hidden
-                className="inline-block transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-1"
-              >
-                ↗
-              </span>
-            </button>
+</button>
           </div>
         </form>
 

@@ -48,10 +48,7 @@ export function FrontCard({ article, lead = false }: { article: Article; lead?: 
 
         <span className="mt-auto inline-flex items-center gap-1 pt-3 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors group-hover:text-forest">
           Baca Selengkapnya
-          <span aria-hidden className="inline-block transition-transform group-hover:translate-x-1">
-            ↗
-          </span>
-        </span>
+</span>
       </div>
     </Link>
   );

@@ -125,7 +125,7 @@ export function SiteHeader({
           onClick={closeDrawer}
           className="mt-2 block bg-ink py-2.5 text-center text-white transition-colors hover:bg-forest"
         >
-          {SUBMIT_NAV.label} ↗
+          {SUBMIT_NAV.label}
         </Link>
       </div>
     </header>

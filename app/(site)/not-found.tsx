@@ -21,7 +21,7 @@ export default function NotFound() {
               href={item.href}
               className="border border-ink px-3 py-1.5 font-mono text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              {item.label} ↗
+              {item.label}
             </Link>
           </li>
         ))}

@@ -58,7 +58,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               rel="noreferrer"
               className="whitespace-nowrap font-bold underline transition-colors hover:text-forest"
             >
-              Lihat di Google Maps ↗
+              Lihat di Google Maps
             </a>
           </p>
           <div className="flex flex-wrap gap-2 pt-3">

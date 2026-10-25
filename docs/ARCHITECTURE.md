@@ -781,7 +781,7 @@ melodi-alam/
 │   ├── ArticleCards.tsx              ArticleCard (server)
 │   ├── FrontCard.tsx                 kartu Latest News di beranda (server)
 │   ├── ArticleBody.tsx               PortableText + paragraf statis (server)
-│   ├── PillarCards.tsx               PillarCard, PillarRow (server)
+│   ├── PillarCards.tsx               PillarCard (server)
 │   ├── PillarHead.tsx                kepala seksi pillar (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)
 │   ├── SiteFooter.tsx · Ticker.tsx · MelodiAlamLockup.tsx   (server)

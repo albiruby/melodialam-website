@@ -114,9 +114,9 @@ export function VideoModal() {
       <div
         ref={panel}
         onKeyDown={onPanelKeyDown}
-        className="modal-panel w-full max-w-4xl border-2 border-ink bg-white shadow-[10px_10px_0px_#1B3B2B]"
+        className="modal-panel flex max-h-[calc(100dvh-2rem)] w-full max-w-4xl flex-col border-2 border-ink bg-white shadow-[10px_10px_0px_#1B3B2B]"
       >
-        <div className="flex items-center justify-between border-b border-ink bg-paper px-4 py-3">
+        <div className="flex shrink-0 items-center justify-between border-b border-ink bg-paper px-4 py-3">
           <div className="flex min-w-0 items-center gap-2">
             <span aria-hidden className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-red-600" />
             <h2
@@ -136,10 +136,13 @@ export function VideoModal() {
           </button>
         </div>
 
-        <div className="aspect-video w-full bg-black">
+        {/* A flexible stage: the player takes the height that is left between
+            the header and the footer, so a tall window can never push the
+            panel past the viewport and clip it. */}
+        <div className="relative min-h-0 flex-1 bg-black">
           <iframe
             key={state.id}
-            className="h-full w-full"
+            className="absolute inset-0 h-full w-full"
             src={`https://www.youtube.com/embed/${state.id}?autoplay=1`}
             title={state.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -147,7 +150,7 @@ export function VideoModal() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink bg-white px-4 py-3 text-xs">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-ink bg-white px-4 py-3 text-xs">
           <span className="font-serif italic text-neutral-600">
             Tayang di kanal resmi YouTube @melodialam
           </span>
@@ -157,7 +160,7 @@ export function VideoModal() {
             rel="noopener noreferrer"
             className="font-bold uppercase hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
           >
-            Buka Langsung di YouTube ↗
+            Buka Langsung di YouTube
           </a>
         </div>
       </div>

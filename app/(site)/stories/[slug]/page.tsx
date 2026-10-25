@@ -180,7 +180,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
           rel="noopener noreferrer"
           className="font-bold underline hover:text-forest"
         >
-          Diskusi di Instagram ↗
+          Diskusi di Instagram
         </a>
       </div>
 
@@ -194,7 +194,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
             href="/stories"
             className="nav-link-anim text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
           >
-            Semua Artikel ↗
+            Semua Artikel
           </Link>
         </div>
         <div className="grid grid-cols-1 gap-8 pt-8 sm:grid-cols-2 lg:grid-cols-3">

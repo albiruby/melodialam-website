@@ -84,19 +84,19 @@ export default async function TentangPage() {
               href="/stories"
               className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              Stories ↗
+              Stories
             </Link>
             <Link
               href="/submit"
               className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              Submit Karya ↗
+              Submit Karya
             </Link>
             <Link
               href="/rss.xml"
               className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
-              RSS ↗
+              RSS
             </Link>
           </div>
         </div>
@@ -137,7 +137,7 @@ export default async function TentangPage() {
                 rel="noreferrer"
                 className="whitespace-nowrap font-bold underline transition-colors hover:text-forest"
               >
-                Peta ↗
+                Peta
               </a>
             </p>
 
@@ -151,7 +151,7 @@ export default async function TentangPage() {
                   className="flex items-center gap-1.5 border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
                 >
                   {CHANNEL_ICONS[link.label] ? <ChannelIcon label={link.label} /> : null}
-                  {link.label} ↗
+                  {link.label}
                 </a>
               ))}
             </div>
@@ -171,7 +171,7 @@ export default async function TentangPage() {
               href={pillar.href}
               className="mt-4 inline-block text-[11px] font-bold uppercase tracking-wider text-ink underline transition-colors hover:text-forest"
             >
-              {pillar.cta} ↗
+              {pillar.cta}
             </Link>
           </div>
         ))}

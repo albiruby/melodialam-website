@@ -14,7 +14,7 @@ export function PillarHead({ label, note }: { label: string; note: string }) {
         rel="noreferrer"
         className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
       >
-        @melodi.alam ↗
+        @melodi.alam
       </a>
     </div>
   );

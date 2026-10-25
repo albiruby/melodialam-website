@@ -63,7 +63,7 @@ function SectionHead({
           href={href}
           className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
         >
-          {linkLabel} ↗
+          {linkLabel}
         </a>
       ) : null}
     </div>
@@ -137,7 +137,7 @@ export default async function VideosPage() {
             rel="noreferrer"
             className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
           >
-            YouTube ↗
+            YouTube
           </a>
         </div>
       </Reveal>
@@ -179,7 +179,7 @@ export default async function VideosPage() {
           href="/kurasi"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Curated News ↗
+          Curated News
         </Link>
       </div>
 

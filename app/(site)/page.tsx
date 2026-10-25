@@ -76,7 +76,7 @@ export default async function HomePage() {
             href="/stories"
             className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
           >
-            Semua artikel ↗
+            Semua artikel
           </Link>
         </div>
       </Reveal>
@@ -99,7 +99,7 @@ export default async function HomePage() {
               href="/kurasi"
               className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
             >
-              Semua kurasi ↗
+              Semua kurasi
             </Link>
           </div>
 

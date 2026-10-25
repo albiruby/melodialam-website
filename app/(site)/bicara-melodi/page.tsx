@@ -32,7 +32,7 @@ export default async function BicaraMelodiPage() {
             rel="noreferrer"
             className="nav-link-anim hover:text-forest"
           >
-            Bicara Melodi S3 ↗
+            Bicara Melodi S3
           </a>
         </div>
       </div>
@@ -73,7 +73,7 @@ export default async function BicaraMelodiPage() {
                 />
               </WatchButton>
               <span className="mt-1.5 font-serif text-sm italic text-neutral-600 transition-colors group-hover:text-forest">
-                ({row.caption} ↗)
+                ({row.caption})
               </span>
             </div>
           </article>
@@ -85,7 +85,7 @@ export default async function BicaraMelodiPage() {
           href="/videos"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Lihat semua video ↗
+          Lihat semua video
         </Link>
       </div>
 

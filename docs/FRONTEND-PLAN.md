@@ -122,7 +122,7 @@ bundel klien.
 | `FR-002` | Grid artikel 4 kolom berselang-seling | `TERVERIFIKASI` — `ArticleCard` + `titleFirst` di `app/(site)/stories/page.tsx:35` |
 | `FR-003` | Pembaca artikel penuh | `TERVERIFIKASI` — `app/(site)/stories/[slug]/page.tsx` |
 | `FR-004` | Indeks wawancara tipografi | `TERVERIFIKASI` — `app/(site)/bicara-melodi/page.tsx` |
-| `FR-005` | Daftar video bernomor dengan hover `[ ▶ ] — [ M \| WATCH ↗ ]` | `TERVERIFIKASI` — `components/VideoRow.tsx:49-70` |
+| `FR-005` | Daftar video bernomor dengan hover `[ ▶ ] — [ WATCH ]` (WATCH = tautan langsung ke video) | `TERVERIFIKASI` — `components/VideoRow.tsx` |
 | `FR-006` | Formulir demo 9 bagian | `TERVERIFIKASI` — `components/DemoPortal.tsx` |
 | `FR-007` | Etalase Spaces & Instruments | `BERTENTANGAN` — `/spaces` dihapus atas permintaan |
 | `BR-001` | Audio demo: 3 ekstensi, ≤ 25 MB, ditegakkan di klien **dan** server | `TERVERIFIKASI` — `lib/taxonomy.ts:76-78`, `DemoPortal.tsx:63-92`, `app/api/demos/route.ts:236-255` |
@@ -389,7 +389,6 @@ titik berdenyut untuk item tanpa tautan. Item datang dari
 | `FrontCard` | Composite/Server | Server | `article`, `lead?` | ROUTE-001 |
 | `CardImage` (internal `ArticleCards`) | Primitive | Server | `article`, `readLabel`, `noteCta` (frame 4:5) | di dalam `ArticleCard` |
 | `PillarCard` | Primitive | Server | `post`, `showPillar?` | ROUTE-001, ROUTE-006 |
-| `PillarRow` | Primitive | Server | `post`, `index` | ROUTE-006 (bagian "Tonton") |
 | `PillarHead` | Pattern | Server | `label`, `note` | ROUTE-006 |
 | `VideoRow` | Composite/Server | Server | `video`, `index` | ROUTE-005 |
 | `ArticleBody` | Composite/Server | Server | `rich?: unknown[]`, `paragraphs: string[]` | ROUTE-003, ROUTE-009 |
@@ -438,19 +437,19 @@ optimasi, jadi atribut turunan tidak pernah sama dengan kotak yang dirender.
 ### 5.4 Rincian per-komponen penting (`TERVERIFIKASI`)
 
 **Beranda.** Grid 2×2 = 4 `FrontCard` (thumbnail 4:5 kecil di kiri, rubrik +
-tanggal, judul, ringkasan, "Baca Selengkapnya ↗"). Satu kartu pertama diberi
+tanggal, judul, ringkasan, "Baca Selengkapnya "). Satu kartu pertama diberi
 badge "Cover Story" (`lead`). Baris hitung memakai `CountUp` untuk
 `{stories.length} artikel di journal` dan `{curatedVideos} sesi panggung`,
-dengan "Semua artikel ↗" ke `/stories`. Di bawahnya strip "Curated News": 4
+dengan "Semua artikel " ke `/stories`. Di bawahnya strip "Curated News": 4
 `PillarCard` foto terbaru dari pool kurasi (label pillar, judul, tanggal,
-"Buka di IG ↗") plus "Semua kurasi ↗". Strip disembunyikan bila pool kosong.
+"Buka di IG ") plus "Semua kurasi ". Strip disembunyikan bila pool kosong.
 Angka "sesi panggung" dihitung dari video yang sumbernya `cms` — bukan angka
 hard-code.
 
 **`/stories`.** Satu pool, grid 4 kolom, 8 kartu. `titleFirst={i % 2 === 1}`
 membalik kolom genap agar judul tampil lebih dulu. Footer tiap kartu:
 rubrik, badge **"Reel"** bila `article.mediaType === "reel"`, menit baca, dan
-tanggal. Baris bawah: "Konten kurasi dari feed @melodi.alam" + "Curated News ↗".
+tanggal. Baris bawah: "Konten kurasi dari feed @melodi.alam" + "Curated News ".
 Tanpa filter, tanpa pencarian, tanpa penghitung.
 
 **`/stories/<slug>`.** Header (rubrik, tanggal, menit baca, sumber, penanda
@@ -462,20 +461,20 @@ lain, dari `latestStories(8)` yang sama.
 **`/bicara-melodi`.** 9 episode Season 3, satu baris per episode: nama artis
 (`font-display`, sangat besar), headline uppercase, durasi + umur unggahan,
 `WatchButton` berisi `YoutubeThumb` 160 px, dan caption miring. Setiap baris
-terhubung ke kanal lewat `Bicara Melodi S3 ↗`.
+terhubung ke kanal lewat `Bicara Melodi S3 `.
 
 **`/videos` — Melodi Samsara.** `h1` "Melodi Samsara" dari
 `getVideosPageCopy().samsaraTitle`, **9 baris** sesi (`VideoRow`: nomor dua
 digit, thumbnail, judul, venue + umur, durasi + Featuring, tombol Watch),
-baris "Sesi lainnya ada di kanal YouTube" + tombol "YouTube ↗", lalu **5
-playlist** dalam grid 5 kolom, dan tautan "Curated News ↗". `VideoModal`
+baris "Sesi lainnya ada di kanal YouTube" + tombol "YouTube ", lalu **5
+playlist** dalam grid 5 kolom, dan tautan "Curated News ". `VideoModal`
 di-mount sekali di halaman ini.
 
 **`/kurasi` — Curated News.** `KurasiBrowser`: kotak cari (`<input type="search">`
 + `<label class="sr-only">`), chip per pillar dengan `aria-pressed` dan
 jumlahnya, lalu dua kelompok: "Baca — dari feed @melodi.alam" (pillar foto,
 grid 6 kolom, `PillarCard`) dan "Tonton — dari feed @melodi.alam" (pillar reel,
-`PillarRow`). Tanpa filter, tiap pillar menampilkan 6 posting terbaru; dengan
+`PillarCard`). Tanpa filter, tiap pillar menampilkan 6 posting terbaru; dengan
 pencarian atau chip, batas 6 dilepas dan pencarian berjalan di seluruh pool
 (batas tampilan 48). Bagian yang kosong setelah filter **dihilangkan**.
 Setiap section punya `id` per pillar sehingga bisa di-anchor
@@ -831,7 +830,7 @@ aktif lewat keyboard.
 | Locked interaction | Ada? | Implementasi | Dipakai di | Catatan fungsional |
 |---|---|---|---|---|
 | `DEC-002` strip `—` pada hierarchy heading | **Ada di CSS** | `.dash-reveal-item` + `.dash-reveal-prefix`; pemicu `.dash-reveal-item:hover .dash-reveal-prefix` **dan** `:focus-within` | — (utilitas tersedia untuk heading hierarki berikutnya; pemakai sebelumnya, `JournalBrowser`, sudah dihapus) | Sudah ada pasangan keyboard |
-| `DEC-003` row reveal `[ ▶ ] — [ M \| WATCH ↗ ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover` **dan** `.group:focus-within` | ROUTE-005 (`VideoRow`) | `▶` = `WatchButton` fungsional, judul = `WatchLink`, badge `M \| Watch ↗` = `<div>` dekoratif |
+| `DEC-003` row reveal `[ ▶ ] — [ WATCH ]` | **Ada** | `.video-action-reveal`; pemicu `.group:hover` **dan** `.group:focus-within` | ROUTE-005 (`VideoRow`) | `▶` = `WatchButton` fungsional, judul = `WatchLink`, `WATCH` = `<a>` tautan langsung ke video YouTube |
 | Curtain + corner brackets pada thumbnail artikel | **Ada** | `.hover-reveal-curtain` + `.corner-frame`; pemicu `.group:hover` **dan** `.group:focus-within` | Curtain: `ArticleCard.CardImage` (ROUTE-002/003) · Bracket: `ArticleCard.CardImage` dan `FrontCard` (ROUTE-001) | Curtain hanya ada pada kartu artikel, bukan pada `PillarCard` |
 
 ### 10.4 Responsive (`TERVERIFIKASI`, ringkas)
@@ -979,7 +978,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   dua kali, `PillarCard` ×4, `allVideos()` untuk menghitung sesi terkurasi.
 - `app/(site)/stories/page.tsx` — `latestStories(8)`, grid `sm:grid-cols-2
   lg:grid-cols-4`, `titleFirst={i % 2 === 1}`, `cardCurtain.articleLabel`/
-  `articleCta`, baris "Curated News ↗".
+  `articleCta`, baris "Curated News ".
 - `app/(site)/stories/[slug]/page.tsx` — `generateStaticParams`,
   `instant = false`, `generateMetadata`, JSON-LD `Article` + `BreadcrumbList`,
   cover 4:5 `max-w-md`, `ArticleBody`, blok "More" 3 kartu.

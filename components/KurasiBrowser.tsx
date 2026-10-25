@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PillarCard, PillarRow } from "./PillarCards";
+import { PillarCard } from "./PillarCards";
 import { PillarHead } from "./PillarHead";
 import { PILLAR_LABELS, PHOTO_PILLARS, REEL_PILLARS, type PillarPost } from "@/lib/pillars-shared";
 
@@ -123,9 +123,9 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
           {watchPillars.map((section) => (
             <section key={section.key} id={section.key} className="pt-6">
               <PillarHead label={section.label} note={`${section.pool.length} post kurasi`} />
-              <div className="divide-y divide-neutral-300 border-b border-ink">
-                {section.pool.map((post, index) => (
-                  <PillarRow key={post.id} post={post} index={index} />
+              <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+                {section.pool.map((post) => (
+                  <PillarCard key={post.id} post={post} />
                 ))}
               </div>
             </section>
