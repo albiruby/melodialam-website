@@ -41,7 +41,7 @@ rem --- 1. Node ---------------------------------------------------------------
 where node >nul 2>nul
 if errorlevel 1 (
   echo  [ERROR] Node.js tidak ditemukan di PATH.
-  echo          Pasang Node.js 24.22.1 atau lebih baru (lihat .nvmrc),
+  echo          Pasang Node.js 24.22.1 atau lebih baru, lihat .nvmrc
   echo.
   pause
   exit /b 1
