@@ -15,7 +15,14 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
-Belum ada.
+**Remediasi audit keamanan (26 Okt 2026)**
+
+- **JSON-LD `/videos` di-escape.** Ketiga sink JSON-LD kini memakai
+  `jsonLdScript()` (`lib/json-ld.ts`): `<` → `\u003c`. Sebelumnya `/videos`
+  memakai `JSON.stringify` mentah, sehingga nilai CMS berisi `</script>` bisa
+  menutup elemen dan menjalankan HTML/script. Regression test
+  `lib/json-ld.test.ts` (3 kasus) menjaga round-trip `JSON.parse` dan
+  memastikan tidak ada `<` literal di output.
 
 ---
 

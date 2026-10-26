@@ -8,6 +8,7 @@ import { Ticker } from "@/components/Ticker";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { Analytics } from "@vercel/analytics/next";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
+import { jsonLdScript } from "@/lib/json-ld";
 import { getSiteSettings } from "@/lib/site-settings";
 
 /**
@@ -86,7 +87,7 @@ export const metadata: Metadata = {
  * once in the body; a page may add its own graph next to it (an article adds
  * Article + BreadcrumbList).
  */
-const siteJsonLd = JSON.stringify({
+const siteJsonLd = jsonLdScript({
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -111,8 +112,7 @@ const siteJsonLd = JSON.stringify({
       ),
     },
   ],
-  // `<` is escaped so the payload can never terminate the script element early.
-}).replace(/</g, "\\u003c");
+});
 
 /**
  * The site is light-only, so `colorScheme` is pinned rather than left to the OS.

@@ -5,6 +5,7 @@ import { VideoRow } from "@/components/VideoRow";
 import { VideoModal } from "@/components/VideoModal";
 import { CHANNEL } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
+import { jsonLdScript } from "@/lib/json-ld";
 import { allPlaylists, allVideos } from "@/lib/videos";
 import { getVideosPageCopy } from "@/lib/videos-page";
 
@@ -85,7 +86,7 @@ export default async function VideosPage() {
   // Structured data for the sessions on this page. The videos live on YouTube,
   // so each entry points at the embed and at this page's anchor rather than
   // pretending there is a page per video.
-  const videoJsonLd = JSON.stringify({
+  const videoJsonLd = jsonLdScript({
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: copy.samsaraTitle,

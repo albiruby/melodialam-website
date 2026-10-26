@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content-fallback";
 import { articleBySlug, latestStories, staticArticleSlugs } from "@/lib/articles";
 import { SITE } from "@/lib/site";
+import { jsonLdScript } from "@/lib/json-ld";
 import { getSiteSettings } from "@/lib/site-settings";
 import { ArticleBody } from "@/components/ArticleBody";
 import { ArticleCard } from "@/components/ArticleCards";
@@ -72,7 +73,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
 
   const url = `${SITE.url}/stories/${article.slug}`;
 
-  const jsonLd = JSON.stringify({
+  const jsonLd = jsonLdScript({
     "@context": "https://schema.org",
     "@graph": [
       {
@@ -101,8 +102,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
         ],
       },
     ],
-    // `<` is escaped so the payload can never terminate the script element early.
-  }).replace(/</g, "\\u003c");
+  });
 
   return (
     <article>

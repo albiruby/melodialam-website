@@ -492,7 +492,9 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 - **Metadata.** `generateMetadata` per artikel + `opengraph-image.tsx` /
   `twitter-image.tsx` 1200×630 digambar per artikel (`ImageResponse`).
 - **JSON-LD.** Layout menyematkan `WebSite` + `Organization`; halaman artikel
-  menambah `Article` + `BreadcrumbList`. Payload di-escape (`<` → `\u003c`).
+  menambah `Article` + `BreadcrumbList`; `/videos` menambah `ItemList` +
+  `VideoObject`. Ketiga sink memakai `jsonLdScript()` (`lib/json-ld.ts`) yang
+  meng-escape `<` → `\u003c`, jadi payload CMS tidak bisa menutup elemen script.
 - **`instant = false`** pada `/stories/[slug]` dan `/preview/[type]/[slug]` —
   deklarasi jujur bahwa segmen itu blocking, bukan penundaan yang disamarkan.
 
