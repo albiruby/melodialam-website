@@ -683,12 +683,14 @@ mengikuti `SITE.url`.
 
 ```http
 HTTP/1.1 308 Permanent Redirect
-Location: https://melodialam.id/stories
+Location: /stories
 ```
 
-Tidak ada body; `Response.redirect()` menuliskan header `Location`. Alasan
-ditulis di komentar kode: tautan lama dan indeks mesin pencari harus mendarat
-di alamat baru, bukan 404.
+Tidak ada body; route menulis header `Location` relatif. Origin tidak diambil
+dari request, jadi host header tidak bisa mengarahkan pengunjung ke domain lain
+dan build lokal tidak menghasilkan redirect ke localhost. Alasan ditulis di
+komentar kode: tautan lama dan indeks mesin pencari harus mendarat di alamat
+baru, bukan 404.
 
 ### 4.9 `API-09` — `GET /journal/[slug]` (redirect permanen)
 
@@ -696,14 +698,14 @@ di alamat baru, bukan 404.
 |---|---|
 | Tujuan | Mengalihkan alamat lama satu artikel ke alamat baru |
 | Method & path | `GET /journal/[slug]` (`app/(site)/journal/[slug]/route.ts`) |
-| Path param | `slug` — diteruskan apa adanya ke tujuan |
+| Path param | `slug` — di-encode ke dalam path tujuan |
 | Hasil | `308 Permanent Redirect` → `/stories/<slug>` |
 
 **Contoh respons:**
 
 ```http
 HTTP/1.1 308 Permanent Redirect
-Location: https://melodialam.id/stories/senja-di-jalan-braga
+Location: /stories/senja-di-jalan-braga
 ```
 
 Route ini adalah **route handler**, bukan halaman: `/journal` tidak lagi punya

@@ -41,6 +41,10 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   `TRUST_PROXY=1`; selain itu semua pemanggil berbagi satu bucket. Port IPv4
   dibuang, IPv6 diringkas ke /64, IPv4-mapped IPv6 dibuka. Batas tetap
   per-instance — batas global menunggu Vercel Firewall atau Redis.
+- **Redirect `/journal` memakai `Location` relatif.** Kedua route tidak lagi
+  membangun URL dari `request.url`; host header tidak bisa mengarahkan ke
+  domain lain dan build lokal tidak menulis localhost. Slug di-encode, dan
+  smoke test memeriksa path relatif persis.
 
 ---
 

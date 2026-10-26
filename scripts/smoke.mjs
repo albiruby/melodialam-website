@@ -52,12 +52,12 @@ for (const route of routes) {
   check(`${route} → 200`, res.status === 200, `status ${res.status}`);
 }
 
-// 2. Redirect lama tetap redirect.
+// 2. Redirect lama tetap redirect — ke path relatif, bukan origin dari request.
 const journal = await get("/journal");
 check("/journal → 308", journal.status === 308, `status ${journal.status}`);
 check(
-  "/journal mengarah ke /stories",
-  (journal.headers.get("location") ?? "").endsWith("/stories"),
+  "/journal mengarah ke /stories (relatif)",
+  (journal.headers.get("location") ?? "") === "/stories",
   journal.headers.get("location") ?? "tanpa location",
 );
 
