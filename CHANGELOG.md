@@ -29,6 +29,13 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   urutan hapus audio → kontak → submission, dan submission **tidak** dihapus
   bila salah satu langkah gagal, sehingga run bisa diulang tanpa kehilangan
   URL audio.
+- **Token Blob diikat ke namespace + store.** Key audio kini
+  `demo-audio/<uuid>.<ext>` — nama file asli tidak lagi masuk URL publik;
+  `onBeforeGenerateToken` menolak pathname di luar pola itu; `/api/demos`
+  memakai `isDemoAudioUrl()` yang mematok host store dari `BLOB_STORE_ID` dan
+  pathname UUID. JSON rusak di route token kini `400`, bukan `500`.
+  `access: "public"` dan grant sekali-pakai masih terbuka (butuh store privat
+  atau shared state).
 
 ---
 

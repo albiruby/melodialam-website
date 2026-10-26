@@ -135,8 +135,14 @@ export function DemoPortal() {
       // The file goes straight to Vercel Blob, not through this request: a
       // 25 MB body would never clear the function's limit. The submission then
       // carries the URL, so the desk can play it from the Studio.
-      if (audioFile) {        try {
-          const blob = await upload(`demo-audio/${Date.now()}-${audioFile.name}`, audioFile, {
+      if (audioFile) {
+        try {
+          // The key is a UUID, not the original filename: a file called
+          // "manager-name.mp3" must not end up in a public URL. The server
+          // validates this exact shape before minting the token.
+          const extension = audioFile.name.split(".").pop()?.toLowerCase() ?? "mp3";
+          const pathname = `demo-audio/${crypto.randomUUID()}.${extension}`;
+          const blob = await upload(pathname, audioFile, {
             access: "public",
             handleUploadUrl: "/api/demo-audio",
           });

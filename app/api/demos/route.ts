@@ -11,6 +11,7 @@ import {
   type DemoSubmission,
 } from "@/lib/content-fallback";
 import { recall, remember } from "@/lib/idempotency";
+import { isDemoAudioUrl } from "@/lib/blob-audio";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { submissionsClient } from "@/lib/sanity-server";
 
@@ -79,24 +80,6 @@ function bytes(value: unknown): number {
   if (typeof value === "number" && Number.isFinite(value)) return value;
   if (typeof value === "string" && /^\d+$/.test(value.trim())) return Number(value.trim());
   return 0;
-}
-
-/**
- * Whether a URL points at a file in our own Vercel Blob store.
- *
- * The browser uploads the demo audio straight to Blob, so the only legitimate
- * host is the one Blob hands back. Both the public and the private store
- * hostname end in `.blob.vercel-storage.com`.
- */
-function isOwnBlobUrl(value: string): boolean {
-  let url: URL;
-  try {
-    url = new URL(value);
-  } catch {
-    return false;
-  }
-  if (url.protocol !== "https:") return false;
-  return url.hostname.endsWith(".blob.vercel-storage.com");
 }
 
 function id(): string {
@@ -344,7 +327,7 @@ export async function POST(request: Request) {
   if (audioUrl) {
     const path = audioUrl.split("?")[0].toLowerCase();
     const allowed = DEMO_AUDIO_EXTENSIONS.some((ext) => path.endsWith(ext));
-    if (!allowed || !isOwnBlobUrl(audioUrl)) {
+    if (!allowed || !isDemoAudioUrl(audioUrl, process.env.BLOB_STORE_ID)) {
       errors.audioUrl = "Tautan audio tidak dikenal.";
     }
   }
