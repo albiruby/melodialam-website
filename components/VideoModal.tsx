@@ -136,10 +136,11 @@ export function VideoModal() {
           </button>
         </div>
 
-        {/* A flexible stage: the player takes the height that is left between
-            the header and the footer, so a tall window can never push the
-            panel past the viewport and clip it. */}
-        <div className="relative min-h-0 flex-1 bg-black">
+        {/* A capped 16:9 stage: it takes its height from the panel width, but
+            never taller than what the viewport leaves between header and
+            footer — so the player always has height and the panel never
+            spills past the screen. */}
+        <div className="relative aspect-video max-h-[calc(100dvh-10rem)] w-full shrink-0 bg-black">
           <iframe
             key={state.id}
             className="absolute inset-0 h-full w-full"

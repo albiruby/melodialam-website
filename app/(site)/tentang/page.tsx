@@ -109,14 +109,14 @@ export default async function TentangPage() {
             <p className="mt-3 text-sm leading-relaxed text-neutral-700">
               Untuk kerja sama, liputan, atau mengirim karya:
             </p>
-            <p className="mt-2 text-sm">
+            <p className="mt-2 flex flex-wrap items-baseline gap-x-1 text-sm">
               <a
                 href={`mailto:${settings.contactEmail}`}
                 className="font-bold underline transition-colors hover:text-forest"
               >
                 {settings.contactEmail}
               </a>
-              <span className="mx-1 text-neutral-400">/</span>
+              <span className="text-neutral-400">/</span>
               <a
                 href={`mailto:${settings.partnerEmail}`}
                 className="font-bold underline transition-colors hover:text-forest"

@@ -398,6 +398,18 @@
   pointer-events: auto;
 }
 
+/* Touch has no hover. Below md the action group — including the direct
+   YouTube link — is always present, or a phone user could never reach it. */
+@media (max-width: 767px) {
+  .video-action-reveal {
+    max-width: none;
+    opacity: 1;
+    overflow: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
 /* --- Modal shell ------------------------------------------------------- */
 
 @utility modal-backdrop {

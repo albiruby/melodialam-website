@@ -224,7 +224,7 @@ Dipakai untuk angka urut besar pada baris video dan pada baris pilar.
 | `hover-reveal-curtain` | Tirai gradien `#0d0d0d` → `#1b3b2b`, `translateY(101%)` → `0` saat hover/fokus | 1× (kartu artikel di `/stories`) |
 | `hover-reveal-tag` | Isi tirai: naik `14px` dan `opacity` 0 → 1, dengan jeda `0.08s` | 2× |
 | `corner-frame` | Dua siku `::before`/`::after` di sudut, `opacity` 0 → 1 saat hover/fokus | 2× |
-| `video-action-reveal` | Gugus aksi baris video: `max-width` 0 → 440px, `opacity` 0 → 1, `translateX(20px)` → 0 | 1× (`components/VideoRow.tsx`) |
+| `video-action-reveal` | Gugus aksi baris video: `max-width` 0 → 440px, `opacity` 0 → 1, `translateX(20px)` → 0. Di bawah `md` gugus **selalu tampil** (layar sentuh tidak punya hover) | 1× (`components/VideoRow.tsx`) |
 
 ### 5.5 Reveal tanda strip
 
@@ -244,6 +244,12 @@ komponen yang memakainya** — `DEC-002` belum terpasang di UI hari ini.
 | `modal-backdrop` + `is-open` | `opacity` 0 → 1, `pointer-events` none → auto | 1× (`components/VideoModal.tsx`) |
 | `modal-panel` | `translateY(28px) scale(0.96)` → `translateY(0) scale(1)` saat `.is-open` | 1× |
 
+Panel dibatasi `max-h-[calc(100dvh-2rem)]`; stage pemutar 16:9
+(`aspect-video`) dengan `max-h-[calc(100dvh-10rem)]`. Video selalu punya
+tinggi — tidak runtuh 0 seperti saat stage memakai `flex-1` di panel
+auto-height — dan panel tidak pernah meluber dari layar. Diuji 390×844
+(iframe 199px), 1280×800 (502px), 360×500 (182px).
+
 ### 5.7 Equalizer
 
 | Utility | Perilaku | Pemakaian |
@@ -262,7 +268,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 | `FrontCard` (`components/FrontCard.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA" | Beranda — grid 2×2, 4 kartu |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
 | `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 4 kurasi; `/kurasi` — SEMUA pilar, foto dan reel, sebagai kartu |
-| `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo) | `/videos` — 9 baris sesi |
+| `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo). Di bawah `md` gugus selalu tampil dan membungkus ke baris sendiri | `/videos` — 9 baris sesi |
 
 Aturan yang menyertainya:
 
@@ -305,7 +311,7 @@ Ini diminta secara eksplisit dan **tidak boleh** diganti dengan perilaku generik
 | Aturan | Perilaku | Status |
 |---|---|---|
 | `DEC-002` | Tajuk hierarki dan strip kategori: state awal teks murni tanpa `—`; `—` muncul menggeser teks saat hover | **Belum terpasang di UI** — `dash-reveal-item`/`dash-reveal-prefix` ada di `globals.css` tetapi dipakai 0× |
-| `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan gugus `[ ▶ ] — [ WATCH ]` | Terimplementasi pada baris video (`video-action-reveal`) |
+| `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan gugus `[ ▶ ] — [ WATCH ]` | Terimplementasi pada baris video (`video-action-reveal`); di bawah `md` gugus selalu tampil (26 Okt 2026) |
 | Seksi 9.3C | Hover thumbnail artikel: tirai gelap naik dari bawah + bingkai siku di sudut | Terimplementasi (`hover-reveal-curtain` + `corner-frame`) |
 | Kartu satu link | Seluruh area kartu bisa diklik, termasuk teks | Terimplementasi (`FrontCard`, `ArticleCard`, `PillarCard`) |
 

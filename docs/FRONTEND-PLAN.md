@@ -814,7 +814,7 @@ front-end.
 | A3 | **Rasio kontras** `text-neutral-500`/`neutral-400` pada putih berpotensi < 4.5:1 `[PERLU VERIFIKASI]` — kebijakan warna dimiliki `DESIGN-SYSTEM.md` | — |
 | A4 | Reveal `MarqueeTape` menggunakan `onMouseEnter/Leave` (pointer) untuk jeda; tidak ada padanan keyboard (ticker tidak interaktif, jadi minor) | `MarqueeTape.tsx:92-97` |
 | A5 | Halaman daftar (`/stories`, `/kurasi`, `/videos`) memakai `<h2>` untuk judulnya, bukan `<h1>`; `<h1>` sitewide dipakai masthead | `app/(site)/**/page.tsx` |
-| A6 | `.video-action-reveal` mulai dari `max-width: 0` + `opacity: 0` + `pointer-events: none`; pasangan `:focus-within` sudah ada sehingga keyboard **sudah** bisa memunculkannya | `app/globals.css:378-399` |
+| A6 | `.video-action-reveal` mulai dari `max-width: 0` + `opacity: 0` + `pointer-events: none`; pasangan `:focus-within` sudah ada sehingga keyboard **sudah** bisa memunculkannya. Sejak 26 Okt 2026 media query `<md` membuatnya selalu tampil untuk layar sentuh | `app/globals.css` |
 
 **Catatan positif (perubahan sejak versi dokumen sebelumnya):** `ACC-002`
 **terpenuhi** — `globals.css` kini memuat kembaran `:focus-within` untuk setiap

@@ -108,6 +108,23 @@ pada satu daftar cerita. Rilis ini sudah dideploy ke produksi dari `main`.
   publish → kartu muncul di `/kurasi` produksi dalam 4,8 detik.
   `SANITY_REVALIDATE_SECRET_PREVIOUS` dihapus dari Vercel.
 
+**Audit responsif & perbaikan (26 Okt 2026)**
+
+- **Modal video kembali punya pemutar.** Stage `flex-1` di panel
+  auto-height runtuh ke 0px di semua viewport; kini stage 16:9
+  (`aspect-video`) dengan `max-h-[calc(100dvh-10rem)]` — video 199px di
+  390×844, 502px di 1280×800, 182px di 360×500, panel tidak meluber.
+- **`/tentang` tidak lagi meluber 28px di tablet (768px).** Dua alamat
+  email tidak punya titik putus baris; kini flex-wrap sehingga membungkus
+  (di 360px sebelumnya juga terpotong oleh `overflow-x: hidden`).
+- **Gugus `[ ▶ ] — [ WATCH ]` di `/videos` selalu tampil di bawah `md`** —
+  layar sentuh tidak punya hover, jadi tautan YouTube langsung sebelumnya
+  tidak terjangkau di ponsel.
+- Audit: 9 halaman × 6 viewport (360–1920), 0 error konsol, 0 overflow
+  horizontal setelah perbaikan. Temuan terbuka (tap target <44px, font
+  10–11px, ticker duplikat) dicatat di
+  `docs/audit-responsif-2026-10-26.md`.
+
 **Privasi, pembersihan data, dan pilar (24 Okt 2026)**
 
 - **`/privasi` + `/ketentuan`** — dua halaman yang menjelaskan persis apa yang
