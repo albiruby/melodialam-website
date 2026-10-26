@@ -420,7 +420,7 @@ sebagai klaim keadaan sekarang.
 | **`SANITY_PREVIEW_SECRET` terpisah** | satu secret untuk dua kapabilitas (F03) | **`TERVERIFIKASI`** — dipasang, fallback dihapus, `SANITY_REVALIDATE_SECRET` dirotasi (22 Okt 2026) |
 | **Blokir `?secret=`** di `/api/revalidate` | secret di URL masuk log & riwayat | **`TERVERIFIKASI`** — rute hanya menerima HMAC/header |
 | **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
-| **Rate limit + `Idempotency-Key`** | F02 | **`TERVERIFIKASI`** 22 Okt 2026 — 5 kiriman/jam per IP di `POST /api/demos`, 20 token/jam di `POST /api/demo-audio`, `Idempotency-Key` + honeypot. Turnstile masih `RENCANA` |
+| **Rate limit + `Idempotency-Key`** | F02 | **`TERVERIFIKASI`** 22 Okt 2026 — 5 kiriman/jam per IP di `POST /api/demos`, 20 token/jam di `POST /api/demo-audio`, `Idempotency-Key` + honeypot. **26 Okt 2026:** identitas hanya dibaca dari header platform (Vercel) atau `TRUST_PROXY=1`, dan IPv6 diringkas ke /64. Batas **global** lintas instance masih `RENCANA` (Vercel Firewall/Redis); Turnstile juga `RENCANA` |
 | **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | `RENCANA` |
 | **Server menentukan key + access object Blob**; nama file di-sanitasi | F04 | **sebagian** 26 Okt 2026 — key UUID tervalidasi server, nama file tidak lagi di URL, host store dipatok lewat `BLOB_STORE_ID`; `access: "public"` masih dipilih klien dan grant belum sekali-pakai |
 | **Filter status di jalur fallback**; tanpa store → `503` | F06 | `RENCANA` |

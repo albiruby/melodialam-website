@@ -15,6 +15,10 @@
  * that it must not be the only defence — the honeypot field and the
  * `Idempotency-Key` in `/api/demos` cover the rest.
  *
+ * The client identity is read from forwarding headers only when they are
+ * trustworthy: on Vercel the platform sets them; elsewhere `TRUST_PROXY=1` is
+ * an explicit opt-in. Without that, every caller shares one bucket.
+ *
  * When the plan allows, move this to the edge: a Vercel Firewall rate-limit
  * rule (Pro and up) or a shared store such as Upstash Redis would make the
  * limit global instead of per instance. The interface below does not need to
@@ -85,17 +89,75 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
 }
 
 /**
- * The caller's address.
+ * Whether the forwarding headers can be trusted on this deployment.
  *
- * `x-forwarded-for` is the first address in the chain that Vercel sets, so
- * the value cannot be forged by the caller the way a header the client sets
- * freely can. The list is still a header, so it is a best effort, not a proof.
+ * On Vercel the platform overwrites `x-forwarded-for` before the function sees
+ * it. Anywhere else those headers are caller-controlled unless the operator
+ * says a trusted proxy sets them (`TRUST_PROXY=1`). When they are not trusted,
+ * every caller shares one bucket — a real limit is better than a bypassable one.
  */
-export function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
+function trustsForwardedHeaders(): boolean {
+  return process.env.VERCEL === "1" || process.env.TRUST_PROXY === "1";
+}
+
+/**
+ * Normalise an address into a stable bucket key.
+ *
+ * Ports are stripped, IPv4-mapped IPv6 is unwrapped, and IPv6 is collapsed to
+ * its /64 prefix: one host controls a whole /64 and could otherwise rotate
+ * addresses inside it for a fresh bucket on every request.
+ */
+function normalizeAddress(value: string): string | null {
+  const raw = value.trim().replace(/%.*$/, "");
+  if (!raw) return null;
+
+  const v4 = raw.match(/^(\d{1,3}(?:\.\d{1,3}){3})(?::\d+)?$/);
+  if (v4) return v4[1];
+
+  const mapped = raw.match(/^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/i);
+  if (mapped) return mapped[1];
+
+  const bracketed = raw.match(/^\[([0-9a-fA-F:]+)\](?::\d+)?$/);
+  const v6 = bracketed?.[1] ?? (raw.includes(":") ? raw : null);
+  if (!v6) return raw;
+
+  const [head, tail] = v6.split("::");
+  const headParts = head ? head.split(":") : [];
+  const tailParts = tail ? tail.split(":") : [];
+  let parts: string[];
+  if (v6.includes("::")) {
+    const missing = 8 - headParts.length - tailParts.length;
+    if (missing < 0) return raw.toLowerCase();
+    parts = [...headParts, ...Array<string>(missing).fill("0"), ...tailParts];
+  } else {
+    parts = v6.split(":");
+    if (parts.length !== 8) return raw.toLowerCase();
+  }
+  return `${parts.slice(0, 4).map((part) => part || "0").join(":")}::/64`;
+}
+
+/** The caller's address, given explicit trust in the forwarding headers. */
+export function clientIpFrom(headers: Headers, trustForwarded: boolean): string {
+  if (!trustForwarded) return "untrusted";
+
+  const forwarded = headers.get("x-forwarded-for");
   if (forwarded) {
     const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
+    const normalized = first ? normalizeAddress(first) : null;
+    if (normalized) return normalized;
   }
-  return request.headers.get("x-real-ip") ?? "unknown";
+
+  const real = headers.get("x-real-ip");
+  return (real && normalizeAddress(real)) || "unknown";
+}
+
+/**
+ * The caller's address.
+ *
+ * The forwarding headers are only read when the platform or the operator says
+ * they are trustworthy (see `trustsForwardedHeaders`). The limit itself stays
+ * per instance — see the module note at the top.
+ */
+export function clientIp(request: Request): string {
+  return clientIpFrom(request.headers, trustsForwardedHeaders());
 }

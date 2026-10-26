@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clientIp, rateLimit } from "./rate-limit";
+import { clientIpFrom, rateLimit } from "./rate-limit";
 
 /**
  * The limiter keeps its counters in module memory, so every case here uses
@@ -52,15 +52,40 @@ describe("clientIp", () => {
 
   it("takes the first address of the forwarded chain", () => {
     const request = requestWith({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" });
-    expect(clientIp(request)).toBe("203.0.113.7");
+    expect(clientIpFrom(request.headers, true)).toBe("203.0.113.7");
   });
 
   it("falls back to the real ip header", () => {
     const request = requestWith({ "x-real-ip": "198.51.100.4" });
-    expect(clientIp(request)).toBe("198.51.100.4");
+    expect(clientIpFrom(request.headers, true)).toBe("198.51.100.4");
   });
 
   it("does not invent an address when there is none", () => {
-    expect(clientIp(requestWith({}))).toBe("unknown");
+    expect(clientIpFrom(requestWith({}).headers, true)).toBe("unknown");
+  });
+
+  it("ignores forwarded headers when the proxy is not trusted", () => {
+    const request = requestWith({ "x-forwarded-for": "203.0.113.7" });
+    expect(clientIpFrom(request.headers, false)).toBe("untrusted");
+  });
+
+  it("strips an IPv4 port", () => {
+    const request = requestWith({ "x-forwarded-for": "203.0.113.7:4711" });
+    expect(clientIpFrom(request.headers, true)).toBe("203.0.113.7");
+  });
+
+  it("collapses an IPv6 address to its /64 prefix", () => {
+    const full = requestWith({ "x-forwarded-for": "2001:db8:abcd:1234:5678:9abc:def0:1111" });
+    const other = requestWith({ "x-forwarded-for": "2001:db8:abcd:1234::99" });
+    const outside = requestWith({ "x-forwarded-for": "2001:db8:abcd:9999::1" });
+
+    expect(clientIpFrom(full.headers, true)).toBe("2001:db8:abcd:1234::/64");
+    expect(clientIpFrom(other.headers, true)).toBe("2001:db8:abcd:1234::/64");
+    expect(clientIpFrom(outside.headers, true)).not.toBe("2001:db8:abcd:1234::/64");
+  });
+
+  it("unwraps an IPv4-mapped IPv6 address", () => {
+    const request = requestWith({ "x-forwarded-for": "::ffff:203.0.113.7" });
+    expect(clientIpFrom(request.headers, true)).toBe("203.0.113.7");
   });
 });

@@ -36,6 +36,11 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   pathname UUID. JSON rusak di route token kini `400`, bukan `500`.
   `access: "public"` dan grant sekali-pakai masih terbuka (butuh store privat
   atau shared state).
+- **Identitas rate limit tidak lagi dari header sembarang.** `clientIp()` hanya
+  membaca `X-Forwarded-For`/`X-Real-IP` di Vercel (`VERCEL=1`) atau bila
+  `TRUST_PROXY=1`; selain itu semua pemanggil berbagi satu bucket. Port IPv4
+  dibuang, IPv6 diringkas ke /64, IPv4-mapped IPv6 dibuka. Batas tetap
+  per-instance — batas global menunggu Vercel Firewall atau Redis.
 
 ---
 
