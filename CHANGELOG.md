@@ -23,6 +23,12 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   menutup elemen dan menjalankan HTML/script. Regression test
   `lib/json-ld.test.ts` (3 kasus) menjaga round-trip `JSON.parse` dan
   memastikan tidak ada `<` literal di output.
+- **`purge-demos` fail-closed + kontak yatim.** Status `SHORTLISTED (SAMSARA)`
+  dan `APPROVED (ARTICLE)` dipertahankan (kecuali `--include-approved`);
+  `demoContact` yang submission-nya sudah tidak ada dipindai dan dihapus;
+  urutan hapus audio → kontak → submission, dan submission **tidak** dihapus
+  bila salah satu langkah gagal, sehingga run bisa diulang tanpa kehilangan
+  URL audio.
 
 ---
 
