@@ -55,6 +55,11 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   mewarisi keduanya.
 - **Body webhook dibatasi 16 KB** dengan pembacaan streaming; body lebih besar
   dijawab `413` sebelum verifikasi secret.
+- **Upload audio demo berfungsi.** CSP `connect-src` mengizinkan
+  `https://vercel.com/api/blob/`; store Blob diganti ke `melodi-alam-public`
+  (access public) dan `BLOB_STORE_ID` dipasang untuk production + preview.
+  Terverifikasi end-to-end: token `200` → PUT `200` → `POST /api/demos` `201`;
+  data uji + blob dibersihkan.
 
 ---
 

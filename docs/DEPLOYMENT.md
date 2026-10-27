@@ -216,12 +216,12 @@ menerima `X-Content-Type-Options: nosniff`,
 `Referrer-Policy: strict-origin-when-cross-origin`,
 `X-Frame-Options: SAMEORIGIN`, `Permissions-Policy` (camera/mic/geo/payment
 dimatikan), `Strict-Transport-Security`
-(`max-age=63072000; includeSubDomains; preload`), CSP dasar (enforced), dan
-CSP penuh dalam mode `Content-Security-Policy-Report-Only`. CSP penuh
-(report-only) mengizinkan `connect-src` ke host Sanity **dan** ke host Vercel
-Blob (`https://*.public.blob.vercel-storage.com`,
-`https://*.blob.vercel-storage.com`) — tanpa itu, unggah audio demo dari
-browser akan diblokir begitu CSP report-only itu diaktifkan.
+(`max-age=63072000; includeSubDomains; preload`), dan CSP (enforced).
+`connect-src` mengizinkan host Sanity, host Vercel Blob
+(`https://*.public.blob.vercel-storage.com`,
+`https://*.blob.vercel-storage.com`), dan `https://vercel.com` — endpoint
+upload SDK Blob (`/api/blob/`). Tanpa `vercel.com`, unggah audio demo diblokir
+sebelum request keluar dari browser.
 
 ### 1.5 Pipeline aset build-time (`TERVERIFIKASI`, **berubah**)
 
@@ -272,7 +272,7 @@ yang memeriksa endpoint produksi). Keberadaan Preview per-PR
 |---|---|---|---|---|
 | **Local** | Pengembangan + unit test | Sanity dataset `production` (publik) + `lib/catalogue.json` | Manual: `npm run dev` (port 3100) | Developer di mesin sendiri |
 | **Preview** | Review per-PR, E2E, cek visual | Sanity `production`; demo queue di dataset `submissions` | **Otomatis** saat PR dibuka/di-update (`RENCANA` — belum ada CI di repo) | Tim internal (URL ber-token) |
-| **Production** | Situs publik (`melodialam-website.vercel.app`) | Sanity `production` + `submissions`; audio di Vercel Blob (belum ada) | **Otomatis saat merge ke branch rilis** | Publik |
+| **Production** | Situs publik (`melodialam-website.vercel.app`) | Sanity `production` + `submissions`; audio di Vercel Blob (`melodi-alam-public`, access public, key UUID) | **Otomatis saat merge ke branch rilis** | Publik |
 
 ### 2.1 Apa yang membedakan tiap environment
 
@@ -282,7 +282,7 @@ yang memeriksa endpoint produksi). Keberadaan Preview per-PR
 | Demo queue | Sanity `submissions` **atau** array in-memory bila token kosong | idem | Sanity `submissions` |
 | Env var dibaca | `NEXT_PUBLIC_SITE_URL`, `SANITY_API_READ_TOKEN`, `SANITY_REVALIDATE_SECRET`, `SANITY_PREVIEW_SECRET` | idem + opsional | idem + opsional (`SANITY_PREVIEW_SECRET`, `BLOB_READ_WRITE_TOKEN`, `RESEND_API_KEY`) |
 | Secret | ada di `.env` lokal (git-ignored) | Environment Variables Vercel | Environment Variables Vercel |
-| Media | `public/photos/*` + `cdn.sanity.io` | idem | idem + Vercel Blob (belum) |
+| Media | `public/photos/*` + `cdn.sanity.io` | idem | idem + Vercel Blob (`melodi-alam-public`, public, key UUID) |
 | Domain | `localhost:3100` | `*.vercel.app` auto | `melodialam-website.vercel.app`; `melodialam.id` **belum resolve** |
 | Data persisten | Sanity (dataset privat) | Sanity | Sanity |
 
@@ -305,6 +305,7 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
 | `SANITY_PREVIEW_SECRET` | server saja | **YA** | Tidak | Secret pratinjau draf, **terpisah** dari secret revalidasi (tanpa fallback). Kosong → pratinjau selalu 404 |
 | `SANITY_REVALIDATE_SECRET_PREVIOUS` | server saja | Tidak | Tidak | Nilai secret revalidasi **sebelum** rotasi. Hanya masa transisi — **sudah dikosongkan** (22 Okt 2026); boleh dihapus dari dasbor |
 | `BLOB_READ_WRITE_TOKEN` | server saja | **YA** | Tidak | Token unggah audio. Kosong → `POST /api/demo-audio` menjawab `400` |
+| `BLOB_STORE_ID` | server saja | **YA** | Tidak | ID store Blob aktif (`store_XjUj3WQ3H3TVomMk`, `melodi-alam-public`). Dipakai `isDemoAudioUrl()` untuk mematok host store, bukan sekadar sufiks `.blob.vercel-storage.com` |
 | `RESEND_API_KEY` | server saja | **YA** | Tidak | Notifikasi email redaksi. Kosong → notifikasi **inert** (tidak ada panggilan HTTP) |
 | `DEMO_NOTIFY_TO` | server saja | Tidak | Tidak | Override penerima notifikasi, dipisah koma. Default `melodialam.ip@gmail.com,helfan@infia.co` |
 | `DEMO_NOTIFY_FROM` | server saja | Tidak | Tidak | Override pengirim. Default `Melodi Alam <onboarding@resend.dev>` |
