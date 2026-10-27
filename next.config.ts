@@ -21,6 +21,7 @@ const isDev = process.env.NODE_ENV === "development";
  *  - i.ytimg.com                 video thumbnails (plain <img>, not the optimizer)
  *  - cdn.sanity.io               article and pillar art
  *  - youtube.com / youtube-nocookie.com   the watch modal
+ *  - vercel.com                  the Blob client-upload endpoint (SDK POSTs here)
  *  - *.blob.vercel-storage.com   the demo audio upload (browser → Blob)
  *  - *.vercel-insights.com       Web Analytics beacons
  *
@@ -38,7 +39,7 @@ const CSP = [
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
   `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
-  "connect-src 'self' https://*.api.sanity.io https://*.apicdn.sanity.io wss://*.api.sanity.io https://*.public.blob.vercel-storage.com https://*.blob.vercel-storage.com https://*.vercel-insights.com",
+  "connect-src 'self' https://*.api.sanity.io https://*.apicdn.sanity.io wss://*.api.sanity.io https://vercel.com https://*.public.blob.vercel-storage.com https://*.blob.vercel-storage.com https://*.vercel-insights.com",
   "worker-src 'self' blob:",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com",
 ].join("; ");
