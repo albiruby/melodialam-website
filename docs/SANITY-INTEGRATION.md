@@ -220,7 +220,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` | 4 artikel terbaru (grid 2×2 `FrontCard`) + strip **Curated News** 4 kartu |
 | `app/(site)/bicara-melodi/page.tsx` | `allInterviews()` + `allVideos()` | 9 episode Season 3 |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` | halaman **Melodi Samsara**: 9 sesi Samsara + 5 playlist; judul bagian dari singleton `videosPage` |
-| `app/(site)/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
+| `app/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)` yang publik |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/(site)/tentang/page.tsx` | — | profil, ekosistem, kanal, kontak & partnership (statis) |
@@ -515,7 +515,7 @@ Sengaja, bukan lupa:
 | **Notifikasi email** | Kode ada (`app/api/demos/route.ts:165-222`) tapi **inert** sampai `RESEND_API_KEY` diset; alamat tujuan default adalah dua alamat partnership (`DEMO_NOTIFY_TO`). |
 | **Webhook: "Trigger on" Update** | **TERVERIFIKASI 22 Okt 2026** — publish → halaman segar dalam 2,1 detik → Update memang memicu |idak memicu revalidasi. Tindakan pemilik (`RENCANA`). |
 | **Domain produksi** | `melodialam.id` belum resolve, jadi `NEXT_PUBLIC_SITE_URL` menunjuk ke `https://melodialam-website.vercel.app` dan semua canonical/sitemap/OG ikut ke sana. |
-| **Web Analytics** | `@vercel/analytics` terpasang dan `<Analytics />` dirender (`app/(site)/layout.tsx:181`), tetapi belum dinyalakan di dashboard Vercel. |
+| **Web Analytics** | `@vercel/analytics` terpasang dan `<Analytics />` dirender (`app/layout.tsx:181`), tetapi belum dinyalakan di dashboard Vercel. |
 | **Uji otomatis end-to-end** | Unit test Vitest ada (3 berkas, 20 kasus) dan CI GitHub Actions sudah jalan (lint + typecheck + test + build pada setiap push). Uji end-to-end belum. |
 
 ---

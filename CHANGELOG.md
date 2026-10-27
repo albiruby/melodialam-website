@@ -45,6 +45,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   membangun URL dari `request.url`; host header tidak bisa mengarahkan ke
   domain lain dan build lokal tidak menulis localhost. Slug di-encode, dan
   smoke test memeriksa path relatif persis.
+- **404 bermerek untuk URL asing.** Layout dipindah ke `app/layout.tsx` (root)
+  dan `app/global-not-found.tsx` (flag `experimental.globalNotFound`) merender
+  ticker, header, isi 404, dan footer; status tetap 404.
+- **Health check di-cache di edge 30 detik** dan tidak lagi membocorkan `ms`;
+  kegagalan tetap `no-store` agar pemulihan langsung terlihat.
+- **Kartu sosial artikel dipra-render** (`generateStaticParams`, 12 artikel);
+  slug yang tidak ada menjawab 404, bukan kartu generik. Route Twitter
+  mewarisi keduanya.
+- **Body webhook dibatasi 16 KB** dengan pembacaan streaming; body lebih besar
+  dijawab `413` sebelum verifikasi secret.
 
 ---
 

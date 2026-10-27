@@ -1,6 +1,6 @@
 import { Instrument_Serif, Inter, JetBrains_Mono, Red_Hat_Display } from "next/font/google";
 import type { Metadata, Viewport } from "next";
-import "../globals.css";
+import "./globals.css";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";

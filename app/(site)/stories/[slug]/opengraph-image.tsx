@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
-import { articleBySlug } from "@/lib/articles";
+import { notFound } from "next/navigation";
+import { allArticles, articleBySlug } from "@/lib/articles";
 import { CATEGORY_LABELS } from "@/lib/content-fallback";
 import { SITE } from "@/lib/site";
 
@@ -15,6 +16,12 @@ export const alt = "Melodi Alam";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
+/** Known articles are drawn at build time. */
+export async function generateStaticParams() {
+  const articles = await allArticles();
+  return articles.map((article) => ({ slug: article.slug }));
+}
+
 function trimTitle(title: string, max = 150): string {
   return title.length > max ? `${title.slice(0, max - 1).trimEnd()}…` : title;
 }
@@ -23,9 +30,14 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const { slug } = await params;
   const article = await articleBySlug(slug);
 
-  const category = article ? CATEGORY_LABELS[article.category] : "Stories";
-  const title = trimTitle(article?.title ?? "Melodi Alam");
-  const date = article?.date ?? "";
+  // A slug that is not an article gets a real 404, not a generic card: the
+  // image route must not render (and cache) a card for an unlimited supply of
+  // invented slugs.
+  if (!article) notFound();
+
+  const category = CATEGORY_LABELS[article.category];
+  const title = trimTitle(article.title);
+  const date = article.date;
 
   return new ImageResponse(
     (

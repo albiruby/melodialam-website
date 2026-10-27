@@ -297,7 +297,7 @@ graph TB
   end
 
   subgraph app["app/ (App Router)"]
-    layout["(site)/layout.tsx (server)"]
+    layout["app/layout.tsx (server)"]
     pages["(site)/**/page.tsx<br/>(server components)"]
     redirect["(site)/journal/**/route.ts<br/>308 permanen"]
     api["api/demos · api/demo-audio · api/revalidate"]
@@ -490,7 +490,9 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 - **Pola.** Halaman tetap **server component**; interaktivitas diekstrak ke
   komponen client. Tidak ada halaman yang menyimpan state.
 - **Metadata.** `generateMetadata` per artikel + `opengraph-image.tsx` /
-  `twitter-image.tsx` 1200×630 digambar per artikel (`ImageResponse`).
+  `twitter-image.tsx` 1200×630 digambar per artikel (`ImageResponse`). Kartu
+  sosial dipra-render untuk 12 artikel lewat `generateStaticParams`; slug yang
+  tidak ada menjawab 404, bukan kartu generik.
 - **JSON-LD.** Layout menyematkan `WebSite` + `Organization`; halaman artikel
   menambah `Article` + `BreadcrumbList`; `/videos` menambah `ItemList` +
   `VideoObject`. Ketiga sink memakai `jsonLdScript()` (`lib/json-ld.ts`) yang
@@ -890,7 +892,7 @@ Ringkasannya yang relevan dengan arsitektur:
 
 ### ADR-0007 — Tipografi Inter + Red Hat Display
 
-- **Status.** `TERVERIFIKASI` (terimplementasi di `app/(site)/layout.tsx`).
+- **Status.** `TERVERIFIKASI` (terimplementasi di `app/layout.tsx`).
 
 ### ADR-0008 — Sanity Studio menggantikan Payload CMS 3 + Supabase
 
@@ -1010,8 +1012,11 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   blok `headers()` (CSP enforced + report-only, HSTS, Permissions-Policy),
   `images.remotePatterns` (`i.ytimg.com`, `cdn.sanity.io`), aturan Turbopack.
 - `tsconfig.json` (alias `@/*`), `vitest.config.ts` (alias `@/`, environment node).
-- `app/(site)/layout.tsx` — 4 font, skip-link, JSON-LD situs, auto-discovery RSS,
+- `app/layout.tsx` — 4 font, skip-link, JSON-LD situs, auto-discovery RSS,
   urutan provider, `<main id="main">`, `<Analytics />`.
+- `app/global-not-found.tsx` — 404 untuk URL asing (flag
+  `experimental.globalNotFound`): dokumen HTML penuh dengan ticker, header,
+  isi 404, dan footer; `app/not-found.tsx` menangani `notFound()` di route.
 - `app/(site)/page.tsx` — `latestStories(8)`, slice 4, `FrontCard`, baris hitung
   `CountUp`, strip `PillarCard`, `allPillarPosts()`, `allVideos()`.
 - `app/(site)/stories/page.tsx` — `latestStories(8)`, grid 4 kolom,

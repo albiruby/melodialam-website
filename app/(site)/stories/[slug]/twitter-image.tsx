@@ -3,4 +3,4 @@
  * file convention; without it the layout's generic `/og.png` would win and the
  * article's own headline would never appear on X.
  */
-export { alt, size, contentType, default } from "./opengraph-image";
+export { alt, size, contentType, default, generateStaticParams } from "./opengraph-image";

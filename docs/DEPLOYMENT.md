@@ -641,7 +641,7 @@ Monitoring formal belum ada. Yang terpasang hari ini (`TERVERIFIKASI`):
 
 | Sarana | Status | Catatan |
 |---|---|---|
-| Vercel Web Analytics | `@vercel/analytics` terpasang + `<Analytics />` di `app/(site)/layout.tsx:181` — **tapi belum dinyalakan di dashboard** | `RENCANA` — perlu dinyalakan di dashboard Vercel |
+| Vercel Web Analytics | `@vercel/analytics` terpasang + `<Analytics />` di `app/layout.tsx:181` — **tapi belum dinyalakan di dashboard** | `RENCANA` — perlu dinyalakan di dashboard Vercel |
 | `@vercel/blob` | Terpasang; **store belum dibuat** | `RENCANA` |
 | Resend | Kode notifikasi ada; `RESEND_API_KEY` belum di-set | `RENCANA` |
 | Log route handler | `console.error` di `app/api/demos/route.ts` (gagal simpan, gagal email) dan `app/api/demo-audio/route.ts` | `TERVERIFIKASI` |
@@ -863,7 +863,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
   redirect `308`.
 - `app/(site)/preview/[type]/[slug]/page.tsx` — pratinjau draf, `noindex`,
   `notFound()` bila secret salah.
-- `app/(site)/layout.tsx:181` — `<Analytics />` terpasang.
+- `app/layout.tsx:181` — `<Analytics />` terpasang.
 - `lib/site.ts` — `SITE.url` dari `NEXT_PUBLIC_SITE_URL`, fallback
   `https://melodialam.id`; daftar nav (`/stories`, `/bicara-melodi`, `/videos` =
   Melodi Samsara, `/kurasi` = Curated News).

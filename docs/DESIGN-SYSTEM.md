@@ -138,7 +138,7 @@ keputusannya ada di [ADR-0007](adr/0007-tipografi-inter-red-hat-display.md).
 | `font-serif` | **Instrument Serif** | Takarir miring, catatan editorial, drop cap artikel | `400` saja, normal + italic | `--font-instrument` |
 | `font-mono` | **JetBrains Mono** | Metadata, angka, label teknis, chip filter | `400`, `700` | `--font-jetbrains` |
 
-Keempatnya dimuat di `app/(site)/layout.tsx` lewat `next/font/google` dengan
+Keempatnya dimuat di `app/layout.tsx` lewat `next/font/google` dengan
 `display: "swap"`, lalu dipasang sebagai kelas pada elemen `<html>`.
 `app/globals.css` hanya meneruskannya: blok `@theme` memetakan tiap variable ke
 satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`
@@ -416,7 +416,7 @@ Presisi centering sudah diverifikasi: `main` berada tepat di tengah pada 360/390
 |---|---|
 | Token primitif & semantik | blok `@theme` di `app/globals.css` |
 | Pola perilaku (komponen maya) | `@utility` di `app/globals.css` |
-| Wajah huruf | `next/font/google` di `app/(site)/layout.tsx` → variable CSS → `@theme` |
+| Wajah huruf | `next/font/google` di `app/layout.tsx` → variable CSS → `@theme` |
 | Komponen nyata | `components/*.tsx` — kartu di `components/ArticleCards.tsx` dan `components/PillarCards.tsx`, baris video di `components/VideoRow.tsx`, ticker di `components/Ticker.tsx`, modal di `components/VideoModal.tsx`, thumbnail di `components/YoutubeThumb.tsx` |
 | Kurasi (cari + chip) | `components/KurasiBrowser.tsx` (komponen klien) |
 | Aset merek | `components/MelodiAlamLockup.tsx` (`MelodiAlamLockup`) → `public/brand/melodi-alam-lockup-black.png` |

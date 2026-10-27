@@ -84,7 +84,7 @@ Empat hal yang paling penting:
 | `components/DemoPortal.tsx` | Form, unggah audio, object URL |
 | `components/VideoModal.tsx` | Embed YouTube |
 | `next.config.ts` | Header keamanan, `images.remotePatterns`, `poweredByHeader` |
-| `app/(site)/layout.tsx` · `app/robots.ts` | Metadata, JSON-LD, aturan robots |
+| `app/layout.tsx` · `app/robots.ts` | Metadata, JSON-LD, aturan robots |
 | `melodialam-sanity/sanity/schemaTypes/*` | Skema `demoSubmission`, `demoContact`, `article`, `siteSettings`, dan pemisahan dataset |
 
 ### 1.2 Metode
@@ -373,7 +373,7 @@ kota asal.
 
 | Cek | Hasil | Bukti |
 |---|---|---|
-| `dangerouslySetInnerHTML` di repo | **1 hasil, disengaja** | JSON-LD `WebSite`/`Organization` di `app/(site)/layout.tsx:146-149`; nilainya dibangun server, bukan input pengguna |
+| `dangerouslySetInnerHTML` di repo | **1 hasil, disengaja** | JSON-LD `WebSite`/`Organization` di `app/layout.tsx:146-149`; nilainya dibangun server, bukan input pengguna |
 | XSS dari `artist`/`city`/`title`/`genre`/`story` | **Aman** — React auto-escape | seluruh render form memakai JSX text |
 | XSS dari `href` Portable Text | **Aman** (React 19.3 membersihkan `javascript:`); tetap pengganti allowlist skema = `RENCANA` | `components/ArticleBody.tsx` |
 | `javascript:`/`data:` via `link` | **Aman** — ditolak `422` | `demos/route.ts:262` |
@@ -597,7 +597,7 @@ C17 — plus C8/C15/C16 bila unggahan audio tetap aktif.
   CSP report-only lengkap dengan `script-src` dan host Blob di `connect-src`
   (`:29-47`); `poweredByHeader: false` (`:54`); `headers()` (`:56-78`);
   `images.remotePatterns` 2 host (`:86-97`).
-- `app/(site)/layout.tsx` — metadata + `metadataBase` (`:52-82`); JSON-LD lewat
+- `app/layout.tsx` — metadata + `metadataBase` (`:52-82`); JSON-LD lewat
   `dangerouslySetInnerHTML` (`:146-149`); `<Analytics />` (`:181`).
 - `app/robots.ts` — `allow: "/"`, `disallow: "/api/"`; `/preview` **tidak**
   ditutup (agar `noindex`-nya terbaca crawler).

@@ -47,6 +47,15 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
 
+  /**
+   * A branded 404 for a URL that matches no route. Without this flag Next
+   * serves its bare error shell for unmatched paths; `app/global-not-found.tsx`
+   * supplies the site chrome instead.
+   */
+  experimental: {
+    globalNotFound: true,
+  },
+
   /** The framework version is not useful to attackers and is free to omit. */
   poweredByHeader: false,
 

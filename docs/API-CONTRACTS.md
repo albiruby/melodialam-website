@@ -522,6 +522,7 @@ formulir tanpa audio.
 | Tujuan | Membuang cache 6 tag saat Sanity Studio mem-publish |
 | Method & path | `POST /api/revalidate` |
 | Auth | Shared secret `SANITY_REVALIDATE_SECRET` |
+| Batas body | 16 KB; lebih besar dijawab `413` sebelum verifikasi secret |
 | Bukti identitas | Tanda tangan `sanity-webhook-signature` (HMAC-SHA256 atas `<timestamp>.<body>`, jendela ±5 menit) memakai secret dari kolom **Secret** webhook Sanity; `x-webhook-secret` tetap diterima sebagai cadangan untuk pemanggil manual. `?secret=` dihapus; `SANITY_REVALIDATE_SECRET_PREVIOUS` dihapus dari Vercel 25 Okt 2026 |
 | Efek samping | `revalidateTag(tag, "max")` untuk 6 tag |
 

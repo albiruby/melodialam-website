@@ -44,6 +44,45 @@ const CONTENT_TAGS = [
  */
 const SIGNATURE_WINDOW_SECONDS = 300;
 
+/**
+ * Webhook payloads are a few hundred bytes; refuse anything larger before the
+ * body is buffered. The cap is applied to the stream, not just to a
+ * `Content-Length` header a caller can omit.
+ */
+const MAX_BODY_BYTES = 16 * 1024;
+
+async function readRawBody(request: Request): Promise<string | null> {
+  const declared = Number(request.headers.get("content-length") ?? "");
+  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) return null;
+  if (!request.body) return "";
+
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > MAX_BODY_BYTES) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(merged);
+}
+
 function secretsMatch(provided: string, expected: string): boolean {
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
@@ -117,8 +156,12 @@ export async function POST(request: Request) {
   }
 
   // The raw body, read before anything else: the signature covers exactly
-  // these bytes.
-  const rawBody = await request.text();
+  // these bytes. The read is capped so an unauthenticated caller cannot make
+  // the route buffer an arbitrarily large body before the secret check.
+  const rawBody = await readRawBody(request);
+  if (rawBody === null) {
+    return NextResponse.json({ error: "Body terlalu besar." }, { status: 413 });
+  }
 
   const signature = request.headers.get("sanity-webhook-signature");
   const header = request.headers.get("x-webhook-secret");

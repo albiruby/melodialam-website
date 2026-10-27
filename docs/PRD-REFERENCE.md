@@ -108,7 +108,7 @@ atau menghapus perilaku hover-nya.
 | `NFR-001` | Gambar punya fallback `onerror` dan `aspect-ratio` eksplisit agar CLS nihil dan tidak ada gambar pecah | `SEBAGIAN` — rasio eksplisit ada di hampir semua pemakaian (`aspect-[4/5]`, `next/image` dengan `fill`), dan **thumbnail YouTube punya fallback berjenjang** (`components/YoutubeThumb.tsx`: maxres → sd → hq → "poster tidak tersedia"). **Tidak ada `onError` pada `next/image` mana pun** — `onError` satu-satunya di repo ada di `YoutubeThumb` |
 | `NFR-002` | Animasi hover memakai properti ramah GPU (`transform`, `opacity`, `cubic-bezier(0.16, 1, 0.3, 1)`) tanpa memicu *layout thrashing* | `TERVERIFIKASI` — `--ease-editorial: cubic-bezier(0.16, 1, 0.3, 1)` (`app/globals.css:33`), transisi memakai `transform`/`opacity`/`max-width` |
 | `NFR-003` | Proporsional di Mobile ≥ 360px, Tablet ≥ 768px, Desktop ≥ 1280px; Chrome/Safari/Edge/Firefox 2 tahun terakhir | `[PERLU VERIFIKASI]` — pemeriksaan responsivitas sebelumnya (360/390/768/1280/1440/1920 px) melaporkan nol overflow horizontal, tapi **tidak diulang** pada versi dokumen ini. **Belum diuji lintas peramban** |
-| `NFR-004` | Input formulir dan pencarian disanitasi terhadap injeksi HTML/XSS sebelum dirender ke DOM | `TERVERIFIKASI` — tidak ada `dangerouslySetInnerHTML` yang memuat input pengguna. Dua pemakaian `dangerouslySetInnerHTML` di repo semuanya JSON-LD `<script>` (`app/(site)/layout.tsx:148` dan `app/(site)/stories/[slug]/page.tsx:109`), dan isinya di-*escape* (`<` → `\u003c`). React meng-*escape* input secara bawaan. Rincian di `docs/SECURITY-PRIVACY.md` |
+| `NFR-004` | Input formulir dan pencarian disanitasi terhadap injeksi HTML/XSS sebelum dirender ke DOM | `TERVERIFIKASI` — tidak ada `dangerouslySetInnerHTML` yang memuat input pengguna. Dua pemakaian `dangerouslySetInnerHTML` di repo semuanya JSON-LD `<script>` (`app/layout.tsx:148` dan `app/(site)/stories/[slug]/page.tsx:109`), dan isinya di-*escape* (`<` → `\u003c`). React meng-*escape* input secara bawaan. Rincian di `docs/SECURITY-PRIVACY.md` |
 
 ---
 
@@ -116,7 +116,7 @@ atau menghapus perilaku hover-nya.
 
 | ID | Metrik / Event | Status |
 |---|---|---|
-| `MET-01` / `ANA-01` | *Article Read Completion Rate* (`article_scroll_75`); event `article_opened` | `RENCANA` — `@vercel/analytics` sudah terpasang dan `<Analytics />` ter-*mount* di `app/(site)/layout.tsx:181`, **tapi Web Analytics belum dinyalakan di dashboard Vercel**, jadi belum ada data. **Event kustom tidak ada** di repo |
+| `MET-01` / `ANA-01` | *Article Read Completion Rate* (`article_scroll_75`); event `article_opened` | `RENCANA` — `@vercel/analytics` sudah terpasang dan `<Analytics />` ter-*mount* di `app/layout.tsx:181`, **tapi Web Analytics belum dinyalakan di dashboard Vercel**, jadi belum ada data. **Event kustom tidak ada** di repo |
 | `MET-02` / `ANA-02` | *YouTube Hub Play Conversion*; event `video_modal_played` | `RENCANA` — modal pemutar ada (`components/VideoModal.tsx`) tetapi tidak ada event yang dikirim |
 | `MET-03` / `ANA-03` | *Demo Submission Completion Rate*; event `demo_submitted` | `RENCANA` — `POST /api/demos` menjawab 201 dan form menampilkan banner sukses, tapi tidak ada event `demo_submitted` |
 | `MET-04` / `ANA-04` | *Ecosystem Outbound CTR*; event `ecosystem_card_clicked` | `RENCANA` — `/tentang` memuat tautan ekosistem, tapi tidak ada event |
@@ -273,7 +273,7 @@ Selain `OQ-001`/`OQ-002` yang sudah dijawab di §8.
 - `app/globals.css` — utility `hover-reveal-curtain`, `hover-reveal-tag`,
   `corner-frame`, `dash-reveal-*`, `video-action-reveal`, blok
   `prefers-reduced-motion`, `--ease-editorial`, `--font-display`, `--font-serif`.
-- `app/(site)/layout.tsx` — mount `<Analytics />` dan `<Ticker>`.
+- `app/layout.tsx` — mount `<Analytics />` dan `<Ticker>`.
 - `package.json` — dependensi & skrip; dikonfirmasi **tidak ada** `payload`,
   `pg`, `drizzle`, `playwright`, atau `puppeteer`; `vitest` ada.
 - `docs/adr/0008-sanity-studio-menggantikan-payload.md`,

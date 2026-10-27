@@ -169,7 +169,7 @@ bundel klien.
 
 ## 3. Route and Navigation Specification
 
-Semua halaman berada di bawah satu root layout (`app/(site)/layout.tsx`) sehingga
+Semua halaman berada di bawah satu root layout (`app/layout.tsx`) sehingga
 **shell** identik di seluruh rute:
 `MotionRoot` → skip-link → `ScrollProgress` → `Ticker` → `SiteHeader` →
 `<main id="main" tabIndex={-1}">` → `SiteFooter` → `<Analytics />`.
@@ -232,7 +232,7 @@ di-persistensi ke query string — konsekuensinya tidak dapat dibagikan
 
 ```mermaid
 graph TB
-  ROOT["app/(site)/layout.tsx (server)<br/>4 font · JSON-LD · skip-link · metadata"]
+  ROOT["app/layout.tsx (server)<br/>4 font · JSON-LD · skip-link · metadata"]
   MR["motion/MotionRoot (client)"]
   SP["ScrollProgress (client)"]
   TK["Ticker → motion/MarqueeTape (client)"]
@@ -791,7 +791,7 @@ front-end.
 | Reduced motion (Motion) | `MotionConfig reducedMotion="user"` + `useReducedMotion` per primitif scroll | `MotionRoot`, `CountUp`, `MarqueeTape`, `Reveal` |
 | Indikator fokus global | `:focus-visible { outline: 2px solid var(--color-forest) }` | `app/globals.css:57-60` |
 | **Paritas keyboard** | **Setiap** affordance hover punya kembaran `.group:focus-within` / `.dash-reveal-item:focus-within` | `globals.css:169, 260, 286, 299, 339-340, 369, 393` |
-| Skip-link | "Lompat ke konten utama" → `#main`; `<main id="main" tabIndex={-1}>` | `app/(site)/layout.tsx:154-159` |
+| Skip-link | "Lompat ke konten utama" → `#main`; `<main id="main" tabIndex={-1}>` | `app/layout.tsx:154-159` |
 | Nama tombol video | `aria-label={`Putar ${title}`}` | `WatchButton` |
 | Drawer | `aria-expanded` + `aria-controls="mobile-nav"`; `hidden` saat tertutup; label tombol berganti "Tutup ✕"/"Menu ☰" | `SiteHeader` |
 | Nav aktif | `aria-current="page"` (nav desktop) | `SiteHeader` |
@@ -972,7 +972,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 - `app/globals.css` — seluruh 481 baris: `@source not` ×3, `@theme`, seluruh
   `@utility`, pasangan `.group:focus-within` (7 pasang), blok
   `prefers-reduced-motion` dengan `.parallax-layer`.
-- `app/(site)/layout.tsx` — 4 font, skip-link, JSON-LD `WebSite`/`Organization`,
+- `app/layout.tsx` — 4 font, skip-link, JSON-LD `WebSite`/`Organization`,
   auto-discovery RSS, urutan provider, `<main id="main" tabIndex={-1}>`,
   `SiteFooter settings`, `<Analytics />`.
 - `app/(site)/page.tsx` — `latestStories(8)`, slice 4, `FrontCard`, `CountUp`
