@@ -53,7 +53,7 @@ export function SiteHeader({
         <div className="order-2 col-span-2 text-[11px] uppercase tracking-wider text-neutral-600 md:order-1 md:col-span-1">
           <span className="hidden md:inline">{brand.strapline}</span>
           <span className="md:hidden">{brand.est}</span>
-          <div className="hidden text-[10px] text-neutral-400 sm:block">{brand.owner}</div>
+          <div className="hidden text-[10px] text-neutral-600 sm:block">{brand.owner}</div>
         </div>
 
         <div className="order-3 col-span-1 flex items-center justify-end gap-3">
@@ -65,7 +65,8 @@ export function SiteHeader({
             href="https://www.instagram.com/melodi.alam/?hl=en"
             target="_blank"
             rel="noreferrer"
-            className="nav-link-anim flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
+            aria-label="Instagram Melodi Alam"
+            className="nav-link-anim flex min-h-11 min-w-11 items-center justify-center gap-1.5 py-2 text-[11px] font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest sm:min-h-0 sm:min-w-0 sm:justify-start"
           >
             <InstagramIcon className="h-4 w-4" />
             <span className="hidden sm:inline">Instagram</span>
@@ -75,7 +76,7 @@ export function SiteHeader({
             onClick={() => setDrawerOpen((v) => !v)}
             aria-expanded={drawerOpen}
             aria-controls="mobile-nav"
-            className="border border-ink px-2.5 py-1 text-xs font-bold uppercase transition duration-300 hover:bg-ink hover:text-white lg:hidden"
+            className="min-h-11 border border-ink px-3 py-2 text-xs font-bold uppercase transition-colors duration-300 hover:bg-ink hover:text-white lg:hidden"
           >
             {drawerOpen ? "Tutup ✕" : "Menu ☰"}
           </button>

@@ -21,6 +21,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   (satu grup, `shrink-0`), meta `menit • tanggal` menjadi satu blok yang wrap
   ke kanan bawah pada kartu sempit; tidak ada lagi badge yang melayang di
   antara kategori dan tanggal.
+- **Aksesibilitas & UX (batch 27 Okt 2026).** Ticker: salinan duplikat
+  `inert`, tombol jeda/putar (WCAG 2.2.2), fokus keyboard menjeda, dan
+  landmark `region`; tautan Instagram header punya `aria-label` + area 44×44,
+  menu 62×50. Kontras: `neutral-400/500` → `neutral-600` (38 tempat) dan
+  stroke nomor video `#737373`. Heading order: `h3` sr-only di Curated News,
+  `h2` sr-only "Sesi panggung". Modal YouTube memakai
+  `youtube-nocookie.com`. Filter/search Kurasi tercermin di URL
+  (`?q=&pillar=`) lewat `useSyncExternalStore`, dan input punya
+  `focus-visible`. Tap target: search 33px, chip 36px, pager 36px; label 9px →
+  10px; `transition-all` diganti properti eksplisit.
 
 **Remediasi audit keamanan (26 Okt 2026)**
 

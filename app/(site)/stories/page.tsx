@@ -30,7 +30,7 @@ export default async function StoriesPage() {
         <div className="flex items-center justify-end border-b border-ink py-3 font-mono text-[11px] uppercase tracking-wider">
           <Link
             href="/stories/page/2"
-            className="nav-link-anim font-bold text-ink transition-colors hover:text-forest"
+            className="nav-link-anim inline-flex min-h-9 items-center py-2 font-bold text-ink transition-colors hover:text-forest"
           >
             Halaman 2 →
           </Link>
@@ -38,7 +38,7 @@ export default async function StoriesPage() {
       ) : null}
 
       {/* ---------- Dari Feed → Curated News ---------- */}
-      <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-500">
+      <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-600">
         <span>Konten kurasi dari feed @melodi.alam</span>
         <Link
           href="/kurasi"

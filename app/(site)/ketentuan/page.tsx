@@ -106,7 +106,7 @@ export default async function TermsPage() {
           </p>
         </section>
 
-        <p className="border-t border-ink pt-6 text-xs text-neutral-500">
+        <p className="border-t border-ink pt-6 text-xs text-neutral-600">
           Halaman ini bukan nasihat hukum. Sebelum dipakai untuk keperluan formal,
           mintakan peninjauan ke penasihat hukum.
         </p>

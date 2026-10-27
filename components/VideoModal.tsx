@@ -144,7 +144,7 @@ export function VideoModal() {
           <iframe
             key={state.id}
             className="absolute inset-0 h-full w-full"
-            src={`https://www.youtube.com/embed/${state.id}?autoplay=1`}
+            src={`https://www.youtube-nocookie.com/embed/${state.id}?autoplay=1`}
             title={state.title}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen

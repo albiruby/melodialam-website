@@ -117,7 +117,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
           ← Kembali ke Stories
         </Link>
 
-        <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-500">
+        <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-600">
           <span className="bg-forest px-2 py-0.5 text-white">{CATEGORY_LABELS[article.category]}</span>
           <time dateTime={article.dateISO}>{article.date}</time>
           <span aria-hidden>•</span>
@@ -132,7 +132,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
           {article.excerpt}
         </p>
 
-        <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-neutral-200 pt-4 text-[11px] font-mono text-neutral-500">
+        <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-neutral-200 pt-4 text-[11px] font-mono text-neutral-600">
           <span>SUMBER: REDAKSI MELODI ALAM (@MELODI.ALAM)</span>
           <span aria-hidden>•</span>
           <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>

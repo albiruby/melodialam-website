@@ -6,7 +6,7 @@ export function PillarHead({ label, note }: { label: string; note: string }) {
         <h3 className="font-display text-3xl font-black uppercase leading-none tracking-tight sm:text-4xl">
           {label}
         </h3>
-        <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
+        <span className="font-mono text-[11px] uppercase text-neutral-600">{note}</span>
       </div>
       <a
         href="https://www.instagram.com/melodi.alam/"

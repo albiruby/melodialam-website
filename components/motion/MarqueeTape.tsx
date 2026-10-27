@@ -30,9 +30,16 @@ const VELOCITY_SCALE = 0.5;
  *  - The tape idles whenever it is scrolled out of view, since it lives in the
  *    masthead and is invisible for most of a visit.
  */
-export function MarqueeTape({ children }: { children: React.ReactNode }) {
+export function MarqueeTape({
+  children,
+  paused = false,
+}: {
+  children: React.ReactNode;
+  paused?: boolean;
+}) {
   const track = useRef<HTMLDivElement>(null);
   const hovered = useRef(false);
+  const focused = useRef(false);
   const half = useRef(0);
   const x = useMotionValue(0);
 
@@ -60,8 +67,9 @@ export function MarqueeTape({ children }: { children: React.ReactNode }) {
   }, []);
 
   useAnimationFrame((_, delta) => {
-    // `still` and out-of-view are cheap early exits so the page keeps its frames.
-    if (still || hovered.current || !inView) return;
+    // `still`, paused, hover and focus are cheap early exits so the page keeps
+    // its frames and a reader can stop the tape without chasing it.
+    if (still || paused || hovered.current || focused.current || !inView) return;
 
     const loop = half.current;
     if (loop <= 0) return;
@@ -95,9 +103,15 @@ export function MarqueeTape({ children }: { children: React.ReactNode }) {
       onMouseLeave={() => {
         hovered.current = false;
       }}
+      onFocusCapture={() => {
+        focused.current = true;
+      }}
+      onBlurCapture={() => {
+        focused.current = false;
+      }}
     >
       <div className="flex shrink-0 items-center gap-10 pr-10">{children}</div>
-      <div aria-hidden className="flex shrink-0 items-center gap-10 pr-10">
+      <div aria-hidden inert className="flex shrink-0 items-center gap-10 pr-10">
         {children}
       </div>
     </motion.div>

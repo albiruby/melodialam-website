@@ -119,7 +119,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
         <Banner kind="article" id={String(doc._id ?? slug)} />
 
         <header className="border-b border-ink pb-6">
-          <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-500">
+          <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-600">
             <span className="bg-forest px-2 py-0.5 text-white">
               {CATEGORY_LABELS[(doc.category as never) ?? "Fakta Musik"] ?? "Fakta Musik"}
             </span>
@@ -173,12 +173,12 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
                 className="h-auto w-full object-cover"
               />
             ) : (
-              <p className="p-4 text-xs text-neutral-500">Belum ada gambar.</p>
+              <p className="p-4 text-xs text-neutral-600">Belum ada gambar.</p>
             )}
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-500">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-600">
               {String(doc.pillar ?? "")} • {String(doc.mediaType ?? "")} • {String(doc.date ?? "")}
             </p>
             <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">

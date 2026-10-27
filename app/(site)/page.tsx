@@ -67,7 +67,7 @@ export default async function HomePage() {
           ))}
         </div>
 
-        <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-500">
+        <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-600">
           <span>
             <CountUp to={stories.length} /> artikel di Stories • <CountUp to={curatedVideos} />{" "}
             sesi panggung
@@ -103,6 +103,7 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          <h3 className="sr-only">Pilihan redaksi</h3>
           <div className="grid grid-cols-2 gap-5 border-b border-ink py-6 lg:grid-cols-4">
             {curated.map((post) => (
               <PillarCard key={post.id} post={post} showPillar />

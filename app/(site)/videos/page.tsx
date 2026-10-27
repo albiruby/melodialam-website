@@ -56,7 +56,7 @@ function SectionHead({
         </Heading>
         {/* An empty note is a request to say nothing, not to show an empty gap. */}
         {note ? (
-          <span className="font-mono text-[11px] uppercase text-neutral-500">{note}</span>
+          <span className="font-mono text-[11px] uppercase text-neutral-600">{note}</span>
         ) : null}
       </div>
       {href && linkLabel ? (
@@ -120,6 +120,7 @@ export default async function VideosPage() {
           href={`https://www.youtube.com/@${CHANNEL.handle}/videos`}
           linkLabel={copy.samsaraLinkLabel}
         />
+        <h2 className="sr-only">Sesi panggung</h2>
         <div className="divide-y divide-neutral-300 border-b border-ink">
           {samsaraPreview.map((video, i) => (
             <VideoRow key={video.id} video={video} index={i} />
@@ -129,7 +130,7 @@ export default async function VideosPage() {
         {/* The rest of the sessions stay on the channel; the site shows a
             selection, not the whole catalogue. */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink py-4">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-500">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-600">
             Sesi lainnya ada di kanal YouTube
           </span>
           <a
@@ -147,7 +148,7 @@ export default async function VideosPage() {
       <Reveal>
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
           <h2 className="text-3xl tracking-tight sm:text-4xl">{copy.playlistsTitle}</h2>
-          <span className="font-mono text-[11px] text-neutral-500">
+          <span className="font-mono text-[11px] text-neutral-600">
             {copy.playlistsNote ?? `${playlists.length} playlist publik • ${CHANNEL.handle}`}
           </span>
         </div>
@@ -162,7 +163,7 @@ export default async function VideosPage() {
               className="brutalist-card group flex flex-col justify-between border border-ink bg-paper p-4"
             >
               <div>
-                <span className="font-mono text-[10px] uppercase text-neutral-500">Playlist</span>
+                <span className="font-mono text-[10px] uppercase text-neutral-600">Playlist</span>
                 <h3 className="mt-1 text-sm font-bold uppercase transition-colors group-hover:text-forest">
                   {playlist.title}
                 </h3>
@@ -174,7 +175,7 @@ export default async function VideosPage() {
       </Reveal>
 
       {/* ---------- Dari Feed → Curated News ---------- */}
-      <div className="flex items-center justify-between font-mono text-xs text-neutral-500">
+      <div className="flex items-center justify-between font-mono text-xs text-neutral-600">
         <span>Konten kurasi dari feed @melodi.alam</span>
         <Link
           href="/kurasi"

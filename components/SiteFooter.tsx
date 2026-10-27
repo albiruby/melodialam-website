@@ -68,7 +68,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               rel="noreferrer"
               aria-label="Instagram Melodi Alam"
               title="Instagram"
-              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               <InstagramIcon className="h-5 w-5" />
             </a>
@@ -78,7 +78,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               rel="noreferrer"
               aria-label="YouTube Melodi Alam"
               title="YouTube"
-              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               <YoutubeIcon className="h-5 w-5" />
             </a>
@@ -88,7 +88,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
               rel="noreferrer"
               aria-label="TikTok Melodi Alam"
               title="TikTok"
-              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="flex items-center justify-center border border-ink bg-white px-3 py-2 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               <TiktokIcon className="h-5 w-5" />
             </a>
@@ -111,11 +111,11 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between px-4 py-4 text-[11px] font-mono text-neutral-500 sm:px-8">
+      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between px-4 py-4 text-[11px] font-mono text-neutral-600 sm:px-8">
         <span>© 2017–2026 {settings.name} • INFIA PARIWARA NUSANTARA</span>
         <span>DESIGN SYSTEM: SWISS EDITORIAL BRUTALISM</span>
       </div>
-        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-3 px-4 py-4 font-mono text-[10px] uppercase tracking-wider text-neutral-500 sm:px-8">
+        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-3 px-4 py-4 font-mono text-[10px] uppercase tracking-wider text-neutral-600 sm:px-8">
           <span>© 2026 Melodi Alam</span>
           <div className="flex gap-4">
             <Link href="/privasi" className="transition-colors hover:text-forest">

@@ -69,14 +69,14 @@ export default async function StoriesPaginatedPage(props: {
         {next ? (
           <Link
             href={next}
-            className="nav-link-anim font-bold text-ink transition-colors hover:text-forest"
+            className="nav-link-anim inline-flex min-h-9 items-center py-2 font-bold text-ink transition-colors hover:text-forest"
           >
             Berikutnya →
           </Link>
         ) : (
           <Link
             href="/stories"
-            className="nav-link-anim font-bold text-ink transition-colors hover:text-forest"
+            className="nav-link-anim inline-flex min-h-9 items-center py-2 font-bold text-ink transition-colors hover:text-forest"
           >
             Kembali ke halaman 1
           </Link>

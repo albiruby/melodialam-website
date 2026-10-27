@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { PillarCard } from "./PillarCards";
 import { PillarHead } from "./PillarHead";
 import { PILLAR_LABELS, PHOTO_PILLARS, REEL_PILLARS, type PillarPost } from "@/lib/pillars-shared";
@@ -11,15 +11,53 @@ import { PILLAR_LABELS, PHOTO_PILLARS, REEL_PILLARS, type PillarPost } from "@/l
  * Without a filter the page reads as before — the six newest posts of each
  * pillar. A search or a pillar chip lifts the six-post cap and searches the
  * whole pool, then drops the sections that no longer have anything in them.
+ *
+ * The URL is the source of truth for the filter and the query, so a filtered
+ * view can be shared and survives a reload. `useSyncExternalStore` keeps the
+ * server render (all posts, good for SEO) and the client URL in sync without a
+ * setState-in-effect.
  */
 
 const PILLAR_LIMIT = 6;
 /** A search can return a lot; this keeps one screen from becoming the list. */
 const SEARCH_LIMIT = 48;
 
+const URL_EVENT = "melodi:kurasi-url";
+const KNOWN_PILLARS = new Set(["all", ...PHOTO_PILLARS, ...REEL_PILLARS]);
+
+function subscribe(callback: () => void) {
+  window.addEventListener("popstate", callback);
+  window.addEventListener(URL_EVENT, callback);
+  return () => {
+    window.removeEventListener("popstate", callback);
+    window.removeEventListener(URL_EVENT, callback);
+  };
+}
+
+const getSearch = () => window.location.search;
+const getServerSearch = () => "";
+
 export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
-  const [query, setQuery] = useState("");
-  const [pillar, setPillar] = useState<string>("all");
+  const search = useSyncExternalStore(subscribe, getSearch, getServerSearch);
+  const params = useMemo(() => new URLSearchParams(search), [search]);
+
+  const query = params.get("q") ?? "";
+  const requested = params.get("pillar") ?? "all";
+  const pillar = KNOWN_PILLARS.has(requested) ? requested : "all";
+
+  const setUrl = (nextQuery: string, nextPillar: string) => {
+    const next = new URLSearchParams();
+    const trimmed = nextQuery.trim();
+    if (trimmed) next.set("q", trimmed);
+    if (nextPillar !== "all") next.set("pillar", nextPillar);
+    const qs = next.toString();
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}${qs ? `?${qs}` : ""}`,
+    );
+    window.dispatchEvent(new Event(URL_EVENT));
+  };
 
   const q = query.trim().toLowerCase();
   const filtering = q.length > 0 || pillar !== "all";
@@ -72,11 +110,11 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
           id="kurasi-search"
           type="search"
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => setUrl(event.target.value, pillar)}
           placeholder="Cari judul atau pillar…"
-          className="w-full max-w-sm border-b border-ink bg-transparent py-1 text-xs outline-none transition-colors placeholder:text-neutral-500 focus:border-forest"
+          className="w-full max-w-sm border-b border-ink bg-transparent py-2 text-xs outline-none transition-colors placeholder:text-neutral-600 focus:border-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
         />
-        <span className="font-mono text-[11px] uppercase text-neutral-500">
+        <span className="font-mono text-[11px] uppercase text-neutral-600">
           {filtering ? `${matched.length} dari ${posts.length} post` : `${posts.length} post kurasi`}
         </span>
       </div>
@@ -86,9 +124,9 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
           <button
             key={chip.key}
             type="button"
-            onClick={() => setPillar(chip.key)}
+            onClick={() => setUrl(query, chip.key)}
             aria-pressed={pillar === chip.key}
-            className={`border border-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-all duration-300 ${
+            className={`min-h-9 border border-ink px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${
               pillar === chip.key ? "bg-ink text-white" : "hover:bg-paper"
             }`}
           >
@@ -99,7 +137,7 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
 
       {readPillars.length > 0 ? (
         <div className="pt-8">
-          <span className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-500">
+          <span className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-600">
             Baca — dari feed @melodi.alam
           </span>
           {readPillars.map((section) => (
@@ -117,7 +155,7 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
 
       {watchPillars.length > 0 ? (
         <div className="pt-12">
-          <span className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-500">
+          <span className="font-mono text-xs font-bold uppercase tracking-wider text-neutral-600">
             Tonton — dari feed @melodi.alam
           </span>
           {watchPillars.map((section) => (
@@ -134,7 +172,7 @@ export function KurasiBrowser({ posts }: { posts: PillarPost[] }) {
       ) : null}
 
       {readPillars.length === 0 && watchPillars.length === 0 ? (
-        <p className="py-16 text-center text-sm text-neutral-500">
+        <p className="py-16 text-center text-sm text-neutral-600">
           Belum ada post yang cocok. Coba kata kunci lain atau pilih “Semua”.
         </p>
       ) : null}

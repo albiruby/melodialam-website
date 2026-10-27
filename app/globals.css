@@ -159,7 +159,7 @@
 
 @utility text-outline-muted {
   color: transparent;
-  -webkit-text-stroke: 1px #a3a3a3;
+  -webkit-text-stroke: 1px #737373;
   transition:
     -webkit-text-stroke 0.35s var(--ease-editorial),
     color 0.35s var(--ease-editorial);

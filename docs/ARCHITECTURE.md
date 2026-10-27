@@ -790,9 +790,9 @@ melodi-alam/
 │   ├── PillarCards.tsx               PillarCard (server)
 │   ├── PillarHead.tsx                kepala seksi pillar (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)
-│   ├── SiteFooter.tsx · Ticker.tsx · MelodiAlamLockup.tsx   (server)
+│   ├── SiteFooter.tsx · MelodiAlamLockup.tsx   (server)
 │   ├── SubmitLink.tsx                tombol ke /submit (server)
-│   ├── SiteHeader.tsx · ScrollProgress.tsx   (client)
+│   ├── SiteHeader.tsx · Ticker.tsx · ScrollProgress.tsx   (client)
 │   ├── VideoModal.tsx · WatchLink.tsx · YoutubeThumb.tsx     (client)
 │   ├── KurasiBrowser.tsx · DemoPortal.tsx                    (client)
 │   └── motion/                       MotionRoot, RevealText, CountUp, MarqueeTape

@@ -42,7 +42,7 @@ export default async function BicaraMelodiPage() {
         {rows.map(({ row, video }) => (
           <article
             key={row.slug}
-            className="group -mx-3 flex cursor-pointer flex-col items-start justify-between gap-6 px-3 py-7 transition-all duration-500 hover:bg-white md:flex-row md:items-center"
+            className="group -mx-3 flex cursor-pointer flex-col items-start justify-between gap-6 px-3 py-7 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-500 hover:bg-white md:flex-row md:items-center"
           >
             <div className="max-w-3xl transition-transform duration-500 group-hover:translate-x-3">
               <h2 className="mb-1 font-display text-4xl leading-none tracking-tight text-ink sm:text-6xl">
@@ -52,7 +52,7 @@ export default async function BicaraMelodiPage() {
                 {row.headline}
               </p>
               {video ? (
-                <p className="mt-2 font-mono text-[10px] uppercase text-neutral-500">
+                <p className="mt-2 font-mono text-[10px] uppercase text-neutral-600">
                   {video.duration} • {video.uploaded}
                 </p>
               ) : null}
@@ -62,7 +62,7 @@ export default async function BicaraMelodiPage() {
               <WatchButton
                 id={row.videoId}
                 title={`${row.artist} — ${row.headline}`}
-                className="h-28 w-40 overflow-hidden border border-ink bg-neutral-300 transition-all duration-500 group-hover:shadow-[5px_5px_0px_#0D0D0D] md:h-28 md:w-40"
+                className="h-28 w-40 overflow-hidden border border-ink bg-neutral-300 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-500 group-hover:shadow-[5px_5px_0px_#0D0D0D] md:h-28 md:w-40"
               >
                 <YoutubeThumb
                   id={row.videoId}
@@ -80,7 +80,7 @@ export default async function BicaraMelodiPage() {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-4 pt-5 text-xs font-mono text-neutral-500">
+      <div className="flex flex-wrap items-center justify-end gap-4 pt-5 text-xs font-mono text-neutral-600">
         <Link
           href="/videos"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"

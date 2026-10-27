@@ -67,13 +67,13 @@ export function ArticleCard({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-neutral-200 pt-2 text-[11px] text-neutral-600">
         <span className="flex min-w-0 items-start gap-1.5">
           <span className="min-w-0 font-medium leading-snug text-ink">
             {CATEGORY_LABELS[article.category]}
           </span>
           {article.mediaType === "reel" ? (
-            <span className="mt-px shrink-0 whitespace-nowrap border border-ink px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-wider">
+            <span className="mt-px shrink-0 whitespace-nowrap border border-ink px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase leading-none tracking-wider">
               Reel
             </span>
           ) : null}

@@ -24,9 +24,9 @@ fixed/sticky yang memakan layar.
 
 | # | Temuan | Angka | Catatan |
 |---|---|---|---|
-| A | Tap target di bawah 44px | Menu 72×26; chip filter 29px; pager 17px; ikon Instagram 16×16 | Lolos minimum WCAG 2.5.8 (24px) kecuali ikon 16px; 44px adalah kenyamanan thumb. Memperbesar berarti mengubah tinggi visual — perlu keputusan pemilik |
-| B | Font < 12px | 22–121 elemen/halaman; terbanyak `/kurasi` (121) | Label mono 9–11px (tanggal, "Buka di IG", metadata). Estetika editorial; pertimbangkan 11px minimum untuk teks yang harus dibaca di ponsel |
-| C | Ticker menduplikasi tautan | 8 tautan duplikat per halaman (2 putaran) | Fokus keyboard melewati duplikat. Kandidat: `aria-hidden` pada putaran kedua |
+| A | Tap target di bawah 44px | Menu 72×26; chip filter 29px; pager 17px; ikon Instagram 16×16 | **Sebagian diperbaiki 27 Okt 2026** — menu 62×50, IG 44×44, search 33px, chip 36px, pager 36px, tautan ticker 25px. Target teks 10–11px tetap; semuanya ≥24px (WCAG 2.5.8) |
+| B | Font < 12px | 22–121 elemen/halaman; terbanyak `/kurasi` (121) | **Sebagian** — label 9px → 10px; meta 10–11px dipertahankan, kontras dinaikkan ke `neutral-600` (~7:1) |
+| C | Ticker menduplikasi tautan | 8 tautan duplikat per halaman (2 putaran) | **Diperbaiki 27 Okt 2026** — salinan duplikat `inert`, tombol jeda/putar (WCAG 2.2.2), fokus keyboard menjeda, ticker menjadi landmark `region` |
 | D | Konten, bukan layout | Playlist menampilkan "-"; beberapa kartu pilar tanpa gambar | Isi CMS: deskripsi playlist dan cover pilar |
 
 ## Matriks viewport (setelah perbaikan)

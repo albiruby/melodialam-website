@@ -303,7 +303,7 @@ export function DemoPortal() {
               placeholder="0812xxxx atau management@band.id"
               className={inputClass}
             />
-            <p className="mt-1.5 text-[11px] leading-relaxed text-neutral-500">
+            <p className="mt-1.5 text-[11px] leading-relaxed text-neutral-600">
               Hanya dibaca kurator Melodi Alam. Tidak pernah ditampilkan di antrean publik.
             </p>
           </Field>
@@ -319,7 +319,7 @@ export function DemoPortal() {
             </span>
             <label
               htmlFor="demo-audio"
-              className="editorial-paper flex cursor-pointer flex-col items-center justify-center border border-dashed border-ink p-5 text-center transition-all duration-300 hover:bg-white hover:shadow-[4px_4px_0px_#0D0D0D] focus-within:bg-white focus-within:shadow-[4px_4px_0px_#0D0D0D]"
+              className="editorial-paper flex cursor-pointer flex-col items-center justify-center border border-dashed border-ink p-5 text-center transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:bg-white hover:shadow-[4px_4px_0px_#0D0D0D] focus-within:bg-white focus-within:shadow-[4px_4px_0px_#0D0D0D]"
             >
               <span className="text-xs font-bold uppercase">
                 {audioName ? `File dipilih: ${audioName}` : "Pilih file audio dari perangkat ini"}
@@ -382,14 +382,14 @@ export function DemoPortal() {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-            <p className="max-w-md text-xs text-neutral-500">
+            <p className="max-w-md text-xs text-neutral-600">
               Dengan mengirim form ini, karya Anda masuk ke antrean dengar redaksi Melodi Alam dan
               kurator panggung Samsara Bogor.
             </p>
             <button
               type="submit"
               disabled={pending}
-              className="group flex items-center gap-4 bg-ink px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-all duration-300 hover:-translate-y-1 hover:bg-forest hover:shadow-[5px_5px_0px_#0D0D0D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest active:translate-y-0 disabled:opacity-50"
+              className="group flex items-center gap-4 bg-ink px-8 py-4 text-xs font-bold uppercase tracking-widest text-white transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-1 hover:bg-forest hover:shadow-[5px_5px_0px_#0D0D0D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest active:translate-y-0 disabled:opacity-50"
             >
               <span>{pending ? "Mengirim…" : "Kirim Demo Sekarang"}</span>
 </button>
@@ -420,7 +420,7 @@ export function DemoPortal() {
  * invalid HTML.
  */
 const inputClass =
-  "w-full border border-ink bg-white px-3 py-2.5 text-sm text-ink transition-all duration-300 focus:bg-paper focus:shadow-[4px_4px_0px_#1B3B2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
+  "w-full border border-ink bg-white px-3 py-2.5 text-sm text-ink transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 focus:bg-paper focus:shadow-[4px_4px_0px_#1B3B2B] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 function Field({
   label,

@@ -31,7 +31,7 @@ export function FrontCard({ article, lead = false }: { article: Article; lead?: 
       </div>
 
       <div className="flex min-w-0 flex-col">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-widest text-neutral-500">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-widest text-neutral-600">
           {lead ? <span className="bg-forest px-2 py-0.5 text-white">Cover Story</span> : null}
           <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>•</span>

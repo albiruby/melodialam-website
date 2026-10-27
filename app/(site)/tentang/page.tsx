@@ -82,19 +82,19 @@ export default async function TentangPage() {
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               href="/stories"
-              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               Stories
             </Link>
             <Link
               href="/submit"
-              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               Submit Karya
             </Link>
             <Link
               href="/rss.xml"
-              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+              className="border border-ink bg-white px-3 py-1.5 text-xs font-bold uppercase transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
             >
               RSS
             </Link>
@@ -116,7 +116,7 @@ export default async function TentangPage() {
               >
                 {settings.contactEmail}
               </a>
-              <span className="text-neutral-400">/</span>
+              <span className="text-neutral-600">/</span>
               <a
                 href={`mailto:${settings.partnerEmail}`}
                 className="font-bold underline transition-colors hover:text-forest"
@@ -148,7 +148,7 @@ export default async function TentangPage() {
                   href={link.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1.5 border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-all duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
+                  className="flex items-center gap-1.5 border border-ink bg-white px-2.5 py-1 text-[11px] font-bold uppercase transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:-translate-y-0.5 hover:bg-ink hover:text-white"
                 >
                   {CHANNEL_ICONS[link.label] ? <ChannelIcon label={link.label} /> : null}
                   {link.label}
@@ -164,7 +164,7 @@ export default async function TentangPage() {
           <div key={pillar.title} className="p-5">
             <div className="flex items-baseline justify-between">
               <h2 className="text-2xl font-bold tracking-tight">{pillar.title}</h2>
-              <span className="font-mono text-[10px] uppercase text-neutral-500">{pillar.note}</span>
+              <span className="font-mono text-[10px] uppercase text-neutral-600">{pillar.note}</span>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-neutral-600">{pillar.body}</p>
             <Link
@@ -177,7 +177,7 @@ export default async function TentangPage() {
         ))}
       </div>
 
-      <p className="pt-5 font-mono text-[11px] text-neutral-500">
+      <p className="pt-5 font-mono text-[11px] text-neutral-600">
         {SITE.name} — {SITE.owner}. Bagian dari ekosistem Intellectual Property PT Infia
         Pariwara Nusantara (INFIA Corp).
       </p>

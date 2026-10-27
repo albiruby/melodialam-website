@@ -154,7 +154,7 @@ export default async function PrivacyPage() {
           </p>
         </section>
 
-        <p className="border-t border-ink pt-6 text-xs text-neutral-500">
+        <p className="border-t border-ink pt-6 text-xs text-neutral-600">
           Halaman ini bukan nasihat hukum. Ia menjelaskan praktik situs ini; sebelum
           dipakai untuk keperluan formal, mintakan peninjauan ke penasihat hukum.
         </p>

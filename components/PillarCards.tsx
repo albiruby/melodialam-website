@@ -38,7 +38,7 @@ export function PillarCard({
           />
         ) : null}
         {post.mediaType === "reel" ? (
-          <span className="absolute right-2 top-2 border border-ink bg-white px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase">
+          <span className="absolute right-2 top-2 border border-ink bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase">
             Reel
           </span>
         ) : null}
@@ -53,7 +53,7 @@ export function PillarCard({
       >
         {post.title}
       </h4>
-      <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-mono text-[10px] uppercase text-neutral-500">
+      <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-mono text-[10px] uppercase text-neutral-600">
         <span>{pillarDate(post.date)}</span>
         <span className="transition-colors group-hover:text-forest">Buka di IG</span>
       </div>
