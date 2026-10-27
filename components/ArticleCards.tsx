@@ -67,16 +67,18 @@ export function ArticleCard({
         )}
       </div>
 
-      <div className="flex justify-between border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
-        <span className="flex items-center gap-2">
-          <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-neutral-200 pt-2 text-[11px] text-neutral-500">
+        <span className="flex min-w-0 items-start gap-1.5">
+          <span className="min-w-0 font-medium leading-snug text-ink">
+            {CATEGORY_LABELS[article.category]}
+          </span>
           {article.mediaType === "reel" ? (
-            <span className="border border-ink px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider">
+            <span className="mt-px shrink-0 whitespace-nowrap border border-ink px-1.5 py-0.5 font-mono text-[9px] font-bold uppercase leading-none tracking-wider">
               Reel
             </span>
           ) : null}
         </span>
-        <span className="flex items-center gap-2">
+        <span className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap">
           <span>{articleReadingTime(article)} menit</span>
           <span aria-hidden>•</span>
           <time dateTime={article.dateISO}>{article.date}</time>

@@ -15,6 +15,13 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Perapian UI (27 Okt 2026)**
+
+- **Footer kartu artikel dirapikan.** Badge `REEL` kini menempel pada kategori
+  (satu grup, `shrink-0`), meta `menit • tanggal` menjadi satu blok yang wrap
+  ke kanan bawah pada kartu sempit; tidak ada lagi badge yang melayang di
+  antara kategori dan tanggal.
+
 **Remediasi audit keamanan (26 Okt 2026)**
 
 - **JSON-LD `/videos` di-escape.** Ketiga sink JSON-LD kini memakai
