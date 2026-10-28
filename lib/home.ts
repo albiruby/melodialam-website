@@ -28,7 +28,7 @@ export interface HomeContent {
   setlist: SiteVideo[];
   /** The largest card in the curated section. */
   curatedFeature: PillarPost | null;
-  /** The two posts beside it. */
+  /** Four posts beside the feature, in a 2×2 grid. */
   curatedRest: PillarPost[];
   /** Four interview rows for the Bicara list inside Originals (three on mobile). */
   interviews: SiteInterview[];
@@ -81,7 +81,7 @@ export function selectHomeContent({
     featured,
     setlist,
     curatedFeature: photos[0] ?? null,
-    curatedRest: photos.slice(1, 3),
+    curatedRest: photos.slice(1, 5),
     interviews: interviews.slice(0, 4),
   };
 }

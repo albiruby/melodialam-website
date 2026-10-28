@@ -17,7 +17,7 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 | 01 | **Top News — lead + sidebar** | H1 = judul lead; foto 3:2; deck; sidebar `Latest` 3 berita |
 | 02 | **More Top News** | 3 kartu berita; grid 3 kolom |
 | 03 | **Originals** | Samsara (poster + 2 setlist) + Bicara Melodi (4 baris teks; 3 di mobile) |
-| 04 | **Curated** | 1 feature + 2 pendamping; grid 6:3:3 |
+| 04 | **Curated** | 1 feature + 4 pendamping; 6:6, grid 2×2 |
 | 05 | **Submit** | blok forest terpusat, satu CTA |
 
 ## Keputusan per modul
@@ -55,15 +55,16 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 ### 04 — Curated
 
 - Section bar `CURATED` + **Semua kurasi**.
-- **6:3:3** dalam satu baris di desktop:
+- **6:6** di desktop:
   - feature 6 kolom, **4:5**;
-  - dua pendamping 3 kolom, **4:5**.
-- Di 1280 feature sekitar 600×750 dan pendamping 300×375 — lebih kecil
+  - empat pendamping di 6 kolom kanan sebagai **grid 2×2**;
+  - gambar pendamping 4:5 selebar 3 kolom.
+- Di 1280 feature sekitar 600×750 dan gambar pendamping 300×375 — lebih kecil
   daripada 8:4 sebelumnya (800×1000), tetapi tetap utuh dalam format IG.
 - Feature dan pendamping hanya judul + pillar/tanggal. Tidak ada “Buka di IG” di
   kartu homepage; seluruh kartu adalah tautan.
-- Mobile: feature sebagai baris horizontal (foto **4:5** kecil + teks); dua
-  pendamping juga baris horizontal **4:5**.
+- Mobile: feature horizontal, dua pendamping di ponsel, empat dari `sm`
+  (dua kolom) sebagai baris horizontal 4:5.
 
 ### 05 — Submit
 
@@ -105,7 +106,7 @@ dua label “Top News”.
 - `sidebar`: 3 artikel;
 - `more`: 3 artikel;
 - `setlist`: 2 sesi;
-- `curatedRest`: 2 post;
+- `curatedRest`: 4 post;
 - `interviews`: 4.
 
 Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk
@@ -146,7 +147,7 @@ ringkasan dan CTA per kartu, lalu empat kartu Curated. Versi sekarang:
 - masthead satu baris, tanpa ticker;
 - lead story + sidebar `Latest`, lalu tiga kartu More Top News;
 - Originals sebagai band gelap;
-- tiga kartu Curated 6:3:3 dengan cover 4:5;
+- lima kartu Curated: 1 feature + grid 2×2, cover 4:5;
 - satu CTA Submit;
 - footer satu baris copyright.
 

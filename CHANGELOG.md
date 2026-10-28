@@ -19,14 +19,14 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 - **Homepage menjadi news-first**: H1 adalah **judul lead article**; hero brand
   dihapus. Modul: **Top News** (1 lead + 3 sidebar `Latest`), **More Top News**
-  (3 kartu), **Originals** (Samsara + Bicara Melodi), **Curated** (1 feature + 2
-  pendamping, grid 6:3:3), dan **Submit** (satu CTA).
+  (3 kartu), **Originals** (Samsara + Bicara Melodi), **Curated** (1 feature + 4
+  pendamping, grid 6:6 2×2), dan **Submit** (satu CTA).
 - **Penamaan UI**: `Front Page` / `Latest News` → **Top News**;
   `Curated News` → **Curated**. Label nav, h1 `/kurasi`, metadata, tautan
   `/stories` + `/videos`, kartu `/tentang`, dan breadcrumb JSON-LD disinkronkan.
-- **Curated diperkecil** dari 8:4 (feature 800×1000 di 1280) menjadi 6:3:3
-  (feature 600×750, pendamping 300×375), semua **4:5** agar cover IG tidak
-  terpotong; kartu hanya judul + pillar/tanggal.
+- **Curated diperkecil** dari 8:4 (feature 800×1000 di 1280) menjadi 6:6
+  (feature 600×750, grid 2×2 dengan gambar 300×375), semua **4:5** agar cover IG
+  tidak terpotong; kartu hanya judul + pillar/tanggal.
 - **Shell dirapikan**: ticker dihapus dari layout dan 404; header menjadi satu
   baris (lockup kiri, nav kanan, menu di bawah `xl`); footer memakai garis 1 px
   dan teks 13/11 px. Komponen `Ticker`, `MarqueeTape`, dan `SectionMarker`

@@ -395,7 +395,7 @@ pola yang bisa dipasang kembali.
 | Jarak antar-seksi | `space-y-20` di `<main>` |
 | Breakpoint yang dipakai | `sm` 640, `md` 768, `lg` 1024 (Tailwind bawaan) |
 | Grid beranda | Top News: lead 8 kolom + sidebar 4; More Top News 3 kolom |
-| Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:3:3: 1 feature + 2 `PillarCard` |
+| Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:6: 1 feature + 4 kartu 2×2 |
 | Grid `/stories` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-4`: 8 kartu `ArticleCard` |
 | Grid pilar foto `/kurasi` | `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-6` |
 | Blok "More" pada detail artikel | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-3`: 3 kartu |

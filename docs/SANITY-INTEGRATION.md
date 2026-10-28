@@ -218,7 +218,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Curated" |
 | `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated**: section per pillar (6 post/pillar), kotak cari + chip pillar (total 55 post) |
 | `app/(site)/stories/[slug]/page.tsx` | `articleBySlug(slug)` + `latestStories(8)` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
-| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Curated (3 post), Submit |
+| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Curated (5 post), Submit |
 | `app/(site)/bicara-melodi/page.tsx` | `allInterviews()` + `allVideos()` | 9 episode Season 3 |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` | halaman **Melodi Samsara**: 9 sesi Samsara + 5 playlist; judul bagian dari singleton `videosPage` |
 | `app/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, catatan kurasi, label panel hijau kartu |

@@ -31,16 +31,20 @@ export function CuratedNews({
         </div>
 
         {rest.length > 0 ? (
-          <div className="grid gap-6 lg:col-span-6 lg:grid-cols-2 lg:gap-5">
-            {rest.map((post) => (
-              <PillarCard
+          <div className="grid gap-5 sm:grid-cols-2 lg:col-span-6 lg:grid-cols-2 lg:grid-rows-2">
+            {rest.map((post, index) => (
+              <div
                 key={post.id}
-                post={post}
-                showPillar
-                horizontalOnMobile
-                showCta={false}
-                eager
-              />
+                className={`${index >= 2 ? "hidden sm:block" : ""} h-full`}
+              >
+                <PillarCard
+                  post={post}
+                  showPillar
+                  horizontalOnMobile
+                  showCta={false}
+                  eager
+                />
+              </div>
             ))}
           </div>
         ) : null}

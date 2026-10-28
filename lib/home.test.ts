@@ -175,7 +175,7 @@ describe("selectHomeContent", () => {
     expect(content.curatedRest.map((item) => item.id)).toEqual(["new", "older"]);
   });
 
-  it("caps the curated rows at two posts", () => {
+  it("caps the curated grid at four posts", () => {
     const content = selectHomeContent({
       stories: [],
       videos: [],
@@ -185,11 +185,13 @@ describe("selectHomeContent", () => {
         post("b", { date: "2026-10-04" }),
         post("c", { date: "2026-10-03" }),
         post("d", { date: "2026-10-02" }),
+        post("e", { date: "2026-10-01" }),
+        post("f", { date: "2026-09-30" }),
       ],
     });
 
     expect(content.curatedFeature?.id).toBe("a");
-    expect(content.curatedRest.map((item) => item.id)).toEqual(["b", "c"]);
+    expect(content.curatedRest.map((item) => item.id)).toEqual(["b", "c", "d", "e"]);
   });
 
   it("returns empty slots when the pool is empty", () => {
