@@ -107,8 +107,8 @@ export function Originals({
           <div
             className={
               featured
-                ? "min-w-0 border-t border-white/10 pt-6 lg:col-span-4 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0"
-                : "min-w-0"
+                ? "flex min-w-0 flex-col border-t border-white/10 pt-6 lg:col-span-4 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0"
+                : "flex min-w-0 flex-col"
             }
           >
             <div className="flex items-baseline justify-between gap-4 border-b border-white/20 pb-2">
@@ -123,13 +123,16 @@ export function Originals({
               </Link>
             </div>
 
-            <ol className="divide-y divide-white/10">
-              {interviews.map((row) => (
-                <li key={row.slug}>
+            <ol className="flex flex-1 flex-col divide-y divide-white/10">
+              {interviews.map((row, index) => (
+                <li
+                  key={row.slug}
+                  className={`${index === 3 ? "hidden sm:block" : ""} flex-1`}
+                >
                   <WatchLink
                     id={row.videoId}
                     title={`${row.artist} — ${row.headline}`}
-                    className="group block py-4 focus-visible:outline-white"
+                    className="group flex h-full flex-col justify-center py-4 focus-visible:outline-white"
                   >
                     <h4 className="font-display text-xl font-black leading-tight tracking-tight text-white transition-colors group-hover:text-white/70">
                       {row.artist}

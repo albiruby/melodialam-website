@@ -212,14 +212,14 @@ describe("selectHomeContent", () => {
     });
   });
 
-  it("shows at most three interview rows", () => {
+  it("shows at most four interview rows", () => {
     const content = selectHomeContent({
       stories: [],
       videos: [],
-      interviews: [interview("a"), interview("b"), interview("c"), interview("d")],
+      interviews: [interview("a"), interview("b"), interview("c"), interview("d"), interview("e")],
       curated: [],
     });
 
-    expect(content.interviews.map((item) => item.slug)).toEqual(["a", "b", "c"]);
+    expect(content.interviews.map((item) => item.slug)).toEqual(["a", "b", "c", "d"]);
   });
 });

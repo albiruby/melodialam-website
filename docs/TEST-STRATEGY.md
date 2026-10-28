@@ -210,7 +210,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 
 | ID | Invariant | Kenapa |
 |---|---|---|
-| `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 3 Curated + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 2 curated rest, 3 interview |
+| `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 3 Curated + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 2 curated rest, 4 interview |
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
 | `U-23` | `/kurasi` = 6 post per pilar tanpa pencarian/filter | `PILLAR_LIMIT = 6` di `components/KurasiBrowser.tsx`; dengan pencarian/filter naik ke `SEARCH_LIMIT = 48` |

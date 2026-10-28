@@ -16,7 +16,7 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 |---|---|---|
 | 01 | **Top News — lead + sidebar** | H1 = judul lead; foto 3:2; deck; sidebar `Latest` 3 berita |
 | 02 | **More Top News** | 3 kartu berita; grid 3 kolom |
-| 03 | **Originals** | Samsara (poster + 2 setlist) + Bicara Melodi (3 baris teks) |
+| 03 | **Originals** | Samsara (poster + 2 setlist) + Bicara Melodi (4 baris teks; 3 di mobile) |
 | 04 | **Curated** | 1 feature + 2 pendamping; grid 6:3:3 |
 | 05 | **Submit** | blok forest terpusat, satu CTA |
 
@@ -47,8 +47,8 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 - Section bar `ORIGINALS` + **Tonton semua**.
 - Samsara: poster 16:9, judul, `Samsara Bogor · durasi`, dua setlist (judul +
   durasi).
-- Bicara Melodi: tiga baris teks, artis + judul obrolan. Tanpa thumbnail,
-  caption episode, atau nomor.
+- Bicara Melodi: empat baris teks (tiga di mobile), artis + judul obrolan.
+  Tanpa thumbnail, caption episode, atau nomor.
 - Monokrom: putih/abu di atas ink; hijau hanya untuk interaksi Play dan CTA
   Submit. Section ini satu-satunya momen gelap.
 
@@ -106,7 +106,7 @@ dua label “Top News”.
 - `more`: 3 artikel;
 - `setlist`: 2 sesi;
 - `curatedRest`: 2 post;
-- `interviews`: 3.
+- `interviews`: 4.
 
 Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk
 `sidebar`/`more`; test, build, dan axe dijalankan pada pass ini (lihat QA).

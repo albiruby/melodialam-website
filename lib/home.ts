@@ -30,7 +30,7 @@ export interface HomeContent {
   curatedFeature: PillarPost | null;
   /** The two posts beside it. */
   curatedRest: PillarPost[];
-  /** Three interview rows for the Bicara list inside Originals. */
+  /** Four interview rows for the Bicara list inside Originals (three on mobile). */
   interviews: SiteInterview[];
 }
 
@@ -82,6 +82,6 @@ export function selectHomeContent({
     setlist,
     curatedFeature: photos[0] ?? null,
     curatedRest: photos.slice(1, 3),
-    interviews: interviews.slice(0, 3),
+    interviews: interviews.slice(0, 4),
   };
 }
