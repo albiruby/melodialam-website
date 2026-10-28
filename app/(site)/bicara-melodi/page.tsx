@@ -20,7 +20,15 @@ export default async function BicaraMelodiPage() {
   const rows = interviews.map((row) => ({ row, video: videoById(videos, row.videoId) }));
 
   return (
-    <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
+    <div>
+      <div className="flex flex-wrap items-baseline justify-between gap-3 pb-4">
+        <h1 className="text-4xl tracking-tight sm:text-5xl">Bicara Melodi</h1>
+        <span className="font-serif text-sm italic text-neutral-600">
+          (wawancara &amp; sesi)
+        </span>
+      </div>
+
+      <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
       {/* Index header */}
       <div className="grid grid-cols-3 items-center border-b border-ink pb-4 text-[11px] font-bold uppercase tracking-wider">
         <div>Interview &amp; Session</div>
@@ -91,5 +99,6 @@ export default async function BicaraMelodiPage() {
 
       <VideoModal />
     </Reveal>
+    </div>
   );
 }

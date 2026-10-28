@@ -6,8 +6,8 @@ import { MelodiAlamLockup } from "./MelodiAlamLockup";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   return (
-    <footer className="mt-20 border-t-2 border-ink bg-paper">
-      <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-8 border-b border-ink px-4 py-12 md:grid-cols-12 sm:px-8">
+    <footer className="mt-20 border-t border-rule bg-paper">
+      <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-10 border-b border-rule px-4 py-12 md:grid-cols-12 sm:px-8">
         <div className="space-y-3 md:col-span-5">
           {/* The footer is where the lockup gets room to read properly. */}
           <MelodiAlamLockup
@@ -18,15 +18,15 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           <p className="font-serif text-lg italic text-neutral-700">
             A living ecosystem of melody: Stories and Watch.
           </p>
-          <p className="max-w-sm text-xs leading-relaxed text-neutral-600">
+          <p className="max-w-sm text-[13px] leading-relaxed text-neutral-600">
             Bagian dari ekosistem Intellectual Property (IP) PT Infia Pariwara Nusantara
             (INFIA Corp). Menghubungkan jurnalisme musik, sesi intim panggung, ruang dengar
             Samsara Bogor, hingga perangkat audio analog SVVARA.
           </p>
         </div>
 
-        <div className="space-y-2 text-xs md:col-span-3">
-          <div className="mb-3 font-mono font-bold uppercase tracking-wider">Rubrik & Program</div>
+        <div className="space-y-2 text-[13px] md:col-span-3">
+          <div className="mb-3 text-xs font-mono font-bold uppercase tracking-wider">Rubrik & Program</div>
           <ul className="space-y-1.5 text-neutral-700">
             {FOOTER_RUBRIKS.map((item) => (
               <li key={item.label}>
@@ -41,8 +41,8 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
           </ul>
         </div>
 
-        <div className="space-y-2 text-xs md:col-span-4">
-          <div className="mb-3 font-mono font-bold uppercase tracking-wider">
+        <div className="space-y-2 text-[13px] md:col-span-4">
+          <div className="mb-3 text-xs font-mono font-bold uppercase tracking-wider">
             Ekosistem Ruang & Kanal Resmi
           </div>
           {/* Copy below names the venue; this lockup names the ecosystem owner. */}
@@ -111,22 +111,17 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between px-4 py-4 text-[11px] font-mono text-neutral-600 sm:px-8">
+      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 font-mono text-[11px] uppercase tracking-wider text-neutral-600 sm:px-8">
         <span>© 2017–2026 {settings.name} • INFIA PARIWARA NUSANTARA</span>
-        <span>DESIGN SYSTEM: SWISS EDITORIAL BRUTALISM</span>
-      </div>
-        <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-3 px-4 py-4 font-mono text-[10px] uppercase tracking-wider text-neutral-600 sm:px-8">
-          <span>© 2026 Melodi Alam</span>
-          <div className="flex gap-4">
-            <Link href="/privasi" className="transition-colors hover:text-forest">
-              Kebijakan Privasi
-            </Link>
-            <Link href="/ketentuan" className="transition-colors hover:text-forest">
-              Ketentuan
-            </Link>
-          </div>
+        <div className="flex flex-wrap gap-4">
+          <Link href="/privasi" className="transition-colors hover:text-forest">
+            Kebijakan Privasi
+          </Link>
+          <Link href="/ketentuan" className="transition-colors hover:text-forest">
+            Ketentuan
+          </Link>
         </div>
-
+      </div>
     </footer>
   );
 }

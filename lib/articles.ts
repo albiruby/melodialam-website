@@ -31,7 +31,7 @@ export interface SiteArticle extends Article {
   /** Where this article came from. Handy in the UI and when debugging. */
   source: "static" | "cms";
   /**
-   * Feed photo (`foto`) or reel (`reel`). The site's rule: Latest News and
+   * Feed photo (`foto`) or reel (`reel`). The site's rule: Top News and
    * Stories only carry feed photos, so a reel story is marked and held back.
    */
   mediaType: "foto" | "reel";
@@ -39,7 +39,7 @@ export interface SiteArticle extends Article {
 
 /**
  * Newest first, matching the CMS query's `order(date desc)` — the home page
- * slices the head of this list for "Latest News", so both sources keep the
+ * slices the head of this list for "Top News", so both sources keep the
  * same order.
  */
 const STATIC: SiteArticle[] = [...ARTICLES]
@@ -196,7 +196,7 @@ export async function allArticles(): Promise<SiteArticle[]> {
 /**
  * The feed-photo articles, newest first.
  *
- * The house rule: Latest News (home) and Stories (/stories) only carry stories
+ * The house rule: Top News (home) and Stories (/stories) only carry stories
  * that came from a feed photo on Instagram. A reel story stays in the CMS — and
  * its own URL keeps working — but it does not take a slot in either section
  * until an editor gives it a photo of its own.

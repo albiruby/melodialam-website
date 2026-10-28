@@ -45,6 +45,10 @@ export function MelodiAlamLockup({
       sizes={sizes ?? `${width}px`}
       loading={eager ? "eager" : "lazy"}
       fetchPriority={eager ? "high" : "auto"}
+      // Explicit ratio for the browser's lazy-loading/CLS heuristics; the
+      // intrinsic width/height attributes alone are not enough once CSS
+      // overrides the display width.
+      style={{ aspectRatio: "2021 / 286" }}
       className={className}
     />
   );

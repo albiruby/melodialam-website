@@ -4,7 +4,6 @@ import "./globals.css";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { Ticker } from "@/components/Ticker";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { Analytics } from "@vercel/analytics/next";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
@@ -158,15 +157,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             Lompat ke konten utama
           </a>
           <ScrollProgress />
-          <Ticker items={settings.tickerItems} />
-          <SiteHeader
-            brand={{
-              tagline: settings.tagline,
-              strapline: settings.strapline,
-              est: settings.est,
-              owner: settings.owner,
-            }}
-          />
+          <SiteHeader />
           <main
             id="main"
             tabIndex={-1}

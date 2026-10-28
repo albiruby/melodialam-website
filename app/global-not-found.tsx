@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
-import { Ticker } from "@/components/Ticker";
 import { getSiteSettings } from "@/lib/site-settings";
 import NotFound from "./(site)/not-found";
 
@@ -11,7 +10,7 @@ import NotFound from "./(site)/not-found";
  * The 404 for a URL that matches no route at all.
  *
  * Next's `global-not-found` is a full document of its own — the root layout is
- * not applied — so the fonts, ticker, header and footer are rendered here.
+ * not applied — so the fonts, header and footer are rendered here.
  * `app/not-found.tsx` still handles `notFound()` thrown inside a matched route.
  */
 
@@ -57,15 +56,7 @@ export default async function GlobalNotFound() {
         >
           Lompat ke konten utama
         </a>
-        <Ticker items={settings.tickerItems} />
-        <SiteHeader
-          brand={{
-            tagline: settings.tagline,
-            strapline: settings.strapline,
-            est: settings.est,
-            owner: settings.owner,
-          }}
-        />
+        <SiteHeader />
         <main
           id="main"
           tabIndex={-1}

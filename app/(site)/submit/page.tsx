@@ -13,7 +13,7 @@ export default function SubmitPage() {
   return (
     <Reveal className="pt-4">
       <div className="mb-4 border-b-2 border-ink pb-3">
-        <h2 className="text-4xl tracking-tight sm:text-5xl">Submit Karya</h2>
+        <h1 className="text-4xl tracking-tight sm:text-5xl">Submit Karya</h1>
       </div>
 
       <DemoPortal />

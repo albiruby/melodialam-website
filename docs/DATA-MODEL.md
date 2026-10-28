@@ -34,10 +34,10 @@
 
 | Aspek | Nilai | Status |
 |---|---|---|
-| Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated News, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
+| Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
 | Store utama | Sanity CMS, **dua dataset**: `production` (publik) + `submissions` (privat) | `TERVERIFIKASI` (`lib/sanity-project.ts:31,34`) |
 | Store kedua | `lib/catalogue.json` — katalog YouTube hasil *scrape*, dibangkitkan `npm run catalogue`, **tidak boleh diedit tangan** | `TERVERIFIKASI` (`lib/catalogue.ts:3`) |
-| Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 4 item ticker, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
+| Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 4 item ticker (data; tidak dirender), 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
 | Basis data relasional | **Tidak ada.** Tidak ada Postgres, tidak ada ORM, tidak ada migrasi | `TERVERIFIKASI` (ADR-0008; `package.json` tidak punya `payload`/`pg`/`drizzle`) |
 | Role penulis | Kurator/editor lewat Sanity Studio (dua workspace: **Konten** dan **Submit Karya**) | `TERVERIFIKASI` (`melodialam-sanity/sanity.config.ts`) |
 | Volume konten editorial | 12 artikel (6 foto + 6 reel), 9 baris wawancara, 9 video, 5 playlist, 55 post kurasi, 1 `siteSettings`, 1 `videosPage` | `TERVERIFIKASI` — dihitung ulang dari dataset `production` pada 21 Okt 2026 (lihat §6) |
@@ -99,7 +99,7 @@ Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
 | `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
 | `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
 | `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; bagian "Dari Feed" lalu tidak dirender |
-| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau | `siteSettings` | per-field ke `lib/site.ts` + `lib/content-fallback.ts` |
+| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, catatan kurasi, label panel hijau; data ticker tetap dibaca tetapi tidak dirender | `siteSettings` | per-field ke `lib/site.ts` + `lib/content-fallback.ts` |
 | `lib/videos-page.ts` → `getVideosPageCopy()` | judul/catatan bagian `/videos` | `videosPage` | per-field ke konstanta `STATIC` di berkas itu |
 | `app/api/demos/route.ts` | antrean demo | `demoSubmission` (dataset privat) | array in-memory `memoryQueue` berisi 3 `SEED_DEMOS`; kontak disimpan di `memoryContacts` |
 
@@ -163,7 +163,7 @@ Pemakai dan potongannya (`TERVERIFIKASI`):
 
 | Pemakai | Potongan |
 |---|---|
-| Beranda `app/(site)/page.tsx:28-29` | `latestStories(8)` → 4 pertama (grid 2×2) |
+| Beranda `app/(site)/page.tsx:36-44` | `latestStories(8)` → 7 pertama (lead h1 + sidebar 3 + More Top News 3) |
 | `/stories` `app/(site)/stories/page.tsx:18` | `latestStories(8)` → 8 kartu |
 | Detail artikel `app/(site)/stories/[slug]/page.tsx:66` | `latestStories(8)` → blok "More {rubrik}" 3 kartu |
 | Sitemap `app/sitemap.ts:15` | `latestStories(8)` |
@@ -196,7 +196,7 @@ kedua (`melodialam-sanity/sanity/structure.ts:12`).
 | `cardCurtain` | object | tidak | — | Copy panel hijau saat kartu di-hover (lihat di bawah) |
 | `cardCurtain.articleLabel` | string | tidak | 24 | Label kanan atas kartu Stories. Kosong ⇒ "READ STORY" |
 | `cardCurtain.articleCta` | string | tidak | 40 | Tombol bawah panel. Kosong ⇒ "Buka Catatan Redaksi" |
-| `tickerItems` | array of object | tidak | maks 8 | Item ticker beranda |
+| `tickerItems` | array of object | tidak | maks 8 | Item ticker (data CMS; tidak lagi dirender di shell) |
 | `tickerItems[].label` | string | ya | 200 | Teks ticker |
 | `tickerItems[].href` | string | tidak | — | Path internal (`/submit`) atau URL penuh |
 
@@ -254,7 +254,7 @@ berdiri sendiri:
 - **`foto`** (6 dokumen) — cerita dari post feed foto Instagram.
 - **`reel`** (6 dokumen) — cerita dari reel.
 
-Aturan main: **"Latest News" dan "Stories" adalah daftar ber-gambar**, dan
+Aturan main: **"Top News" dan "Stories" adalah daftar ber-gambar**, dan
 bingkai video tidak bisa jadi kartu headline. Karena itu `latestStories()`
 menaruh seluruh cerita foto lebih dulu, lalu cerita reel. Delapan cerita yang
 tampil di `/stories` = **6 foto + 2 reel** (2 reel terbaru: *Spill Pilihan Lagu

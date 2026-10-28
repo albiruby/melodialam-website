@@ -35,6 +35,7 @@ export function YoutubeThumb({
   sizes = "100vw",
   width = 1280,
   height = 720,
+  eager = false,
 }: {
   /** Eleven-character YouTube video id. */
   id: string;
@@ -43,6 +44,12 @@ export function YoutubeThumb({
   sizes?: string;
   width?: number;
   height?: number;
+  /**
+   * Fetch immediately at low priority. For the one poster that carries a
+   * section, a lazy image can leave a large black frame while the reader is
+   * already looking at it; low priority keeps it from competing with the LCP.
+   */
+  eager?: boolean;
 }) {
   const [step, setStep] = useState(0);
   const variant = VARIANTS[Math.min(step, VARIANTS.length - 1)];
@@ -72,12 +79,13 @@ export function YoutubeThumb({
       alt=""
       width={width}
       height={height}
-      loading="lazy"
+      loading={eager ? "eager" : "lazy"}
+      fetchPriority={eager ? "low" : "auto"}
       decoding="async"
       // A missing variant (usually maxres on an old upload) steps down instead
       // of leaving a broken image.
       onError={() => setStep((current) => current + 1)}
-      className={className}
+      className={`bg-neutral-800 ${className}`.trim()}
     />
   );
 }

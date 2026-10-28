@@ -156,11 +156,11 @@ Tabel ini adalah **tabel rute resmi** untuk smoke test dan Environ.
 
 | Rute | Jenis build | Isi | Sumber data |
 |---|---|---|---|
-| `/` | `○` Static | "Latest News" (grid 2×2 = 4 kartu) + strip "Curated News" (4 post kurasi) | `latestStories(8)` + `allPillarPosts()` |
+| `/` | `○` Static | News-first: "Top News" (1 lead + 3 sidebar + 3 More Top News) + Originals + "Curated" + Submit | `latestStories(8)` + `allVideos()` + `allInterviews()` + `allPillarPosts()` |
 | `/stories` | `○` Static | "Stories" — grid 4 kolom, 8 kartu (foto lalu reel), badge "Reel" | `latestStories(8)` |
 | `/stories/<slug>` | `○` Static + `◐` Partial Prerender | Detail artikel; 12 slug statis di-prerender, slug dari CMS dirender saat diminta | `articleBySlug` + `latestStories(8)` |
 | `/tentang` | `○` Static | Profil, ekosistem (Samsara Bogor, SVVARA, INFIA), kontak & partnership | statis |
-| `/kurasi` | `○` Static | "Curated News" — kotak cari + chip per pillar | `allPillarPosts()` |
+| `/kurasi` | `○` Static | "Curated" — kotak cari + chip per pillar | `allPillarPosts()` |
 | `/bicara-melodi` | `○` Static | 9 episode wawancara Season 3 | `allInterviews()` + `lib/catalogue.json` |
 | `/videos` | `○` Static | **Melodi Samsara** — 9 baris sesi + 5 playlist | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` |
 | `/privasi` | `●` Static | Kebijakan privasi (data form demo, penyimpanan, hak penghapusan) | `siteSettings` | — |
@@ -705,7 +705,7 @@ build `TERVERIFIKASI` (§1.4).
 | 1 | Landing memuat, stylesheet terpasang (bukan halaman tanpa gaya) | `/` |
 | 2 | Stories memuat; grid 8 kartu, 4 kolom, badge "Reel" pada yang reel | `/stories` |
 | 3 | Artikel terbuka dari kartu; `<h1>` = judul artikel | `/stories/<slug>` (uji ≥2, termasuk `spill-pilihan-lagu-arctic-monkeys`) |
-| 4 | Curated News memuat; kotak cari + chip pillar bekerja | `/kurasi` |
+| 4 | Curated memuat; kotak cari + chip pillar bekerja | `/kurasi` |
 | 5 | Halaman wawancara memuat; 9 episode Season 3 | `/bicara-melodi` |
 | 6 | Melodi Samsara memuat; 9 baris sesi + 5 playlist | `/videos` |
 | 7 | Halaman tentang memuat | `/tentang` |
@@ -867,7 +867,7 @@ relatif ke `D:\Project Website Melodi Alam\melodi-alam\` kecuali disebut lain):
 - `app/layout.tsx:181` — `<Analytics />` terpasang.
 - `lib/site.ts` — `SITE.url` dari `NEXT_PUBLIC_SITE_URL`, fallback
   `https://melodialam.id`; daftar nav (`/stories`, `/bicara-melodi`, `/videos` =
-  Melodi Samsara, `/kurasi` = Curated News).
+  Melodi Samsara, `/kurasi` = Curated).
 - `lib/sanity-project.ts` — project id literal, dataset `production` (publik) +
   `submissions` (privat).
 - `lib/sanity-server.ts`, `lib/sanity-preview.ts` —Fallback antrean in-memory

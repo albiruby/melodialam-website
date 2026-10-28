@@ -28,11 +28,11 @@ const PILLARS = [
     cta: "Lihat Videos",
   },
   {
-    title: "Curated News",
+    title: "Curated",
     note: "Pilihan tim",
     body: "Fakta musik, lirik, trivia, kutipan, rekomendasi, ulas melodi, dan clipper — pilihan tim dari feed Instagram kami.",
     href: "/kurasi",
-    cta: "Buka Curated News",
+    cta: "Buka Curated",
   },
 ];
 

@@ -1,5 +1,11 @@
 # PRD Reference — Ketertelusuran Requirement
 
+> **Nama UI (28 Okt 2026).** Label lama **Latest News / Front Page** kini
+> **Top News**, dan **Curated News** kini **Curated**. Istilah lama di bawah
+> dipertahankan sebagai nama historis; yang berlaku di UI adalah nama baru.
+> Komponen `FrontCard`, `HomeHero`, dan `StoriesSpread` sudah dihapus; homepage
+> kini memakai `components/home/TopNews.tsx` (lead h1 + sidebar + More Top News).
+
 > **Catatan (21 Okt 2026).** Dokumen ini **diperbarui** terhadap kondisi sistem
 > yang berjalan sekarang. Yang berubah sejak versi sebelumnya:
 >

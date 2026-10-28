@@ -96,7 +96,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
         "@type": "BreadcrumbList",
         "@id": `${url}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Latest News", item: SITE.url },
+          { "@type": "ListItem", position: 1, name: "Top News", item: SITE.url },
           { "@type": "ListItem", position: 2, name: "Stories", item: `${SITE.url}/stories` },
           { "@type": "ListItem", position: 3, name: article.title, item: url },
         ],

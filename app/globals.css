@@ -21,6 +21,8 @@
   --color-ink: #0d0d0d;
   --color-paper: #f6f5f2;
   --color-forest: #1b3b2b;
+  /* Satu warna untuk garis rambut editorial; lebih lembut dari ink/20. */
+  --color-rule: #d9d5cc;
 
   /* Inter and Red Hat Display load as variable fonts, so the full weight axis is
      available and each element sets its own weight. Instrument Serif has no

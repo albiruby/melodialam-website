@@ -80,10 +80,10 @@ boleh berada di sana.
 
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
-| **siteSettings** | Konten | identitas situs (header/footer), ticker beranda, catatan kurasi, label panel hijau kartu | ✅ tersambung |
+| **siteSettings** | Konten | identitas situs (header/footer), data ticker (tidak dirender di shell), catatan kurasi, label panel hijau kartu | ✅ tersambung |
 | **videosPage** | Konten | judul "MELODI SAMSARA" + label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **pillarPost** | Konten | halaman `/kurasi` — section per pillar (Baca: Fakta Musik, Lirik, Trivia, Kutipan; Tonton: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
-| **article** | Konten | `/stories`, `/stories/<slug>`, 4 kartu beranda (grid 2×2) | ✅ tersambung |
+| **article** | Konten | `/stories`, `/stories/<slug>`, Top News (lead + sidebar + More) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya status disetujui) | ✅ tersambung |
 | **demoContact** | Submit Karya | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
@@ -94,7 +94,7 @@ boleh berada di sana.
 
 ### Aturan: satu daftar cerita bersama
 
-Dua bagian terbesar situs — "Latest News" (beranda) dan "Stories" (`/stories`) —
+Dua bagian terbesar situs — "Top News" (beranda) dan "Stories" (`/stories`) —
 mengambil cerita dari **satu daftar yang sama**, bukan dua kueri terpisah.
 
 Daftarnya adalah `latestStories(count = 8)` di `lib/articles.ts:216-221`:
@@ -117,7 +117,7 @@ antar halaman:
 
 | Pemakaian | Jumlah | Sumber |
 |---|---|---|
-| Beranda `/` — blok "Latest News" | 4 pertama | `app/(site)/page.tsx:28-29` |
+| Beranda `/` — Top News | 7 pertama (1 lead + 3 sidebar + 3 More Top News) | `app/(site)/page.tsx:36-44` |
 | Halaman `/stories` — grid 4 kolom | 8 | `app/(site)/stories/page.tsx:18` |
 | Blok "More {rubrik}" di detail artikel | 3 dari 8 | `app/(site)/stories/[slug]/page.tsx:66-69` |
 | Sitemap | 8 | `app/sitemap.ts:15` |
@@ -152,7 +152,7 @@ lib/articles.ts  ── allArticles() / latestStories() / articleBySlug()
    ▼
 app/(site)/stories/page.tsx         →  grid 4 kolom, 8 kartu <ArticleCard>
 app/(site)/stories/[slug]/page.tsx  →  <ArticleBody rich={…} />
-app/(site)/page.tsx                 →  grid 2×2 <FrontCard> (4 artikel terbaru) + strip Curated News
+app/(site)/page.tsx                 →  <TopNews> lead h1 + sidebar 3 + More Top News 3
 ```
 
 ### Yang terjadi saat Anda klik Publish
@@ -194,8 +194,9 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
    - **Path gambar sementara** — hanya untuk artikel yang belum punya sampul terunggah
      (path lokal seperti `/photos/dsc09408.webp`); sembunyi otomatis kalau Sampul sudah ada.
    - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline didukung.
-   - **Beranda** — blok `Latest News` selalu memuat **4 artikel terbaru** dari daftar
-     yang sama; tidak ada lagi pilihan headline.
+   - **Beranda** — blok `Top News` menampilkan **satu lead + tiga sidebar + tiga More Top News** dari daftar
+     yang sama; tidak ada pilihan headline manual. Beranda juga memuat
+      **Originals** dan **Curated** (tiga post).
 4. **Publish**.
 5. Buka `/stories/<slug>`. Langsung tampil.
 
@@ -214,13 +215,13 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Curated News" |
-| `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated News**: section per pillar (6 post/pillar), kotak cari + chip pillar (total 55 post) |
+| `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Curated" |
+| `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated**: section per pillar (6 post/pillar), kotak cari + chip pillar (total 55 post) |
 | `app/(site)/stories/[slug]/page.tsx` | `articleBySlug(slug)` + `latestStories(8)` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
-| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` | 4 artikel terbaru (grid 2×2 `FrontCard`) + strip **Curated News** 4 kartu |
+| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Curated (3 post), Submit |
 | `app/(site)/bicara-melodi/page.tsx` | `allInterviews()` + `allVideos()` | 9 episode Season 3 |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` | halaman **Melodi Samsara**: 9 sesi Samsara + 5 playlist; judul bagian dari singleton `videosPage` |
-| `app/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, ticker, catatan kurasi, label panel hijau kartu |
+| `app/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, catatan kurasi, label panel hijau kartu |
 | `app/api/demos/route.ts` | `submissionsClient` langsung | moderasi: hanya status `SHORTLISTED (SAMSARA)` / `APPROVED (ARTICLE)` yang publik |
 | `app/(site)/preview/[type]/[slug]/page.tsx` | `draftClient` (`perspective: "drafts"`) | pratinjau draf; butuh `?secret=` |
 | `app/(site)/tentang/page.tsx` | — | profil, ekosistem, kanal, kontak & partnership (statis) |

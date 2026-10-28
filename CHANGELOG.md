@@ -15,6 +15,44 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**News-first homepage + penamaan (28 Okt 2026)**
+
+- **Homepage menjadi news-first**: H1 adalah **judul lead article**; hero brand
+  dihapus. Modul: **Top News** (1 lead + 3 sidebar `Latest`), **More Top News**
+  (3 kartu), **Originals** (Samsara + Bicara Melodi), **Curated** (1 feature + 2
+  pendamping, grid 6:3:3), dan **Submit** (satu CTA).
+- **Penamaan UI**: `Front Page` / `Latest News` → **Top News**;
+  `Curated News` → **Curated**. Label nav, h1 `/kurasi`, metadata, tautan
+  `/stories` + `/videos`, kartu `/tentang`, dan breadcrumb JSON-LD disinkronkan.
+- **Curated diperkecil** dari 8:4 (feature 800×1000 di 1280) menjadi 6:3:3
+  (feature 600×750, pendamping 300×375), semua **4:5** agar cover IG tidak
+  terpotong; kartu hanya judul + pillar/tanggal.
+- **Shell dirapikan**: ticker dihapus dari layout dan 404; header menjadi satu
+  baris (lockup kiri, nav kanan, menu di bawah `xl`); footer memakai garis 1 px
+  dan teks 13/11 px. Komponen `Ticker`, `MarqueeTape`, dan `SectionMarker`
+  dihapus; data `TICKER_ITEMS` tetap di CMS/fallback.
+- **Kartu text-light**: excerpt di kartu pendamping dan CTA per kartu dihapus;
+  judul sentence case; metadata satu baris; border gambar dihapus. Semua cover
+  IG di sidebar, More Top News, dan Curated memakai **4:5** agar tidak
+  terpotong; lead tetap 3:2 karena fotonya landscape editorial.
+- **Komponen**: `HomeHero`, `StoriesSpread`, dan `FrontCard` dihapus; pengganti
+  `components/home/TopNews.tsx`. `selectHomeContent` mengembalikan `sidebar` (3)
+  dan `more` (3).
+- **Audit gambar Curated**: tiga gambar Sanity semuanya termuat
+  (`naturalWidth > 0`); kotak abu-abu sebelumnya adalah lazy-loading, bukan aset
+  hilang. Ketiganya sekarang `eager` + `fetchPriority="low"`, container
+  `bg-neutral-100`, dan label `Memuat` sampai gambar menutupinya.
+  `MelodiAlamLockup` diberi `aspect-ratio` eksplisit; issue CLS di console hilang.
+- **Token garis**: `--color-rule: #d9d5cc` dipakai untuk header, footer, dan
+  section bar; garis lain yang berlebih dihapus.
+- **QA**: `tsc` bersih, lint bersih, 42 test lulus, build 62 halaman; screenshot
+  1440/1280/768/390/360 tanpa overflow/gambar rusak; axe 0 pada 390/1280.
+  Console lokal hanya 404 `/_vercel/insights/script.js` (analytics tidak aktif di
+  localhost).
+- Dokumen baru: `docs/landing-page-2026-10-28.md`. Nama lama di dokumen historis
+  (CHANGELOG, PRD, FRONTEND-PLAN) dipertahankan sebagai sejarah; dokumen current
+  memakai nama baru.
+
 **Perapian UI (27 Okt 2026)**
 
 - **Footer kartu artikel dirapikan.** Badge `REEL` kini menempel pada kategori

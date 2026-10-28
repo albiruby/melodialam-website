@@ -123,7 +123,7 @@ Baris "Kondisi" menyatakan apakah risiko itu masih terbuka di kode hari ini.
 | `R13` | `viewCount` katalog | Parsing "107K" salah → urutan "Top" salah | **Terbuka** — `lib/catalogue.ts` punya accessor murni yang belum diuji | Unit `U-11`…`U-14` |
 | `R14` | Kartu satu `<Link>` | Kembali ke "link judul + `::after`" → klik di area teks mati | **Terbuka** — regresi yang pernah dilaporkan | Uji klik pada area teks kartu (`E-13`) |
 | `R15` | Thumbnail YouTube | Varian `maxres` 404 → gambar rusak | **Terbuka** — fallback `maxres → sd → hq` ada, belum diuji | Uji fallback (`E-14`) |
-| `R16` | Angka antar halaman | `/` = 4 kartu, `/stories` = 8, detail = 3 "More", kurasi = 6 per pilar | **Terbuka** — semuanya diturunkan dari satu `latestStories(8)` dan satu `allPillarPosts()` | Uji konsistensi angka (`E-15`) |
+| `R16` | Angka antar halaman | `/` = lead + 3 sidebar + 3 More, `/stories` = 8, detail = 3 "More", kurasi = 6 per pilar | **Terbuka** — semuanya diturunkan dari satu `latestStories(8)` dan satu `allPillarPosts()` | Uji konsistensi angka (`E-15`) |
 
 ### 2.1 Regresi lama yang sudah tertutup — penjaga yang dipakai sekarang
 
@@ -210,7 +210,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 
 | ID | Invariant | Kenapa |
 |---|---|---|
-| `U-20` | `/` = 4 kartu `FrontCard` + strip 4 kartu `PillarCard` | Beranda mengambil `latestStories(8).slice(0, 4)` dan 4 post kurasi foto terbaru |
+| `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 3 Curated + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 2 curated rest, 3 interview |
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
 | `U-23` | `/kurasi` = 6 post per pilar tanpa pencarian/filter | `PILLAR_LIMIT = 6` di `components/KurasiBrowser.tsx`; dengan pencarian/filter naik ke `SEARCH_LIMIT = 48` |
@@ -299,7 +299,7 @@ Playwright belum terpasang. `baseURL` yang dipakai kalau nanti dipasang:
 | `E-13` | Klik **area teks** kartu (bukan gambarnya) | Navigasi tetap terjadi — kartu adalah satu `<Link>` atau `<a>` utuh |
 | `E-15` | Bandingkan angka kartu beranda vs `/stories` vs detail | Beranda 4 + 4 kurasi; `/stories` 8; detail 3 "More" |
 
-### 5.2 Video, Bicara Melodi, Curated News (`FR-002`, `FR-004`)
+### 5.2 Video, Bicara Melodi, Curated (`FR-002`, `FR-004`)
 
 | ID | Skenario | Harapan |
 |---|---|---|
@@ -668,8 +668,9 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
 - `lib/site-settings.ts` — `cardCurtain` = `articleLabel` + `articleCta`;
   `curationNote` fallback `"kurasi redaksi"`.
 - `components/ArticleCards.tsx` — `COVER_FRAME = "aspect-[4/5]"`, `ArticleCard`
-  (satu `<Link>`, `titleFirst`, badge "Reel"), `FrontCard` (satu `<Link>`, sampul
-  4:5 di kiri, "BACA SELENGKAPNYA ").
+  (satu `<Link>`, `titleFirst`, badge "Reel").
+- `components/home/TopNews.tsx` — lead h1 + sidebar `Latest` + `More Top News`
+  row; semua kartu satu `<Link>`, tanpa CTA per kartu.
 - `components/PillarCards.tsx` — `PillarCard` (satu `<a>`, 4:5 `object-cover`),
   `PillarHead`.
 - `components/KurasiBrowser.tsx` — `PILLAR_LIMIT = 6`, `SEARCH_LIMIT = 48`, kotak

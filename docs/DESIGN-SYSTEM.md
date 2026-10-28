@@ -5,7 +5,7 @@
 > `lib/pahlawan.ts`, `/spaces` + `SPACE_ITEMS`, `JournalBrowser`, `VideosBrowser`
 > + `/videos/arsip`, `HeroArticle`, `FeatureCard`, `GENRE_ROWS`/`GenreRow`.
 > Halaman `/videos` kini **Melodi Samsara**, `/journal` menjadi `/stories`, dan
-> `/kurasi` menjadi **Curated News**. Token dan utility yang masih ada di
+> `/kurasi` menjadi **Curated**. Token dan utility yang masih ada di
 > `globals.css` tetapi sudah tidak dipakai siapa pun ditandai eksplisit di §5.
 
 Spesifikasi *design system* yang berlaku di repositori ini, ditulis terhadap kode yang
@@ -30,8 +30,7 @@ Empat prinsip yang menjelaskan hampir semua keputusan di bawah.
 1. **Struktur diungkap oleh garis, bukan oleh bayangan.** Garis rambut `1px` adalah
    perangkat pembentuk utama. Kartu tidak mengambang; kartu dipisahkan.
 2. **Sudut tajam, tanpa pengecualian.** `border-radius: 0`. Elemen bulat hanya
-   tiga: tombol Play melingkar pada baris video, titik denyut pada entri ticker,
-   dan titik rekam di panel modal.
+   dua: tombol Play melingkar pada baris video dan titik rekam di panel modal.
 3. **Bayangan keras, bukan kabur.** Offset tanpa blur, mis. `6px 6px 0 #0d0d0d`.
    Tidak ada `box-shadow` dengan `blur > 0` di mana pun.
 4. **Kontras tipografi, bukan dekorasi.** Hierarki dibangun dari pertentangan serif
@@ -89,8 +88,9 @@ dipakai untuk teks sekunder.
 
 | Token | Nilai | Peran | Di mana dipakai |
 |---|---|---|---|
-| `ink` | `#0d0d0d` | Tinta utama, garis struktur, permukaan gelap | Teks badan, semua `border-ink`, latar kartu gelap, ticker |
+| `ink` | `#0d0d0d` | Tinta utama, garis struktur, permukaan gelap | Teks badan, semua `border-ink`, latar kartu gelap |
 | `paper` | `#f6f5f2` | Permukaan kertas majalah | Latar kartu, hover state, background body alternatif |
+| `rule` | `#d9d5cc` | Garis rambut editorial | Header, footer, dan section bar |
 | `forest` | `#1b3b2b` | Aksen identitas | Tautan aktif, tombol `SUBMIT DEMO`, progress bar, aksen tirai |
 
 ### 3.1 Kontras (`ACC-001`)
@@ -111,8 +111,7 @@ dipakai untuk teks sekunder.
 
 | Nilai | Di mana | Catatan |
 |---|---|---|
-| `text-green-400` (hijau bawaan Tailwind) | **2 kemunculan**: `components/ArticleCards.tsx:110` (label kiri-atas di tirai kartu) dan `components/Ticker.tsx:29` (hover label ticker) | Bukan bagian palet. Dipakai untuk aksen di atas latar `ink`. Kandidat pengganti: hijau medallion merek `#376b30`, tetapi itu keputusan merek yang belum diambil |
-| `bg-green-400` | `components/Ticker.tsx:44` — titik berdenyut pada entri ticker yang tidak punya tautan | Sama: di luar palet |
+| `text-green-400` (hijau bawaan Tailwind) | **1 kemunculan**: `components/ArticleCards.tsx:110` (label kiri-atas di tirai kartu) | Bukan bagian palet. Dipakai untuk aksen di atas latar `ink`. Kandidat pengganti: hijau medallion merek `#376b30`, tetapi itu keputusan merek yang belum diambil |
 | `bg-green-50` | `components/DemoPortal.tsx:351` — latar pesan validasi | Bawaan Tailwind, dipakai sebagai *status indicator* |
 | `#a3a3a3` | `@utility text-outline-muted` | Setara `neutral-400` |
 | `red-600` | `components/VideoModal.tsx:121` — titik rekam di panel modal | Bawaan Tailwind, dipakai sebagai *status indicator* |
@@ -148,7 +147,7 @@ satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`
 
 | Kebutuhan | Pakai |
 |---|---|
-| Judul bagian seperti `Latest News`, `Stories`, `Curated News` | `font-sans` dengan `tracking-tight` (bukan `font-display`) |
+| Judul bagian seperti `Top News`, `Stories`, `Curated` | `font-sans` dengan `tracking-tight` (bukan `font-display`) |
 | Judul pajang terbesar di halaman (`MELODI SAMSARA`) | `font-display font-black uppercase` |
 | Nama artis di indeks wawancara | `font-display` |
 | Kepala seksi pilar (`PillarHead`) | `font-display font-black uppercase` |
@@ -265,7 +264,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 
 | Komponen | Elemen link | Isi | Dipakai di |
 |---|---|---|---|
-| `FrontCard` (`components/FrontCard.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5 di kiri (`w-28` / `sm:w-36`), rubrik + tanggal, judul, ringkasan dua baris, "BACA SELENGKAPNYA" | Beranda — grid 2×2, 4 kartu |
+| `TopNews` (`components/home/TopNews.tsx`) | lead `<Link>` (h1 + deck + image), sidebar `<Link>`, `NewsCard` `<Link>` | Lead 3:2 (foto editorial landscape); sidebar lead 4:5; NewsCard 4:5 | Beranda — Top News |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
 | `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 4 kurasi; `/kurasi` — SEMUA pilar, foto dan reel, sebagai kartu |
 | `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo). Di bawah `md` gugus selalu tampil dan membungkus ke baris sendiri | `/videos` — 9 baris sesi |
@@ -313,7 +312,7 @@ Ini diminta secara eksplisit dan **tidak boleh** diganti dengan perilaku generik
 | `DEC-002` | Tajuk hierarki dan strip kategori: state awal teks murni tanpa `—`; `—` muncul menggeser teks saat hover | **Belum terpasang di UI** — `dash-reveal-item`/`dash-reveal-prefix` ada di `globals.css` tetapi dipakai 0× |
 | `DEC-003` | Baris video: state awal `Gambar — Headline — Deskripsi`; hover memunculkan gugus `[ ▶ ] — [ WATCH ]` | Terimplementasi pada baris video (`video-action-reveal`); di bawah `md` gugus selalu tampil (26 Okt 2026) |
 | Seksi 9.3C | Hover thumbnail artikel: tirai gelap naik dari bawah + bingkai siku di sudut | Terimplementasi (`hover-reveal-curtain` + `corner-frame`) |
-| Kartu satu link | Seluruh area kartu bisa diklik, termasuk teks | Terimplementasi (`FrontCard`, `ArticleCard`, `PillarCard`) |
+| Kartu satu link | Seluruh area kartu bisa diklik, termasuk teks | Terimplementasi (`TopNews`, `ArticleCard`, `PillarCard`) |
 
 ### 6.1 Aksesibilitas fokus (`ACC-002`) — sudah tertutup
 
@@ -338,9 +337,9 @@ tidak memakai `box-shadow` kabur. Pola yang benar-benar dipakai:
 
 | Pola | Lokasi | Kelas inti |
 |---|---|---|
-| CTA utama hijau | `SubmitLink` di `components/Ticker.tsx`, dipakai di nav desktop | `bg-forest px-3.5 py-1.5 font-bold text-white`, hover `bg-ink` + `hover:shadow-[3px_3px_0px_#0D0D0D]` |
+| CTA utama hijau | `SubmitLink` di `components/SiteHeader.tsx`, dipakai di nav desktop | `bg-forest px-3.5 py-1.5 font-bold text-white`, hover `bg-ink` + `hover:shadow-[3px_3px_0px_#0D0D0D]` |
 | CTA utama hitam | Nav mobile (`components/SiteHeader.tsx`) dan tombol kirim demo (`components/DemoPortal.tsx`) | `bg-ink … text-white`, hover `bg-forest` |
-| Tombol sekunder | Judul artikel, "Semua artikel ", "Semua kurasi ", "Curated News " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
+| Tombol sekunder | Judul artikel, "Semua artikel ", "Semua kurasi ", "Curated " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
 | Chip filter | `components/KurasiBrowser.tsx` | `border border-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider`; aktif `bg-ink text-white`, tidak aktif `hover:bg-paper` |
 | Tombol Play | `components/VideoRow.tsx` | `rounded-full border border-ink bg-ink text-white`, hover `bg-forest` — satu-satunya elemen bulat di situs |
 | Kartu playlist | `app/(site)/videos/page.tsx` | `brutalist-card … border border-ink bg-paper p-4` |
@@ -395,14 +394,14 @@ pola yang bisa dipasang kembali.
 | Padding halaman | `px-4`, menjadi `sm:px-8` |
 | Jarak antar-seksi | `space-y-20` di `<main>` |
 | Breakpoint yang dipakai | `sm` 640, `md` 768, `lg` 1024 (Tailwind bawaan) |
-| Grid beranda | `grid-cols-1` → `sm:grid-cols-2`: 4 kartu `FrontCard` dua per baris |
-| Strip kurasi beranda | `grid-cols-2` → `lg:grid-cols-4`: 4 kartu `PillarCard` |
+| Grid beranda | Top News: lead 8 kolom + sidebar 4; More Top News 3 kolom |
+| Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:3:3: 1 feature + 2 `PillarCard` |
 | Grid `/stories` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-4`: 8 kartu `ArticleCard` |
 | Grid pilar foto `/kurasi` | `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-6` |
 | Blok "More" pada detail artikel | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-3`: 3 kartu |
 | Grid playlist `/videos` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-5` |
 | Sampul artikel | `aspect-[4/5]`, pada detail dibatasi `w-full max-w-md` dan dipusatkan |
-| Radius | `0` di mana-mana kecuali tombol Play (`rounded-full`) dan titik denyut ticker |
+| Radius | `0` di mana-mana kecuali tombol Play (`rounded-full`) |
 | Garis | `border` = `1px`, `border-2` untuk pemisah struktural antar-seksi |
 | Bayangan | Hanya offset keras: `3px 3px`, `4px 4px`, `5px 5px`, `6px 6px 0`, dan `10px 10px 0` di panel modal |
 
@@ -417,7 +416,7 @@ Presisi centering sudah diverifikasi: `main` berada tepat di tengah pada 360/390
 | Token primitif & semantik | blok `@theme` di `app/globals.css` |
 | Pola perilaku (komponen maya) | `@utility` di `app/globals.css` |
 | Wajah huruf | `next/font/google` di `app/layout.tsx` → variable CSS → `@theme` |
-| Komponen nyata | `components/*.tsx` — kartu di `components/ArticleCards.tsx` dan `components/PillarCards.tsx`, baris video di `components/VideoRow.tsx`, ticker di `components/Ticker.tsx`, modal di `components/VideoModal.tsx`, thumbnail di `components/YoutubeThumb.tsx` |
+| Komponen nyata | `components/*.tsx` — kartu di `components/ArticleCards.tsx` dan `components/PillarCards.tsx`, baris video di `components/VideoRow.tsx`, modal di `components/VideoModal.tsx`, thumbnail di `components/YoutubeThumb.tsx` |
 | Kurasi (cari + chip) | `components/KurasiBrowser.tsx` (komponen klien) |
 | Aset merek | `components/MelodiAlamLockup.tsx` (`MelodiAlamLockup`) → `public/brand/melodi-alam-lockup-black.png` |
 | Primitif gerak | `components/motion/*.tsx` |
@@ -493,11 +492,11 @@ seperti axe atau pemeriksa kontras.
   `brutalist-card` 1×, `text-outline-muted` 2×.
 - **Dipakai 0×:** `text-outline-ink`, `dash-reveal-item`, `dash-reveal-prefix`,
   `eq-bar`.
-- `rounded-*` hanya 3×: tombol Play (`components/VideoRow.tsx`), titik denyut
-  ticker, titik rekam modal. `shadow-*` semuanya offset keras tanpa blur.
+- `rounded-*` hanya 2×: tombol Play (`components/VideoRow.tsx`) dan titik rekam
+  modal. `shadow-*` semuanya offset keras tanpa blur.
 - Nol rujukan `Plus_Jakarta_Sans` yang tersisa.
 
-**Pola kartu diverifikasi dari kode:** `FrontCard` dan `ArticleCard` memakai satu
+**Pola kartu diverifikasi dari kode:** `TopNews` dan `ArticleCard` memakai satu
 `<Link>`; `PillarCard` memakai satu `<a>`; `VideoRow` bukan satu
 link dan memakai `WatchButton` + `WatchLink`. Sampul artikel dan pilar memakai
 `aspect-[4/5]` + `object-cover`.

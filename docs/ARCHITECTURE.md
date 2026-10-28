@@ -306,7 +306,7 @@ graph TB
 
   subgraph comp["components/"]
     cards["ArticleCards · PillarCards · ArticleBody · VideoRow"]
-    shell["SiteHeader · SiteFooter · Ticker · ScrollProgress"]
+    shell["SiteHeader · SiteFooter · ScrollProgress"]
     client["Reveal · VideoModal · WatchLink · YoutubeThumb<br/>KurasiBrowser · DemoPortal"]
     motionc["motion/* (client)"]
   end
@@ -386,8 +386,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 
 - **Tujuan.** Sumber editorial yang ditulis tangan **dan** tempat kosakata
   bersamaCMS dan Studio.
-- **Tanggung jawab.** 12 artikel lengkap, 9 baris wawancara, 4 item ticker,
-  3 seed demo, 4 rubrik artikel, 4 status demo, 6 genre demo, 3 program demo,
+- **Tanggung jawab.** 12 artikel lengkap, 9 baris wawancara, 4 item ticker
+  (data dipertahankan; ticker tidak lagi dirender di shell), 3 seed demo, 4 rubrik artikel, 4 status demo, 6 genre demo, 3 program demo,
   batas audio (25 MB / 3 ekstensi / 4 MIME).
 - **Bukan tanggung jawab.** Tidak melakukan I/O, tidak tahu rute, tidak tahu
   Sanity.
@@ -412,8 +412,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 - **API publik.**
   - `allArticles()` — gabungan CMS + statis, diurutkan `dateISO` menurun.
   - `latestStories(count = 8)` — **sumber tunggal daftar cerita**: foto dulu
-    (terbaru), lalu reel (terbaru). Dipakai beranda (4 pertama), `/stories` (8),
-    sitemap (8), RSS (8), dan blok "More" di detail artikel.
+    (terbaru), lalu reel (terbaru). Dipakai beranda (7 pertama: lead + sidebar +
+    More), `/stories` (8), sitemap (8), RSS (8), dan blok "More" di detail artikel.
   - `articleBySlug(slug)` — CMS dulu, lalu statis.
   - `staticArticleSlugs()` — 12 slug untuk `generateStaticParams`.
 
@@ -560,7 +560,7 @@ privat), dan modul klien → modul yang memegang token.
 flowchart LR
   S["Sanity article<br/>(production)"] --> L["latestStories(8)<br/>lib/articles.ts:216"]
   F["lib/content-fallback.ts<br/>ARTICLES (fallback)"] --> L
-  L --> H["Beranda /<br/>4 kartu pertama"]
+  L --> H["Beranda /<br/>7 pertama: lead h1 + sidebar + More Top News"]
   L --> ST["/stories<br/>8 kartu"]
   L --> SM["/sitemap.xml<br/>8 URL"]
   L --> RS["/rss.xml<br/>8 item"]
@@ -757,9 +757,9 @@ melodi-alam/
 ├── app/
 │   ├── (site)/                       route group: shell situs
 │   │   ├── layout.tsx                Root layout: 4 font, MotionRoot, ScrollProgress,
-│   │   │                             skip-link, JSON-LD, Ticker, SiteHeader, <main>,
+│   │   │                             skip-link, JSON-LD, SiteHeader, <main>,
 │   │   │                             SiteFooter, <Analytics />
-│   │   ├── page.tsx                  Beranda: Latest News (4 FrontCard) + Curated News (4 PillarCard)
+│   │   ├── page.tsx                  Beranda: Top News + Originals + Curated + Submit
 │   │   ├── not-found.tsx             404
 │   │   ├── stories/page.tsx          /stories — grid 8 ArticleCard
 │   │   ├── stories/[slug]/page.tsx   /stories/<slug> — detail artikel
@@ -767,7 +767,7 @@ melodi-alam/
 │   │   ├── stories/[slug]/twitter-image.tsx     1200×630 per artikel
 │   │   ├── bicara-melodi/page.tsx    /bicara-melodi — 9 episode Season 3
 │   │   ├── videos/page.tsx           /videos — Melodi Samsara (9 VideoRow) + 5 playlist
-│   │   ├── kurasi/page.tsx           /kurasi — Curated News (KurasiBrowser)
+│   │   ├── kurasi/page.tsx           /kurasi — Curated (KurasiBrowser)
 │   │   ├── tentang/page.tsx          /tentang — profil, ekosistem, kontak
 │   │   ├── submit/page.tsx           /submit — formulir demo
 │   │   ├── preview/[type]/[slug]/page.tsx   /preview/<type>/<slug> — pratinjau draf
@@ -785,17 +785,17 @@ melodi-alam/
 │   └── icon.png / apple-icon.png / favicon.ico   (generated, MOD-012)
 ├── components/
 │   ├── ArticleCards.tsx              ArticleCard (server)
-│   ├── FrontCard.tsx                 kartu Latest News di beranda (server)
+│   ├── home/                         TopNews, Originals, CuratedNews, SectionBar, SubmitCTA
 │   ├── ArticleBody.tsx               PortableText + paragraf statis (server)
 │   ├── PillarCards.tsx               PillarCard (server)
 │   ├── PillarHead.tsx                kepala seksi pillar (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)
 │   ├── SiteFooter.tsx · MelodiAlamLockup.tsx   (server)
 │   ├── SubmitLink.tsx                tombol ke /submit (server)
-│   ├── SiteHeader.tsx · Ticker.tsx · ScrollProgress.tsx   (client)
+│   ├── SiteHeader.tsx · ScrollProgress.tsx   (client)
 │   ├── VideoModal.tsx · WatchLink.tsx · YoutubeThumb.tsx     (client)
 │   ├── KurasiBrowser.tsx · DemoPortal.tsx                    (client)
-│   └── motion/                       MotionRoot, RevealText, CountUp, MarqueeTape
+│   └── motion/                       MotionRoot, RevealText, CountUp
 ├── lib/
 │   ├── articles.ts · content-fallback.ts · taxonomy.ts
 │   ├── sanity.ts · sanity-server.ts · sanity-preview.ts · sanity-project.ts
@@ -1015,10 +1015,11 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
 - `app/layout.tsx` — 4 font, skip-link, JSON-LD situs, auto-discovery RSS,
   urutan provider, `<main id="main">`, `<Analytics />`.
 - `app/global-not-found.tsx` — 404 untuk URL asing (flag
-  `experimental.globalNotFound`): dokumen HTML penuh dengan ticker, header,
+  `experimental.globalNotFound`): dokumen HTML penuh dengan header,
   isi 404, dan footer; `app/not-found.tsx` menangani `notFound()` di route.
-- `app/(site)/page.tsx` — `latestStories(8)`, slice 4, `FrontCard`, baris hitung
-  `CountUp`, strip `PillarCard`, `allPillarPosts()`, `allVideos()`.
+- `app/(site)/page.tsx` — news-first: Top News (lead h1 + sidebar 3 + More
+  Top News 3), Originals, Curated (1 feature + 2), Submit; `latestStories(8)`,
+  `allVideos()`, `allInterviews()`, `allPillarPosts()`.
 - `app/(site)/stories/page.tsx` — `latestStories(8)`, grid 4 kolom,
   `titleFirst={i % 2 === 1}`, `cardCurtain.articleLabel/articleCta`.
 - `app/(site)/stories/[slug]/page.tsx` — `generateStaticParams`, `instant = false`,
@@ -1051,11 +1052,10 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   `:focus-within` (terbukti: `text-outline-muted`, `editorial-img`,
   `hover-reveal-curtain`, `hover-reveal-tag`, `corner-frame`,
   `dash-reveal-prefix`, `video-action-reveal`), blok `prefers-reduced-motion`.
-- `components/*` — 13 berkas ber-`"use client"` (SiteHeader, ScrollProgress,
-  Reveal, VideoModal, WatchLink, YoutubeThumb, KurasiBrowser, DemoPortal,
-  motion/MotionRoot, motion/RevealText, motion/CountUp, motion/MarqueeTape
-  motion/
-  PillarCards, VideoRow, SiteFooter, Ticker, MelodiAlamLockup).
+- `components/*` — client: SiteHeader, ScrollProgress, Reveal, VideoModal,
+  WatchLink, YoutubeThumb, KurasiBrowser, DemoPortal, motion/MotionRoot,
+  motion/RevealText, motion/CountUp. Server: PillarCards, VideoRow, SiteFooter,
+  MelodiAlamLockup.
 - `lib/*` — articles, content, taxonomy, sanity, sanity-server, sanity-preview,
   sanity-project, pillars, pillars-shared, videos, videos-page, interviews,
   site-settings, site, catalogue, catalogue.json, content-fallback.test.ts.

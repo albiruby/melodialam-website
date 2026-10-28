@@ -26,11 +26,11 @@ export interface NavItem {
 }
 
 export const PRIMARY_NAV: NavItem[] = [
-  { href: "/", label: "Latest News" },
+  { href: "/", label: "Top News" },
   { href: "/stories", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Melodi Samsara" },
-  { href: "/kurasi", label: "Curated News" },
+  { href: "/kurasi", label: "Curated" },
 ];
 
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };

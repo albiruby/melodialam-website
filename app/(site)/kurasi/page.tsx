@@ -4,9 +4,9 @@ import { Reveal } from "@/components/motion/Reveal";
 import { allPillarPosts } from "@/lib/pillars";
 
 export const metadata: Metadata = {
-  title: "Curated News",
+  title: "Curated",
   description:
-    "Curated News: pilihan tim Melodi Alam dari feed Instagram — fakta musik, lirik, trivia, kutipan, rekomendasi melodi, ulas melodi, dan clipper.",
+    "Curated: pilihan tim Melodi Alam dari feed Instagram — fakta musik, lirik, trivia, kutipan, rekomendasi melodi, ulas melodi, dan clipper.",
   alternates: { canonical: "/kurasi" },
 };
 
@@ -20,7 +20,7 @@ export default async function KurasiPage() {
   return (
     <Reveal>
       <div className="flex items-baseline justify-between pb-4">
-        <h2 className="text-4xl tracking-tight sm:text-5xl">Curated News</h2>
+        <h1 className="text-4xl tracking-tight sm:text-5xl">Curated</h1>
         <span className="font-serif text-sm italic text-neutral-600">
           (pilihan tim dari feed @melodi.alam)
         </span>

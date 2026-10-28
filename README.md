@@ -2,7 +2,7 @@
 
 Platform web media musik Indonesia — **Stories & Watch**.
 
-Situs ini menyatukan jurnalisme musik (*Stories* / Curated News), katalog video
+Situs ini menyatukan jurnalisme musik (*Stories* / Curated), katalog video
 YouTube `@melodialam` (*Melodi Samsara*), wawancara *Bicara Melodi*, dan jalur
 pengiriman demo musisi (*Submit Karya*).
 
@@ -126,12 +126,12 @@ Build produksi menghasilkan **33 halaman statis**.
 
 | Route | Isi |
 |---|---|
-| `/` | Beranda: blok **Latest News** (grid 2×2, 4 kartu) + strip **Curated News** (4 kartu) |
+| `/` | Beranda news-first: **Top News** (1 lead + 3 sidebar + 3 More Top News) + **Originals** + **Curated** + **Submit** |
 | `/stories` | Halaman **Stories** — grid 4 kolom, 8 kartu; tanpa filter/pencarian |
 | `/stories/<slug>` | Satu artikel + blok "More {rubrik}" (3 kartu) + kartu sosial 1200×630 |
 | `/bicara-melodi` | Indeks wawancara Season 3 (9 episode) |
 | `/videos` | **Melodi Samsara** — 9 sesi + 5 playlist |
-| `/kurasi` | **Curated News** — 55 post kurasi, dikelompokkan per pillar |
+| `/kurasi` | **Curated** — 55 post kurasi, dikelompokkan per pillar |
 | `/tentang` | Profil, ekosistem, kontak & partnership (statis) |
 | `/submit` | Formulir demo musisi (9 bagian) |
 | `/preview/<type>/<slug>?secret=…` | Pratinjau draf (`journal` / `kurasi`), `noindex`, 404 bila secret salah |

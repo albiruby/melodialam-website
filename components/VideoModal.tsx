@@ -106,7 +106,7 @@ export function VideoModal() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="video-modal-title"
-      className="modal-backdrop is-open fixed inset-0 z-50 flex items-center justify-center overscroll-contain bg-black/85 p-4"
+      className="modal-backdrop is-open fixed inset-0 z-50 m-0 flex items-center justify-center overscroll-contain bg-black/85 p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
       }}
@@ -184,11 +184,14 @@ export function WatchButton({
   title,
   className = "",
   children,
+  label,
 }: {
   id: string;
   title: string;
   className?: string;
   children: React.ReactNode;
+  /** Override the accessible name when the button shows its own visible label. */
+  label?: string;
 }) {
   return (
     <button
@@ -199,7 +202,7 @@ export function WatchButton({
         window.dispatchEvent(new CustomEvent("melodi:watch", { detail: { id, title } }));
       }}
       className={`relative ${className}`.trim()}
-      aria-label={`Putar ${title}`}
+      aria-label={label ?? `Putar ${title}`}
     >
       {children}
     </button>

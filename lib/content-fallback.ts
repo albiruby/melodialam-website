@@ -46,7 +46,7 @@ export interface Article {
   image: string;
   /**
    * Where the story came from: a feed photo (`foto`) or a reel (`reel`).
-   * Missing means `foto` — the rule is "Latest News and Stories only carry
+   * Missing means `foto` — the rule is "Top News and Stories only carry
    * feed photos", so a reel story is the exception that has to be marked.
    */
   mediaType?: "foto" | "reel";

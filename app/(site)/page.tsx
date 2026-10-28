@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Reveal } from "@/components/motion/Reveal";
-import { FrontCard } from "@/components/FrontCard";
-import { PillarCard } from "@/components/PillarCards";
+import { CuratedNews } from "@/components/home/CuratedNews";
+import { Originals } from "@/components/home/Originals";
+import { SubmitCTA } from "@/components/home/SubmitCTA";
+import { TopNews } from "@/components/home/TopNews";
+import { VideoModal } from "@/components/VideoModal";
 import { latestStories } from "@/lib/articles";
+import { selectHomeContent } from "@/lib/home";
+import { allInterviews } from "@/lib/interviews";
 import { allPillarPosts } from "@/lib/pillars";
 import { allVideos } from "@/lib/videos";
-import { getSiteSettings } from "@/lib/site-settings";
-import { CountUp } from "@/components/motion/CountUp";
-import { RevealText } from "@/components/motion/RevealText";
 
 export const metadata: Metadata = {
   /**
@@ -18,99 +18,50 @@ export const metadata: Metadata = {
    * layout default gives "MELODI ALAM — Stories & Watch".
    */
   description:
-    "Melodi Alam: jurnalisme musik, catatan wawancara, dan katalog video sesi panggung.",
+    "Melodi Alam mencatat musik Indonesia lewat jurnalisme, sesi panggung intim di Samsara Bogor, dan kurasi dari feed @melodi.alam.",
   alternates: { canonical: "/" },
 };
 
+/**
+ * The news-first homepage.
+ *
+ * The lead story owns the h1 and the first screen. A Latest column and a
+ * three-card More Top News row follow, then the two original programmes, the
+ * curated selection, and the open call.
+ *
+ * The wrapper owns the mobile rhythm (48px between modules instead of 80px).
+ * `VideoModal` is the only client mount, shared by the stage and the interview
+ * list so both open the same player.
+ */
 export default async function HomePage() {
-  // One shared list: the four newest feed-photo stories open the page, and the
-  // same list fills the Stories page, the sitemap and the feed.
-  const stories = await latestStories(8);
-  const latest = stories.slice(0, 4);
-
-  // Sanity first, the build-time catalogue behind it. The counts line reads
-  // only the videos the team curated into the CMS: the site shows a selection,
-  // never the whole catalogue. The strip below the news reads the pillar pool,
-  // newest first, and only the photo posts — the reel ones are video rows.
-  const [videos, settings, feed] = await Promise.all([
+  const [stories, videos, interviews, curated] = await Promise.all([
+    latestStories(8),
     allVideos(),
-    getSiteSettings(),
+    allInterviews(),
     allPillarPosts(),
   ]);
 
-  const curatedVideos = videos.filter((video) => video.source === "cms").length;
-
-  const curated = feed
-    .filter((post) => post.mediaType === "foto")
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""))
-    .slice(0, 4);
+  const content = selectHomeContent({ stories, videos, interviews, curated });
 
   return (
-    <>
-      {/* ---------- Latest News ---------- */}
-      <Reveal>
-        <div className="mb-4 flex items-baseline justify-between">
-          <h2 className="text-4xl tracking-tight sm:text-5xl">
-            <RevealText text="Latest News" />
-          </h2>
-          <span className="font-serif text-sm italic text-neutral-600">
-            ({settings.curationNote})
-          </span>
-        </div>
+    <div className="space-y-12 sm:space-y-20">
+      <TopNews lead={content.lead} sidebar={content.sidebar} more={content.more} />
 
-        {/* Four stories, two per row. A single full-width cover story made the
-            page open with one enormous picture; the four now carry the same
-            weight and the first screen already shows two of them. */}
-        <div className="grid grid-cols-1 gap-x-10 border-t-2 border-ink sm:grid-cols-2">
-          {latest.map((article, i) => (
-            <FrontCard key={article.slug} article={article} lead={i === 0} />
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between pt-4 text-xs font-mono text-neutral-600">
-          <span>
-            <CountUp to={stories.length} /> artikel di Stories • <CountUp to={curatedVideos} />{" "}
-            sesi panggung
-          </span>
-          <Link
-            href="/stories"
-            className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
-          >
-            Semua artikel
-          </Link>
-        </div>
-      </Reveal>
-
-      {/* ---------- Curated News ---------- */}
-      {/* A front page needs more than four rows of text: this strip puts the
-          feed's own cards on it, and sends the reader to /kurasi for the rest. */}
-      {curated.length > 0 ? (
-        <Reveal>
-          <div className="mt-14 flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
-            <div className="flex items-baseline gap-4">
-              <h2 className="text-4xl tracking-tight sm:text-5xl">
-                <RevealText text="Curated News" />
-              </h2>
-              <span className="font-serif text-sm italic text-neutral-600">
-                (pilihan tim dari feed @melodi.alam)
-              </span>
-            </div>
-            <Link
-              href="/kurasi"
-              className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
-            >
-              Semua kurasi
-            </Link>
-          </div>
-
-          <h3 className="sr-only">Pilihan redaksi</h3>
-          <div className="grid grid-cols-2 gap-5 border-b border-ink py-6 lg:grid-cols-4">
-            {curated.map((post) => (
-              <PillarCard key={post.id} post={post} showPillar />
-            ))}
-          </div>
-        </Reveal>
+      {content.featured || content.interviews.length > 0 ? (
+        <Originals
+          featured={content.featured}
+          setlist={content.setlist}
+          interviews={content.interviews}
+        />
       ) : null}
-    </>
+
+      {content.curatedFeature ? (
+        <CuratedNews feature={content.curatedFeature} rest={content.curatedRest} />
+      ) : null}
+
+      <SubmitCTA />
+
+      <VideoModal />
+    </div>
   );
 }

@@ -18,7 +18,7 @@ export default async function StoriesPage() {
   return (
     <Reveal>
       <div className="flex items-baseline justify-between pb-4">
-        <h2 className="text-4xl tracking-tight sm:text-5xl">Stories</h2>
+        <h1 className="text-4xl tracking-tight sm:text-5xl">Stories</h1>
         <span className="font-serif text-sm italic text-neutral-600">
           ({settings.curationNote})
         </span>
@@ -37,14 +37,14 @@ export default async function StoriesPage() {
         </div>
       ) : null}
 
-      {/* ---------- Dari Feed → Curated News ---------- */}
+      {/* ---------- Dari Feed → Curated ---------- */}
       <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-600">
         <span>Konten kurasi dari feed @melodi.alam</span>
         <Link
           href="/kurasi"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Curated News
+          Curated
         </Link>
       </div>
     </Reveal>

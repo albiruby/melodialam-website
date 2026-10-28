@@ -1,5 +1,11 @@
 # FRONTEND-PLAN — Melodi Alam Web Platform
 
+> **Nama UI (28 Okt 2026).** Label lama **Latest News / Front Page** kini
+> **Top News**, dan **Curated News** kini **Curated**. Istilah lama di bawah
+> dipertahankan sebagai nama historis; yang berlaku di UI adalah nama baru.
+> Komponen `FrontCard`, `HomeHero`, dan `StoriesSpread` sudah dihapus; homepage
+> kini memakai `components/home/TopNews.tsx` (lead h1 + sidebar + More Top News).
+
 > **Catatan revisi (21 Okt 2026):** dokumen ini ditulis ulang untuk mencerminkan
 > kondisi repo saat ini. Versi sebelumnya masih membahas `VideosBrowser`,
 > `/pahlawan-kota`, `/spaces`, `JournalBrowser`, dan CMS Payload.

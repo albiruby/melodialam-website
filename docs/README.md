@@ -130,7 +130,7 @@ Istilah kunci yang dipakai konsisten di seluruh dokumen ini.
 | Istilah | Arti |
 |---|---|
 | **Stories** | Pilar jurnalisme musik — artikel; halaman `/stories` |
-| **Curated News** | Konten kurasi dari feed Instagram (`/kurasi`) — kumpulan `pillarPost` |
+| **Curated** | Konten kurasi dari feed Instagram (`/kurasi`) — kumpulan `pillarPost` |
 | **Melodi Samsara** | Halaman `/videos` — sesi panggung terpilih + playlist |
 | **Bicara Melodi** | Wawancara Season 3 di `/bicara-melodi` |
 | **Antrean demo** | Daftar kiriman musisi di dataset privat `submissions` |

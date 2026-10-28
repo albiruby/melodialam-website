@@ -14,7 +14,7 @@ di mana mencarinya, tabel di bawah sudah cukup.
 | episode Bicara Melodi | `interviews.ts` |
 | sesi & playlist Melodi Samsara | `videos.ts` |
 | judul & catatan halaman `/videos` | `videos-page.ts` |
-| ticker, tirai kartu, kontak | `site-settings.ts` |
+| data ticker, tirai kartu, kontak | `site-settings.ts` |
 | nama situs, navigasi, footer | `site.ts` |
 | 292 video hasil scrape | `catalogue.json` (artefak build) → `catalogue.ts` (aksesor) |
 | artikel cadangan saat Sanity tak terjangkau | `content-fallback.ts` |
@@ -44,7 +44,7 @@ berbeda, dan hanya literal yang disepakati keduanya.
 | `interviews.ts` | 9 episode wawancara | `interviews` |
 | `videos.ts` | sesi & playlist — CMS dulu, katalog untuk sisanya | `videos` |
 | `videos-page.ts` | salinan teks halaman `/videos` (judul, catatan) | `videosPage` |
-| `site-settings.ts` | satu dokumen `siteSettings`: ticker, tirai kartu, kontak | `siteSettings` |
+| `site-settings.ts` | satu dokumen `siteSettings`: data ticker (tidak dirender), tirai kartu, kontak | `siteSettings` |
 
 `pillars-shared.ts` sengaja dipisah dari `pillars.ts`: yang pertama hanya
 konstanta murni (`PHOTO_PILLARS`, `REEL_PILLARS`, `PILLAR_LABELS`) supaya bundel
@@ -56,7 +56,7 @@ klien tidak pernah menarik `next/cache` atau klien Sanity.
 |---|---|
 | `catalogue.json` | hasil scrape kanal YouTube — 292 video, 342 Shorts, 5 playlist. **Artefak generated**, jangan disunting tangan; dibuat ulang dengan `npm run catalogue` |
 | `catalogue.ts` | aksesor bertipe di atas JSON itu: `VIDEOS`, `SHORTS`, `PLAYLISTS`, `VENUES`, `getVideo()`, `viewCount()`, `formatDuration()` |
-| `content-fallback.ts` | **fallback statis**, bukan sumber kebenaran: 12 artikel, baris wawancara, ticker. Dipakai hanya saat Sanity tidak dapat dijangkau |
+| `content-fallback.ts` | **fallback statis**, bukan sumber kebenaran: 12 artikel, baris wawancara, ticker (data). Dipakai hanya saat Sanity tidak dapat dijangkau |
 | `content-fallback.test.ts` | sembilan kasus Vitest untuk `content-fallback.ts` (`npm test`) |
 
 ## 4. Konstanta bersama
