@@ -158,13 +158,13 @@ function NewsCard({ article }: { article: SiteArticle }) {
           className="editorial-img object-cover"
         />
       </div>
-      <div className="flex min-w-0 flex-col">
+      <div className="flex min-w-0 flex-col md:mt-3">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>·</span>
           <time dateTime={article.dateISO}>{article.date}</time>
         </div>
-        <h3 className="mt-1 text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest md:text-xl">
+        <h3 className="mt-2 text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest md:text-xl">
           {article.title}
         </h3>
       </div>
