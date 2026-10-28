@@ -80,9 +80,9 @@ boleh berada di sana.
 
 | Tipe konten | Workspace Studio | Render di halaman | Status |
 |---|---|---|---|
-| **siteSettings** | Konten | identitas situs (header/footer), data ticker (tidak dirender di shell), catatan kurasi, label panel hijau kartu | ✅ tersambung |
+| **siteSettings** | Konten | identitas footer (`name`), catatan kurasi, label panel hijau kartu, `contactEmail` + `partnerEmail` | ✅ tersambung |
 | **videosPage** | Konten | judul "MELODI SAMSARA" + label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
-| **pillarPost** | Konten | halaman `/kurasi` — section per pillar (Baca: Fakta Musik, Lirik, Trivia, Kutipan; Tonton: Rekomendasi, Ulas, Clipper) | ✅ tersambung (55 post ter-seed) |
+| **pillarPost** | Konten | `/kurasi` — section per pillar; tiga post foto pertama juga tampil di Curated beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/stories`, `/stories/<slug>`, Top News (lead + sidebar + More) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya status disetujui) | ✅ tersambung |

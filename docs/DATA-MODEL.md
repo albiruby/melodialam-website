@@ -37,7 +37,7 @@
 | Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
 | Store utama | Sanity CMS, **dua dataset**: `production` (publik) + `submissions` (privat) | `TERVERIFIKASI` (`lib/sanity-project.ts:31,34`) |
 | Store kedua | `lib/catalogue.json` — katalog YouTube hasil *scrape*, dibangkitkan `npm run catalogue`, **tidak boleh diedit tangan** | `TERVERIFIKASI` (`lib/catalogue.ts:3`) |
-| Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 4 item ticker (data; tidak dirender), 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
+| Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
 | Basis data relasional | **Tidak ada.** Tidak ada Postgres, tidak ada ORM, tidak ada migrasi | `TERVERIFIKASI` (ADR-0008; `package.json` tidak punya `payload`/`pg`/`drizzle`) |
 | Role penulis | Kurator/editor lewat Sanity Studio (dua workspace: **Konten** dan **Submit Karya**) | `TERVERIFIKASI` (`melodialam-sanity/sanity.config.ts`) |
 | Volume konten editorial | 12 artikel (6 foto + 6 reel), 9 baris wawancara, 9 video, 5 playlist, 55 post kurasi, 1 `siteSettings`, 1 `videosPage` | `TERVERIFIKASI` — dihitung ulang dari dataset `production` pada 21 Okt 2026 (lihat §6) |
@@ -98,8 +98,8 @@ Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
 | `lib/interviews.ts` → `allInterviews()` | baris Bicara Melodi | `interview` | `INTERVIEW_ROWS` statis (9) — dipakai hanya bila hasil CMS **0 baris** |
 | `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
 | `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
-| `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; bagian "Dari Feed" lalu tidak dirender |
-| `lib/site-settings.ts` → `getSiteSettings()` | identitas situs, catatan kurasi, label panel hijau; data ticker tetap dibaca tetapi tidak dirender | `siteSettings` | per-field ke `lib/site.ts` + `lib/content-fallback.ts` |
+| `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; Curated lalu tidak dirender |
+| `lib/site-settings.ts` → `getSiteSettings()` | identitas footer, catatan kurasi, label panel hijau, kontak | `siteSettings` | per-field ke konstanta `STATIC` di berkas itu |
 | `lib/videos-page.ts` → `getVideosPageCopy()` | judul/catatan bagian `/videos` | `videosPage` | per-field ke konstanta `STATIC` di berkas itu |
 | `app/api/demos/route.ts` | antrean demo | `demoSubmission` (dataset privat) | array in-memory `memoryQueue` berisi 3 `SEED_DEMOS`; kontak disimpan di `memoryContacts` |
 
@@ -186,19 +186,13 @@ kedua (`melodialam-sanity/sanity/structure.ts:12`).
 
 | Field | Tipe | Wajib | Batas | Arti |
 |---|---|---|---|---|
-| `name` | string | ya | 60 | Nama situs, mis. "MELODI ALAM" |
-| `tagline` | string | ya | 80 | Header + judul metadata, mis. "Stories & Watch" |
-| `strapline` | string | tidak | 120 | Kalimat pendek di bawah logo |
-| `owner` | string | tidak | 120 | Nama pemilik, mis. "By Infia Pariwara Nusantara" |
-| `est` | string | tidak | 40 | Ditulis apa adanya, mis. "EST. 2017" |
-| `description` | text | tidak | 300 | Meta description bawaan halaman yang tidak punya sendiri |
-| `curationNote` | string | tidak | 60 | Teks kecil di samping judul bagian, mis. "kurasi redaksi" |
+| `name` | string | ya | 60 | Nama situs, mis. "MELODI ALAM"; copyright footer |
+| `curationNote` | string | tidak | 60 | Teks kecil di samping judul Stories, mis. "kurasi redaksi" |
 | `cardCurtain` | object | tidak | — | Copy panel hijau saat kartu di-hover (lihat di bawah) |
 | `cardCurtain.articleLabel` | string | tidak | 24 | Label kanan atas kartu Stories. Kosong ⇒ "READ STORY" |
 | `cardCurtain.articleCta` | string | tidak | 40 | Tombol bawah panel. Kosong ⇒ "Buka Catatan Redaksi" |
-| `tickerItems` | array of object | tidak | maks 8 | Item ticker (data CMS; tidak lagi dirender di shell) |
-| `tickerItems[].label` | string | ya | 200 | Teks ticker |
-| `tickerItems[].href` | string | tidak | — | Path internal (`/submit`) atau URL penuh |
+| `contactEmail` | string | tidak | 120 | Email redaksi; kosong ⇒ fallback situs |
+| `partnerEmail` | string | tidak | 120 | Email partnership; kosong ⇒ fallback situs |
 
 **`cardCurtain` sekarang hanya punya dua field: `articleLabel` + `articleCta`.**
 Field `featureLabel` dan `featureCta` **dihapus dari skema** (commit Studio
@@ -887,8 +881,8 @@ dibaca seolah-olah ada:
   - `video`: 9 dokumen, seluruhnya `venue: "Melodi Samsara"`.
   - `interview`: 9 dokumen, `order` 1–9 berurutan.
   - `playlist`: 5 dokumen, seluruhnya `count: null`.
-  - `siteSettings` live: `cardCurtain` memuat 4 kunci (2 di antaranya sudah
-    dilepas dari skema) dan 4 `tickerItems`.
+  - `siteSettings` live: `name`, `curationNote`, dan `cardCurtain`; field
+    `contactEmail`/`partnerEmail` boleh kosong dan memakai fallback situs.
   - `videosPage` live: `samsaraNote: ""`, `playlistsNote: null`.
 - `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`
   (Samsara 101, Interview 143, Arsip & Lainnya 9, Melodi Taman 39), 17 nilai

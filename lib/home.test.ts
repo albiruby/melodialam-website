@@ -157,7 +157,7 @@ describe("selectHomeContent", () => {
     expect(archive.setlist).toEqual([]);
   });
 
-  it("keeps curated photos with a cover, newest first, and skips reels", () => {
+  it("keeps curated photos with a cover, follows the editor order, and skips reels", () => {
     const content = selectHomeContent({
       stories: [],
       videos: [],
@@ -171,8 +171,8 @@ describe("selectHomeContent", () => {
       ],
     });
 
-    expect(content.curatedFeature?.id).toBe("new");
-    expect(content.curatedRest.map((item) => item.id)).toEqual(["old", "older"]);
+    expect(content.curatedFeature?.id).toBe("old");
+    expect(content.curatedRest.map((item) => item.id)).toEqual(["new", "older"]);
   });
 
   it("caps the curated rows at two posts", () => {

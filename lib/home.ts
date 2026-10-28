@@ -42,7 +42,7 @@ export interface HomeInput {
 }
 
 /**
- * Pick The homepage's content.
+ * Pick the homepage's content.
  *
  * The featured session prefers a CMS video that names its artists: a stage
  * section whose headline is a bare catalogue title reads like an archive, not
@@ -50,7 +50,9 @@ export interface HomeInput {
  * wins, and the catalogue is the last resort.
  *
  * Curated posts without a cover are skipped. An empty 4:5 frame is worse than
- * one fewer card, and the section needs a photograph to work at all.
+ * one fewer card, and the section needs a photograph to work at all. The order
+ * is the one returned by `allPillarPosts()` — Studio `order` first, then date —
+ * so an editor can pin the three homepage picks without a schema change.
  */
 export function selectHomeContent({
   stories,
@@ -68,9 +70,9 @@ export function selectHomeContent({
     ? videos.filter((video) => video.id !== featured.id).slice(0, 2)
     : [];
 
-  const photos = [...curated]
-    .filter((post) => post.mediaType !== "reel" && Boolean(post.image))
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  const photos = curated.filter(
+    (post) => post.mediaType !== "reel" && Boolean(post.image),
+  );
 
   return {
     lead: stories[0] ?? null,

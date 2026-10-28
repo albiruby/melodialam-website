@@ -356,7 +356,7 @@ server/klien dan nama tag cache.
 
 | Module ID | Module Name | Responsibility | Owned Data | Dependencies | Public Interface |
 |---|---|---|---|---|---|
-| MOD-001 | `lib/content-fallback.ts` + `lib/taxonomy.ts` | Editorial fallback, rubrik, enum demo, batas audio | `ARTICLES` (12), `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3), `ARTICLE_CATEGORY_VALUES`, `DEMO_*` | — | Named const exports + tipe `Article`, `InterviewRow`, `DemoSubmission` |
+| MOD-001 | `lib/content-fallback.ts` + `lib/taxonomy.ts` | Editorial fallback, rubrik, enum demo, batas audio | `ARTICLES` (12), `INTERVIEW_ROWS` (9), `SEED_DEMOS` (3), `ARTICLE_CATEGORY_VALUES`, `DEMO_*` | — | Named const exports + tipe `Article`, `InterviewRow`, `DemoSubmission` |
 | MOD-002 | `lib/articles.ts` | Lapisan artikel: CMS dulu, fallback statis | `ARTICLES_TAG` | MOD-001, MOD-009 | `allArticles()`, `latestStories(count)`, `articleBySlug(slug)`, `staticArticleSlugs()` |
 | MOD-003 | `lib/catalogue.json` | Artefak generated katalog YouTube | 292 video, 342 shorts, 5 playlist, `meta`, `profile`, `counts` | MOD-012 | Berkas JSON (data) |
 | MOD-004 | `lib/catalogue.ts` | Aksesor bertipe di atas MOD-003 | tidak ada (turunan) | MOD-003 | `catalogue`, `CHANNEL`, `COUNTS`, `VIDEOS`, `SHORTS`, `PLAYLISTS`, `VENUES`, `getVideo`, `topVideos`, `latestVideos`, `viewCount`, `formatDuration` |
@@ -386,8 +386,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
 
 - **Tujuan.** Sumber editorial yang ditulis tangan **dan** tempat kosakata
   bersamaCMS dan Studio.
-- **Tanggung jawab.** 12 artikel lengkap, 9 baris wawancara, 4 item ticker
-  (data dipertahankan; ticker tidak lagi dirender di shell), 3 seed demo, 4 rubrik artikel, 4 status demo, 6 genre demo, 3 program demo,
+- **Tanggung jawab.** 12 artikel lengkap, 9 baris wawancara, 3 seed demo,
+  4 rubrik artikel, 4 status demo, 6 genre demo, 3 program demo,
   batas audio (25 MB / 3 ekstensi / 4 MIME).
 - **Bukan tanggung jawab.** Tidak melakukan I/O, tidak tahu rute, tidak tahu
   Sanity.

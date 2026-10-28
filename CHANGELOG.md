@@ -30,7 +30,12 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **Shell dirapikan**: ticker dihapus dari layout dan 404; header menjadi satu
   baris (lockup kiri, nav kanan, menu di bawah `xl`); footer memakai garis 1 px
   dan teks 13/11 px. Komponen `Ticker`, `MarqueeTape`, dan `SectionMarker`
-  dihapus; data `TICKER_ITEMS` tetap di CMS/fallback.
+  dihapus; field ticker dihapus dari Studio dan website, `TICKER_ITEMS` dihapus.
+- **Sanity Studio diselaraskan**: `siteSettings` sekarang hanya memuat
+  `name`, `curationNote`, `cardCurtain`, `contactEmail`, `partnerEmail`;
+  field ticker/tagline/strapline/owner/est/description dihapus dari schema,
+  dan field kontak ditambahkan. Copy `article`/`pillarPost` diperbarui;
+  Curated beranda mengikuti `order` dari Studio. Studio dideploy (2/2 skema).
 - **Kartu text-light**: excerpt di kartu pendamping dan CTA per kartu dihapus;
   judul sentence case; metadata satu baris; border gambar dihapus. Semua cover
   IG di sidebar, More Top News, dan Curated memakai **4:5** agar tidak

@@ -654,7 +654,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `siteSettings`, `videos`, `videos-page`), `timingSafeEqual`, 500/401.
 - `lib/content-fallback.ts` — `readingTimeMinutes` (`WORDS_PER_MINUTE = 200`),
   `articleReadingTime`, `ARTICLES` (12 artikel, 6 `mediaType: "reel"`),
-  `INTERVIEW_ROWS` (9 baris), `TICKER_ITEMS`, `SEED_DEMOS`.
+  `INTERVIEW_ROWS` (9 baris), `SEED_DEMOS`.
 - `lib/taxonomy.ts` — `ARTICLE_CATEGORY_VALUES` (4), `DEMO_GENRES` (6),
   `DEMO_PROGRAMS` (3), `DEMO_STATUSES` (4), `DEMO_INITIAL_STATUS`,
   `DEMO_APPROVED_STATUSES` (2), `DEMO_AUDIO_MAX_BYTES`, `DEMO_AUDIO_EXTENSIONS`.

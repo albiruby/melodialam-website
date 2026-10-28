@@ -6,7 +6,7 @@
  * `.env` still builds and still renders. Editing an article here therefore
  * changes nothing on the deployed site — the change has to be made in the
  * Studio. What lives here is what a reader sees in that degraded state, so it
- * is kept to twelve articles, the interview rows, and the ticker.
+ * is kept to twelve articles and the interview rows.
  *
  * Article bodies are arrays of plain strings rather than raw HTML, so nothing
  * from the content layer can inject markup. They render through
@@ -378,29 +378,6 @@ export const INTERVIEW_ROWS: InterviewRow[] = [
     headline: "AKAN NGELAKUIN APAPUN UNTUK MUSIK",
     videoId: "iqfqKFS2sQc",
     caption: "bicara melodi ep.15",
-  },
-];
-
-/* -------------------------------------------------------------------------
-   Live ticker items.
-------------------------------------------------------------------------- */
-
-export const TICKER_ITEMS: { label: string; href: string | null }[] = [
-  {
-    label: "SESI PANGGUNG BARU TIAP PEKAN — MELODI SAMSARA, BOGOR",
-    href: "/videos",
-  },
-  {
-    label: "BICARA MELODI: OBROLAN PANJANG BERSAMA MUSISI INDONESIA",
-    href: "/bicara-melodi",
-  },
-  {
-    label: "STORIES — ESAI, LIPUTAN, DAN CATATAN SKENA",
-    href: "/stories",
-  },
-  {
-    label: "OPEN SUBMISSION: KIRIM KARYA BAND KAMU UNTUK DIKURASI",
-    href: "/submit",
   },
 ];
 

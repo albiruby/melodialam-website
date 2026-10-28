@@ -21,7 +21,7 @@ if (!process.argv[2]) {
   process.exit(1);
 }
 
-const { ARTICLES, INTERVIEW_ROWS, TICKER_ITEMS } = require(path.join(BUILD_DIR, "content.js"));
+const { ARTICLES, INTERVIEW_ROWS } = require(path.join(BUILD_DIR, "content.js"));
 const { SITE } = require(path.join(BUILD_DIR, "site.js"));
 const catalogue = require("../lib/catalogue.json");
 
@@ -118,18 +118,13 @@ const settingsDoc = {
   _id: "siteSettings",
   _type: "siteSettings",
   name: SITE.name,
-  tagline: SITE.tagline,
-  strapline: SITE.strapline,
-  owner: SITE.owner,
-  est: SITE.est,
-  description: SITE.description,
   curationNote: "kurasi redaksi",
-  tickerItems: TICKER_ITEMS.map((t, i) => ({
-    _type: "tickerItem",
-    _key: `t${i}`,
-    label: t.label,
-    href: t.href ?? undefined,
-  })),
+  cardCurtain: {
+    articleLabel: "READ STORY",
+    articleCta: "Buka Catatan Redaksi",
+  },
+  contactEmail: "melodialam.ip@gmail.com",
+  partnerEmail: "helfan@infia.co",
 };
 
 /* --- send ----------------------------------------------------------------- */

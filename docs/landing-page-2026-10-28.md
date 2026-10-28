@@ -89,8 +89,8 @@ dua label “Top News”.
 
 ## Shell
 
-- **Ticker dihapus dari shell.** Data `tickerItems` tetap ada di CMS/fallback,
-  tetapi tidak dirender.
+- **Ticker dihapus dari shell dan schema.** Field `tickerItems` di Studio dan
+  `TICKER_ITEMS` di fallback sudah dihapus; tidak ada data ticker yang dirender.
 - **Header satu baris:** lockup kiri, nav desktop kanan, menu di bawah `xl`.
   Tagline, owner, dan Instagram keluar dari masthead; Instagram pindah ke
   drawer/footer.
@@ -155,11 +155,21 @@ terpotong, teks per kartu berkurang, CTA tidak berulang, dan ritme gambar lebih
 variatif (lead 3:2, kartu 4:5, video 16:9). Route, CMS, form submit, dan identitas
 brand tetap sama.
 
+## Sanity Studio
+
+- `siteSettings` sekarang hanya berisi `name`, `curationNote`, `cardCurtain`,
+  `contactEmail`, `partnerEmail`. Field ticker, tagline, strapline, owner, est,
+  dan description dihapus dari schema; field kontak ditambahkan.
+- Curated beranda mengikuti urutan `order` dari **Konten Pillar** (lalu tanggal);
+  tidak ada field baru.
+- Copy `article` dan `pillarPost` diperbarui ke istilah Top News/Curated.
+- Studio dideploy ke `https://melodi-alam.sanity.studio/` (2/2 skema).
+
 ## Catatan
 
 - Komponen `HomeHero`, `StoriesSpread`, dan `FrontCard` dihapus; penggantinya
   `components/home/TopNews.tsx`.
-- Ticker, `MarqueeTape`, dan `SectionMarker` dihapus dari kode; `TICKER_ITEMS`
-  tetap sebagai data seed/fallback.
+- Ticker, `MarqueeTape`, `SectionMarker`, dan `TICKER_ITEMS` dihapus dari kode
+  dan schema.
 - `Curated News` masih muncul di dokumen historis (CHANGELOG, PRD, FRONTEND-PLAN)
   sebagai nama lama; dokumen current memakai **Curated**.

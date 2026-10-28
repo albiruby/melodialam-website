@@ -1,14 +1,17 @@
 import { cacheLife, cacheTag } from "next/cache";
-import { TICKER_ITEMS } from "./content-fallback";
 import { SITE } from "./site";
 import { contentClient } from "./sanity";
 
 /**
- * Site-wide copy.
+ * Site-wide copy and contact facts.
  *
  * Reads the `siteSettings` singleton from Sanity and falls back to the constants
- * in `lib/site.ts` and `lib/content-fallback.ts`, so the site renders before an editor has
- * filled the document in — and keeps rendering if Sanity is unreachable.
+ * below, so the site renders before an editor has filled the document in — and
+ * keeps rendering if Sanity is unreachable.
+ *
+ * The header no longer reads brand copy from the CMS: the lockup, promise and
+ * navigation are code-owned. What remains editable is the footer name, the
+ * Stories-page note and hover curtain, and the two contact addresses.
  *
  * `url` and `locale` are deliberately NOT here: the origin has to come from the
  * environment so a preview deployment produces correct canonical URLs, and the
@@ -22,11 +25,6 @@ import { contentClient } from "./sanity";
 
 export const SETTINGS_TAG = "siteSettings";
 
-export interface TickerItem {
-  label: string;
-  href: string | null;
-}
-
 /** Copy for the green hover curtain that covers an article card. */
 export interface CardCurtainCopy {
   /** Small top-right label on a Stories-page card. */
@@ -37,11 +35,6 @@ export interface CardCurtainCopy {
 
 export interface SiteSettings {
   name: string;
-  tagline: string;
-  strapline: string;
-  owner: string;
-  est: string;
-  description: string;
   /** The small note beside a section heading. Never carries a date. */
   curationNote: string;
   /** Where readers write about the site itself. */
@@ -49,18 +42,12 @@ export interface SiteSettings {
   /** Where partnership offers go. */
   partnerEmail: string;
   cardCurtain: CardCurtainCopy;
-  tickerItems: TickerItem[];
   /** Where the values came from, for the admin UI and for debugging. */
   source: "cms" | "static";
 }
 
 const STATIC: SiteSettings = {
   name: SITE.name,
-  tagline: SITE.tagline,
-  strapline: SITE.strapline,
-  owner: SITE.owner,
-  est: SITE.est,
-  description: SITE.description,
   curationNote: "kurasi redaksi",
   contactEmail: "melodialam.ip@gmail.com",
   partnerEmail: "helfan@infia.co",
@@ -68,37 +55,24 @@ const STATIC: SiteSettings = {
     articleLabel: "READ STORY",
     articleCta: "Buka Catatan Redaksi",
   },
-  tickerItems: TICKER_ITEMS.map((item) => ({ label: item.label, href: item.href })),
   source: "static",
 };
 
 const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   name,
-  tagline,
-  strapline,
-  owner,
-  est,
-  description,
   curationNote,
   cardCurtain{ articleLabel, articleCta },
-  tickerItems[]{ label, href }
   contactEmail,
   partnerEmail
 }`;
 
 interface SettingsDoc {
   name?: string;
-  tagline?: string;
-  strapline?: string;
-  owner?: string;
-  est?: string;
-  description?: string;
   curationNote?: string;
   cardCurtain?: {
     articleLabel?: string;
     articleCta?: string;
   };
-  tickerItems?: { label?: string; href?: string }[];
   contactEmail?: string;
   partnerEmail?: string;
 }
@@ -122,17 +96,8 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   if (!doc) return STATIC;
 
-  const tickerItems = (doc.tickerItems ?? [])
-    .filter((item): item is { label: string; href?: string } => Boolean(item?.label?.trim()))
-    .map((item) => ({ label: item.label.trim(), href: item.href?.trim() || null }));
-
   return {
     name: or(doc.name, STATIC.name),
-    tagline: or(doc.tagline, STATIC.tagline),
-    strapline: or(doc.strapline, STATIC.strapline),
-    owner: or(doc.owner, STATIC.owner),
-    est: or(doc.est, STATIC.est),
-    description: or(doc.description, STATIC.description),
     curationNote: or(doc.curationNote, STATIC.curationNote),
     contactEmail: or(doc.contactEmail, STATIC.contactEmail),
     partnerEmail: or(doc.partnerEmail, STATIC.partnerEmail),
@@ -140,7 +105,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       articleLabel: or(doc.cardCurtain?.articleLabel, STATIC.cardCurtain.articleLabel),
       articleCta: or(doc.cardCurtain?.articleCta, STATIC.cardCurtain.articleCta),
     },
-    tickerItems: tickerItems.length > 0 ? tickerItems : STATIC.tickerItems,
     source: "cms",
   };
 }
