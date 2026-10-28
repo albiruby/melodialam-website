@@ -373,10 +373,8 @@ ini menghindari cascading render saat navigasi dari dalam drawer. Nav desktop
 memakai `aria-current="page"` via `isActive()`; badge nav tidak lagi dipakai — label `YT` di samping `Melodi Samsara` dihapus 24 Okt 2026
 ada. Nav mobile **tidak** memakai `aria-current` — lihat §10.2.
 
-Catatan `Ticker` (`TERVERIFIKASI`): `Ticker` adalah server component yang
-memakai `<a>` biasa (bukan `next/link`) untuk item ber-`href`, dan `<div>` dengan
-titik berdenyut untuk item tanpa tautan. Item datang dari
-`siteSettings.tickerItems` yang maksimal 8 item.
+Catatan `Ticker` (`TERVERIFIKASI`): ticker sudah dihapus dari schema dan
+website. Tidak ada lagi `Ticker`, `MarqueeTape`, atau `siteSettings.tickerItems`.
 
 ### 5.2 Composite
 

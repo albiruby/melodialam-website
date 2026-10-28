@@ -254,7 +254,7 @@ Selain `OQ-001`/`OQ-002` yang sudah dijawab di §8.
 - `lib/articles.ts` (penuh) — `SiteArticle`, `latestStories()`,
   `articleBySlug()`, `ARTICLES_TAG`, `mediaType` mapping.
 - `lib/content-fallback.ts` (penuh) — `Article`, `ARTICLES` (12, 6 foto + 6 reel),
-  `INTERVIEW_ROWS` (9), `TICKER_ITEMS` (4), `SEED_DEMOS` (3),
+  `INTERVIEW_ROWS` (9), `SEED_DEMOS` (3),
   `readingTimeMinutes()` / `articleReadingTime()`.
 - `lib/taxonomy.ts` (penuh) — `ARTICLE_CATEGORY_VALUES`, `CATEGORY_LABELS`,
   `DEMO_STATUSES`, `DEMO_INITIAL_STATUS`, `DEMO_APPROVED_STATUSES`,

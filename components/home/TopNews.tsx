@@ -117,7 +117,7 @@ function SidebarLead({ article }: { article: SiteArticle }) {
           <span aria-hidden>·</span>
           <time dateTime={article.dateISO}>{article.date}</time>
         </div>
-        <h3 className="mt-1 text-xl font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
+        <h3 className="mt-2 line-clamp-3 text-xl font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
           {article.title}
         </h3>
       </div>
@@ -136,7 +136,7 @@ function SidebarItem({ article }: { article: SiteArticle }) {
         <span aria-hidden>·</span>
         <time dateTime={article.dateISO}>{article.date}</time>
       </div>
-      <h3 className="mt-1 text-base font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
+      <h3 className="mt-2 line-clamp-2 text-base font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
         {article.title}
       </h3>
     </Link>
@@ -164,7 +164,7 @@ function NewsCard({ article }: { article: SiteArticle }) {
           <span aria-hidden>·</span>
           <time dateTime={article.dateISO}>{article.date}</time>
         </div>
-        <h3 className="mt-2 text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest md:text-xl">
+        <h3 className="mt-2 line-clamp-3 text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest md:text-xl">
           {article.title}
         </h3>
       </div>

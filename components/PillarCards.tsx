@@ -81,7 +81,7 @@ export function PillarCard({
           </span>
         ) : null}
         <h4
-          className={`${showPillar ? "mt-1" : "mt-3"} line-clamp-3 text-sm font-extrabold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest`}
+          className={`${showPillar ? "mt-2" : "mt-3"} line-clamp-3 text-sm font-extrabold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest`}
         >
           {post.title}
         </h4>
@@ -147,7 +147,7 @@ export function PillarFeature({
           <span>{pillarDate(post.date)}</span>
         </div>
 
-        <h3 className="mt-1 line-clamp-3 font-display text-xl font-black leading-[1.05] tracking-tight text-ink transition-colors group-hover:text-forest sm:text-2xl lg:text-3xl">
+        <h3 className="mt-2 line-clamp-3 font-display text-xl font-black leading-[1.05] tracking-tight text-ink transition-colors group-hover:text-forest sm:text-2xl lg:text-3xl">
           {post.title}
         </h3>
       </div>
