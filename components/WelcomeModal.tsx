@@ -71,14 +71,14 @@ export function WelcomeModal() {
         <div
           aria-hidden="true"
           onClick={close}
-          className="fixed inset-0 z-[90] bg-ink/80 backdrop-blur-sm"
+          className="welcome-backdrop motion-reduce:animate-none fixed inset-0 z-[90] bg-ink/80 backdrop-blur-sm"
         />
       ) : null}
       <dialog
         ref={dialogRef}
         aria-labelledby="welcome-title"
         aria-describedby="welcome-copy"
-        className="welcome-dialog m-auto max-h-[90vh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto border-0 bg-paper p-0 text-ink"
+        className="welcome-dialog open:welcome-card motion-reduce:animate-none m-auto max-h-[90vh] w-[calc(100%-2rem)] max-w-4xl overflow-y-auto border-0 bg-paper p-0 text-ink"
         onCancel={(event) => {
           event.preventDefault();
           close();

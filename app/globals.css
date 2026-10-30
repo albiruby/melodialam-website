@@ -444,6 +444,46 @@
   opacity: 1;
 }
 
+/* --- Welcome card ------------------------------------------------------ */
+
+/*
+  A short entrance for the first-visit card: the backdrop fades, the card
+  rises a few pixels and settles with a small overshoot. It runs once when
+  the native dialog gets its `open` attribute; closing stays instant so the
+  page is usable again immediately.
+*/
+@keyframes welcome-backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes welcome-card-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-2px) scale(1.005);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@utility welcome-backdrop {
+  animation: welcome-backdrop-in 240ms ease-out both;
+}
+
+@utility welcome-card {
+  animation: welcome-card-in 420ms var(--ease-editorial) both;
+}
+
 /* --- Equalizer --------------------------------------------------------- */
 
 @keyframes eqBounce {
@@ -486,6 +526,11 @@
   .stagger-item {
     opacity: 1;
     transform: none;
+  }
+
+  .welcome-backdrop,
+  .welcome-dialog[open] {
+    animation: none;
   }
 
   /*
