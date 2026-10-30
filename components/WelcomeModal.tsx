@@ -105,7 +105,7 @@ export function WelcomeModal() {
                 alt="Melodi Alam"
                 width={2021}
                 height={285}
-                className="h-9 w-auto sm:h-11"
+                className="h-10 w-auto sm:h-12"
               />
               <span aria-hidden className="h-px w-10 bg-rule" />
               <Image
@@ -113,7 +113,7 @@ export function WelcomeModal() {
                 alt="Samsara"
                 width={2954}
                 height={804}
-                className="h-14 w-auto sm:h-16"
+                className="h-12 w-auto sm:h-14"
               />
             </div>
 
