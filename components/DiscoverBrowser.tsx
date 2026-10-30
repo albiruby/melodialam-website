@@ -120,7 +120,7 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
             type="button"
             onClick={() => setUrl(query, chip.key)}
             aria-pressed={pillar === chip.key}
-            className={`min-h-9 shrink-0 border border-ink px-3 py-2 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${
+            className={`min-h-9 shrink-0 border border-ink px-3 py-2 font-sans text-[10px] font-bold uppercase tracking-wider transition-colors duration-300 ${
               pillar === chip.key ? "bg-ink text-white" : "hover:bg-paper"
             }`}
           >
