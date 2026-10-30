@@ -8,6 +8,7 @@
     "start": "next start -p 3100",
     "lint": "eslint",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "catalogue": "node scripts/build-catalogue.mjs",
     "brand": "node scripts/build-brand.mjs",
     "photos": "node scripts/copy-photos.mjs",
@@ -29,6 +30,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24.19.2",
     "@types/react": "^19",

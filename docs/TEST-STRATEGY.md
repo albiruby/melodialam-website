@@ -195,7 +195,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-11` | `lib/catalogue.ts` `viewCount` | `"107K"` → `107000`, `"1.8K"` → `1800`, `"1.2M"` → `1200000`, `"1,234"` → `1234`, `""`/`"abc"`/`"1.2.3"` → `-1` | Tinggi |
 | `U-12` | `lib/catalogue.ts` `formatDuration` | `0` → `""`; `< 3600` → `m:ss`; `≥ 3600` → `h:mm:ss` | Sedang |
 | `U-13` | `lib/catalogue.ts` `topVideos` / `latestVideos` / `getVideo` | `topVideos` menyalin lalu mengurutkan turun dan **tidak memutasi** `VIDEOS`; `getVideo` id tak dikenal → `undefined` | Sedang |
-| `U-14` | `lib/pillars-shared.ts` `PHOTO_PILLARS` / `REEL_PILLARS` | Empat pillar foto dan empat pillar reel; `meme-humor` tidak ada di salah satunya | Rendah |
+| `U-14` | `lib/pillars-shared.ts` `PHOTO_PILLARS` / `REEL_PILLARS` | Empat pillar foto dan tiga pillar reel; `similar-song` dan `meme-humor` sudah dihapus | Rendah |
 | `U-15` | `lib/content-fallback.ts` `ARTICLES` | 12 artikel, `slug` unik, `mediaType` hanya `"foto"`/`"reel"` | Tinggi |
 | `U-16` | `lib/content-fallback.ts` `INTERVIEW_ROWS` | 9 baris, `videoId` terisi, `slug` unik | Sedang |
 | `U-17` | `lib/taxonomy.ts` enum | `DEMO_GENRES` 6, `DEMO_PROGRAMS` 3, `DEMO_INITIAL_STATUS` = `"IN REVIEW"`, `DEMO_APPROVED_STATUSES` = 2 status | Tinggi |
@@ -214,10 +214,11 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
 | `U-23` | `/discover` = 55 tile dalam satu grid urut tanggal | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, tanpa cap per pillar |
-| `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17. Pilar `similar-song` dan `meme-humor` ada di skema tapi 0 post |
+| `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17 |
 | `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content-fallback.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
+| `U-26` | `coverFit()` | 4:5/near → `cover`; landscape/square → `contain`; dimensi kosong → `cover` |
 
-> `U-20`…`U-25` butuh data Sanity untuk sebagiannya, jadi lebih tepat jadi
+> `U-20`…`U-26` butuh data Sanity untuk sebagiannya, jadi lebih tepat jadi
 > integration test dengan stub, atau dipindah jadi smoke test E2E (`E-15`).
 
 ### 4.4 Matriks validasi `POST /api/demos` (`RENCANA`, aturan `TERVERIFIKASI` dari `app/api/demos/route.ts`)

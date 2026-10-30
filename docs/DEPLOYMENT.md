@@ -306,6 +306,8 @@ Nama dan scope dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
 | `SANITY_REVALIDATE_SECRET_PREVIOUS` | server saja | Tidak | Tidak | Nilai secret revalidasi **sebelum** rotasi. Hanya masa transisi — **sudah dikosongkan** (22 Okt 2026); boleh dihapus dari dasbor |
 | `BLOB_READ_WRITE_TOKEN` | server saja | **YA** | Tidak | Token unggah audio. Kosong → `POST /api/demo-audio` menjawab `400` |
 | `BLOB_STORE_ID` | server saja | **YA** | Tidak | ID store Blob aktif (`store_XjUj3WQ3H3TVomMk`, `melodi-alam-public`). Dipakai `isDemoAudioUrl()` untuk mematok host store, bukan sekadar sufiks `.blob.vercel-storage.com` |
+| `KV_REST_API_URL` / `UPSTASH_REDIS_REST_URL` | server saja | Tidak | Tidak | Counter rate limit bersama. Kosong → limit per instance (memori) |
+| `KV_REST_API_TOKEN` / `UPSTASH_REDIS_REST_TOKEN` | server saja | **YA** | Tidak | Token untuk URL di atas |
 | `RESEND_API_KEY` | server saja | **YA** | Tidak | Notifikasi email redaksi. Kosong → notifikasi **inert** (tidak ada panggilan HTTP) |
 | `DEMO_NOTIFY_TO` | server saja | Tidak | Tidak | Override penerima notifikasi, dipisah koma. Default `melodialam.ip@gmail.com,helfan@infia.co` |
 | `DEMO_NOTIFY_FROM` | server saja | Tidak | Tidak | Override pengirim. Default `Melodi Alam <onboarding@resend.dev>` |
@@ -747,7 +749,7 @@ perlu dikonfirmasi saat dibaca.
 | # | Tindakan | Akibat kalau belum dikerjakan | Status |
 |---|---|---|---|
 | 1 | **Lampirkan domain `melodialam.id`** | Domain belum resolve → `NEXT_PUBLIC_SITE_URL` masih menunjuk ke `https://melodialam-website.vercel.app`, sehingga **canonical, sitemap, RSS, `robots.txt`, dan OG** semuanya menunjuk ke alamat preview | `RENCANA` (owner) |
-| 2 | **Buat Blob store** di proyek Vercel | `BLOB_READ_WRITE_TOKEN` belum ada → `POST /api/demo-audio` menjawab `400` dan form tidak bisa melampirkan audio | `RENCANA` (owner) |
+| 2 | **Blob store** di proyek Vercel | Sudah tersambung; `POST /api/demo-audio` produksi mengembalikan `clientToken` (diverifikasi 30 Okt 2026) | **`TERVERIFIKASI`** |
 | 3 | **Set `RESEND_API_KEY`** (+ opsional `DEMO_NOTIFY_TO`) | Notifikasi email ke redaksi **inert**; submission tetap tersimpan, tapi meja redaksi tidak diberi tahu | `RENCANA` (owner) |
 | 4 | **Nyalakan Vercel Web Analytics** di dashboard | `<Analytics />` sudah terpasang, tapi tidak ada data yang terkumpul | `RENCANA` (owner) |
 | 5 | ~~**Set `SANITY_PREVIEW_SECRET`** (terpisah dari `SANITY_REVALIDATE_SECRET`)~~ | **Selesai 22 Okt 2026** — sudah dipasang; fallback sudah dihapus (`audit-2026-10-21.md` F03) | — |

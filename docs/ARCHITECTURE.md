@@ -456,9 +456,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
   mengembalikan `[]` dan bagian-bagiannya tidak dirender. Ini disengaja: pool
   ini adalah konten baru tanpa sumber build-time.
 - **Set pillar.** `PHOTO_PILLARS` = `fakta-musik`, `lirik`, `trivia`, `kutipan`;
-  `REEL_PILLARS` = `rekomendasi`, `ulas-melodi`, `clipper`, `similar-song`.
-  Skema Studio punya 9 pillar (`similar-song` dan `meme-humor` termasuk yang
-  belum terisi).
+  `REEL_PILLARS` = `rekomendasi`, `ulas-melodi`, `clipper`. Skema Studio punya
+  tujuh pillar, semuanya terpakai.
 
 ### MOD-009 — video, copy halaman, wawancara (TERVERIFIKASI)
 

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars-shared";
+import { PILLAR_LABELS, coverFit, pillarDate, type PillarPost } from "@/lib/pillars-shared";
 
 /**
  * Cards for the Discover feed.
@@ -63,7 +63,9 @@ export function PillarCard({
                   ? "(min-width: 1024px) 33vw, (min-width: 640px) 112px, 96px"
                   : "(min-width: 1024px) 25vw, (min-width: 640px) 45vw, 100vw"
               }
-              className="editorial-img object-cover"
+              className={`editorial-img ${
+                coverFit(post) === "contain" ? "object-contain" : "object-cover"
+              }`}
             />
           </>
         ) : null}
@@ -135,7 +137,9 @@ export function PillarFeature({
               loading={eager ? "eager" : "lazy"}
               fetchPriority={eager ? "low" : "auto"}
               sizes="(min-width: 1024px) 66vw, (min-width: 640px) 128px, 112px"
-              className="editorial-img object-cover"
+              className={`editorial-img ${
+                coverFit(post) === "contain" ? "object-contain" : "object-cover"
+              }`}
             />
           </>
         ) : null}

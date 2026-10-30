@@ -14,6 +14,7 @@ export const metadata = pageMetadata({
   description:
     "Sesi panggung Melodi Samsara di Bogor: live session intim bersama musisi Indonesia, plus playlist resmi Melodi Alam di YouTube.",
   path: "/videos",
+  image: "/og-videos.png",
 });
 
 /** The live sessions shown before the rest stay on the channel — nine of them. */

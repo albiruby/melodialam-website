@@ -355,24 +355,15 @@ Urutan baca: `order(coalesce(order, 9999) asc, date desc)`.
 | `rekomendasi` | Rekomendasi Melodi | Tonton (reel) | **8** |
 | `ulas-melodi` | Ulas Melodi | Tonton (reel) | **3** |
 | `clipper` | Clipper | Tonton (reel) | **17** |
-| `similar-song` | Similar Song | Tonton (reel) | **0** |
-| `meme-humor` | Meme Humor | **tidak masuk set mana pun** | **0** |
 | | | **Total** | **55** |
 
-Dua hal yang berbeda statusesnya dan keduanya perlu diketahui editor:
+Skema dan set hanya memuat tujuh pillar yang dipakai. `similar-song` dan
+`meme-humor` sudah dihapus dari skema, label, dan set (keduanya 0 post), jadi
+tidak ada pillar yang tersimpan tetapi tidak bisa dirender.
 
-- **`similar-song`** ada di skema dan ada di `REEL_PILLARS`, jadi kalau diisi
-  postnya akan muncul di blok "Tonton". Saat ini **0 post**, jadi bagiannya
-  tidak dirender dan chip-nya disembunyikan (chip dengan count 0 di-filter di
-  `components/KurasiBrowser.tsx:61`).
-- **`meme-humor`** ada di skema dan di `PILLAR_LABELS`, tapi **tidak ada di
-  `PHOTO_PILLARS` maupun `REEL_PILLARS`**. Kalau diisi pun, postnya **tidak
-  akan pernah muncul** di `/discover` dan tidak akan punya chip. Ini kekosongan
-  skema, bukan sekadar pillar yang belum diisi.
-
-Pembagian set ada di `lib/pillars-shared.ts:22-23`:
+Pembagian set ada di `lib/pillars-shared.ts`:
 `PHOTO_PILLARS = ["fakta-musik","lirik","trivia","kutipan"]`,
-`REEL_PILLARS = ["rekomendasi","ulas-melodi","clipper","similar-song"]`.
+`REEL_PILLARS = ["rekomendasi","ulas-melodi","clipper"]`.
 
 #### 4.6.2 Cara `/discover` menampilkannya
 
@@ -424,17 +415,16 @@ Nilai live saat ini: `samsaraTitle: "Melodi Samsara"`,
 `samsaraNote: ""` (kosong → catatan disembunyikan), `playlistsNote` belum diisi
 (→ dihitung otomatis).
 
-### 4.8 Gumasan: `pahlawanRow` (3 dokumen)
+### 4.8 Arsip: `pahlawanRow` (3 dokumen)
 
-Tipe `pahlawanRow` **masih terdaftar** di `contentSchemaTypes` dan masih ada
-3 dokumennya di dataset `production`, tetapi:
+Tipe `pahlawanRow` sudah dihapus dari `contentSchemaTypes` dan dari Studio.
+Tiga dokumennya tetap tersimpan di dataset `production` sebagai arsip, tetapi:
 
 - Rute `/pahlawan-kota` sudah dihapus dari situs.
 - `lib/pahlawan.ts` sudah dihapus.
 - Tidak ada kode sisi web yang membacanya.
 
-Dokumen-dokumennya **arsip**. Diperlakukan sebagai gumasan, bukan bagian model
-data yang berjalan. Fieldnya (`title`, `slug`, `artists`, `description`,
+Dokumen-dokumennya **arsip**. Fieldnya (`title`, `slug`, `artists`, `description`,
 `image`, `imagePath`, `tags`, `order`) sengaja tidak punya `videoId` /
 `articleSlug` — grup aksi READ/WATCH dihapus atas permintaan.
 
@@ -570,7 +560,7 @@ Dihitung ulang dengan kueri GROQ langsung ke dataset `production` pada
 | `playlist` | **5** | `count` belum diisi di dokumen Sanity (`null`) — situs memakai `-` |
 | `siteSettings` | **1** | singleton |
 | `videosPage` | **1** | singleton |
-| `pahlawanRow` | **3** | arsip, tidak dirender |
+| `pahlawanRow` | **3** | arsip; tipe sudah dihapus dari Studio |
 | `demoSubmission` | **0** | dataset privat; queue publik kosong |
 | `demoContact` | **0** | dataset privat |
 
@@ -790,8 +780,7 @@ dibaca seolah-olah ada:
 | Notifikasi email (`RESEND_API_KEY`) | `RENCANA` | Kodenya ada (`app/api/demos/route.ts:134-191`) tapi **inert** tanpa key |
 | `SANITY_PREVIEW_SECRET` terpisah | `TERVERIFIKASI` | Sudah dipasang; fallback sudah dihapus (22 Okt 2026) |
 | Webhook Sanity "Trigger on: Update" | `RENCANA` | Yang tercentang hanya "Create" |
-| Pillar `similar-song` berisi post | `RENCANA` | Skema dan set sudah siap; 0 post |
-| Pillar `meme-humor` dirender | **Perlu perbaikan skema** | Ada di skema & label, tapi tidak ada di `PHOTO_PILLARS`/`REEL_PILLARS` → tidak akan pernah tampil |
+| Pillar `similar-song` / `meme-humor` | **Selesai** | Dihapus dari skema, label, dan set; keduanya 0 post |
 | `visionTool()` dimatikan di workspace privat | `RENCANA` | F08: GROQ bebas atas dataset privat bagi siapa pun yang punya akses workspace |
 
 ### 12.1 Keadaan lingkungan (per 21 Oktober 2026)
@@ -937,22 +926,15 @@ dokumen lain sedang direvisi bersamaan, jadi daftar ini berumur pendek):
 
 ## Open Questions
 
-1. **Pillar `meme-humor`.** Mau dimasukkan ke `PHOTO_PILLARS` atau
-   `REEL_PILLARS` di `lib/pillars-shared.ts`, atau dihapus dari skema Studio
-   dan dari `PILLAR_LABELS`? Selama tidak diputuskan, pillar itu tidak bisa
-   diisi.
-2. **Pillar `similar-song`.** Ada di `REEL_PILLARS` tapi 0 post. Biarkan
-   kosong, atau isi sekalian? Kalau rencana editorialnya berubah, set-nya di dua repo
-   harus ikut berubah.
-3. **Empat reel yang tidak tertaut.** `wsatcc`, `hanin`, `sheila`, `a7x` tidak
+1. **Empat reel yang tidak tertaut.** `wsatcc`, `hanin`, `sheila`, `a7x` tidak
    muncul di halaman mana pun. Apakah tiap reel menunggu padanan post foto
    (seperti yang tertulis di deskripsi `mediaType`), atau daftar ini perlu
    ditambah supaya semuanya punya tempat?
-4. **Audio demo publik.** `access: "public"` sekarang. Apakah objeknya
+2. **Audio demo publik.** `access: "public"` sekarang. Apakah objeknya
    sebaiknya privat dengan signed URL, atau tetap publik? Lihat temuan F04 di audit.
-5. **Retensi PII.** Berapa lama `demoContact` dan objek audio disimpan setelah
+3. **Retensi PII.** Berapa lama `demoContact` dan objek audio disimpan setelah
    kiriman ditutup? Tidak ada job yang membersihkan keduanya.
-6. **Audit moderasi.** Perlu field `reviewedBy` / `reviewedAt` di
+4. **Audit moderasi.** Perlu field `reviewedBy` / `reviewedAt` di
    `demoSubmission`, atau riwayat versi Sanity cukup?
 7. **Sisa field `cardCurtain` di dokumen live.** Apakahnya dibersihkan
    (hapus kunci `featureLabel`/`featureCta` dari dokumen), atau dibiarkan

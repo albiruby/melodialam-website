@@ -9,10 +9,11 @@ pengiriman demo musisi (*Submit Karya*).
 Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara
 (INFIA Corp).
 
-> Direktori `/pahlawan-kota` dan `/spaces` sudah dihapus; `pahlawanRow` disimpan
-> sebagai arsip di Sanity, `GENRE_ROWS`/`SPACE_ITEMS` diarsipkan di
-> `lib/content-fallback.ts`. Halaman `/videos/arsip` (katalog 292 video) juga dihapus —
-> `/videos` kini hanya merender seleksi sesi yang hidup sebagai dokumen `video`.
+> Direktori `/pahlawan-kota` dan `/spaces` sudah dihapus; tipe `pahlawanRow`
+> sudah dihapus dari Studio, dan 3 dokumennya disimpan sebagai arsip di Sanity.
+> `GENRE_ROWS`/`SPACE_ITEMS` diarsipkan di `lib/content-fallback.ts`. Halaman
+> `/videos/arsip` (katalog 292 video) juga dihapus — `/videos` kini hanya
+> merender seleksi sesi yang hidup sebagai dokumen `video`.
 
 ---
 

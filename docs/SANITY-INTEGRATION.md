@@ -5,8 +5,8 @@ jalur apa, dan apa yang harus dilakukan saat mengubah model konten.
 
 **Audiens:** editor yang menulis konten, dan developer yang mengubah skema.
 **Status (21 Okt 2026):** artikel, pillar, video, wawancara, pratinjau draf, dan
-antrean demo tersambung. Direktori Pahlawan Kota sudah dihapus dari situs;
-dokumen `pahlawanRow` tetap di Sanity sebagai arsip.
+antrean demo tersambung. Tipe `pahlawanRow` sudah dihapus dari Studio; tiga
+dokumennya tetap di Sanity sebagai arsip.
 
 > Menggantikan `PAYLOAD-INTEGRATION.md`, yang dihapus bersama seluruh kode Payload.
 > Latar belakang keputusan ada di [`adr/0008`](adr/0008-sanity-studio-menggantikan-payload.md).
@@ -84,7 +84,7 @@ boleh berada di sana.
 | **videosPage** | Konten | judul "MELODI SAMSARA" + label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
 | **pillarPost** | Konten | `/discover` — grid datar urut tanggal; lima post foto pertama juga tampil di Discover beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/stories`, `/stories/<slug>`, Top News (lead + sidebar + More) | ✅ tersambung |
-| **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
+| **pahlawanRow** | Arsip | — (tipe sudah dihapus dari Studio; 3 dokumen tetap di dataset) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya status disetujui) | ✅ tersambung |
 | **demoContact** | Submit Karya | **tidak pernah publik** — hanya panel Studio | ✅ tersambung |
 | **audio demo** (`demoSubmission.audioUrl`) | Submit Karya | tautan berkas di Vercel Blob; bisa diputar dari panel Studio | ✅ tersambung — butuh `BLOB_READ_WRITE_TOKEN` |
@@ -418,11 +418,10 @@ pemanggil manual — header itu dihapus dari webhook Sanity 25 Okt 2026. Tanpa
 bukti identitas, webhook ditolak 401 — endpoint revalidasi terbuka adalah cara
 mudah menjadikan cache sebagai sasaran serangan.
 
-**Soal jumlah tipe di filter.** Dataset `production` punya **8** tipe dokumen
-(`melodialam-sanity/sanity/schemaTypes/index.ts:26-35`): tujuh di atas, ditambah
-`pahlawanRow` — arsip tanpa halaman dan tanpa tag cache, jadi **tidak** perlu ikut
-filter. Tipe privat `demoSubmission` dan `demoContact` juga **tidak** ikut: keduanya
-berada di dataset `submissions`, dan kueri antrean memakai `cache: "no-store"`
+**Soal jumlah tipe di filter.** Dataset `production` punya **7** tipe dokumen
+(`melodialam-sanity/sanity/schemaTypes/index.ts`): tujuh di atas. Tipe privat
+`demoSubmission` dan `demoContact` juga **tidak** ikut: keduanya berada di
+dataset `submissions`, dan kueri antrean memakai `cache: "no-store"`
 (`app/api/demos/route.ts:146`), jadi ia tidak bergantung pada tag cache sama sekali.
 
 > **Tindakan pemilik (`RENCANA`).** Per pemeriksaan terakhir, **"Trigger on" hanya
@@ -558,8 +557,8 @@ Diperiksa dengan membaca sumber dan menjalankan perintah lokal:
 - **Skema antrean** — `demoSubmission.ts` (12 field, `audioName`/`audioUrl`
   `readOnly`) dan `demoContact.ts` (`submission` reference + `contact`), keduanya di
   `submissionSchemaTypes` (`schemaTypes/index.ts:37`). `contentSchemaTypes`
-  (`index.ts:26-35`) berisi **8** tipe: `article`, `interview`, `video`,
-  `playlist`, `pillarPost`, `pahlawanRow`, `siteSettings`, `videosPage`.
+  berisi **7** tipe: `article`, `interview`, `video`, `playlist`, `pillarPost`,
+  `siteSettings`, `videosPage`.
 - **`siteSettings.cardCurtain`** — hanya `articleLabel` + `articleCta`
   (`siteSettings.ts:84-108`).
 - **Token** — `SANITY_API_READ_TOKEN` dipakai `lib/sanity-server.ts:22` (dataset

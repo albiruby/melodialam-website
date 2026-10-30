@@ -14,13 +14,11 @@ export const PILLAR_LABELS: Record<string, string> = {
   rekomendasi: "Rekomendasi Melodi",
   "ulas-melodi": "Ulas Melodi",
   clipper: "Clipper",
-  "similar-song": "Similar Song",
-  "meme-humor": "Meme Humor",
 };
 
 /** Photo pillars render on Stories; reel pillars render on Videos. */
-export const PHOTO_PILLARS = ["fakta-musik", "lirik", "trivia", "kutipan", "meme-humor"];
-export const REEL_PILLARS = ["rekomendasi", "ulas-melodi", "clipper", "similar-song"];
+export const PHOTO_PILLARS = ["fakta-musik", "lirik", "trivia", "kutipan"];
+export const REEL_PILLARS = ["rekomendasi", "ulas-melodi", "clipper"];
 
 export interface PillarPost {
   id: string;
@@ -35,6 +33,21 @@ export interface PillarPost {
   /** Intrinsic image dimensions, so cards can show the full frame (no crop). */
   imageWidth: number | null;
   imageHeight: number | null;
+}
+
+/**
+ * How a feed cover should fill its fixed 4:5 frame.
+ *
+ * The grid keeps one frame shape, but an image that is not close to 4:5 should
+ * not be cropped: `contain` shows the whole frame on the neutral background.
+ * A 4:5 cover (or close enough) still fills the tile.
+ */
+export function coverFit(
+  post: Pick<PillarPost, "imageWidth" | "imageHeight">,
+): "cover" | "contain" {
+  const { imageWidth: width, imageHeight: height } = post;
+  if (!width || !height) return "cover";
+  return Math.abs(width / height - 4 / 5) <= 0.08 ? "cover" : "contain";
 }
 
 const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];

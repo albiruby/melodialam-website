@@ -6,6 +6,7 @@ import {
   PILLAR_LABELS,
   PHOTO_PILLARS,
   REEL_PILLARS,
+  coverFit,
   type PillarPost,
 } from "@/lib/pillars-shared";
 
@@ -153,7 +154,9 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
                       alt=""
                       fill
                       sizes="(min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
-                      className="editorial-img object-cover"
+                      className={`editorial-img ${
+                      coverFit(post) === "contain" ? "object-contain" : "object-cover"
+                    }`}
                     />
                   ) : null}
                   {post.mediaType === "reel" ? (

@@ -11,6 +11,7 @@ export const metadata = pageMetadata({
   description:
     "Wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
   path: "/bicara-melodi",
+  image: "/og-bicara.png",
 });
 
 export default async function BicaraMelodiPage() {

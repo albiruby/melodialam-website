@@ -10,6 +10,7 @@ export const metadata = pageMetadata({
   description:
     "Melodi Alam adalah rumah bagi jurnalisme musik, sesi intim panggung, ruang dengar, dan perangkat audio analog di Indonesia. Bagian dari ekosistem PT Infia Pariwara Nusantara.",
   path: "/tentang",
+  image: "/og-tentang.png",
 });
 
 const PILLARS = [

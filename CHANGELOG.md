@@ -15,6 +15,27 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Audit lanjutan (30 Okt 2026)**
+
+- **Rate limit bersama**: `rateLimit()` menjadi async dan memakai Redis REST
+  (`KV_REST_API_*` atau `UPSTASH_REDIS_REST_*`) bila tersedia; tanpa itu
+  fallback ke memori per instance. `/api/demos` dan `/api/demo-audio` menunggu
+  hasilnya.
+- **Cover non-4:5 tidak lagi ter-crop**: `coverFit()` memilih `object-cover`
+  untuk cover dekat 4:5 dan `object-contain` untuk yang jauh.
+- **E2E Discover**: Playwright (`e2e/discover.spec.ts`) menguji filter pillar,
+  pencarian, empty state, redirect `/kurasi`, dan dua kolom di ponsel; CI
+  menginstal Chromium sebelum menjalankannya.
+- **OG per section**: `og-stories`, `og-bicara`, `og-videos`, `og-tentang`,
+  `og-submit`; metadata tiap halaman memakai kartunya.
+- **JSON-LD Discover**: `CollectionPage` + `ItemList` 55 post.
+- **Skema bersih**: `pahlawanRow` dihapus dari Studio; pillar `similar-song` dan
+  `meme-humor` dihapus dari skema, label, dan set; field urutan dinamai
+  "Urutan Discover".
+- **Halaman legal**: rule 1 px + tanggal mono; axe 0 di `/submit`, `/privasi`,
+  `/ketentuan` (390/1440).
+- **Audio**: endpoint token produksi diverifikasi (200 + `clientToken`).
+
 **Kanal feed menjadi Discover (29 Okt 2026)**
 
 - **`Curated` → `Discover`** di navbar, section beranda, h1 `/discover`, metadata,

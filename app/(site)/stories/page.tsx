@@ -10,6 +10,7 @@ export const metadata = pageMetadata({
   description:
     "Catatan redaksi Melodi Alam: esai skena musik, rekomendasi melodi, catatan wawancara Bicara Melodi, dan liputan panggung.",
   path: "/stories",
+  image: "/og-stories.png",
 });
 
 export default async function StoriesPage() {

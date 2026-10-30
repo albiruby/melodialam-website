@@ -238,7 +238,11 @@ export async function POST(request: Request) {
   // F02: this is the one endpoint anyone may call without a secret. Each
   // accepted call costs a Sanity write and, once Resend is connected, a paid
   // email, so the number of calls per client is capped.
-  const limit = rateLimit(`demos:${clientIp(request)}`, DEMO_SUBMISSIONS_PER_WINDOW, DEMO_WINDOW_MS);
+  const limit = await rateLimit(
+    `demos:${clientIp(request)}`,
+    DEMO_SUBMISSIONS_PER_WINDOW,
+    DEMO_WINDOW_MS,
+  );
   if (!limit.ok) {
     return NextResponse.json(
       { error: "Terlalu banyak kiriman dari alamat ini. Coba lagi nanti." },

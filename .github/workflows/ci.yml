@@ -70,3 +70,14 @@ jobs:
             sleep 1
           done
           node scripts/smoke.mjs http://localhost:3100
+
+      # The unit tests and the smoke script read the server; this one clicks
+      # the parts that only exist after hydration: the Discover filter, the
+      # search, and the /kurasi redirect.
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Browser checks
+        env:
+          NEXT_PUBLIC_SITE_URL: https://melodialam-website.vercel.app
+        run: npm run test:e2e

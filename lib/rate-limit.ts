@@ -6,23 +6,22 @@
  * a write to Sanity and, once Resend is connected, a paid email. Without a
  * limit, one script can fill the queue and the mailbox.
  *
- * What it is: a counter per client, kept in the memory of the running
- * function. It is deliberately small and has no dependencies.
+ * Two backends, one interface:
  *
- * What it is not: a distributed limit. Serverless functions are stateless, so
- * each instance keeps its own counter and a burst spread over many instances
- * is only partly caught. That is good enough to blunt a script and bad enough
- * that it must not be the only defence — the honeypot field and the
- * `Idempotency-Key` in `/api/demos` cover the rest.
+ * - **Redis** when `KV_REST_API_URL`/`KV_REST_API_TOKEN` (Vercel KV) or
+ *   `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` are set. The counter is
+ *   shared by every instance, so a burst spread over many functions is caught.
+ * - **Memory** otherwise. Each instance keeps its own counter; good enough to
+ *   blunt a script locally, but not a global limit. The fallback also runs when
+ *   Redis is unreachable, so a cache outage cannot take the forms down.
+ *
+ * The Redis call is one atomic Lua script (INCR + PEXPIRE + PTTL), so two
+ * concurrent requests cannot both create the window. No SDK: the REST API is
+ * one `fetch`.
  *
  * The client identity is read from forwarding headers only when they are
  * trustworthy: on Vercel the platform sets them; elsewhere `TRUST_PROXY=1` is
  * an explicit opt-in. Without that, every caller shares one bucket.
- *
- * When the plan allows, move this to the edge: a Vercel Firewall rate-limit
- * rule (Pro and up) or a shared store such as Upstash Redis would make the
- * limit global instead of per instance. The interface below does not need to
- * change when that happens.
  */
 
 /** One client: how many times it called, and when the window resets. */
@@ -33,7 +32,7 @@ interface Bucket {
 
 /**
  * Buckets by key. A module-level map lives as long as the function instance,
- * which is exactly the lifetime we want.
+ * which is exactly the lifetime we want for the fallback.
  */
 const buckets = new Map<string, Bucket>();
 
@@ -49,6 +48,64 @@ export interface RateLimitResult {
   retryAfter: number;
 }
 
+/** INCR the key, set the window on the first hit, return the count and TTL. */
+const REDIS_SCRIPT = `
+local current = redis.call("INCR", KEYS[1])
+if current == 1 then redis.call("PEXPIRE", KEYS[1], ARGV[1]) end
+local ttl = redis.call("PTTL", KEYS[1])
+return {current, ttl}
+`;
+
+interface RedisConfig {
+  url: string;
+  token: string;
+}
+
+function redisConfig(): RedisConfig | null {
+  const url = process.env.KV_REST_API_URL ?? process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.KV_REST_API_TOKEN ?? process.env.UPSTASH_REDIS_REST_TOKEN;
+  if (!url || !token) return null;
+  return { url: url.replace(/\/$/, ""), token };
+}
+
+async function redisRateLimit(
+  config: RedisConfig,
+  key: string,
+  limit: number,
+  windowMs: number,
+): Promise<RateLimitResult> {
+  const response = await fetch(config.url, {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${config.token}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(["eval", REDIS_SCRIPT, 1, `rl:${key}`, String(windowMs)]),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Redis ${response.status}`);
+  }
+
+  const payload = (await response.json()) as { result?: [number | string, number | string] };
+  const count = Number(payload.result?.[0]);
+  const ttl = Number(payload.result?.[1]);
+  if (!Number.isFinite(count) || !Number.isFinite(ttl)) {
+    throw new Error("Redis returned an unexpected result");
+  }
+
+  if (count > limit) {
+    return {
+      ok: false,
+      remaining: 0,
+      retryAfter: Math.max(1, Math.ceil(ttl / 1000)),
+    };
+  }
+
+  return { ok: true, remaining: Math.max(0, limit - count), retryAfter: 0 };
+}
+
 /**
  * Count one call against `key`.
  *
@@ -56,7 +113,24 @@ export interface RateLimitResult {
  * @param limit   how many calls are allowed in the window
  * @param windowMs how long the window lasts
  */
-export function rateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
+export async function rateLimit(
+  key: string,
+  limit: number,
+  windowMs: number,
+): Promise<RateLimitResult> {
+  const config = redisConfig();
+  if (config) {
+    try {
+      return await redisRateLimit(config, key, limit, windowMs);
+    } catch (error) {
+      console.warn("[rate-limit] Redis gagal, memakai memori:", error);
+    }
+  }
+  return memoryRateLimit(key, limit, windowMs);
+}
+
+/** The per-instance fallback, kept synchronous and dependency-free. */
+function memoryRateLimit(key: string, limit: number, windowMs: number): RateLimitResult {
   const now = Date.now();
 
   // Drop buckets that have expired, and refuse to remember more than the cap.
@@ -155,8 +229,7 @@ export function clientIpFrom(headers: Headers, trustForwarded: boolean): string 
  * The caller's address.
  *
  * The forwarding headers are only read when the platform or the operator says
- * they are trustworthy (see `trustsForwardedHeaders`). The limit itself stays
- * per instance — see the module note at the top.
+ * they are trustworthy (see `trustsForwardedHeaders`).
  */
 export function clientIp(request: Request): string {
   return clientIpFrom(request.headers, trustsForwardedHeaders());

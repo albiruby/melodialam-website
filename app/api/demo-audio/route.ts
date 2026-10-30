@@ -26,7 +26,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   // F04/F05: this endpoint mints upload tokens, and every token can be used to
   // write into our storage. Minting them is cheap, so it is capped per
   // client: a person picking one file needs a token or two, not fifty.
-  const limit = rateLimit(`demo-audio:${clientIp(request)}`, 20, 60 * 60 * 1000);
+  const limit = await rateLimit(`demo-audio:${clientIp(request)}`, 20, 60 * 60 * 1000);
   if (!limit.ok) {
     return NextResponse.json(
       { error: "Terlalu banyak percobaan unggah dari alamat ini. Coba lagi nanti." },

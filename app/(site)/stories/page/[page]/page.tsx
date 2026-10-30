@@ -29,6 +29,7 @@ export async function generateMetadata(props: {
     description:
       "Halaman lanjutan Stories Melodi Alam: esai skena musik, catatan wawancara, dan liputan panggung.",
     path: `/stories/page/${page}`,
+    image: "/og-stories.png",
   });
 }
 
