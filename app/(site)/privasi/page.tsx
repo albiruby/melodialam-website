@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteSettings } from "@/lib/site-settings";
 
 /**
@@ -14,12 +14,12 @@ import { getSiteSettings } from "@/lib/site-settings";
  * Not legal advice. It is the honest description an editor can publish today,
  * and the place a lawyer would start.
  */
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Kebijakan Privasi",
   description:
     "Data apa yang dikumpulkan Melodi Alam saat kamu mengirim demo, di mana disimpan, siapa yang bisa melihatnya, dan bagaimana meminta penghapusan.",
-  alternates: { canonical: "/privasi" },
-};
+  path: "/privasi",
+});
 
 export default async function PrivacyPage() {
   const settings = await getSiteSettings();

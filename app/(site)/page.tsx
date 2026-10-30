@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { CuratedNews } from "@/components/home/CuratedNews";
 import { Originals } from "@/components/home/Originals";
 import { SubmitCTA } from "@/components/home/SubmitCTA";
@@ -7,20 +6,23 @@ import { VideoModal } from "@/components/VideoModal";
 import { latestStories } from "@/lib/articles";
 import { selectHomeContent } from "@/lib/home";
 import { allInterviews } from "@/lib/interviews";
+import { pageMetadata } from "@/lib/page-metadata";
 import { allPillarPosts } from "@/lib/pillars";
+import { SITE } from "@/lib/site";
 import { allVideos } from "@/lib/videos";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   /**
-   * No `title` override on purpose. A page in the same segment as its layout does
-   * not get that layout's `title.template` applied, so setting one here rendered
-   * the home page as the bare tagline with no brand name in it. Inheriting the
-   * layout default gives "MELODI ALAM — Stories & Watch".
+   * A page in the same segment as its layout does not get that layout's
+   * `title.template` applied, so the home page passes its full title and skips
+   * the suffix.
    */
+  title: `${SITE.name} — ${SITE.tagline}`,
+  absolute: true,
   description:
     "Melodi Alam mencatat musik Indonesia lewat jurnalisme, sesi panggung intim di Samsara Bogor, dan post pendek dari feed @melodi.alam.",
-  alternates: { canonical: "/" },
-};
+  path: "/",
+});
 
 /**
  * The news-first homepage.

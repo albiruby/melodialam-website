@@ -1,13 +1,13 @@
-import type { Metadata } from "next";
 import { Reveal } from "@/components/motion/Reveal";
 import { DemoPortal } from "@/components/DemoPortal";
+import { pageMetadata } from "@/lib/page-metadata";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Submit Karya",
   description:
     "Kirim demo lagu band atau solois kamu ke redaksi Melodi Alam untuk review artikel, rekomendasi Instagram, atau tampil di panggung Melodi Samsara.",
-  alternates: { canonical: "/submit" },
-};
+  path: "/submit",
+});
 
 export default function SubmitPage() {
   return (

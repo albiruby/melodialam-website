@@ -824,7 +824,7 @@ melodi-alam/
 melodi-alam/
 ├── app/
 │   ├── (site)/                      tetap
-│   ├── api/kurasi/                  [RENCANA] endpoint moderasi kurator
+│   ├── api/discover/                [RENCANA] endpoint moderasi kurator
 │   └── api/demo-audio/              [RENCANA] bucket privat + key ditentukan server
 ├── lib/
 │   ├── sanity-server.ts              [RENCANA] + import "server-only"

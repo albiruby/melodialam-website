@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { VideoRow } from "@/components/VideoRow";
@@ -6,15 +5,16 @@ import { VideoModal } from "@/components/VideoModal";
 import { CHANNEL } from "@/lib/catalogue";
 import { SITE } from "@/lib/site";
 import { jsonLdScript } from "@/lib/json-ld";
+import { pageMetadata } from "@/lib/page-metadata";
 import { allPlaylists, allVideos } from "@/lib/videos";
 import { getVideosPageCopy } from "@/lib/videos-page";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Melodi Samsara",
   description:
     "Sesi panggung Melodi Samsara di Bogor: live session intim bersama musisi Indonesia, plus playlist resmi Melodi Alam di YouTube.",
-  alternates: { canonical: "/videos" },
-};
+  path: "/videos",
+});
 
 /** The live sessions shown before the rest stay on the channel — nine of them. */
 const SAMSARA_PREVIEW = 9;

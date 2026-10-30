@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { InstagramIcon, TiktokIcon, YoutubeIcon } from "@/components/BrandIcons";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteSettings } from "@/lib/site-settings";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Tentang",
   description:
     "Melodi Alam adalah rumah bagi jurnalisme musik, sesi intim panggung, ruang dengar, dan perangkat audio analog di Indonesia. Bagian dari ekosistem PT Infia Pariwara Nusantara.",
-  alternates: { canonical: "/tentang" },
-};
+  path: "/tentang",
+});
 
 const PILLARS = [
   {

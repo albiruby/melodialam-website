@@ -1,17 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { VideoModal, WatchButton } from "@/components/VideoModal";
 import { YoutubeThumb } from "@/components/YoutubeThumb";
 import { allInterviews } from "@/lib/interviews";
+import { pageMetadata } from "@/lib/page-metadata";
 import { allVideos, videoById } from "@/lib/videos";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Bicara Melodi",
   description:
     "Wawancara dan sesi Bicara Melodi Season 3 bersama musisi Indonesia tentang musikalitas, industri, dan proses kreatif.",
-  alternates: { canonical: "/bicara-melodi" },
-};
+  path: "/bicara-melodi",
+});
 
 export default async function BicaraMelodiPage() {
   // The curated index comes from Sanity, and each row's stats from the video it

@@ -1,6 +1,6 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteSettings } from "@/lib/site-settings";
 
 /**
@@ -10,12 +10,12 @@ import { getSiteSettings } from "@/lib/site-settings";
  * work it is sent — moderated, not guaranteed, credited where it is used. Long
  * terms nobody reads protect nobody.
  */
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Ketentuan",
   description:
     "Ketentuan pengiriman karya ke Melodi Alam: karya tetap milik pengirim, redaksi memilih dan menyunting, dan tidak ada jaminan tayang.",
-  alternates: { canonical: "/ketentuan" },
-};
+  path: "/ketentuan",
+});
 
 export default async function TermsPage() {
   const settings = await getSiteSettings();

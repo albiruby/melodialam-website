@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
 import { DiscoverBrowser } from "@/components/DiscoverBrowser";
 import { Reveal } from "@/components/motion/Reveal";
+import { pageMetadata } from "@/lib/page-metadata";
 import { allPillarPosts } from "@/lib/pillars";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Discover",
   description:
     "Discover: jelajahi fakta musik, lirik, trivia, kutipan, rekomendasi, ulasan, dan clipper dari feed @melodi.alam.",
-  alternates: { canonical: "/discover" },
-};
+  path: "/discover",
+});
 
 /**
  * The Discover pool. The cards render in `DiscoverBrowser` because search and

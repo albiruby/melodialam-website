@@ -205,7 +205,7 @@ console.log(`\nwritten to public/brand/`);
 // ---------------------------------------------------------------------------
 // 3. The social card — public/og.png (1200x630).
 //    A link shared from the site needs a picture, and the pages that have no
-//    photo of their own (home, /kurasi, /pahlawan-kota, /videos) had none.
+//    photo of their own (home, /discover, /pahlawan-kota, /videos) had none.
 //    Ink ground, paper lockup, the dash strip from DEC-002 — the site's own
 //    shapes, not a picture of a concert.
 // ---------------------------------------------------------------------------

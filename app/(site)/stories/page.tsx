@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { StoriesGrid } from "@/components/StoriesGrid";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteSettings } from "@/lib/site-settings";
 import { storyPage } from "@/lib/story-pages";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Stories",
   description:
     "Catatan redaksi Melodi Alam: esai skena musik, rekomendasi melodi, catatan wawancara Bicara Melodi, dan liputan panggung.",
-  alternates: { canonical: "/stories" },
-};
+  path: "/stories",
+});
 
 export default async function StoriesPage() {
   const [{ articles, pages }, settings] = await Promise.all([storyPage(1), getSiteSettings()]);

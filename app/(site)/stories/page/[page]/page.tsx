@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Reveal } from "@/components/motion/Reveal";
 import { StoriesGrid } from "@/components/StoriesGrid";
+import { pageMetadata } from "@/lib/page-metadata";
 import { getSiteSettings } from "@/lib/site-settings";
 import { storyPage } from "@/lib/story-pages";
 
@@ -23,12 +24,12 @@ export async function generateMetadata(props: {
   params: Promise<{ page: string }>;
 }): Promise<Metadata> {
   const { page } = await props.params;
-  return {
+  return pageMetadata({
     title: `Stories — halaman ${page}`,
     description:
       "Halaman lanjutan Stories Melodi Alam: esai skena musik, catatan wawancara, dan liputan panggung.",
-    alternates: { canonical: `/stories/page/${page}` },
-  };
+    path: `/stories/page/${page}`,
+  });
 }
 
 export default async function StoriesPaginatedPage(props: {
