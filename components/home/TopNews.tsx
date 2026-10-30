@@ -36,8 +36,6 @@ export function TopNews({
       <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-10">
         <Link
           href={`/stories/${lead.slug}`}
-          target="_blank"
-          rel="noreferrer"
           className={`group block ${sidebar.length > 0 ? "lg:col-span-8" : "lg:col-span-12"}`}
         >
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
@@ -103,7 +101,7 @@ export function TopNews({
 
 function SidebarLead({ article }: { article: SiteArticle }) {
   return (
-    <Link href={`/stories/${article.slug}`} target="_blank" rel="noreferrer" className="group flex gap-4 pt-4 lg:block">
+    <Link href={`/stories/${article.slug}`} className="group flex gap-4 pt-4 lg:block">
       <div className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden bg-neutral-900 sm:w-28 lg:w-full">
         <Image
           src={article.image}
@@ -131,8 +129,6 @@ function SidebarItem({ article }: { article: SiteArticle }) {
   return (
     <Link
       href={`/stories/${article.slug}`}
-      target="_blank"
-      rel="noreferrer"
       className="group block py-4"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
@@ -151,8 +147,6 @@ function NewsCard({ article }: { article: SiteArticle }) {
   return (
     <Link
       href={`/stories/${article.slug}`}
-      target="_blank"
-      rel="noreferrer"
       className="group flex gap-4 md:flex-col md:gap-0"
     >
       <div className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden bg-neutral-900 md:w-full">

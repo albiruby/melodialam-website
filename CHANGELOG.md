@@ -42,7 +42,7 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **Halaman artikel bergaya majalah**: header di tengah (kategori · tanggal ·
   penulis), judul uppercase besar, deck di antara dua garis tebal, cover 4:5
   lebih besar, dan body serif rata kanan-kiri di desktop. Link artikel dari
-  Top News/Stories/More membuka tab baru.
+  Top News/Stories/More tetap bernavigasi di tab yang sama.
 
 **Kanal feed menjadi Discover (29 Okt 2026)**
 

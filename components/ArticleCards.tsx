@@ -43,8 +43,6 @@ export function ArticleCard({
   return (
     <Link
       href={`/stories/${article.slug}`}
-      target="_blank"
-      rel="noreferrer"
       style={{ animationDelay: `${index * 75}ms` }}
       className="stagger-item group -m-2 flex flex-col justify-between p-2 transition-colors duration-300 hover:bg-paper"
     >
