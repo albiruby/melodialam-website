@@ -33,7 +33,7 @@ const routes = [
   "/",
   "/stories",
   "/stories/page/2",
-  "/kurasi",
+  "/discover",
   "/videos",
   "/bicara-melodi",
   "/tentang",
@@ -59,6 +59,14 @@ check(
   "/journal mengarah ke /stories (relatif)",
   (journal.headers.get("location") ?? "") === "/stories",
   journal.headers.get("location") ?? "tanpa location",
+);
+
+const discover = await get("/kurasi");
+check("/kurasi → 308", discover.status === 308, `status ${discover.status}`);
+check(
+  "/kurasi mengarah ke /discover (relatif)",
+  (discover.headers.get("location") ?? "") === "/discover",
+  discover.headers.get("location") ?? "tanpa location",
 );
 
 // 3. Halaman 2 benar-benar memuat empat artikel yang tidak ada di halaman 1.
