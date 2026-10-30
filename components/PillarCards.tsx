@@ -2,7 +2,7 @@ import Image from "next/image";
 import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars-shared";
 
 /**
- * Cards for the curated feed.
+ * Cards for the Discover feed.
  *
  * One uniform 4:5 frame, a title, and one metadata line. The card is `h-full`
  * with `mt-auto` on the metadata row so cards in the same grid line up even
@@ -97,7 +97,7 @@ export function PillarCard({
 }
 
 /**
- * The lead post in the curated section.
+ * The lead post in the Discover section.
  *
  * Same 4:5 cover as every other card, but it takes six columns on desktop and
  * puts the title underneath. Below `lg` it becomes an image-left row, so the

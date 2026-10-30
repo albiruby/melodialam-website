@@ -118,7 +118,7 @@ sebagai arsip.
 - `sidebar`: 3 artikel;
 - `more`: 3 artikel;
 - `setlist`: 2 sesi;
-- `curatedRest`: 4 post;
+- `discoverRest`: 4 post;
 - `interviews`: 4.
 
 Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk

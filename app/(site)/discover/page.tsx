@@ -8,6 +8,7 @@ export const metadata = pageMetadata({
   description:
     "Discover: jelajahi fakta musik, lirik, trivia, kutipan, rekomendasi, ulasan, dan clipper dari feed @melodi.alam.",
   path: "/discover",
+  image: "/og-discover.png",
 });
 
 /**

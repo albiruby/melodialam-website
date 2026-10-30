@@ -26,10 +26,10 @@ export interface HomeContent {
   featured: SiteVideo | null;
   /** Two more sessions, shown as the setlist under the stage. */
   setlist: SiteVideo[];
-  /** The largest card in the curated section. */
-  curatedFeature: PillarPost | null;
+  /** The largest card in the Discover section. */
+  discoverFeature: PillarPost | null;
   /** Four posts beside the feature, in a 2×2 grid. */
-  curatedRest: PillarPost[];
+  discoverRest: PillarPost[];
   /** Four interview rows for the Bicara list inside Originals (three on mobile). */
   interviews: SiteInterview[];
 }
@@ -38,7 +38,7 @@ export interface HomeInput {
   stories: SiteArticle[];
   videos: SiteVideo[];
   interviews: SiteInterview[];
-  curated: PillarPost[];
+  discover: PillarPost[];
 }
 
 /**
@@ -52,13 +52,13 @@ export interface HomeInput {
  * Feed posts without a cover are skipped. An empty 4:5 frame is worse than
  * one fewer card, and the section needs a photograph to work at all. The order
  * is the one returned by `allPillarPosts()` — Studio `order` first, then date —
- * so an editor can pin the three homepage picks without a schema change.
+ * so an editor can pin the five homepage picks without a schema change.
  */
 export function selectHomeContent({
   stories,
   videos,
   interviews,
-  curated,
+  discover,
 }: HomeInput): HomeContent {
   const featured =
     videos.find((video) => video.source === "cms" && video.featuring.length > 0) ??
@@ -70,7 +70,7 @@ export function selectHomeContent({
     ? videos.filter((video) => video.id !== featured.id).slice(0, 2)
     : [];
 
-  const photos = curated.filter(
+  const photos = discover.filter(
     (post) => post.mediaType !== "reel" && Boolean(post.image),
   );
 
@@ -80,8 +80,8 @@ export function selectHomeContent({
     more: stories.slice(4, 7),
     featured,
     setlist,
-    curatedFeature: photos[0] ?? null,
-    curatedRest: photos.slice(1, 5),
+    discoverFeature: photos[0] ?? null,
+    discoverRest: photos.slice(1, 5),
     interviews: interviews.slice(0, 4),
   };
 }

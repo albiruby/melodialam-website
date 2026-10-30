@@ -81,7 +81,7 @@ describe("selectHomeContent", () => {
       stories: [article("a"), article("b"), article("c"), article("d")],
       videos: [],
       interviews: [],
-      curated: [],
+      discover: [],
     });
 
     expect(content.lead?.slug).toBe("a");
@@ -94,7 +94,7 @@ describe("selectHomeContent", () => {
       stories: Array.from({ length: 8 }, (_, i) => article(`s${i}`)),
       videos: [],
       interviews: [],
-      curated: [],
+      discover: [],
     });
 
     expect(content.sidebar).toHaveLength(3);
@@ -112,7 +112,7 @@ describe("selectHomeContent", () => {
         video("c"),
       ],
       interviews: [],
-      curated: [],
+      discover: [],
     });
 
     expect(content.featured?.id).toBe("featured");
@@ -128,7 +128,7 @@ describe("selectHomeContent", () => {
         video("cms-with-featuring", "cms", ["Artis"]),
       ],
       interviews: [],
-      curated: [],
+      discover: [],
     });
 
     expect(content.featured?.id).toBe("cms-with-featuring");
@@ -143,7 +143,7 @@ describe("selectHomeContent", () => {
       stories: [],
       videos: [video("archive", "catalogue"), video("cms", "cms")],
       interviews: [],
-      curated: [],
+      discover: [],
     });
     expect(cms.featured?.id).toBe("cms");
 
@@ -151,18 +151,18 @@ describe("selectHomeContent", () => {
       stories: [],
       videos: [video("archive", "catalogue")],
       interviews: [],
-      curated: [],
+      discover: [],
     });
     expect(archive.featured?.id).toBe("archive");
     expect(archive.setlist).toEqual([]);
   });
 
-  it("keeps curated photos with a cover, follows the editor order, and skips reels", () => {
+  it("keeps feed photos with a cover, follows the editor order, and skips reels", () => {
     const content = selectHomeContent({
       stories: [],
       videos: [],
       interviews: [],
-      curated: [
+      discover: [
         post("old", { date: "2026-09-01" }),
         post("new", { date: "2026-10-05" }),
         post("reel", { mediaType: "reel", date: "2026-10-09" }),
@@ -171,16 +171,16 @@ describe("selectHomeContent", () => {
       ],
     });
 
-    expect(content.curatedFeature?.id).toBe("old");
-    expect(content.curatedRest.map((item) => item.id)).toEqual(["new", "older"]);
+    expect(content.discoverFeature?.id).toBe("old");
+    expect(content.discoverRest.map((item) => item.id)).toEqual(["new", "older"]);
   });
 
-  it("caps the curated grid at four posts", () => {
+  it("caps the Discover grid at four posts", () => {
     const content = selectHomeContent({
       stories: [],
       videos: [],
       interviews: [],
-      curated: [
+      discover: [
         post("a", { date: "2026-10-05" }),
         post("b", { date: "2026-10-04" }),
         post("c", { date: "2026-10-03" }),
@@ -190,8 +190,8 @@ describe("selectHomeContent", () => {
       ],
     });
 
-    expect(content.curatedFeature?.id).toBe("a");
-    expect(content.curatedRest.map((item) => item.id)).toEqual(["b", "c", "d", "e"]);
+    expect(content.discoverFeature?.id).toBe("a");
+    expect(content.discoverRest.map((item) => item.id)).toEqual(["b", "c", "d", "e"]);
   });
 
   it("returns empty slots when the pool is empty", () => {
@@ -199,7 +199,7 @@ describe("selectHomeContent", () => {
       stories: [],
       videos: [],
       interviews: [],
-      curated: [],
+      discover: [],
     });
 
     expect(content).toEqual({
@@ -208,8 +208,8 @@ describe("selectHomeContent", () => {
       more: [],
       featured: null,
       setlist: [],
-      curatedFeature: null,
-      curatedRest: [],
+      discoverFeature: null,
+      discoverRest: [],
       interviews: [],
     });
   });
@@ -219,7 +219,7 @@ describe("selectHomeContent", () => {
       stories: [],
       videos: [],
       interviews: [interview("a"), interview("b"), interview("c"), interview("d"), interview("e")],
-      curated: [],
+      discover: [],
     });
 
     expect(content.interviews.map((item) => item.slug)).toEqual(["a", "b", "c", "d"]);

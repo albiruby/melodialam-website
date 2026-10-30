@@ -785,7 +785,7 @@ melodi-alam/
 │   └── icon.png / apple-icon.png / favicon.ico   (generated, MOD-012)
 ├── components/
 │   ├── ArticleCards.tsx              ArticleCard (server)
-│   ├── home/                         TopNews, Originals, CuratedNews, SectionBar, SubmitCTA
+│   ├── home/                         TopNews, Originals, DiscoverNews, SectionBar, SubmitCTA
 │   ├── ArticleBody.tsx               PortableText + paragraf statis (server)
 │   ├── PillarCards.tsx               PillarCard (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)

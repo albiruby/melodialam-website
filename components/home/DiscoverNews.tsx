@@ -9,7 +9,7 @@ import { SectionBar } from "./SectionBar";
  * the row; four companions sit in a 2×2 grid beside it on desktop and become
  * compact image-left rows on a phone. Titles and one metadata line only.
  */
-export function CuratedNews({
+export function DiscoverNews({
   feature,
   rest,
 }: {
@@ -17,9 +17,9 @@ export function CuratedNews({
   rest: PillarPost[];
 }) {
   return (
-    <section aria-labelledby="curated-title">
+    <section aria-labelledby="discover-title">
       <SectionBar
-        id="curated-title"
+        id="discover-title"
         label="Discover"
         href="/discover"
         linkLabel="Jelajahi semua"

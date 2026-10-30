@@ -37,6 +37,7 @@ export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };
 
 export const FOOTER_RUBRIKS: NavItem[] = [
   { href: "/stories", label: "#FaktaMusik & Esai Skena" },
+  { href: "/discover", label: "Discover" },
   { href: "/bicara-melodi", label: "Bicara Melodi Podcast (Season 3)" },
   { href: "/videos", label: "Melodi Samsara Live Session" },
   {

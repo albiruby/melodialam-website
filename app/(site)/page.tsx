@@ -1,4 +1,4 @@
-import { CuratedNews } from "@/components/home/CuratedNews";
+import { DiscoverNews } from "@/components/home/DiscoverNews";
 import { Originals } from "@/components/home/Originals";
 import { SubmitCTA } from "@/components/home/SubmitCTA";
 import { TopNews } from "@/components/home/TopNews";
@@ -36,14 +36,14 @@ export const metadata = pageMetadata({
  * list so both open the same player.
  */
 export default async function HomePage() {
-  const [stories, videos, interviews, curated] = await Promise.all([
+  const [stories, videos, interviews, discover] = await Promise.all([
     latestStories(8),
     allVideos(),
     allInterviews(),
     allPillarPosts(),
   ]);
 
-  const content = selectHomeContent({ stories, videos, interviews, curated });
+  const content = selectHomeContent({ stories, videos, interviews, discover });
 
   return (
     <div className="space-y-12 sm:space-y-20">
@@ -57,8 +57,8 @@ export default async function HomePage() {
         />
       ) : null}
 
-      {content.curatedFeature ? (
-        <CuratedNews feature={content.curatedFeature} rest={content.curatedRest} />
+      {content.discoverFeature ? (
+        <DiscoverNews feature={content.discoverFeature} rest={content.discoverRest} />
       ) : null}
 
       <SubmitCTA />
