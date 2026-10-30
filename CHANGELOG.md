@@ -23,7 +23,17 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   Hat Display, body artikel memakai Inter.
 - **Welcome modal**: dialog native, tampil sekali per browser (key berversi), dua
   logo ditumpuk di kiri + foto ambience di kanan; CTA ke `/discover`. Tidak tampil
-  di `/preview` dan `/submit`.
+  di `/preview` dan `/submit`. Kartu dipadatkan ke `max-w-4xl`; padding atas 64px
+  menjaga tombol tutup tidak menimpa logo di semua breakpoint.
+
+**QA interaksi (30 Okt 2026)**
+
+- **Tautan eksternal**: playlist Melodi Taman di footer dan tautan kanal YouTube
+  di kepala halaman Videos kini membuka tab baru dengan `rel="noreferrer"`,
+  konsisten dengan tautan eksternal lain.
+- Seluruh tombol, filter Discover, paginasi Stories, dialog video, drawer ponsel,
+  dan formulir Submit diuji lewat Playwright; axe 0 violation di 12 halaman ×
+  desktop/ponsel.
 
 **Audit lanjutan (30 Okt 2026)**
 

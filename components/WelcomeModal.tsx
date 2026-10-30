@@ -89,7 +89,7 @@ export function WelcomeModal() {
       >
         {open ? (
           <div className="grid md:grid-cols-2">
-            <div className="relative flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center sm:px-10 sm:pt-14 md:py-12">
+            <div className="relative flex flex-col items-center justify-center px-6 pb-10 pt-16 text-center sm:px-10 md:pb-12 md:pt-16">
               <button
                 type="button"
                 onClick={close}

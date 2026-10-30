@@ -28,16 +28,21 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         <div className="space-y-2 text-[13px] md:col-span-3">
           <div className="mb-3 text-xs font-sans font-bold uppercase tracking-wider">Rubrik & Program</div>
           <ul className="space-y-1.5 text-neutral-700">
-            {FOOTER_RUBRIKS.map((item) => (
-              <li key={item.label}>
-                <Link
-                  href={item.href}
-                  className="inline-block transition-transform hover:translate-x-1"
-                >
-                  {item.label}
-                </Link>
-              </li>
-            ))}
+            {FOOTER_RUBRIKS.map((item) => {
+              const external = item.href.startsWith("http");
+              return (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    target={external ? "_blank" : undefined}
+                    rel={external ? "noreferrer" : undefined}
+                    className="inline-block transition-transform hover:translate-x-1"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 

@@ -49,6 +49,7 @@ function SectionHead({
   level?: "h1" | "h2";
 }) {
   const Heading = level;
+  const external = href?.startsWith("http") ?? false;
   return (
     <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
       <div className="flex items-baseline gap-4">
@@ -63,6 +64,8 @@ function SectionHead({
       {href && linkLabel ? (
         <a
           href={href}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noreferrer" : undefined}
           className="nav-link-anim font-sans text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
         >
           {linkLabel}
