@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CATEGORY_LABELS, articleReadingTime } from "@/lib/content-fallback";
+import { CATEGORY_LABELS } from "@/lib/content-fallback";
 import { articleBySlug, latestStories, staticArticleSlugs } from "@/lib/articles";
 import { SITE } from "@/lib/site";
 import { jsonLdScript } from "@/lib/json-ld";
@@ -69,8 +69,6 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
   const otherDesks = every.filter((a) => a.slug !== article.slug && a.category !== article.category);
   const fallbacks = [...sameDesk, ...otherDesks].slice(0, 3);
 
-  const readMinutes = articleReadingTime(article);
-
   const url = `${SITE.url}/stories/${article.slug}`;
 
   const jsonLd = jsonLdScript({
@@ -109,7 +107,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
       {/* Header */}
-      <header className="border-b border-ink pb-6">
+      <header className="mx-auto max-w-4xl">
         <Link
           href="/stories"
           className="nav-link-anim font-mono text-[11px] uppercase tracking-widest transition-colors hover:text-forest"
@@ -117,31 +115,28 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
           ← Kembali ke Stories
         </Link>
 
-        <div className="mt-4 flex items-center gap-3 text-[11px] uppercase tracking-widest text-neutral-600">
-          <span className="bg-forest px-2 py-0.5 text-white">{CATEGORY_LABELS[article.category]}</span>
-          <time dateTime={article.dateISO}>{article.date}</time>
-          <span aria-hidden>•</span>
-          <span>{readMinutes} menit baca</span>
-        </div>
+        <div className="mt-8 text-center">
+          <div className="flex flex-col items-center gap-1 font-mono text-[11px] uppercase tracking-widest text-neutral-600 sm:flex-row sm:gap-x-2">
+            <span className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
+              <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
+              <span aria-hidden>·</span>
+              <time dateTime={article.dateISO}>{article.date}</time>
+            </span>
+            <span aria-hidden className="hidden sm:inline">
+              ·
+            </span>
+            <span>Oleh Redaksi Melodi Alam</span>
+          </div>
 
-        <h1 className="mt-4 max-w-5xl text-3xl font-bold leading-[1.1] tracking-tight text-balance sm:text-5xl lg:text-6xl">
-          {article.title}
-        </h1>
+          <h1 className="mt-6 font-display text-[clamp(2.25rem,4vw,3.75rem)] font-black uppercase leading-[0.95] tracking-[-0.03em] text-balance">
+            {article.title}
+          </h1>
 
-        <p className="mt-4 max-w-3xl font-serif text-lg italic leading-snug text-neutral-700 sm:text-xl">
-          {article.excerpt}
-        </p>
-
-        <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-neutral-200 pt-4 text-[11px] font-mono text-neutral-600">
-          <span>SUMBER: REDAKSI MELODI ALAM (@MELODI.ALAM)</span>
-          <span aria-hidden>•</span>
-          <span className="font-medium text-ink">{CATEGORY_LABELS[article.category]}</span>
-          {article.source === "cms" ? (
-            <>
-              <span aria-hidden>•</span>
-              <span className="text-forest">dari CMS</span>
-            </>
-          ) : null}
+          <div className="mx-auto mt-8 max-w-3xl border-y-2 border-ink py-6">
+            <p className="font-serif text-xl leading-snug text-ink sm:text-2xl">
+              {article.excerpt}
+            </p>
+          </div>
         </div>
       </header>
 
@@ -157,13 +152,13 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
         centred and width-capped so the portrait does not run the full width of
         the article column.
       */}
-      <div className="relative mx-auto my-8 aspect-[4/5] w-full max-w-md overflow-hidden border border-ink bg-neutral-200">
+      <div className="relative mx-auto my-10 aspect-[4/5] w-full max-w-2xl overflow-hidden bg-neutral-200">
         <Image
           src={article.image}
           alt={article.title}
           fill
           preload
-          sizes="(min-width: 448px) 448px, 100vw"
+          sizes="(min-width: 672px) 672px, 100vw"
           className="object-cover"
         />
       </div>

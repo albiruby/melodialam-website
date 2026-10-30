@@ -24,8 +24,8 @@ export interface SiteArticle extends Article {
   /**
    * Portable Text blocks, present only for CMS articles. The reader renders
    * them through `<PortableText>` so headings, lists, quotes and inline images
-   * survive; `body` above stays the plain-text projection used for reading time
-   * and search.
+   * survive; `body` above stays the plain-text projection used when no rich
+   * body is available.
    */
   richBody?: unknown[];
   /** Where this article came from. Handy in the UI and when debugging. */
@@ -90,7 +90,7 @@ interface CmsArticleDoc {
   body?: unknown[];
 }
 
-/** Pulls the readable text out of Portable Text, for reading time and search. */
+/** Pulls the readable text out of Portable Text when no rich body is available. */
 function portableTextToParagraphs(blocks: unknown): string[] {
   if (!Array.isArray(blocks)) return [];
 

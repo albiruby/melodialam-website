@@ -77,9 +77,19 @@
 .article-prose p,
 .article-prose li,
 .article-prose blockquote {
-  font-size: 1rem;
-  line-height: 1.75;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  line-height: 1.8;
   color: var(--color-ink);
+}
+
+/* The magazine measure reads better justified on a wide screen; a phone keeps
+   a ragged right edge so long Indonesian words do not open rivers. */
+@media (min-width: 640px) {
+  .article-prose p {
+    text-align: justify;
+    hyphens: auto;
+  }
 }
 
 .article-prose h2,

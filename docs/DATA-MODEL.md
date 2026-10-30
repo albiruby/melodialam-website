@@ -874,8 +874,8 @@ dibaca seolah-olah ada:
 - `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`
   (Samsara 101, Interview 143, Arsip & Lainnya 9, Melodi Taman 39), 17 nilai
   `ageBucket` berbeda, 0 `ageBucket` null, 19 kunci `profile`.
-- `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7) — termasuk
-  aturan `BR-004` (waktu baca) dan `pillarDate()`.
+- `npm test` → **44/44 lulus** (Vitest 3.2.7) — termasuk `pillarDate()` dan
+  `isArticleCategory()`.
 - Pencarian seluruh repo (`app/**`, `components/*.tsx`, `lib/*.ts`) untuk
   `latestStories`, `allPillarPosts`, `allInterviews`,
   `allVideos`, `allPlaylists`, `getSiteSettings`, `getVideosPageCopy` — dipakai

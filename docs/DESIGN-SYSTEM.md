@@ -264,7 +264,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 | Komponen | Elemen link | Isi | Dipakai di |
 |---|---|---|---|
 | `TopNews` (`components/home/TopNews.tsx`) | lead `<Link>` (h1 + deck + image), sidebar `<Link>`, `NewsCard` `<Link>` | Lead 3:2 (foto editorial landscape); sidebar lead 4:5; NewsCard 4:5 | Beranda — Top News |
-| `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
+| `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
 | `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 5 Discover; `/discover` — semua pilar, foto dan reel, sebagai grid |
 | `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo). Di bawah `md` gugus selalu tampil dan membungkus ke baris sendiri | `/videos` — 9 baris sesi |
 

@@ -397,8 +397,8 @@ Modul target (RENCANA — lihat §3.2 dan §13.3):
   yang sama; kedua berkas menyatakan itu di bagian atas. Studio tidak bisa
   mengimpor dari repo ini saat build, dan repo ini tidak boleh bergantung pada
   Studio.
-- **Strategi pengujian.** `lib/content-fallback.test.ts`, `lib/rate-limit.test.ts`, `lib/idempotency.test.ts` (20 kasus Vitest) mengunci
-  `readingTimeMinutes`, `pillarDate`, dan `isArticleCategory`.
+- **Strategi pengujian.** `lib/*.test.ts` (Vitest) mengunci `pillarDate`,
+  `isArticleCategory`, `coverFit`, rate limit, dan idempotensi.
 
 ### MOD-002 — `lib/articles.ts` (TERVERIFIKASI)
 

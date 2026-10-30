@@ -53,29 +53,6 @@ export interface Article {
   body: string[];
 }
 
-/** Words per minute the read-time rule assumes. */
-const WORDS_PER_MINUTE = 200;
-
-/**
- * `BR-004` — read time is deterministic, not estimated by hand:
- * `max(1, ceil(words / 200))`. Counting the title, excerpt and body together is
- * what a reader actually reads before the article ends.
- */
-export function readingTimeMinutes(...parts: (string | string[])[]): number {
-  const words = parts
-    .flatMap((part) => (Array.isArray(part) ? part : [part]))
-    .join(" ")
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean).length;
-
-  return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
-}
-
-export function articleReadingTime(article: Article): number {
-  return readingTimeMinutes(article.title, article.excerpt, article.body);
-}
-
 /**
  * Placeholder photography. Every frame in this set was shot at Samsara Bogor,
  * so the images read as one venue rather than as individual news art — swap a

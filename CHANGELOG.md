@@ -35,6 +35,14 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **Halaman legal**: rule 1 px + tanggal mono; axe 0 di `/submit`, `/privasi`,
   `/ketentuan` (390/1440).
 - **Audio**: endpoint token produksi diverifikasi (200 + `clientToken`).
+- **Waktu baca dihapus**: label "N menit" / "N menit baca" hilang dari kartu
+  Stories dan header artikel; `readingTimeMinutes`/`articleReadingTime` beserta
+  test-nya dihapus. Tidak ada field CMS — nilainya dihitung dari judul,
+  ringkasan, dan isi.
+- **Halaman artikel bergaya majalah**: header di tengah (kategori · tanggal ·
+  penulis), judul uppercase besar, deck di antara dua garis tebal, cover 4:5
+  lebih besar, dan body serif rata kanan-kiri di desktop. Link artikel dari
+  Top News/Stories/More membuka tab baru.
 
 **Kanal feed menjadi Discover (29 Okt 2026)**
 
@@ -56,9 +64,8 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   redaksi)` di `/stories`, `(wawancara & sesi)` di `/bicara-melodi`, hitungan
   `55 POST`, dan baris "Post pendek dari feed @melodi.alam" di `/stories` +
   `/videos`. Field `curationNote` ikut dihapus dari schema dan query.
-- **Footer kartu Stories**: kategori + badge `Reel` di baris pertama, menit baca
-  + tanggal di baris kedua, sehingga semua kartu punya tinggi dan perataan yang
-  sama.
+- **Footer kartu Stories**: kategori + badge `Reel` di baris pertama, tanggal di
+  baris kedua, sehingga semua kartu punya tinggi dan perataan yang sama.
 
 **News-first homepage + penamaan (28 Okt 2026)**
 

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { articleReadingTime, CATEGORY_LABELS, type Article } from "@/lib/content-fallback";
+import { CATEGORY_LABELS, type Article } from "@/lib/content-fallback";
 
 /**
  * Article cards.
@@ -43,6 +43,8 @@ export function ArticleCard({
   return (
     <Link
       href={`/stories/${article.slug}`}
+      target="_blank"
+      rel="noreferrer"
       style={{ animationDelay: `${index * 75}ms` }}
       className="stagger-item group -m-2 flex flex-col justify-between p-2 transition-colors duration-300 hover:bg-paper"
     >
@@ -78,8 +80,6 @@ export function ArticleCard({
           ) : null}
         </span>
         <span className="mt-1 flex items-center gap-1.5 whitespace-nowrap">
-          <span>{articleReadingTime(article)} menit</span>
-          <span aria-hidden>•</span>
           <time dateTime={article.dateISO}>{article.date}</time>
         </span>
       </div>

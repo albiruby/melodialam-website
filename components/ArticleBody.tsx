@@ -52,14 +52,14 @@ export function ArticleBody({
 }) {
   if (rich && rich.length > 0) {
     return (
-      <div className="article-prose mx-auto max-w-2xl">
+      <div className="article-prose mx-auto max-w-3xl">
         <PortableText value={rich as never} components={components} />
       </div>
     );
   }
 
   return (
-    <div className="article-prose mx-auto max-w-2xl space-y-5">
+    <div className="article-prose mx-auto max-w-3xl space-y-5">
       {/*
         No per-paragraph classes: the opening drop cap is applied in
         app/globals.css to `.article-prose > p:first-of-type`, so the static and

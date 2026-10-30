@@ -7,6 +7,8 @@
 > Komponen `FrontCard`, `HomeHero`, dan `StoriesSpread` sudah dihapus; homepage
 > kini memakai `components/home/TopNews.tsx` (lead h1 + sidebar + More Top News).
 > Ticker dan `TICKER_ITEMS` juga sudah dihapus dari schema dan website.
+> Waktu baca ("N menit" / "N menit baca") dihapus 30 Okt 2026; `FR-003`/`BR-004`
+> tidak lagi berlaku.
 
 > **Catatan revisi (21 Okt 2026):** dokumen ini ditulis ulang untuk mencerminkan
 > kondisi repo saat ini. Versi sebelumnya masih membahas `VideosBrowser`,

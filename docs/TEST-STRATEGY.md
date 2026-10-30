@@ -134,7 +134,6 @@ Baris "Kondisi" menyatakan apakah risiko itu masih terbuka di kode hari ini.
 | rAF 1 fps | `ResizeObserver` di `MarqueeTape`; assert gejala, bukan angka mentah | Source + Perf |
 | SSR membawa hidden state | `initial={false}` di `RevealText`; `reveal-section` masih hides lalu | Source + E2E |
 | Interpolasi Tailwind | Lint: dilarang `aspect-[${` | Static |
-| Waktu baca salah | 5 test `readingTimeMinutes` — sudah ada | Unit |
 | Batas audio dilanggar | `DEMO_AUDIO_MAX_BYTES` di route — perlu test | Integration |
 | Kartu tidak bisa diklik di teks | Satu `<Link>`/`<a>` membungkus kartu | E2E |
 
@@ -149,10 +148,10 @@ Piramida saat ini sangat kecil: hanya lapisan unit yang ada.
 | Level | Peran | Tooling | Status | Contoh nyata |
 |---|---|---|---|---|
 | Static | Tipe, lint, konvensi | `npx tsc --noEmit`, `npm run lint` | **`TERVERIFIKASI`** | `npm run build`; larangan `aspect-[${...}]`; `@source not` lengkap |
-| Unit | Logika murni, invarian data | **Vitest 3.2** (`npm test`) | **`TERVERIFIKASI`** | `readingTimeMinutes`, `pillarDate`, `isArticleCategory` (20 kasus) |
+| Unit | Logika murni, invarian data | **Vitest 3.2** (`npm test`) | **`TERVERIFIKASI`** | `pillarDate`, `isArticleCategory`, `coverFit`, rate limit (44 kasus) |
 | Integration | Route handler dengan `Request`/`Response` nyata | Vitest (impor `POST`/`GET` langsung) | **`RENCANA`** | Matriks `POST /api/demos` (§4.4) |
 | Component | Interaksi komponen klien terisolasi | Vitest + jsdom + React Testing Library | **`RENCANA`** | `KurasiBrowser` (cari + chip), `SiteHeader` (drawer), `DemoPortal` (validasi klien) |
-| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`RENCANA`** | Buka artikel; modal video; kirim demo |
+| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`TERVERIFIKASI`** | Discover filter/search/empty state, redirect `/kurasi`, dua kolom di ponsel |
 | Non-fungsional | Aksesibilitas, performa | Playwright (emulasi) + axe | **`RENCANA`** | `ACC-001`…`ACC-003`, `P-01` |
 | Manual/eksploratif | Kualitas visual, rasa editorial | — | Manual | Estetika, copy, hierarki editorial |
 
@@ -166,24 +165,14 @@ kecil; jangan menambah lapisan sebelum ada yang benar-benar menyakitkan.
 
 ### 4.1 Suite yang ada (`TERVERIFIKASI`)
 
-`lib/content-fallback.test.ts` — 20 kasus, 3 `describe`, lingkungan `node` (tanpa DOM).
+`lib/content-fallback.test.ts` — 4 kasus, 2 `describe`, lingkungan `node` (tanpa DOM).
 
 | ID | `describe` | Yang dipatok | Skor |
 |---|---|---|---|
-| `U-01` | `readingTimeMinutes` | Tidak pernah di bawah 1 menit (`""` → 1, `"satu dua tiga"` → 1) | 1 |
-| `U-02` | `readingTimeMinutes` | Satu halaman penuh (200 kata) = 1 menit | 1 |
-| `U-03` | `readingTimeMinutes` | Pembulatan ke atas: 201 kata → 2, 1200 kata → 6 | 1 |
-| `U-04` | `readingTimeMinutes` | Paragraf dan string lepas dihitung sama (`"dua kata"` + 400 kata → 3) | 1 |
-| `U-05` | `readingTimeMinutes` | `articleReadingTime` menghitung judul + ringkasan + isi (200 kata isi → 2) | 1 |
 | `U-06` | `pillarDate` | Format ISO seperti kartu: `"2026-03-04"` → `"4 Mar 2026"`, `"2026-10-12"` → `"12 Okt 2026"` | 1 |
 | `U-07` | `pillarDate` | Tanggal kosong → `""` (`null`, `""`, `"bukan-tanggal"`) | 1 |
 | `U-08` | `isArticleCategory` | Menerima desk yang dikenal: `"Fakta Musik"` → `true` | 1 |
 | `U-09` | `isArticleCategory` | Menolak yang lain, termasuk non-string (`"Berita Panas"`, `undefined`, `42`) → `false` | 1 |
-
-Yang **tidak** dipatok suite ini: konstanta `WORDS_PER_MINUTE = 200` sendiri
-(hanya terlihat lewat kasus 200/201/1200 kata), dan `articleReadingTime` yang
-menghitung `title + excerpt + body` — kasus terakhirnya sudah ter-*cover* oleh
-`U-05`.
 
 ### 4.2 Kandidat unit test berikutnya (`RENCANA`)
 
@@ -358,7 +347,6 @@ Playwright belum terpasang. `baseURL` yang dipakai kalau nanti dipasang:
 | `BR-001` Audio ≤ 25 MB + allowlist | `R10` | `I-13`, `I-14`, `I-14b`, `E-11` | Integration, E2E | `RENCANA` — **aturan sudah ditegakkan di route, test belum ada** |
 | `BR-002` Status demo | — | `I-11b` | Integration | `RENCANA` — `DEMO_INITIAL_STATUS` = `"IN REVIEW"` sudah ada |
 | `BR-003` [PERLU VERIFIKASI] | — | `[PERLU VERIFIKASI]` | — | Teks PRD belum ada di repo |
-| `BR-004` Read-time `max(1, ceil(words/200))` | `R9` | `U-01`…`U-05` | Unit | **`TERVERIFIKASI`** — sudah ada dan sudah dipatok |
 | `ACC-001` Reduced motion | — | `A-06` | E2E | `RENCANA` (blok CSS sudah menghormati) |
 | `ACC-002` Keyboard reveal | `R8` | `A-01`, `A-02` | E2E | `RENCANA` — **sudah tertutup di CSS**, tinggal dijaga |
 | `ACC-003` Alt/semantik | — | `A-04`, `A-05` | E2E | `RENCANA` |
@@ -653,8 +641,7 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   Blob belum siap.
 - `app/api/revalidate/route.ts` — 6 tag (`articles`, `pillar-posts`, `interviews`,
   `siteSettings`, `videos`, `videos-page`), `timingSafeEqual`, 500/401.
-- `lib/content-fallback.ts` — `readingTimeMinutes` (`WORDS_PER_MINUTE = 200`),
-  `articleReadingTime`, `ARTICLES` (12 artikel, 6 `mediaType: "reel"`),
+- `lib/content-fallback.ts` — `ARTICLES` (12 artikel, 6 `mediaType: "reel"`),
   `INTERVIEW_ROWS` (9 baris), `SEED_DEMOS`.
 - `lib/taxonomy.ts` — `ARTICLE_CATEGORY_VALUES` (4), `DEMO_GENRES` (6),
   `DEMO_PROGRAMS` (3), `DEMO_STATUSES` (4), `DEMO_INITIAL_STATUS`,
