@@ -82,7 +82,7 @@ boleh berada di sana.
 |---|---|---|---|
 | **siteSettings** | Konten | identitas footer (`name`), catatan kurasi, label panel hijau kartu, `contactEmail` + `partnerEmail` | ✅ tersambung |
 | **videosPage** | Konten | judul "MELODI SAMSARA" + label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
-| **pillarPost** | Konten | `/kurasi` — section per pillar; tiga post foto pertama juga tampil di Curated beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
+| **pillarPost** | Konten | `/discover` — grid datar urut tanggal; lima post foto pertama juga tampil di Discover beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/stories`, `/stories/<slug>`, Top News (lead + sidebar + More) | ✅ tersambung |
 | **pahlawanRow** | Konten | — (halaman `/pahlawan-kota` dihapus; dokumen disimpan sebagai arsip) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya status disetujui) | ✅ tersambung |
@@ -196,7 +196,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
    - **Isi** — rich text; heading, list, kutipan, tautan, dan gambar inline didukung.
    - **Beranda** — blok `Top News` menampilkan **satu lead + tiga sidebar + tiga More Top News** dari daftar
      yang sama; tidak ada pilihan headline manual. Beranda juga memuat
-      **Originals** dan **Curated** (tiga post).
+      **Originals** dan **Discover** (lima post).
 4. **Publish**.
 5. Buka `/stories/<slug>`. Langsung tampil.
 
@@ -215,10 +215,10 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
-| `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Curated" |
-| `app/(site)/kurasi/page.tsx` | `allPillarPosts()` | **Curated**: section per pillar (6 post/pillar), kotak cari + chip pillar (total 55 post) |
+| `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Discover" |
+| `app/(site)/discover/page.tsx` | `allPillarPosts()` | **Discover**: grid datar urut tanggal (2–5 kolom), kotak cari + chip pillar (total 55 post) |
 | `app/(site)/stories/[slug]/page.tsx` | `articleBySlug(slug)` + `latestStories(8)` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
-| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Curated (5 post), Submit |
+| `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Discover (5 post), Submit |
 | `app/(site)/bicara-melodi/page.tsx` | `allInterviews()` + `allVideos()` | 9 episode Season 3 |
 | `app/(site)/videos/page.tsx` | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` | halaman **Melodi Samsara**: 9 sesi Samsara + 5 playlist; judul bagian dari singleton `videosPage` |
 | `app/layout.tsx` + halaman | `getSiteSettings()` | identitas situs, catatan kurasi, label panel hijau kartu |
@@ -441,7 +441,7 @@ jenis dokumen baru yang punya tag sendiri, tambahkan tag itu ke `CONTENT_TAGS` d
 di tata letak situs:
 
 - `/preview/journal/<slug-artikel>?secret=…`
-- `/preview/kurasi/<kode-post-ig>?secret=…` (mis. `DeY9hGEib-w`)
+- `/preview/discover/<kode-post-ig>?secret=…` (mis. `DeY9hGEib-w`)
 
 `secret` diambil dari `SANITY_PREVIEW_SECRET` saja — **tidak ada fallback** ke
 `SANITY_REVALIDATE_SECRET` sejak 22 Okt 2026. Tanpa secret yang cocok,

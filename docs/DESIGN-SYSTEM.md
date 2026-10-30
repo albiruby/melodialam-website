@@ -5,7 +5,7 @@
 > `lib/pahlawan.ts`, `/spaces` + `SPACE_ITEMS`, `JournalBrowser`, `VideosBrowser`
 > + `/videos/arsip`, `HeroArticle`, `FeatureCard`, `GENRE_ROWS`/`GenreRow`.
 > Halaman `/videos` kini **Melodi Samsara**, `/journal` menjadi `/stories`, dan
-> `/kurasi` menjadi **Curated**. Token dan utility yang masih ada di
+> `/discover` menjadi **Discover**. Token dan utility yang masih ada di
 > `globals.css` tetapi sudah tidak dipakai siapa pun ditandai eksplisit di §5.
 
 Spesifikasi *design system* yang berlaku di repositori ini, ditulis terhadap kode yang
@@ -147,10 +147,9 @@ satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`
 
 | Kebutuhan | Pakai |
 |---|---|
-| Judul bagian seperti `Top News`, `Stories`, `Curated` | `font-sans` dengan `tracking-tight` (bukan `font-display`) |
+| Judul bagian seperti `Top News`, `Stories`, `Discover` | `font-sans` dengan `tracking-tight` (bukan `font-display`) |
 | Judul pajang terbesar di halaman (`MELODI SAMSARA`) | `font-display font-black uppercase` |
 | Nama artis di indeks wawancara | `font-display` |
-| Kepala seksi pilar (`PillarHead`) | `font-display font-black uppercase` |
 | Takarir, catatan, kutipan miring | `font-serif italic` |
 | Angka, tanggal, label kategori, chip, kode | `font-mono` |
 
@@ -204,7 +203,7 @@ Dipakai untuk angka urut besar pada baris video dan pada baris pilar.
 > di-*arm* di klien dengan `initial={false}`, sehingga HTML hasil server
 > memuat judul yang sudah terbaca. `components/motion/Reveal.tsx` **belum** —
 > `reveal-section` mulai di `opacity: 0` dan baru menjadi `is-visible` setelah
-> `IntersectionObserver` menyala di klien. Akibatnya isi `/stories` dan `/kurasi`
+> `IntersectionObserver` menyala di klien. Akibatnya isi `/stories` dan `/discover`
 > tidak terlihat tanpa JavaScript. Lihat temuan terbuka #8 di §11.
 
 ### 5.3 Tautan dan kartu
@@ -266,7 +265,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 |---|---|---|---|
 | `TopNews` (`components/home/TopNews.tsx`) | lead `<Link>` (h1 + deck + image), sidebar `<Link>`, `NewsCard` `<Link>` | Lead 3:2 (foto editorial landscape); sidebar lead 4:5; NewsCard 4:5 | Beranda — Top News |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, menit baca, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
-| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 4 kurasi; `/kurasi` — SEMUA pilar, foto dan reel, sebagai kartu |
+| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 5 Discover; `/discover` — semua pilar, foto dan reel, sebagai grid |
 | `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo). Di bawah `md` gugus selalu tampil dan membungkus ke baris sendiri | `/videos` — 9 baris sesi |
 
 Aturan yang menyertainya:
@@ -339,7 +338,7 @@ tidak memakai `box-shadow` kabur. Pola yang benar-benar dipakai:
 |---|---|---|
 | CTA utama hijau | `SubmitLink` di `components/SiteHeader.tsx`, dipakai di nav desktop | `bg-forest px-3.5 py-1.5 font-bold text-white`, hover `bg-ink` + `hover:shadow-[3px_3px_0px_#0D0D0D]` |
 | CTA utama hitam | Nav mobile (`components/SiteHeader.tsx`) dan tombol kirim demo (`components/DemoPortal.tsx`) | `bg-ink … text-white`, hover `bg-forest` |
-| Tombol sekunder | Judul artikel, "Semua artikel ", "Semua kurasi ", "Curated " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
+| Tombol sekunder | Judul artikel, "Semua artikel ", "Jelajahi semua ", "Discover " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
 | Chip filter | `components/KurasiBrowser.tsx` | `border border-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider`; aktif `bg-ink text-white`, tidak aktif `hover:bg-paper` |
 | Tombol Play | `components/VideoRow.tsx` | `rounded-full border border-ink bg-ink text-white`, hover `bg-forest` — satu-satunya elemen bulat di situs |
 | Kartu playlist | `app/(site)/videos/page.tsx` | `brutalist-card … border border-ink bg-paper p-4` |
@@ -397,7 +396,7 @@ pola yang bisa dipasang kembali.
 | Grid beranda | Top News: lead 8 kolom + sidebar 4; More Top News 3 kolom |
 | Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:6: 1 feature + 4 kartu 2×2 |
 | Grid `/stories` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-4`: 8 kartu `ArticleCard` |
-| Grid pilar foto `/kurasi` | `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-6` |
+| Grid Discover `/discover` | `grid-cols-2` → `sm:grid-cols-3` → `md:grid-cols-4` → `lg:grid-cols-5` |
 | Blok "More" pada detail artikel | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-3`: 3 kartu |
 | Grid playlist `/videos` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-5` |
 | Sampul artikel | `aspect-[4/5]`, pada detail dibatasi `w-full max-w-md` dan dipusatkan |
@@ -466,7 +465,7 @@ kebutuhan jelas justru menambah permukaan yang harus dijaga.
 | 5 | Target kontras `ACC-001` ≥ 15:1 tidak terpenuhi untuk teks putih di atas `forest` (≈ 12.4:1) | Lolos WCAG AA; PRD perlu disesuaikan atau warna aksen ditinjau | **Terbuka** |
 | 6 | Belum ada pengukuran kontras otomatis maupun uji regresi visual | Klaim kontras di dokumen ini berasal dari nilai warna, bukan pengukuran | **Terbuka** |
 | 7 | `dash-reveal-item`, `dash-reveal-prefix`, `text-outline-ink`, dan `eq-bar` ada di `globals.css` tetapi dipakai **0×** | `DEC-002` belum terpasang di UI; utility tersebut saat ini hanya kebarisan | **Terbuka** — putuskan: pasang atau hapus |
-| 8 | `reveal-section` mulai di `opacity: 0`, jadi isi section (`/stories`, `/kurasi`) tidak terlihat tanpa JavaScript | Beralih ke SSR-bersih butuh keputusan tersendiri | **Terbuka** — lihat `docs/TEST-STRATEGY.md` `R4` |
+| 8 | `reveal-section` mulai di `opacity: 0`, jadi isi section (`/stories`, `/discover`) tidak terlihat tanpa JavaScript | Beralih ke SSR-bersih butuh keputusan tersendiri | **Terbuka** — lihat `docs/TEST-STRATEGY.md` `R4` |
 
 ---
 
@@ -538,6 +537,6 @@ sebenarnya dari `next/font`; perilaku `hover-reveal-*` di peramban nyata.
 6. **Utility tanpa pemakai** — `dash-reveal-item`/`dash-reveal-prefix`
    (`DEC-002`), `text-outline-ink`, dan `eq-bar` sekarang nol pemakaian. Pasang
    atau hapus?
-7. **`reveal-section` tanpa JavaScript** — konten `/stories` dan `/kurasi` mulai
+7. **`reveal-section` tanpa JavaScript** — konten `/stories` dan `/discover` mulai
    di `opacity: 0`. Apakah itu diterima, atau utility-nya diubah agar degrade ke
    keadaan terlihat?

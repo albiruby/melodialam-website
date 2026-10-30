@@ -12,7 +12,7 @@ import type { SiteVideo } from "./videos";
  * Sanity, Next or a browser.
  *
  * The counts are deliberately small. A landing page is an edit, not an index —
- * the full lists stay on /stories, /videos and /kurasi.
+ * the full lists stay on /stories, /videos and /discover.
  */
 
 export interface HomeContent {
@@ -49,7 +49,7 @@ export interface HomeInput {
  * like an invitation. If no CMS video has that detail, the newest CMS video
  * wins, and the catalogue is the last resort.
  *
- * Curated posts without a cover are skipped. An empty 4:5 frame is worse than
+ * Feed posts without a cover are skipped. An empty 4:5 frame is worse than
  * one fewer card, and the section needs a photograph to work at all. The order
  * is the one returned by `allPillarPosts()` — Studio `order` first, then date —
  * so an editor can pin the three homepage picks without a schema change.

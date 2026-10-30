@@ -759,7 +759,7 @@ melodi-alam/
 │   │   ├── layout.tsx                Root layout: 4 font, MotionRoot, ScrollProgress,
 │   │   │                             skip-link, JSON-LD, SiteHeader, <main>,
 │   │   │                             SiteFooter, <Analytics />
-│   │   ├── page.tsx                  Beranda: Top News + Originals + Curated + Submit
+│   │   ├── page.tsx                  Beranda: Top News + Originals + Discover + Submit
 │   │   ├── not-found.tsx             404
 │   │   ├── stories/page.tsx          /stories — grid 8 ArticleCard
 │   │   ├── stories/[slug]/page.tsx   /stories/<slug> — detail artikel
@@ -767,7 +767,7 @@ melodi-alam/
 │   │   ├── stories/[slug]/twitter-image.tsx     1200×630 per artikel
 │   │   ├── bicara-melodi/page.tsx    /bicara-melodi — 9 episode Season 3
 │   │   ├── videos/page.tsx           /videos — Melodi Samsara (9 VideoRow) + 5 playlist
-│   │   ├── kurasi/page.tsx           /kurasi — Curated (KurasiBrowser)
+│   │   ├── discover/page.tsx         /discover — Discover (DiscoverBrowser)
 │   │   ├── tentang/page.tsx          /tentang — profil, ekosistem, kontak
 │   │   ├── submit/page.tsx           /submit — formulir demo
 │   │   ├── preview/[type]/[slug]/page.tsx   /preview/<type>/<slug> — pratinjau draf
@@ -788,7 +788,6 @@ melodi-alam/
 │   ├── home/                         TopNews, Originals, CuratedNews, SectionBar, SubmitCTA
 │   ├── ArticleBody.tsx               PortableText + paragraf statis (server)
 │   ├── PillarCards.tsx               PillarCard (server)
-│   ├── PillarHead.tsx                kepala seksi pillar (server)
 │   ├── VideoRow.tsx                  Baris sesi (server)
 │   ├── SiteFooter.tsx · MelodiAlamLockup.tsx   (server)
 │   ├── SubmitLink.tsx                tombol ke /submit (server)
@@ -1018,7 +1017,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   `experimental.globalNotFound`): dokumen HTML penuh dengan header,
   isi 404, dan footer; `app/not-found.tsx` menangani `notFound()` di route.
 - `app/(site)/page.tsx` — news-first: Top News (lead h1 + sidebar 3 + More
-  Top News 3), Originals, Curated (1 feature + 2), Submit; `latestStories(8)`,
+  Top News 3), Originals, Discover (1 feature + 4), Submit; `latestStories(8)`,
   `allVideos()`, `allInterviews()`, `allPillarPosts()`.
 - `app/(site)/stories/page.tsx` — `latestStories(8)`, grid 4 kolom,
   `titleFirst={i % 2 === 1}`, `cardCurtain.articleLabel/articleCta`.
@@ -1030,7 +1029,7 @@ Berkas yang **dibaca langsung** untuk dokumen ini (semua di
   `getVideosPageCopy()`, 5 playlist, `<VideoModal />`.
 - `app/(site)/bicara-melodi/page.tsx` — `allInterviews()`, `videoById`,
   `YoutubeThumb` 160 px, `WatchButton` + `VideoModal`.
-- `app/(site)/kurasi/page.tsx` — `allPillarPosts()` → `KurasiBrowser`.
+- `app/(site)/discover/page.tsx` — `allPillarPosts()` → `DiscoverBrowser`.
 - `app/(site)/tentang/page.tsx` — 3 blok, kontak, kanal resmi, tautan RSS.
 - `app/(site)/submit/page.tsx` — `DemoPortal`.
 - `app/(site)/not-found.tsx` — `PRIMARY_NAV`.

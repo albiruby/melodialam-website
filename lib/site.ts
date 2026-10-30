@@ -30,7 +30,7 @@ export const PRIMARY_NAV: NavItem[] = [
   { href: "/stories", label: "Stories" },
   { href: "/bicara-melodi", label: "Bicara Melodi" },
   { href: "/videos", label: "Melodi Samsara" },
-  { href: "/kurasi", label: "Curated" },
+  { href: "/discover", label: "Discover" },
 ];
 
 export const SUBMIT_NAV: NavItem = { href: "/submit", label: "Submit Karya" };

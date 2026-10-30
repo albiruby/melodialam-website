@@ -563,7 +563,7 @@ formulir tanpa audio.
 Sanity: filter 8 tipe `_type`, "Trigger on: **Create + Update + Delete**",
 projection `{_type, _id}`, dan bukti identitas lewat kolom **Secret**
 (`sanity-webhook-signature`, HMAC-SHA256). Uji end-to-end: publish → kartu
-muncul di `/kurasi` produksi dalam 4,8 detik. Lihat
+muncul di `/discover` produksi dalam 4,8 detik. Lihat
 [`DEPLOYMENT.md`](DEPLOYMENT.md) §7.2.
 
 **Celah `?secret=` — ditutup.** Rute tidak lagi menerima secret lewat query
@@ -633,7 +633,7 @@ dari tanggal artikel (bukan jam terbit sebenarnya). `enclosure` selalu
 | `/` | 1 | `daily` |
 | `/stories` | 0.9 | `daily` |
 | `/videos` | 0.8 | `weekly` |
-| `/kurasi` | 0.8 | `weekly` |
+| `/discover` | 0.8 | `weekly` |
 | `/bicara-melodi` | 0.7 | `weekly` |
 | `/tentang` | 0.5 | `monthly` |
 | `/submit` | 0.6 | `monthly` |

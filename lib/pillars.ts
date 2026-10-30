@@ -3,9 +3,9 @@ import { contentClient, imageUrl } from "./sanity";
 import { type PillarPost } from "./pillars-shared";
 
 /**
- * Curated Instagram posts, grouped by content pillar.
+ * Instagram feed posts, grouped by content pillar.
  *
- * The pool lives in the Studio ("Konten Pillar"); the home, /kurasi, Stories and
+ * The pool lives in the Studio ("Konten Pillar"); the home, /discover, Stories and
  * Videos render it. There is no static fallback on purpose — this is new content
  * with no build-time source, so an empty read simply hides the sections.
  *

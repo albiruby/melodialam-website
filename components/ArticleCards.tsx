@@ -43,7 +43,6 @@ export function ArticleCard({
   return (
     <Link
       href={`/stories/${article.slug}`}
-      aria-label={article.title}
       style={{ animationDelay: `${index * 75}ms` }}
       className="stagger-item group -m-2 flex flex-col justify-between p-2 transition-colors duration-300 hover:bg-paper"
     >
@@ -67,18 +66,18 @@ export function ArticleCard({
         )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5 border-t border-neutral-200 pt-2 text-[11px] text-neutral-600">
-        <span className="flex min-w-0 items-start gap-1.5">
-          <span className="min-w-0 font-medium leading-snug text-ink">
+      <div className="border-t border-neutral-200 pt-2 text-[11px] text-neutral-600">
+        <span className="flex items-center gap-1.5">
+          <span className="font-medium leading-snug text-ink">
             {CATEGORY_LABELS[article.category]}
           </span>
           {article.mediaType === "reel" ? (
-            <span className="mt-px shrink-0 whitespace-nowrap border border-ink px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase leading-none tracking-wider">
+            <span className="shrink-0 whitespace-nowrap border border-ink px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase leading-none tracking-wider">
               Reel
             </span>
           ) : null}
         </span>
-        <span className="ml-auto flex shrink-0 items-center gap-1.5 whitespace-nowrap">
+        <span className="mt-1 flex items-center gap-1.5 whitespace-nowrap">
           <span>{articleReadingTime(article)} menit</span>
           <span aria-hidden>•</span>
           <time dateTime={article.dateISO}>{article.date}</time>

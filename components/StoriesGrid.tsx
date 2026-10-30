@@ -14,18 +14,23 @@ export function StoriesGrid({
   settings: SiteSettings;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-8 border-b border-ink pb-10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
-      {articles.map((article, index) => (
-        <div key={article.slug} className="relative">
-          <ArticleCard
-            article={article}
-            titleFirst={index % 2 === 1}
-            index={index}
-            readLabel={settings.cardCurtain.articleLabel}
-            noteCta={settings.cardCurtain.articleCta}
-          />
-        </div>
-      ))}
-    </div>
+    <section aria-labelledby="stories-grid-title">
+      <h2 id="stories-grid-title" className="sr-only">
+        Artikel Stories
+      </h2>
+      <div className="grid grid-cols-1 gap-8 border-b border-ink pb-10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
+        {articles.map((article, index) => (
+          <div key={article.slug} className="relative">
+            <ArticleCard
+              article={article}
+              titleFirst={index % 2 === 1}
+              index={index}
+              readLabel={settings.cardCurtain.articleLabel}
+              noteCta={settings.cardCurtain.articleCta}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }

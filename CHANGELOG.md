@@ -15,16 +15,41 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Kanal feed menjadi Discover (29 Okt 2026)**
+
+- **`Curated` → `Discover`** di navbar, section beranda, h1 `/discover`, metadata,
+  tautan `/stories` + `/videos`, dan kartu `/tentang`. Section beranda memakai
+  label **Discover** dengan tautan **Jelajahi semua**.
+- Alasan: `Curated` menamai kanal berdasarkan kualitas editorial sehingga empat
+  kanal lain terbaca "tidak dikurasi". `Discover` menamai aktivitas menjelajah,
+  tidak menilai kualitas maupun usia konten, dan tetap valid bila nanti ada
+  format di luar Instagram.
+- **Halaman `/discover` menjadi grid Discover**: satu grid datar urut tanggal,
+  2/3/4/5 kolom, tanggal ringkas di atas cover 4:5, judul mono uppercase, label
+  pillar di bawah. Blok BACA/TONTON dan `PillarHead` dihapus; pencarian dan chip
+  pillar tetap, chip digulir horizontal di ponsel.
+- **Route `/kurasi` → `/discover`**: halaman, komponen (`DiscoverBrowser`),
+  canonical, sitemap, tautan nav, dan copy Studio diseragamkan. `/kurasi`
+  dipertahankan sebagai redirect 308.
+- **Teks kecil dihapus**: standfirst `(fakta musik…)` di `/discover`, `(kurasi
+  redaksi)` di `/stories`, `(wawancara & sesi)` di `/bicara-melodi`, hitungan
+  `55 POST`, dan baris "Post pendek dari feed @melodi.alam" di `/stories` +
+  `/videos`. Field `curationNote` ikut dihapus dari schema dan query.
+- **Footer kartu Stories**: kategori + badge `Reel` di baris pertama, menit baca
+  + tanggal di baris kedua, sehingga semua kartu punya tinggi dan perataan yang
+  sama.
+
 **News-first homepage + penamaan (28 Okt 2026)**
 
 - **Homepage menjadi news-first**: H1 adalah **judul lead article**; hero brand
   dihapus. Modul: **Top News** (1 lead + 3 sidebar `Latest`), **More Top News**
-  (3 kartu), **Originals** (Samsara + Bicara Melodi), **Curated** (1 feature + 4
+  (3 kartu), **Originals** (Samsara + Bicara Melodi), **Discover** (1 feature + 4
   pendamping, grid 6:6 2×2), dan **Submit** (satu CTA).
 - **Penamaan UI**: `Front Page` / `Latest News` → **Top News**;
-  `Curated News` → **Curated**. Label nav, h1 `/kurasi`, metadata, tautan
-  `/stories` + `/videos`, kartu `/tentang`, dan breadcrumb JSON-LD disinkronkan.
-- **Curated diperkecil** dari 8:4 (feature 800×1000 di 1280) menjadi 6:6
+  `Curated News` → **Curated**, lalu **Discover** (lihat entri di atas). Label
+  nav, h1 `/kurasi`, metadata, tautan `/stories` + `/videos`, kartu `/tentang`,
+  dan breadcrumb JSON-LD disinkronkan.
+- **Discover diperkecil** dari 8:4 (feature 800×1000 di 1280) menjadi 6:6
   (feature 600×750, grid 2×2 dengan gambar 300×375), semua **4:5** agar cover IG
   tidak terpotong; kartu hanya judul + pillar/tanggal.
 - **Shell dirapikan**: ticker dihapus dari layout dan 404; header menjadi satu
@@ -32,18 +57,18 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   dan teks 13/11 px. Komponen `Ticker`, `MarqueeTape`, dan `SectionMarker`
   dihapus; field ticker dihapus dari Studio dan website, `TICKER_ITEMS` dihapus.
 - **Sanity Studio diselaraskan**: `siteSettings` sekarang hanya memuat
-  `name`, `curationNote`, `cardCurtain`, `contactEmail`, `partnerEmail`;
+  `name`, `cardCurtain`, `contactEmail`, `partnerEmail`;
   field ticker/tagline/strapline/owner/est/description dihapus dari schema,
   dan field kontak ditambahkan. Copy `article`/`pillarPost` diperbarui;
-  Curated beranda mengikuti `order` dari Studio. Studio dideploy (2/2 skema).
+  Discover beranda mengikuti `order` dari Studio. Studio dideploy (2/2 skema).
 - **Kartu text-light**: excerpt di kartu pendamping dan CTA per kartu dihapus;
   judul sentence case; metadata satu baris; border gambar dihapus. Semua cover
-  IG di sidebar, More Top News, dan Curated memakai **4:5** agar tidak
+  IG di sidebar, More Top News, dan Discover memakai **4:5** agar tidak
   terpotong; lead tetap 3:2 karena fotonya landscape editorial.
 - **Komponen**: `HomeHero`, `StoriesSpread`, dan `FrontCard` dihapus; pengganti
   `components/home/TopNews.tsx`. `selectHomeContent` mengembalikan `sidebar` (3)
   dan `more` (3).
-- **Audit gambar Curated**: tiga gambar Sanity semuanya termuat
+- **Audit gambar Discover**: tiga gambar Sanity semuanya termuat
   (`naturalWidth > 0`); kotak abu-abu sebelumnya adalah lazy-loading, bukan aset
   hilang. Ketiganya sekarang `eager` + `fetchPriority="low"`, container
   `bg-neutral-100`, dan label `Memuat` sampai gambar menutupinya.

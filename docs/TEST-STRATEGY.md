@@ -83,7 +83,7 @@ dan tidak ada pemantau regresi visual. Pernyataan ini disengaja: dokumen ini
 - Invariant data: 12 artikel statis di `lib/content-fallback.ts`, 9 baris wawancara,
   pool kurasi, dan angka yang tampil di UI (`RENCANA`).
 - Journey UI kritis pada `/`, `/stories`, `/stories/[slug]`, `/bicara-melodi`,
-  `/videos`, `/kurasi`, `/submit`, 404 (`RENCANA`, §5).
+  `/videos`, `/discover`, `/submit`, 404 (`RENCANA`, §5).
 - Aksesibilitas keyboard dan reduced-motion (§5.3, `RENCANA`).
 
 ### 1.3 Yang tidak diuji (out of scope, ringkas — detail §11)
@@ -200,7 +200,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-16` | `lib/content-fallback.ts` `INTERVIEW_ROWS` | 9 baris, `videoId` terisi, `slug` unik | Sedang |
 | `U-17` | `lib/taxonomy.ts` enum | `DEMO_GENRES` 6, `DEMO_PROGRAMS` 3, `DEMO_INITIAL_STATUS` = `"IN REVIEW"`, `DEMO_APPROVED_STATUSES` = 2 status | Tinggi |
 | `U-18` | `lib/taxonomy.ts` `DEMO_AUDIO_MAX_BYTES` | `25 * 1024 * 1024` = `26214400`; `DEMO_AUDIO_EXTENSIONS` = `.mp3 .wav .ogg` | Tinggi |
-| `U-19` | `lib/site.ts` `PRIMARY_NAV` | Lima entri: `/`, `/stories`, `/bicara-melodi`, `/videos`, `/kurasi` | Rendah |
+| `U-19` | `lib/site.ts` `PRIMARY_NAV` | Lima entri: `/`, `/stories`, `/bicara-melodi`, `/videos`, `/discover` | Rendah |
 
 > Angka katalog (`lib/catalogue.json`) bersifat relatif terhadap tanggal scrape.
 > Test **tidak boleh** mematok nilai absolut view; patok **bentuk** dan
@@ -210,10 +210,10 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 
 | ID | Invariant | Kenapa |
 |---|---|---|
-| `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 5 Curated + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 4 curated rest, 4 interview |
+| `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 5 Discover + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 4 curated rest, 4 interview |
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
-| `U-23` | `/kurasi` = 6 post per pilar tanpa pencarian/filter | `PILLAR_LIMIT = 6` di `components/KurasiBrowser.tsx`; dengan pencarian/filter naik ke `SEARCH_LIMIT = 48` |
+| `U-23` | `/discover` = 55 tile dalam satu grid urut tanggal | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, tanpa cap per pillar |
 | `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17. Pilar `similar-song` dan `meme-humor` ada di skema tapi 0 post |
 | `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content-fallback.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
 
@@ -297,9 +297,9 @@ Playwright belum terpasang. `baseURL` yang dipakai kalau nanti dipasang:
 | `E-03` | Buka `/stories` | Tepat **8** kartu `ArticleCard` dalam grid 4 kolom; **tanpa** filter, pencarian, atau hitungan |
 | `E-04` | Cek elemen filter/pencarian lama | Tidak ada satu pun di DOM — kontrol filter dan pencarian sudah dihapus dari `/stories` |
 | `E-13` | Klik **area teks** kartu (bukan gambarnya) | Navigasi tetap terjadi — kartu adalah satu `<Link>` atau `<a>` utuh |
-| `E-15` | Bandingkan angka kartu beranda vs `/stories` vs detail | Beranda 4 + 4 kurasi; `/stories` 8; detail 3 "More" |
+| `E-15` | Bandingkan angka kartu beranda vs `/stories` vs detail | Beranda 7 artikel + 5 Discover; `/stories` 8; detail 3 "More" |
 
-### 5.2 Video, Bicara Melodi, Curated (`FR-002`, `FR-004`)
+### 5.2 Video, Bicara Melodi, Discover (`FR-002`, `FR-004`)
 
 | ID | Skenario | Harapan |
 |---|---|---|
@@ -308,8 +308,8 @@ Playwright belum terpasang. `baseURL` yang dipakai kalau nanti dipasang:
 | `E-06` | Di `/bicara-melodi`, klik `WatchButton` | Dialog tampil dengan id video yang sesuai; 9 baris episode |
 | `E-07` | Di `/videos`, hitung baris sesi | 9 baris `VideoRow` (grup `Melodi Samsara`) + blok playlist |
 | `E-14` | Paksa `maxresdefault.jpg` gagal (404) | Komponen turun ke `sddefault`, lalu `hqdefault`; tidak ada ikon gambar rusak |
-| `E-16` | Buka `/kurasi`, ketik di kotak cari | Hasil terfilter; chip per pilar bekerja; jumlah post per pilar ≤ 6 tanpa filter |
-| `E-17` | Buka `/kurasi`, klik chip pillar | Hanya post pillar itu yang tampil; anchor `#fakta-musik` dan friends ada |
+| `E-16` | Buka `/discover`, ketik di kotak cari | Hasil terfilter; chip per pilar bekerja; grid menampilkan semua post yang cocok |
+| `E-17` | Buka `/discover`, klik chip pillar | Hanya post pillar itu yang tampil; chip aktif `aria-pressed=true` |
 
 ### 5.3 Submit demo (`FR-005`, `FR-006`, `ADR-0005`)
 
@@ -616,7 +616,7 @@ Sebuah fase/rilis diterima bila, secara **observable**:
 4. **`ACC-002` tetap tertutup** (`:focus-visible` dan pasangan `:focus-within`
    tidak boleh hilang dari `globals.css`).
 5. **Angka kartu konsisten** antar beranda, `/stories`, detail artikel, dan
-   `/kurasi` (`E-15`).
+   `/discover` (`E-15`).
 6. **Tidak ada test flaky yang belum ber-owner** (§9.3).
 7. **Jumlah halaman statis** tidak turun tanpa alasan (build saat ini: 33).
 8. **Verifikasi pasca-deploy**: smoke `E-01`, `E-05`, `E-08` pada URL Vercel
@@ -665,16 +665,14 @@ Berkas yang dibaca **langsung** untuk dokumen ini (semua di
   `articleBySlug`, `staticArticleSlugs`, `ARTICLES_TAG`.
 - `lib/pillars-shared.ts` / `lib/pillars.ts` — `PILLAR_LABELS`, `PHOTO_PILLARS` (4),
   `REEL_PILLARS` (4), `pillarDate`, `allPillarPosts`.
-- `lib/site-settings.ts` — `cardCurtain` = `articleLabel` + `articleCta`;
-  `curationNote` fallback `"kurasi redaksi"`.
+- `lib/site-settings.ts` — `cardCurtain` = `articleLabel` + `articleCta`.
 - `components/ArticleCards.tsx` — `COVER_FRAME = "aspect-[4/5]"`, `ArticleCard`
   (satu `<Link>`, `titleFirst`, badge "Reel").
 - `components/home/TopNews.tsx` — lead h1 + sidebar `Latest` + `More Top News`
   row; semua kartu satu `<Link>`, tanpa CTA per kartu.
-- `components/PillarCards.tsx` — `PillarCard` (satu `<a>`, 4:5 `object-cover`),
-  `PillarHead`.
-- `components/KurasiBrowser.tsx` — `PILLAR_LIMIT = 6`, `SEARCH_LIMIT = 48`, kotak
-  cari, chip per pillar, blok BACA/TONTON.
+- `components/PillarCards.tsx` — `PillarCard` (satu `<a>`, 4:5 `object-cover`).
+- `components/KurasiBrowser.tsx` — grid datar urut tanggal (2–5 kolom), kotak
+  cari, chip per pillar.
 - `components/YoutubeThumb.tsx` — `srcset` 320w/480w/1280w, fallback
   `maxresdefault → sddefault → hqdefault`, placeholder "poster tidak tersedia".
 - `components/VideoRow.tsx`, `components/VideoModal.tsx`, `components/WatchLink.tsx`

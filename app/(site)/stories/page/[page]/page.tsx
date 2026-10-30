@@ -52,8 +52,8 @@ export default async function StoriesPaginatedPage(props: {
     <Reveal>
       <div className="flex items-baseline justify-between pb-4">
         <h1 className="text-4xl tracking-tight sm:text-5xl">Stories</h1>
-        <span className="font-serif text-sm italic text-neutral-600">
-          (halaman {page} dari {pages} · {settings.curationNote})
+        <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-600">
+          Halaman {page} dari {pages}
         </span>
       </div>
 

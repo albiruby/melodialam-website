@@ -15,7 +15,8 @@ import { draftClient, previewSecret, secretMatches } from "@/lib/sanity-preview"
  * is a 404 — the drafts are not public, and the preview must not become a way
  * to read them without one.
  *
- * Types: `journal` (an article draft) and `kurasi` (a curated feed post).
+ * Types: `journal` (an article draft) and `discover` (a feed post; `kurasi`
+ * stays as a legacy alias for older preview links).
  */
 export const metadata: Metadata = {
   title: "Pratinjau draf",
@@ -147,7 +148,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
     );
   }
 
-  if (type === "kurasi") {
+  if (type === "discover" || type === "kurasi") {
     const doc = await draftClient.fetch<Record<string, unknown> | null>(
       PILLAR_QUERY,
       { id: `pillar-${slug}`, url: `https://www.instagram.com/p/${slug}/` },

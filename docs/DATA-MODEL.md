@@ -34,7 +34,7 @@
 
 | Aspek | Nilai | Status |
 |---|---|---|
-| Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Curated, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
+| Produk | Situs media musik Indonesia: Stories, Watch (Melodi Samsara), Discover, Bicara Melodi, Submit Demo, Tentang | `TERVERIFIKASI` |
 | Store utama | Sanity CMS, **dua dataset**: `production` (publik) + `submissions` (privat) | `TERVERIFIKASI` (`lib/sanity-project.ts:31,34`) |
 | Store kedua | `lib/catalogue.json` — katalog YouTube hasil *scrape*, dibangkitkan `npm run catalogue`, **tidak boleh diedit tangan** | `TERVERIFIKASI` (`lib/catalogue.ts:3`) |
 | Store fallback | `lib/content-fallback.ts` — 12 artikel, 9 baris wawancara, 3 seed demo. Dipakai kalau Sanity tidak terjangkau | `TERVERIFIKASI` |
@@ -98,7 +98,7 @@ Aturan fallback ini adalah bagian dari model data, jadi dicatat di sini.
 | `lib/interviews.ts` → `allInterviews()` | baris Bicara Melodi | `interview` | `INTERVIEW_ROWS` statis (9) — dipakai hanya bila hasil CMS **0 baris** |
 | `lib/videos.ts` → `allVideos()` | katalog video | `video` (terlebih dulu) lalu `lib/catalogue.json` | katalog arsip 292 video |
 | `lib/videos.ts` → `allPlaylists()` | playlist | `playlist` | `PLAYLISTS` dari `catalogue.json` (5) |
-| `lib/pillars.ts` → `allPillarPosts()` | pool kurasi | `pillarPost` | **tidak ada** → `[]`; Curated lalu tidak dirender |
+| `lib/pillars.ts` → `allPillarPosts()` | pool Discover | `pillarPost` | **tidak ada** → `[]`; Discover lalu tidak dirender |
 | `lib/site-settings.ts` → `getSiteSettings()` | identitas footer, catatan kurasi, label panel hijau, kontak | `siteSettings` | per-field ke konstanta `STATIC` di berkas itu |
 | `lib/videos-page.ts` → `getVideosPageCopy()` | judul/catatan bagian `/videos` | `videosPage` | per-field ke konstanta `STATIC` di berkas itu |
 | `app/api/demos/route.ts` | antrean demo | `demoSubmission` (dataset privat) | array in-memory `memoryQueue` berisi 3 `SEED_DEMOS`; kontak disimpan di `memoryContacts` |
@@ -187,7 +187,6 @@ kedua (`melodialam-sanity/sanity/structure.ts:12`).
 | Field | Tipe | Wajib | Batas | Arti |
 |---|---|---|---|---|
 | `name` | string | ya | 60 | Nama situs, mis. "MELODI ALAM"; copyright footer |
-| `curationNote` | string | tidak | 60 | Teks kecil di samping judul Stories, mis. "kurasi redaksi" |
 | `cardCurtain` | object | tidak | — | Copy panel hijau saat kartu di-hover (lihat di bawah) |
 | `cardCurtain.articleLabel` | string | tidak | 24 | Label kanan atas kartu Stories. Kosong ⇒ "READ STORY" |
 | `cardCurtain.articleCta` | string | tidak | 40 | Tombol bawah panel. Kosong ⇒ "Buka Catatan Redaksi" |
@@ -327,7 +326,7 @@ pernah dicatat di situs.
 ### 4.6 `pillarPost` — 55 dokumen (pool kurasi)
 
 Post Instagram terkurasi, dikelompokkan per *pillar* konten. Pool-nya hidup di
-Studio; situs merendernya di beranda (4 post foto terbaru) dan di `/kurasi`.
+Studio; situs merendernya di beranda (5 post foto terbaru) dan di `/discover`.
 
 | Field | Tipe | Wajib | Batas | Arti |
 |---|---|---|---|---|
@@ -368,26 +367,25 @@ Dua hal yang berbeda statusesnya dan keduanya perlu diketahui editor:
   `components/KurasiBrowser.tsx:61`).
 - **`meme-humor`** ada di skema dan di `PILLAR_LABELS`, tapi **tidak ada di
   `PHOTO_PILLARS` maupun `REEL_PILLARS`**. Kalau diisi pun, postnya **tidak
-  akan pernah muncul** di `/kurasi` dan tidak akan punya chip. Ini kekosongan
+  akan pernah muncul** di `/discover` dan tidak akan punya chip. Ini kekosongan
   skema, bukan sekadar pillar yang belum diisi.
 
 Pembagian set ada di `lib/pillars-shared.ts:22-23`:
 `PHOTO_PILLARS = ["fakta-musik","lirik","trivia","kutipan"]`,
 `REEL_PILLARS = ["rekomendasi","ulas-melodi","clipper","similar-song"]`.
 
-#### 4.6.2 Cara `/kurasi` menampilkannya
+#### 4.6.2 Cara `/discover` menampilkannya
 
 `components/KurasiBrowser.tsx` (komponen klien):
 
-- Tanpa filter: **6 post per pillar** (`PILLAR_LIMIT = 6`).
-- Dengan pencarian atau chip pillar: cap dilepas sampai `SEARCH_LIMIT = 48` per
-  pilar, lalu bagian yang kosong dibuang.
+- Satu grid datar, **urut tanggal terbaru**; tidak ada blok BACA/TONTON atau
+  kepala seksi per pillar.
+- Setiap tile: tanggal ringkas (`4.3.26`), cover 4:5, judul mono uppercase
+  (maks. 4 baris), lalu label pillar.
+- Kolom: 2 (ponsel) / 3 (`sm`) / 4 (`md`) / 5 (`lg`).
 - Pencarian mencocokkan `title` (lowercase, `includes`) **dan** label pillar.
 - Chip: "Semua" + satu chip per pillar yang punya post — 8 chip tampil
-  (Semua + 7 pillar).
-- Dua blok: **"Baca — dari feed @melodi.alam"** (pillar foto) dan
-  **"Tonton — dari feed @melodi.alam"** (pillar reel). Masing-masing bagian punya
-  `id` = nilai pillar, jadi bisa di-anchor: `/kurasi#fakta-musik`.
+  (Semua + 7 pillar); di ponsel chip digulir horizontal.
 - *Empty state*: "Belum ada post yang cocok. Coba kata kunci lain atau pilih
   'Semua'."
 
@@ -845,7 +843,7 @@ dibaca seolah-olah ada:
   `sanity-server.ts`, `sanity-preview.ts`, `sanity-project.ts`,
   `content.test.ts` (penuh).
 - `melodi-alam/app/`: `(site)/page.tsx`, `(site)/stories/page.tsx`,
-  `(site)/stories/[slug]/page.tsx`, `(site)/kurasi/page.tsx`,
+  `(site)/stories/[slug]/page.tsx`, `(site)/discover/page.tsx`,
   `(site)/videos/page.tsx`, `(site)/bicara-melodi/page.tsx`,
   `(site)/submit/page.tsx`, `(site)/tentang/page.tsx` (sebagian),
   `app/sitemap.ts`, `(site)/journal/route.ts`,
@@ -881,7 +879,7 @@ dibaca seolah-olah ada:
   - `video`: 9 dokumen, seluruhnya `venue: "Melodi Samsara"`.
   - `interview`: 9 dokumen, `order` 1–9 berurutan.
   - `playlist`: 5 dokumen, seluruhnya `count: null`.
-  - `siteSettings` live: `name`, `curationNote`, dan `cardCurtain`; field
+  - `siteSettings` live: `name` dan `cardCurtain`; field
     `contactEmail`/`partnerEmail` boleh kosong dan memakai fallback situs.
   - `videosPage` live: `samsaraNote: ""`, `playlistsNote: null`.
 - `node -e` pada `lib/catalogue.json`: `counts` (292/342/5), `byVenue`

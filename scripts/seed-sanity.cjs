@@ -118,7 +118,6 @@ const settingsDoc = {
   _id: "siteSettings",
   _type: "siteSettings",
   name: SITE.name,
-  curationNote: "kurasi redaksi",
   cardCurtain: {
     articleLabel: "READ STORY",
     articleCta: "Buka Catatan Redaksi",

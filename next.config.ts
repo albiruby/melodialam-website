@@ -60,6 +60,13 @@ const nextConfig: NextConfig = {
   /** The framework version is not useful to attackers and is free to omit. */
   poweredByHeader: false,
 
+  async redirects() {
+    return [
+      /** The section shipped as `/kurasi`; old links keep working. */
+      { source: "/kurasi", destination: "/discover", permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {

@@ -21,12 +21,7 @@ export default async function BicaraMelodiPage() {
 
   return (
     <div>
-      <div className="flex flex-wrap items-baseline justify-between gap-3 pb-4">
-        <h1 className="text-4xl tracking-tight sm:text-5xl">Bicara Melodi</h1>
-        <span className="font-serif text-sm italic text-neutral-600">
-          (wawancara &amp; sesi)
-        </span>
-      </div>
+      <h1 className="pb-4 text-4xl tracking-tight sm:text-5xl">Bicara Melodi</h1>
 
       <Reveal className="editorial-paper border border-ink p-5 sm:p-10">
       {/* Index header */}

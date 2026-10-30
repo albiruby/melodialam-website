@@ -3,10 +3,10 @@ import { PillarCard, PillarFeature } from "@/components/PillarCards";
 import { SectionBar } from "./SectionBar";
 
 /**
- * Curated: three posts, one clear lead.
+ * Discover: the five newest short-form posts, one clear lead.
  *
- * The section is an etalase, not a second archive. One large post takes two
- * thirds of the row; the two follow-ups stack beside it on desktop and become
+ * The section is an etalase, not a second archive. One large post takes half
+ * the row; four companions sit in a 2×2 grid beside it on desktop and become
  * compact image-left rows on a phone. Titles and one metadata line only.
  */
 export function CuratedNews({
@@ -20,9 +20,9 @@ export function CuratedNews({
     <section aria-labelledby="curated-title">
       <SectionBar
         id="curated-title"
-        label="Curated"
-        href="/kurasi"
-        linkLabel="Semua kurasi"
+        label="Discover"
+        href="/discover"
+        linkLabel="Jelajahi semua"
       />
 
       <div className="mt-6 grid gap-6 lg:grid-cols-12 lg:gap-8">

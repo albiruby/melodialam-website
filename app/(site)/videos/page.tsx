@@ -174,14 +174,13 @@ export default async function VideosPage() {
         </div>
       </Reveal>
 
-      {/* ---------- Dari Feed → Curated ---------- */}
-      <div className="flex items-center justify-between font-mono text-xs text-neutral-600">
-        <span>Konten kurasi dari feed @melodi.alam</span>
+      {/* ---------- Dari Feed → Discover ---------- */}
+      <div className="flex justify-end font-mono text-xs text-neutral-600">
         <Link
-          href="/kurasi"
+          href="/discover"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Curated
+          Discover
         </Link>
       </div>
 

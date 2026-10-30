@@ -10,7 +10,7 @@ import { PILLAR_LABELS, pillarDate, type PillarPost } from "@/lib/pillars-shared
  *
  * `horizontalOnMobile` turns the card into an image-left row below `lg`, then
  * returns it to the vertical card on desktop. `showCta` is false on the front
- * page, where the whole card is already the action; the /kurasi archive keeps
+ * page, where the whole card is already the action; the /discover page keeps
  * the explicit "Buka di IG" line.
  */
 export function PillarCard({
@@ -27,7 +27,7 @@ export function PillarCard({
   horizontalOnMobile?: boolean;
   /** Show the explicit "Buka di IG" line. */
   showCta?: boolean;
-  /** Fetch immediately at low priority — the three home-page Curated images. */
+  /** Fetch immediately at low priority — the home-page feed images. */
   eager?: boolean;
 }) {
   return (
@@ -80,11 +80,11 @@ export function PillarCard({
             {PILLAR_LABELS[post.pillar] ?? post.pillar}
           </span>
         ) : null}
-        <h4
+        <h3
           className={`${showPillar ? "mt-2" : "mt-3"} line-clamp-3 text-sm font-extrabold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest`}
         >
           {post.title}
-        </h4>
+        </h3>
         <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-mono text-[10px] uppercase text-neutral-500">
           <span>{pillarDate(post.date)}</span>
           {showCta ? (
@@ -109,7 +109,7 @@ export function PillarFeature({
   eager = false,
 }: {
   post: PillarPost;
-  /** Fetch immediately at low priority — the home-page Curated feature. */
+  /** Fetch immediately at low priority — the home-page feed feature. */
   eager?: boolean;
 }) {
   return (

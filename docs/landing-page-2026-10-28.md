@@ -17,7 +17,7 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 | 01 | **Top News — lead + sidebar** | H1 = judul lead; foto 3:2; deck; sidebar `Latest` 3 berita |
 | 02 | **More Top News** | 3 kartu berita; grid 3 kolom |
 | 03 | **Originals** | Samsara (poster + 2 setlist) + Bicara Melodi (4 baris teks; 3 di mobile) |
-| 04 | **Curated** | 1 feature + 4 pendamping; 6:6, grid 2×2 |
+| 04 | **Discover** | 1 feature + 4 pendamping; 6:6, grid 2×2 |
 | 05 | **Submit** | blok forest terpusat, satu CTA |
 
 ## Keputusan per modul
@@ -52,9 +52,9 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 - Monokrom: putih/abu di atas ink; hijau hanya untuk interaksi Play dan CTA
   Submit. Section ini satu-satunya momen gelap.
 
-### 04 — Curated
+### 04 — Discover
 
-- Section bar `CURATED` + **Semua kurasi**.
+- Section bar `DISCOVER` + **Jelajahi semua**.
 - **6:6** di desktop:
   - feature 6 kolom, **4:5**;
   - empat pendamping di 6 kolom kanan sebagai **grid 2×2**;
@@ -65,6 +65,16 @@ ada — putih, garis tipis, forest, dan satu band gelap.
   kartu homepage; seluruh kartu adalah tautan.
 - Mobile: feature horizontal, dua pendamping di ponsel, empat dari `sm`
   (dua kolom) sebagai baris horizontal 4:5.
+
+### Halaman `/discover`
+
+- Satu grid datar urut tanggal, tanpa kepala seksi atau blok BACA/TONTON.
+- Tile: tanggal ringkas (`4.3.26`) di atas cover **4:5**, judul mono uppercase
+  maks. empat baris, lalu label pillar.
+- Kolom: 2 (ponsel) / 3 (`sm`) / 4 (`md`) / 5 (`lg`); cover memakai border
+  `--color-rule` dan offset shadow 3 px.
+- Kotak cari dan chip pillar tetap di atas grid; di ponsel chip digulir
+  horizontal agar grid cepat terlihat.
 
 ### 05 — Submit
 
@@ -81,12 +91,14 @@ ada — putih, garis tipis, forest, dan satu band gelap.
 | `Latest News` (dokumen lama) | **Top News** |
 | Section homepage `Stories` | **Top News** |
 | `Semua cerita` | **Semua berita** |
-| `Curated News` (nav, h1, metadata) | **Curated** |
+| `Curated News` / `Curated` (nav, h1, metadata) | **Discover** |
 | Breadcrumb JSON-LD `Latest News` | **Top News** |
 
 `Stories` tetap menjadi nama arsip editorial di `/stories`; `Top News` adalah
-feed berita utama di homepage. `Curated` tetap section terpisah agar tidak ada
-dua label “Top News”.
+feed berita utama di homepage. `Discover` tetap section terpisah agar tidak ada
+dua label “Top News”, dan label itu tidak menilai kualitas editorial maupun usia
+konten — jadi tidak mendiskreditkan Top News/Stories dan tidak membaca post baru
+sebagai arsip.
 
 ## Shell
 
@@ -112,13 +124,13 @@ dua label “Top News”.
 Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk
 `sidebar`/`more`; test, build, dan axe dijalankan pada pass ini (lihat QA).
 
-## Audit gambar Curated
+## Audit gambar Discover
 
-- Tiga gambar Curated berasal dari Sanity CDN. Semuanya `naturalWidth > 0`,
+- Gambar Discover berasal dari Sanity CDN. Saat audit, ketiganya `naturalWidth > 0`,
   `complete`, dan tidak ada request yang gagal.
 - Kotak abu-abu di screenshot sebelumnya adalah **state loading** (lazy image
   belum selesai), bukan aset hilang atau query kosong.
-- Perbaikan: tiga gambar Curated sekarang `loading="eager"` dengan
+- Perbaikan: gambar Discover sekarang `loading="eager"` dengan
   `fetchPriority="low"`, container memakai `bg-neutral-100`, dan label
   `Memuat` sampai gambar menutupinya.
 - `MelodiAlamLockup` diberi `aspect-ratio` eksplisit; issue CLS
@@ -131,7 +143,7 @@ Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk
 - `npm test` — 42 test lulus.
 - `npm run build` — 62 halaman statis, sukses.
 - Screenshot 1440/1280/768/390/360: tidak ada overflow horizontal, tidak ada
-  gambar rusak; sidebar, More Top News, Originals, Curated, nav, dan footer
+  gambar rusak; sidebar, More Top News, Originals, Discover, nav, dan footer
   diperiksa terpisah di 390/768.
 - Axe 390 dan 1280 — 0 violation.
 - Console: hanya 404 `/_vercel/insights/script.js` di server lokal; analytics
@@ -142,12 +154,12 @@ Total 7 artikel dipakai di Top News. `lib/home.test.ts` diperbarui untuk
 ## Perbandingan dengan versi awal
 
 Versi awal membuka dengan ticker, masthead tengah, grid 2×2 Latest News dengan
-ringkasan dan CTA per kartu, lalu empat kartu Curated. Versi sekarang:
+ringkasan dan CTA per kartu, lalu lima kartu Discover. Versi sekarang:
 
 - masthead satu baris, tanpa ticker;
 - lead story + sidebar `Latest`, lalu tiga kartu More Top News;
 - Originals sebagai band gelap;
-- lima kartu Curated: 1 feature + grid 2×2, cover 4:5;
+- lima kartu Discover: 1 feature + grid 2×2, cover 4:5;
 - satu CTA Submit;
 - footer satu baris copyright.
 
@@ -158,12 +170,12 @@ brand tetap sama.
 
 ## Sanity Studio
 
-- `siteSettings` sekarang hanya berisi `name`, `curationNote`, `cardCurtain`,
+- `siteSettings` sekarang hanya berisi `name`, `cardCurtain`,
   `contactEmail`, `partnerEmail`. Field ticker, tagline, strapline, owner, est,
-  dan description dihapus dari schema; field kontak ditambahkan.
-- Curated beranda mengikuti urutan `order` dari **Konten Pillar** (lalu tanggal);
+  description, dan `curationNote` dihapus dari schema; field kontak ditambahkan.
+- Discover beranda mengikuti urutan `order` dari **Konten Pillar** (lalu tanggal);
   tidak ada field baru.
-- Copy `article` dan `pillarPost` diperbarui ke istilah Top News/Curated.
+- Copy `article` dan `pillarPost` diperbarui ke istilah Top News/Discover.
 - Studio dideploy ke `https://melodi-alam.sanity.studio/` (2/2 skema).
 
 ## Catatan
@@ -173,4 +185,4 @@ brand tetap sama.
 - Ticker, `MarqueeTape`, `SectionMarker`, dan `TICKER_ITEMS` dihapus dari kode
   dan schema.
 - `Curated News` masih muncul di dokumen historis (CHANGELOG, PRD, FRONTEND-PLAN)
-  sebagai nama lama; dokumen current memakai **Curated**.
+  sebagai nama lama; dokumen current memakai **Discover**.

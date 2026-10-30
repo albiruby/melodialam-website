@@ -173,7 +173,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
 
       {/* Footer */}
       <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-ink pt-4 text-xs font-mono">
-        <span>{every.length} artikel di Stories • kurasi redaksi</span>
+        <span>{every.length} artikel di Stories</span>
         <a
           href="https://www.instagram.com/melodi.alam/?hl=en"
           target="_blank"

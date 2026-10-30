@@ -17,12 +17,7 @@ export default async function StoriesPage() {
 
   return (
     <Reveal>
-      <div className="flex items-baseline justify-between pb-4">
-        <h1 className="text-4xl tracking-tight sm:text-5xl">Stories</h1>
-        <span className="font-serif text-sm italic text-neutral-600">
-          ({settings.curationNote})
-        </span>
-      </div>
+      <h1 className="pb-4 text-4xl tracking-tight sm:text-5xl">Stories</h1>
 
       <StoriesGrid articles={articles} settings={settings} />
 
@@ -37,14 +32,13 @@ export default async function StoriesPage() {
         </div>
       ) : null}
 
-      {/* ---------- Dari Feed → Curated ---------- */}
-      <div className="flex items-center justify-between pt-4 font-mono text-xs text-neutral-600">
-        <span>Konten kurasi dari feed @melodi.alam</span>
+      {/* ---------- Dari Feed → Discover ---------- */}
+      <div className="flex justify-end pt-4 font-mono text-xs text-neutral-600">
         <Link
-          href="/kurasi"
+          href="/discover"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"
         >
-          Curated
+          Discover
         </Link>
       </div>
     </Reveal>

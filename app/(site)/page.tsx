@@ -18,7 +18,7 @@ export const metadata: Metadata = {
    * layout default gives "MELODI ALAM — Stories & Watch".
    */
   description:
-    "Melodi Alam mencatat musik Indonesia lewat jurnalisme, sesi panggung intim di Samsara Bogor, dan kurasi dari feed @melodi.alam.",
+    "Melodi Alam mencatat musik Indonesia lewat jurnalisme, sesi panggung intim di Samsara Bogor, dan post pendek dari feed @melodi.alam.",
   alternates: { canonical: "/" },
 };
 

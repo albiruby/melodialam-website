@@ -11,7 +11,7 @@ import { contentClient } from "./sanity";
  *
  * The header no longer reads brand copy from the CMS: the lockup, promise and
  * navigation are code-owned. What remains editable is the footer name, the
- * Stories-page note and hover curtain, and the two contact addresses.
+ * hover curtain, and the two contact addresses.
  *
  * `url` and `locale` are deliberately NOT here: the origin has to come from the
  * environment so a preview deployment produces correct canonical URLs, and the
@@ -35,8 +35,6 @@ export interface CardCurtainCopy {
 
 export interface SiteSettings {
   name: string;
-  /** The small note beside a section heading. Never carries a date. */
-  curationNote: string;
   /** Where readers write about the site itself. */
   contactEmail: string;
   /** Where partnership offers go. */
@@ -48,7 +46,6 @@ export interface SiteSettings {
 
 const STATIC: SiteSettings = {
   name: SITE.name,
-  curationNote: "kurasi redaksi",
   contactEmail: "melodialam.ip@gmail.com",
   partnerEmail: "helfan@infia.co",
   cardCurtain: {
@@ -60,7 +57,6 @@ const STATIC: SiteSettings = {
 
 const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
   name,
-  curationNote,
   cardCurtain{ articleLabel, articleCta },
   contactEmail,
   partnerEmail
@@ -68,7 +64,6 @@ const SETTINGS_QUERY = /* groq */ `*[_type == "siteSettings"][0]{
 
 interface SettingsDoc {
   name?: string;
-  curationNote?: string;
   cardCurtain?: {
     articleLabel?: string;
     articleCta?: string;
@@ -98,7 +93,6 @@ export async function getSiteSettings(): Promise<SiteSettings> {
 
   return {
     name: or(doc.name, STATIC.name),
-    curationNote: or(doc.curationNote, STATIC.curationNote),
     contactEmail: or(doc.contactEmail, STATIC.contactEmail),
     partnerEmail: or(doc.partnerEmail, STATIC.partnerEmail),
     cardCurtain: {
