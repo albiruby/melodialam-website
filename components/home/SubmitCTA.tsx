@@ -14,7 +14,7 @@ export function SubmitCTA() {
       className="-mx-4 bg-forest px-4 py-14 text-white sm:-mx-8 sm:px-8 sm:py-20"
     >
       <div className="mx-auto max-w-2xl text-center">
-        <p className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
           Open Submission
         </p>
         <h2

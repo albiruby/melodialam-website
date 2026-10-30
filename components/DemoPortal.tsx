@@ -204,10 +204,10 @@ export function DemoPortal() {
     <div className="border-x border-b border-ink">
       <div className="bg-white p-6 sm:p-8">
         <div className="mb-6 flex items-center justify-between border-b border-ink pb-4">
-          <span className="font-mono text-xs font-bold uppercase">
+          <span className="font-sans text-xs font-bold uppercase">
             Formulir Pengiriman Karya Musisi / Band
           </span>
-          <span className="font-serif text-[11px] italic">
+          <span className="font-sans text-[11px] italic">
             (terbuka untuk seluruh kota di Indonesia)
           </span>
         </div>
@@ -314,7 +314,7 @@ export function DemoPortal() {
             which is invalid. The heading is a plain span instead.
           */}
           <div>
-            <span className="mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-wider">
+            <span className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-wider">
               (08) Opsional: Pratinjau File Audio (.MP3 / .WAV / .OGG, maks 25 MB)
             </span>
             <label
@@ -324,7 +324,7 @@ export function DemoPortal() {
               <span className="text-xs font-bold uppercase">
                 {audioName ? `File dipilih: ${audioName}` : "Pilih file audio dari perangkat ini"}
               </span>
-              <span className="mt-1 font-serif text-xs italic text-neutral-600">
+              <span className="mt-1 font-sans text-xs italic text-neutral-600">
                 Berkas ini ikut terkirim ke redaksi dan hanya dibaca kurator.
               </span>
               <input
@@ -337,14 +337,14 @@ export function DemoPortal() {
             </label>
 
             {audioError ? (
-              <p role="alert" className="mt-1.5 font-mono text-[11px] text-red-700">
+              <p role="alert" className="mt-1.5 font-sans text-[11px] text-red-700">
                 {audioError}
               </p>
             ) : null}
 
             {audioSrc ? (
               <div className="mt-3 flex items-center justify-between gap-4 border border-ink bg-paper p-3">
-                <span className="min-w-0 truncate font-mono text-xs">
+                <span className="min-w-0 truncate font-sans text-xs">
                   {audioName} · {(audioSize / 1024 / 1024).toFixed(1)} MB
                 </span>
                 <audio src={audioSrc} controls className="h-8 w-60" />
@@ -399,7 +399,7 @@ export function DemoPortal() {
         {banner ? (
           <div
             role={bannerIsError ? "alert" : "status"}
-            className={`stagger-item mt-6 border-2 p-4 font-mono text-xs ${
+            className={`stagger-item mt-6 border-2 p-4 font-sans text-xs ${
               bannerIsError
                 ? "border-red-700 bg-red-50 text-red-800"
                 : "border-forest bg-green-50 text-forest"
@@ -437,13 +437,13 @@ function Field({
     <div>
       <label
         htmlFor={htmlFor}
-        className="mb-1.5 block font-mono text-[11px] font-bold uppercase tracking-wider"
+        className="mb-1.5 block font-sans text-[11px] font-bold uppercase tracking-wider"
       >
         {label}
       </label>
       {children}
       {error ? (
-        <p role="alert" className="mt-1 font-mono text-[11px] text-red-700">
+        <p role="alert" className="mt-1 font-sans text-[11px] text-red-700">
           {error}
         </p>
       ) : null}

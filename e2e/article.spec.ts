@@ -1,5 +1,15 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => {
+    try {
+      window.localStorage.setItem("melodi-welcome-2026-10", "1");
+    } catch {
+      // Storage is optional in the test browser.
+    }
+  });
+});
+
 test.describe("Article detail", () => {
   test("opens from Stories in the same tab with the magazine header", async ({ page }) => {
     await page.goto("/stories");

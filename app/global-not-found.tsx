@@ -1,4 +1,4 @@
-import { Instrument_Serif, Inter, JetBrains_Mono, Red_Hat_Display } from "next/font/google";
+import { Inter, Red_Hat_Display } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -14,23 +14,15 @@ import NotFound from "./(site)/not-found";
  * `app/not-found.tsx` still handles `notFound()` thrown inside a matched route.
  */
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const inter = Inter({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-inter",
+  display: "swap",
+});
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-red-hat",
-  display: "swap",
-});
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument",
-  display: "swap",
-});
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -47,12 +39,12 @@ export default async function GlobalNotFound() {
     <html
       lang="id"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${redHatDisplay.variable} ${instrument.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${redHatDisplay.variable}`}
     >
       <body className="antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:border-2 focus:border-ink focus:bg-white focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:text-ink"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:border-2 focus:border-ink focus:bg-white focus:px-4 focus:py-2 focus:font-sans focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:text-ink"
         >
           Lompat ke konten utama
         </a>

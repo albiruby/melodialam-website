@@ -80,18 +80,18 @@ function Banner({ kind, id }: { kind: string; id: string }) {
   return (
     <div className="mb-8 flex flex-wrap items-center justify-between gap-3 border-2 border-ink bg-ink px-4 py-3 text-white">
       <div>
-        <p className="font-mono text-[11px] uppercase tracking-widest text-white/70">
+        <p className="font-sans text-[11px] uppercase tracking-widest text-white/70">
           Pratinjau draf — belum tayang
         </p>
         <p className="text-sm font-bold">
-          {kind} • <span className="font-mono text-xs">{id}</span>
+          {kind} • <span className="font-sans text-xs">{id}</span>
         </p>
       </div>
       <a
         href={`https://melodi-alam.sanity.studio/structure/${kind}/${id}`}
         target="_blank"
         rel="noreferrer"
-        className="border border-white px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider transition-colors hover:bg-white hover:text-ink"
+        className="border border-white px-3 py-1.5 font-sans text-[11px] uppercase tracking-wider transition-colors hover:bg-white hover:text-ink"
       >
         Buka di Studio
       </a>
@@ -130,7 +130,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
             {String(doc.title ?? "")}
           </h1>
           {doc.excerpt ? (
-            <p className="mt-4 max-w-3xl font-serif text-lg italic leading-snug text-neutral-700">
+            <p className="mt-4 max-w-3xl font-sans text-lg italic leading-snug text-neutral-700">
               {String(doc.excerpt)}
             </p>
           ) : null}
@@ -179,7 +179,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
           </div>
 
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-600">
+            <p className="font-sans text-[11px] uppercase tracking-widest text-neutral-600">
               {String(doc.pillar ?? "")} • {String(doc.mediaType ?? "")} • {String(doc.date ?? "")}
             </p>
             <h1 className="mt-2 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
@@ -189,7 +189,7 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
               href={String(doc.igUrl ?? "")}
               target="_blank"
               rel="noreferrer"
-              className="mt-4 inline-block font-mono text-xs uppercase tracking-wider underline hover:text-forest"
+              className="mt-4 inline-block font-sans text-xs uppercase tracking-wider underline hover:text-forest"
             >
               Buka post di Instagram
             </a>

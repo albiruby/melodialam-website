@@ -41,7 +41,7 @@ export function Originals({
       <div className={`mt-8 grid gap-10 ${featured ? "lg:grid-cols-12 lg:gap-10" : ""}`}>
         {featured ? (
           <div className="min-w-0 lg:col-span-8">
-            <h3 className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+            <h3 className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
               Melodi Samsara
             </h3>
 
@@ -76,7 +76,7 @@ export function Originals({
               </WatchLink>
             </h4>
 
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-white/60">
+            <p className="mt-2 font-sans text-[10px] uppercase tracking-wider text-white/60">
               {featured.venue} · {featured.duration}
             </p>
 
@@ -92,7 +92,7 @@ export function Originals({
                       <span className="truncate text-xs font-medium text-white/80 transition-colors group-hover:text-white">
                         {video.title}
                       </span>
-                      <span className="shrink-0 font-mono text-[10px] uppercase text-white/50">
+                      <span className="shrink-0 font-sans text-[10px] uppercase text-white/50">
                         {video.duration}
                       </span>
                     </WatchLink>
@@ -112,12 +112,12 @@ export function Originals({
             }
           >
             <div className="flex items-baseline justify-between gap-4 border-b border-white/20 pb-2">
-              <h3 className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
+              <h3 className="font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-white/60">
                 Bicara Melodi
               </h3>
               <Link
                 href="/bicara-melodi"
-                className="inline-flex min-h-11 items-center font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/70 underline decoration-1 underline-offset-4 transition-colors hover:text-white focus-visible:outline-white"
+                className="inline-flex min-h-11 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-white/70 underline decoration-1 underline-offset-4 transition-colors hover:text-white focus-visible:outline-white"
               >
                 Semua episode
               </Link>

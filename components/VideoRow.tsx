@@ -13,7 +13,7 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
       className="stagger-item group flex cursor-pointer flex-wrap items-center justify-between gap-5 px-3 py-5 transition-[color,background-color,border-color,transform,box-shadow,opacity] duration-300 hover:bg-paper md:flex-nowrap"
     >
       <div className="flex shrink-0 items-center gap-4 sm:gap-6">
-        <span className="text-outline-muted w-10 font-mono text-3xl font-bold sm:text-4xl">
+        <span className="text-outline-muted w-10 font-sans text-3xl font-bold sm:text-4xl">
           {no}
         </span>
         <WatchButton
@@ -32,7 +32,7 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
       </div>
 
       <div className="min-w-[240px] flex-1 transition-transform duration-300 group-hover:translate-x-1.5">
-        <div className="font-mono text-[10px] uppercase text-neutral-600">
+        <div className="font-sans text-[10px] uppercase text-neutral-600">
           {video.venue} • {video.uploaded}
         </div>
         <h3 className="mt-0.5 text-sm font-extrabold uppercase leading-snug tracking-tight transition-colors group-hover:text-forest sm:text-base">
@@ -54,7 +54,7 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
         >
           ▶
         </WatchButton>
-        <span className="select-none font-mono text-sm font-bold text-neutral-600">—</span>
+        <span className="select-none font-sans text-sm font-bold text-neutral-600">—</span>
         <a
           href={video.url}
           target="_blank"
@@ -63,7 +63,7 @@ export function VideoRow({ video, index }: { video: SiteVideo; index: number }) 
           className="inline-flex items-center border border-ink bg-white px-3.5 py-2 shadow-[4px_4px_0px_#0D0D0D] transition-colors hover:border-forest"
         >
           <div className="text-left leading-none">
-            <span className="block font-mono text-[10px] uppercase text-neutral-600">
+            <span className="block font-sans text-[10px] uppercase text-neutral-600">
               Melodi Alam
             </span>
             <span className="block text-sm font-black uppercase tracking-wider text-ink">

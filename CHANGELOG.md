@@ -15,6 +15,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Tipografi dua wajah + welcome modal (30 Okt 2026)**
+
+- **Hanya Inter + Red Hat Display**: JetBrains Mono dan Instrument Serif dihapus
+  dari `app/layout.tsx`, `app/global-not-found.tsx`, dan token `@theme`. Seluruh
+  `font-mono`/`font-serif` di komponen diganti `font-sans`; drop cap memakai Red
+  Hat Display, body artikel memakai Inter.
+- **Welcome modal**: dialog native, tampil sekali per browser (key berversi), dua
+  logo ditumpuk di kiri + foto ambience di kanan; CTA ke `/discover`. Tidak tampil
+  di `/preview` dan `/submit`.
+
 **Audit lanjutan (30 Okt 2026)**
 
 - **Rate limit bersama**: `rateLimit()` menjadi async dan memakai Redis REST

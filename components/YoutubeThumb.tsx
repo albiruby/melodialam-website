@@ -61,7 +61,7 @@ export function YoutubeThumb({
         aria-hidden
         className={`flex items-center justify-center bg-neutral-800 ${className}`}
       >
-        <span className="font-mono text-[10px] uppercase tracking-widest text-neutral-600">
+        <span className="font-sans text-[10px] uppercase tracking-widest text-neutral-600">
           poster tidak tersedia
         </span>
       </span>

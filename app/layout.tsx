@@ -1,51 +1,31 @@
-import { Instrument_Serif, Inter, JetBrains_Mono, Red_Hat_Display } from "next/font/google";
+import { Inter, Red_Hat_Display } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { MotionRoot } from "@/components/motion/MotionRoot";
+import { WelcomeModal } from "@/components/WelcomeModal";
 import { Analytics } from "@vercel/analytics/next";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 import { jsonLdScript } from "@/lib/json-ld";
 import { getSiteSettings } from "@/lib/site-settings";
 
 /**
- * Body and UI text. Loaded as a variable font, so the full weight axis is
- * available and each element picks its own weight.
+ * Two fonts only: Inter carries body copy, UI labels and metadata; Red Hat
+ * Display carries the largest headings. Both are variable, so every element
+ * picks its own weight from one file.
  */
 const inter = Inter({
   subsets: ["latin"],
+  style: ["normal", "italic"],
   variable: "--font-inter",
   display: "swap",
 });
 
-/**
- * Display slot — the largest headings on a page (the VIDEOS masthead and the
- * artist names in the Bicara Melodi index). Also variable.
- */
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-red-hat",
-  display: "swap",
-});
-
-/**
- * Instrument Serif has no variable axis (400 only), so it stays pinned and
- * carries the italic captions and the article drop cap.
- */
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  variable: "--font-instrument",
-  display: "swap",
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-jetbrains",
   display: "swap",
 });
 
@@ -135,7 +115,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="id"
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${redHatDisplay.variable} ${instrument.variable} ${jetbrains.variable}`}
+      className={`${inter.variable} ${redHatDisplay.variable}`}
     >
       <body className="antialiased">
         <MotionRoot>
@@ -152,7 +132,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               ticker, masthead and nav instead of walking through all of them. */}
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:border-2 focus:border-ink focus:bg-white focus:px-4 focus:py-2 focus:font-mono focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:text-ink"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[60] focus:border-2 focus:border-ink focus:bg-white focus:px-4 focus:py-2 focus:font-sans focus:text-xs focus:font-bold focus:uppercase focus:tracking-wider focus:text-ink"
           >
             Lompat ke konten utama
           </a>
@@ -166,6 +146,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </main>
           <SiteFooter settings={settings} />
+          <WelcomeModal />
         </MotionRoot>
         {/* Cookieless page views, from Vercel. Nothing is shown until Web
             Analytics is switched on for the project in the dashboard. */}

@@ -23,7 +23,7 @@ export default async function StoriesPage() {
       <StoriesGrid articles={articles} settings={settings} />
 
       {pages > 1 ? (
-        <div className="flex items-center justify-end border-b border-ink py-3 font-mono text-[11px] uppercase tracking-wider">
+        <div className="flex items-center justify-end border-b border-ink py-3 font-sans text-[11px] uppercase tracking-wider">
           <Link
             href="/stories/page/2"
             className="nav-link-anim inline-flex min-h-9 items-center py-2 font-bold text-ink transition-colors hover:text-forest"
@@ -34,7 +34,7 @@ export default async function StoriesPage() {
       ) : null}
 
       {/* ---------- Dari Feed → Discover ---------- */}
-      <div className="flex justify-end pt-4 font-mono text-xs text-neutral-600">
+      <div className="flex justify-end pt-4 font-sans text-xs text-neutral-600">
         <Link
           href="/discover"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"

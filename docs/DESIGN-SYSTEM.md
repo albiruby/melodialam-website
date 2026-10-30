@@ -46,7 +46,7 @@ tanpa kebutuhan nyata justru memperburuknya.
 | Lapis | Isi | Di mana |
 |---|---|---|
 | **Primitif** | Nilai mentah: `#0d0d0d`, `#f6f5f2`, `#1b3b2b`, `cubic-bezier(0.16, 1, 0.3, 1)` | `@theme` di `app/globals.css` |
-| **Semantik** | Peran yang dipakai komponen: `ink`, `paper`, `forest`, `--font-sans`, `--font-display`, `--font-serif`, `--font-mono`, `--ease-editorial` | `@theme` |
+| **Semantik** | Peran yang dipakai komponen: `ink`, `paper`, `forest`, `--font-sans`, `--font-display`, `--ease-editorial` | `@theme` |
 | **Komponen** | Tidak ada token komponen terpisah. Pola perilaku hidup sebagai `@utility` bernama, bukan sebagai variabel | `@utility` di `app/globals.css` |
 
 **Keputusan sadar:** lapis komponen tidak dibuat sebagai variabel CSS. Pada proyek
@@ -68,15 +68,13 @@ dari token tersebut.
 
   --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-red-hat), "Helvetica Neue", Arial, sans-serif;
-  --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
 
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
 }
 ```
 
 Tailwind v4 menghasilkan utility dari token ini, sehingga `bg-ink`, `text-forest`,
-`border-ink`, `font-display`, `font-mono`, dan seterusnya tersedia tanpa konfigurasi
+`border-ink`, `font-display`, `font-sans`, dan seterusnya tersedia tanpa konfigurasi
 tambahan.
 
 ---
@@ -127,21 +125,19 @@ nilai arbitrary Tailwind dan sebaiknya dipakai.
 
 ## 4. Tipografi
 
-Empat wajah huruf, masing-masing dengan peran yang tidak tumpang tindih. Latar
-keputusannya ada di [ADR-0007](adr/0007-tipografi-inter-red-hat-display.md).
+Dua wajah huruf, masing-masing dengan peran yang tidak tumpang tindih. Latar
+keputusannya ada di [ADR-0007](adr/0007-tipografi-inter-red-hat-display.md);
+revisi 30 Okt 2026 menghapus Instrument Serif dan JetBrains Mono.
 
 | Slot | Wajah | Peran | Pemuatan | CSS variable |
 |---|---|---|---|---|
-| `font-sans` | **Inter** | Teks badan, label, tombol, navigasi — default seluruh halaman | *Variable*, sumbu bobot penuh | `--font-inter` |
-| `font-display` | **Red Hat Display** | Judul pajang terbesar: masthead **MELODI SAMSARA**, nama artis di indeks Bicara Melodi, kepala seksi pilar | *Variable*, sumbu bobot penuh | `--font-red-hat` |
-| `font-serif` | **Instrument Serif** | Takarir miring, catatan editorial, drop cap artikel | `400` saja, normal + italic | `--font-instrument` |
-| `font-mono` | **JetBrains Mono** | Metadata, angka, label teknis, chip filter | `400`, `700` | `--font-jetbrains` |
+| `font-sans` | **Inter** | Teks badan, label, tombol, navigasi, metadata, angka — default seluruh halaman | *Variable*, normal + italic | `--font-inter` |
+| `font-display` | **Red Hat Display** | Judul pajang terbesar: masthead **MELODI SAMSARA**, nama artis di indeks Bicara Melodi, judul artikel, drop cap | *Variable*, sumbu bobot penuh | `--font-red-hat` |
 
-Keempatnya dimuat di `app/layout.tsx` lewat `next/font/google` dengan
+Keduanya dimuat di `app/layout.tsx` lewat `next/font/google` dengan
 `display: "swap"`, lalu dipasang sebagai kelas pada elemen `<html>`.
 `app/globals.css` hanya meneruskannya: blok `@theme` memetakan tiap variable ke
-satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`
-(Georgia / `ui-monospace` untuk serif dan mono).
+satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`.
 
 ### 4.1 Aturan pemilihan
 
@@ -150,15 +146,14 @@ satu slot Tailwind dengan fallback `"Helvetica Neue", Arial, sans-serif`
 | Judul bagian seperti `Top News`, `Stories`, `Discover` | `font-sans` dengan `tracking-tight` (bukan `font-display`) |
 | Judul pajang terbesar di halaman (`MELODI SAMSARA`) | `font-display font-black uppercase` |
 | Nama artis di indeks wawancara | `font-display` |
-| Takarir, catatan, kutipan miring | `font-serif italic` |
-| Angka, tanggal, label kategori, chip, kode | `font-mono` |
+| Takarir, catatan, kutipan miring | `font-sans italic` |
+| Angka, tanggal, label kategori, chip, kode | `font-sans` — `tabular-nums` untuk kolom angka |
 
 > **Jangan** menaruh teks badan di `font-display`. Judul pajang memakai `font-display`;
 > begitu ia turun ke ukuran teks badan, perannya hilang dan hierarkinya kabur.
 
-Pemakaian nyata di `app/` dan `components/`: `font-mono` 57×, `font-serif` 15×,
-`font-display` 3×. `font-display` memang dipakai hemat — hanya tiga tempat,
-semuanya judul besar.
+`font-sans` adalah default; `font-display` dipakai hemat untuk judul besar dan
+nama artis.
 
 ### 4.2 Urutan pelepasan bobot
 
@@ -339,7 +334,7 @@ tidak memakai `box-shadow` kabur. Pola yang benar-benar dipakai:
 | CTA utama hijau | `SubmitLink` di `components/SiteHeader.tsx`, dipakai di nav desktop | `bg-forest px-3.5 py-1.5 font-bold text-white`, hover `bg-ink` + `hover:shadow-[3px_3px_0px_#0D0D0D]` |
 | CTA utama hitam | Nav mobile (`components/SiteHeader.tsx`) dan tombol kirim demo (`components/DemoPortal.tsx`) | `bg-ink … text-white`, hover `bg-forest` |
 | Tombol sekunder | Judul artikel, "Semua artikel ", "Jelajahi semua ", "Discover " | `nav-link-anim font-bold uppercase tracking-wider text-ink` + `hover:text-forest` |
-| Chip filter | `components/KurasiBrowser.tsx` | `border border-ink px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider`; aktif `bg-ink text-white`, tidak aktif `hover:bg-paper` |
+| Chip filter | `components/DiscoverBrowser.tsx` | `border border-ink px-3 py-1.5 font-sans text-[10px] font-bold uppercase tracking-wider`; aktif `bg-ink text-white`, tidak aktif `hover:bg-paper` |
 | Tombol Play | `components/VideoRow.tsx` | `rounded-full border border-ink bg-ink text-white`, hover `bg-forest` — satu-satunya elemen bulat di situs |
 | Kartu playlist | `app/(site)/videos/page.tsx` | `brutalist-card … border border-ink bg-paper p-4` |
 | Tombol hamburger | `components/SiteHeader.tsx` | `border border-ink px-2.5 py-1 text-xs font-bold uppercase`, hover `bg-ink hover:text-white` |
@@ -484,7 +479,7 @@ seperti axe atau pemeriksa kontras.
 - `editorial-paper` **sudah didefinisikan** (`app/globals.css:138`) dan dipakai 2×.
 - `:focus-visible` global ada (1) dan pasangan `.group:focus-within` ada (8).
 - `text-green-400` 2×, `bg-green-400` 1×, `bg-green-50` 1×, `red-600` 1×.
-- `font-mono` 57 pemakaian, `font-serif` 15, `font-display` 3.
+- `font-sans` adalah default; `font-display` dipakai untuk judul besar. Tidak ada lagi `font-mono`/`font-serif`.
 - Pemakaian utility: `nav-link-anim` 13×, `editorial-img` 5×, `reveal-section` 2×,
   `stagger-item` 3×, `corner-frame` 2×, `hover-reveal-box` 2×, `hover-reveal-tag` 2×,
   `hover-reveal-curtain` 1×, `video-action-reveal` 1×, `modal-panel` 1×,

@@ -56,7 +56,7 @@ export default async function BicaraMelodiPage() {
                 {row.headline}
               </p>
               {video ? (
-                <p className="mt-2 font-mono text-[10px] uppercase text-neutral-600">
+                <p className="mt-2 font-sans text-[10px] uppercase text-neutral-600">
                   {video.duration} • {video.uploaded}
                 </p>
               ) : null}
@@ -76,7 +76,7 @@ export default async function BicaraMelodiPage() {
                   height={270}
                 />
               </WatchButton>
-              <span className="mt-1.5 font-serif text-sm italic text-neutral-600 transition-colors group-hover:text-forest">
+              <span className="mt-1.5 font-sans text-sm italic text-neutral-600 transition-colors group-hover:text-forest">
                 ({row.caption})
               </span>
             </div>
@@ -84,7 +84,7 @@ export default async function BicaraMelodiPage() {
         ))}
       </div>
 
-      <div className="flex flex-wrap items-center justify-end gap-4 pt-5 text-xs font-mono text-neutral-600">
+      <div className="flex flex-wrap items-center justify-end gap-4 pt-5 text-xs font-sans text-neutral-600">
         <Link
           href="/videos"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"

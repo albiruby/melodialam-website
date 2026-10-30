@@ -54,14 +54,14 @@ export default async function StoriesPaginatedPage(props: {
     <Reveal>
       <div className="flex items-baseline justify-between pb-4">
         <h1 className="text-4xl tracking-tight sm:text-5xl">Stories</h1>
-        <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-600">
+        <span className="font-sans text-[11px] uppercase tracking-wider text-neutral-600">
           Halaman {page} dari {pages}
         </span>
       </div>
 
       <StoriesGrid articles={articles} settings={settings} />
 
-      <div className="flex items-center justify-between border-b border-ink py-3 font-mono text-[11px] uppercase tracking-wider">
+      <div className="flex items-center justify-between border-b border-ink py-3 font-sans text-[11px] uppercase tracking-wider">
         <Link
           href={previous}
           className="nav-link-anim font-bold text-ink transition-colors hover:text-forest"

@@ -110,13 +110,13 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
       <header className="mx-auto max-w-4xl">
         <Link
           href="/stories"
-          className="nav-link-anim font-mono text-[11px] uppercase tracking-widest transition-colors hover:text-forest"
+          className="nav-link-anim font-sans text-[11px] uppercase tracking-widest transition-colors hover:text-forest"
         >
           ← Kembali ke Stories
         </Link>
 
         <div className="mt-8 text-center">
-          <div className="flex flex-col items-center gap-1 font-mono text-[11px] uppercase tracking-widest text-neutral-600 sm:flex-row sm:gap-x-2">
+          <div className="flex flex-col items-center gap-1 font-sans text-[11px] uppercase tracking-widest text-neutral-600 sm:flex-row sm:gap-x-2">
             <span className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
               <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
               <span aria-hidden>·</span>
@@ -133,7 +133,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
           </h1>
 
           <div className="mx-auto mt-8 max-w-3xl border-y-2 border-ink py-6">
-            <p className="font-serif text-xl leading-snug text-ink sm:text-2xl">
+            <p className="font-sans text-xl leading-snug text-ink sm:text-2xl">
               {article.excerpt}
             </p>
           </div>
@@ -167,7 +167,7 @@ export default async function ArticlePage(props: PageProps<"/stories/[slug]">) {
       <ArticleBody rich={article.richBody} paragraphs={article.body} />
 
       {/* Footer */}
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-ink pt-4 text-xs font-mono">
+      <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-ink pt-4 text-xs font-sans">
         <span>{every.length} artikel di Stories</span>
         <a
           href="https://www.instagram.com/melodi.alam/?hl=en"

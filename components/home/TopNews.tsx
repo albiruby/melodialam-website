@@ -28,7 +28,7 @@ export function TopNews({
 
   return (
     <section aria-labelledby="top-news-title">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-500">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pb-2 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-500">
         <span>Top News</span>
         <time dateTime={lead.dateISO}>{lead.date}</time>
       </div>
@@ -38,7 +38,7 @@ export function TopNews({
           href={`/stories/${lead.slug}`}
           className={`group block ${sidebar.length > 0 ? "lg:col-span-8" : "lg:col-span-12"}`}
         >
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
             <span className="font-bold text-ink">{CATEGORY_LABELS[lead.category]}</span>
             <span aria-hidden>·</span>
             <time dateTime={lead.dateISO}>{lead.date}</time>
@@ -69,7 +69,7 @@ export function TopNews({
 
         {sidebar.length > 0 ? (
           <aside className="lg:col-span-4">
-            <h2 className="pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-ink">
+            <h2 className="pb-2 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-ink">
               Latest
             </h2>
 
@@ -112,7 +112,7 @@ function SidebarLead({ article }: { article: SiteArticle }) {
         />
       </div>
       <div className="min-w-0 flex-1 lg:mt-3 lg:flex-none">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>·</span>
           <time dateTime={article.dateISO}>{article.date}</time>
@@ -131,7 +131,7 @@ function SidebarItem({ article }: { article: SiteArticle }) {
       href={`/stories/${article.slug}`}
       className="group block py-4"
     >
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
         <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
         <span aria-hidden>·</span>
         <time dateTime={article.dateISO}>{article.date}</time>
@@ -159,7 +159,7 @@ function NewsCard({ article }: { article: SiteArticle }) {
         />
       </div>
       <div className="flex min-w-0 flex-col md:mt-3">
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>·</span>
           <time dateTime={article.dateISO}>{article.date}</time>

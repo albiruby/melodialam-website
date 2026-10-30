@@ -121,7 +121,7 @@ export function VideoModal() {
             <span aria-hidden className="inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-red-600" />
             <h2
               id="video-modal-title"
-              className="max-w-md truncate font-mono text-xs font-bold uppercase sm:max-w-xl"
+              className="max-w-md truncate font-sans text-xs font-bold uppercase sm:max-w-xl"
             >
               {state.title}
             </h2>
@@ -130,7 +130,7 @@ export function VideoModal() {
             ref={closeButton}
             type="button"
             onClick={close}
-            className="border border-ink px-2.5 py-1 font-mono text-xs font-bold uppercase transition hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+            className="border border-ink px-2.5 py-1 font-sans text-xs font-bold uppercase transition hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
           >
             Tutup [ESC] ✕
           </button>
@@ -152,7 +152,7 @@ export function VideoModal() {
         </div>
 
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-ink bg-white px-4 py-3 text-xs">
-          <span className="font-serif italic text-neutral-600">
+          <span className="font-sans italic text-neutral-600">
             Tayang di kanal resmi YouTube @melodialam
           </span>
           <a

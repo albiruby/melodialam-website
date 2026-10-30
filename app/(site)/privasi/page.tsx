@@ -28,7 +28,7 @@ export default async function PrivacyPage() {
     <Reveal>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-rule pb-4">
         <h1 className="text-4xl tracking-tight sm:text-5xl">Kebijakan Privasi</h1>
-        <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-600">
+        <span className="font-sans text-[11px] uppercase tracking-wider text-neutral-600">
           diperbarui 24 Oktober 2026
         </span>
       </div>

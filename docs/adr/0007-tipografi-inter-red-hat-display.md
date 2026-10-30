@@ -1,5 +1,10 @@
 # ADR-0007 — Tipografi: Inter + Red Hat Display, menggantikan Plus Jakarta Sans
 
+> **Revisi 30 Okt 2026.** Keputusan ini diperbarui: hanya **Inter + Red Hat
+> Display**. Instrument Serif dan JetBrains Mono dihapus dari `app/layout.tsx`,
+> `app/global-not-found.tsx`, dan token `@theme`; seluruh `font-mono`/`font-serif`
+> diganti `font-sans`.
+
 | Atribut | Nilai |
 |---|---|
 | **Status** | `DITERIMA` — terimplementasi |

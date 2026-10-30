@@ -160,16 +160,16 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
                     />
                   ) : null}
                   {post.mediaType === "reel" ? (
-                    <span className="absolute right-2 top-2 bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
+                    <span className="absolute right-2 top-2 bg-white px-1.5 py-0.5 font-sans text-[10px] font-bold uppercase text-ink">
                       Reel
                     </span>
                   ) : null}
                 </div>
 
-                <h3 className="mt-3 line-clamp-4 font-mono text-[11px] font-bold uppercase leading-[1.35] tracking-wide text-ink transition-colors group-hover:text-forest">
+                <h3 className="mt-3 line-clamp-4 font-sans text-[11px] font-bold uppercase leading-[1.35] tracking-wide text-ink transition-colors group-hover:text-forest">
                   {post.title}
                 </h3>
-                <p className="mt-1 font-mono text-[10px] uppercase tracking-wide text-neutral-500">
+                <p className="mt-1 font-sans text-[10px] uppercase tracking-wide text-neutral-500">
                   {PILLAR_LABELS[post.pillar] ?? post.pillar}
                 </p>
               </a>

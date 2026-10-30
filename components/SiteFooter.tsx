@@ -15,7 +15,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
             sizes="(min-width: 640px) 420px, 360px"
             className="h-auto w-[360px] sm:w-[420px]"
           />
-          <p className="font-serif text-lg italic text-neutral-700">
+          <p className="font-sans text-lg italic text-neutral-700">
             A living ecosystem of melody: Stories and Watch.
           </p>
           <p className="max-w-sm text-[13px] leading-relaxed text-neutral-600">
@@ -26,7 +26,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="space-y-2 text-[13px] md:col-span-3">
-          <div className="mb-3 text-xs font-mono font-bold uppercase tracking-wider">Rubrik & Program</div>
+          <div className="mb-3 text-xs font-sans font-bold uppercase tracking-wider">Rubrik & Program</div>
           <ul className="space-y-1.5 text-neutral-700">
             {FOOTER_RUBRIKS.map((item) => (
               <li key={item.label}>
@@ -42,7 +42,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
 
         <div className="space-y-2 text-[13px] md:col-span-4">
-          <div className="mb-3 text-xs font-mono font-bold uppercase tracking-wider">
+          <div className="mb-3 text-xs font-sans font-bold uppercase tracking-wider">
             Ekosistem Ruang & Kanal Resmi
           </div>
           {/* Copy below names the venue; this lockup names the ecosystem owner. */}
@@ -111,7 +111,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 font-mono text-[11px] uppercase tracking-wider text-neutral-600 sm:px-8">
+      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-5 font-sans text-[11px] uppercase tracking-wider text-neutral-600 sm:px-8">
         <span>© 2017–2026 {settings.name} • INFIA PARIWARA NUSANTARA</span>
         <div className="flex flex-wrap gap-4">
           <Link href="/privasi" className="transition-colors hover:text-forest">

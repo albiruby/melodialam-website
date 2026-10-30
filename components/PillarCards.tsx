@@ -48,7 +48,7 @@ export function PillarCard({
           <>
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[10px] uppercase tracking-wider text-neutral-500"
+              className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[10px] uppercase tracking-wider text-neutral-500"
             >
               Memuat
             </span>
@@ -70,7 +70,7 @@ export function PillarCard({
           </>
         ) : null}
         {post.mediaType === "reel" ? (
-          <span className="absolute right-2 top-2 bg-white px-1.5 py-0.5 font-mono text-[10px] font-bold uppercase text-ink">
+          <span className="absolute right-2 top-2 bg-white px-1.5 py-0.5 font-sans text-[10px] font-bold uppercase text-ink">
             Reel
           </span>
         ) : null}
@@ -78,7 +78,7 @@ export function PillarCard({
 
       <div className="flex min-w-0 flex-1 flex-col">
         {showPillar ? (
-          <span className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-neutral-500">
+          <span className="mt-3 font-sans text-[10px] font-bold uppercase tracking-wider text-neutral-500">
             {PILLAR_LABELS[post.pillar] ?? post.pillar}
           </span>
         ) : null}
@@ -87,7 +87,7 @@ export function PillarCard({
         >
           {post.title}
         </h3>
-        <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-mono text-[10px] uppercase text-neutral-500">
+        <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-sans text-[10px] uppercase text-neutral-500">
           <span>{pillarDate(post.date)}</span>
           {showCta ? (
             <span className="transition-colors group-hover:text-forest">Buka di IG</span>
@@ -126,7 +126,7 @@ export function PillarFeature({
           <>
             <span
               aria-hidden
-              className="pointer-events-none absolute inset-0 flex items-center justify-center font-mono text-[10px] uppercase tracking-wider text-neutral-500"
+              className="pointer-events-none absolute inset-0 flex items-center justify-center font-sans text-[10px] uppercase tracking-wider text-neutral-500"
             >
               Memuat
             </span>
@@ -146,7 +146,7 @@ export function PillarFeature({
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col lg:mt-3 lg:flex-none">
-        <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-wider text-neutral-500">
+        <div className="flex items-center justify-between gap-3 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold">{PILLAR_LABELS[post.pillar] ?? post.pillar}</span>
           <span>{pillarDate(post.date)}</span>
         </div>

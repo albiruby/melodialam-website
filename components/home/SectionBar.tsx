@@ -36,7 +36,7 @@ export function SectionBar({
     >
       <h2
         id={id}
-        className={`font-mono text-[11px] font-bold uppercase tracking-[0.18em] ${
+        className={`font-sans text-[11px] font-bold uppercase tracking-[0.18em] ${
           dark ? "text-white" : "text-ink"
         }`}
       >
@@ -46,7 +46,7 @@ export function SectionBar({
       {href && linkLabel ? (
         <Link
           href={href}
-          className={`inline-flex min-h-11 items-center font-mono text-[10px] font-bold uppercase tracking-[0.14em] underline decoration-1 underline-offset-4 transition-colors ${
+          className={`inline-flex min-h-11 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] underline decoration-1 underline-offset-4 transition-colors ${
             dark
               ? "text-white/70 hover:text-white focus-visible:outline-white"
               : "text-neutral-600 hover:text-ink focus-visible:outline-forest"

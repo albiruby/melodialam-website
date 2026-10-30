@@ -57,13 +57,13 @@ function SectionHead({
         </Heading>
         {/* An empty note is a request to say nothing, not to show an empty gap. */}
         {note ? (
-          <span className="font-mono text-[11px] uppercase text-neutral-600">{note}</span>
+          <span className="font-sans text-[11px] uppercase text-neutral-600">{note}</span>
         ) : null}
       </div>
       {href && linkLabel ? (
         <a
           href={href}
-          className="nav-link-anim font-mono text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
+          className="nav-link-anim font-sans text-xs font-bold uppercase tracking-wider transition-colors hover:text-forest"
         >
           {linkLabel}
         </a>
@@ -131,7 +131,7 @@ export default async function VideosPage() {
         {/* The rest of the sessions stay on the channel; the site shows a
             selection, not the whole catalogue. */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink py-4">
-          <span className="font-mono text-[11px] uppercase tracking-wider text-neutral-600">
+          <span className="font-sans text-[11px] uppercase tracking-wider text-neutral-600">
             Sesi lainnya ada di kanal YouTube
           </span>
           <a
@@ -149,7 +149,7 @@ export default async function VideosPage() {
       <Reveal>
         <div className="flex items-baseline justify-between border-b-2 border-ink pb-3">
           <h2 className="text-3xl tracking-tight sm:text-4xl">{copy.playlistsTitle}</h2>
-          <span className="font-mono text-[11px] text-neutral-600">
+          <span className="font-sans text-[11px] text-neutral-600">
             {copy.playlistsNote ?? `${playlists.length} playlist publik • ${CHANNEL.handle}`}
           </span>
         </div>
@@ -164,19 +164,19 @@ export default async function VideosPage() {
               className="brutalist-card group flex flex-col justify-between border border-ink bg-paper p-4"
             >
               <div>
-                <span className="font-mono text-[10px] uppercase text-neutral-600">Playlist</span>
+                <span className="font-sans text-[10px] uppercase text-neutral-600">Playlist</span>
                 <h3 className="mt-1 text-sm font-bold uppercase transition-colors group-hover:text-forest">
                   {playlist.title}
                 </h3>
               </div>
-              <p className="mt-4 font-mono text-xs font-bold">{playlist.count}</p>
+              <p className="mt-4 font-sans text-xs font-bold">{playlist.count}</p>
             </a>
           ))}
         </div>
       </Reveal>
 
       {/* ---------- Dari Feed → Discover ---------- */}
-      <div className="flex justify-end font-mono text-xs text-neutral-600">
+      <div className="flex justify-end font-sans text-xs text-neutral-600">
         <Link
           href="/discover"
           className="nav-link-anim font-bold uppercase tracking-wider text-ink transition-colors hover:text-forest"

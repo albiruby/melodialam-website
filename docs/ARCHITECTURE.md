@@ -90,7 +90,7 @@ Target yang **sudah diambil** dan tidak dibuka ulang:
 | ADR-0004 | Katalog video | Tetap artefak build-time, tidak masuk CMS |
 | ADR-0001 | Artikel | Route nyata `/stories/[slug]`; pemutar video tetap modal tanpa URL |
 | ADR-0006 | Test & hosting | Vitest (terpasang) + Playwright (belum); deploy ke Vercel |
-| — | Tipografi | Inter + Red Hat Display + Instrument Serif + JetBrains Mono |
+| — | Tipografi | Inter + Red Hat Display |
 
 **Constraint arsitektural yang membentuk struktur:**
 

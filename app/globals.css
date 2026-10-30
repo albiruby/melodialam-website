@@ -13,8 +13,7 @@
 /* ---------------------------------------------------------------------------
    Melodi Alam — Swiss editorial brutalism
    Tokens lifted from the original single-file design: ink / paper / forest,
-   plus Inter (body), Red Hat Display (display headings), Instrument Serif
-   (italic editorial captions) and JetBrains Mono (metadata labels).
+   plus Inter (body, UI and metadata) and Red Hat Display (display headings).
 --------------------------------------------------------------------------- */
 
 @theme {
@@ -24,13 +23,10 @@
   /* Satu warna untuk garis rambut editorial; lebih lembut dari ink/20. */
   --color-rule: #d9d5cc;
 
-  /* Inter and Red Hat Display load as variable fonts, so the full weight axis is
-     available and each element sets its own weight. Instrument Serif has no
-     variable axis and stays pinned at 400 for the italic editorial captions. */
+  /* Inter and Red Hat Display load as variable fonts, so the full weight axis
+     is available and each element sets its own weight. */
   --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
   --font-display: var(--font-red-hat), "Helvetica Neue", Arial, sans-serif;
-  --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
 
   --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -77,7 +73,7 @@
 .article-prose p,
 .article-prose li,
 .article-prose blockquote {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: 1.05rem;
   line-height: 1.8;
   color: var(--color-ink);
@@ -137,7 +133,7 @@
 .article-prose > :first-child > p:first-child::first-letter {
   float: left;
   margin-right: 0.75rem;
-  font-family: var(--font-serif);
+  font-family: var(--font-display);
   font-size: 3.75rem;
   line-height: 0.85;
   color: var(--color-forest);

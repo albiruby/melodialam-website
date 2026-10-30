@@ -62,12 +62,12 @@ export default async function TentangPage() {
     <Reveal>
       <div className="flex flex-wrap items-baseline justify-between gap-3 border-b-2 border-ink pb-3">
         <h1 className="text-4xl tracking-tight sm:text-5xl">Tentang</h1>
-        <span className="font-serif text-sm italic text-neutral-600">({SITE.est} · {SITE.tagline})</span>
+        <span className="font-sans text-sm italic text-neutral-600">({SITE.est} · {SITE.tagline})</span>
       </div>
 
       <div className="grid grid-cols-1 gap-10 border-b border-ink py-8 md:grid-cols-12">
         <div className="md:col-span-7">
-          <p className="font-serif text-2xl italic leading-snug text-neutral-800 sm:text-3xl">
+          <p className="font-sans text-2xl italic leading-snug text-neutral-800 sm:text-3xl">
             {SITE.strapline}.
           </p>
           <p className="mt-5 max-w-2xl text-sm leading-relaxed text-neutral-700 sm:text-base">
@@ -104,7 +104,7 @@ export default async function TentangPage() {
 
         <div className="md:col-span-5">
           <div className="border border-ink bg-paper p-5">
-            <div className="font-mono text-[11px] font-bold uppercase tracking-wider">
+            <div className="font-sans text-[11px] font-bold uppercase tracking-wider">
               Kontak &amp; partnership
             </div>
             <p className="mt-3 text-sm leading-relaxed text-neutral-700">
@@ -126,7 +126,7 @@ export default async function TentangPage() {
               </a>
             </p>
 
-            <div className="mt-5 font-mono text-[11px] font-bold uppercase tracking-wider">
+            <div className="mt-5 font-sans text-[11px] font-bold uppercase tracking-wider">
               Samsara Listening Space &amp; Resto
             </div>
             <p className="mt-2 text-xs leading-relaxed text-neutral-600">
@@ -165,7 +165,7 @@ export default async function TentangPage() {
           <div key={pillar.title} className="p-5">
             <div className="flex items-baseline justify-between">
               <h2 className="text-2xl font-bold tracking-tight">{pillar.title}</h2>
-              <span className="font-mono text-[10px] uppercase text-neutral-600">{pillar.note}</span>
+              <span className="font-sans text-[10px] uppercase text-neutral-600">{pillar.note}</span>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-neutral-600">{pillar.body}</p>
             <Link
@@ -178,7 +178,7 @@ export default async function TentangPage() {
         ))}
       </div>
 
-      <p className="pt-5 font-mono text-[11px] text-neutral-600">
+      <p className="pt-5 font-sans text-[11px] text-neutral-600">
         {SITE.name} — {SITE.owner}. Bagian dari ekosistem Intellectual Property PT Infia
         Pariwara Nusantara (INFIA Corp).
       </p>
