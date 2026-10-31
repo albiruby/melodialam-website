@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { PRIMARY_NAV, SUBMIT_NAV } from "@/lib/site";
-import { InstagramIcon } from "./BrandIcons";
 import { MelodiAlamLockup } from "./MelodiAlamLockup";
 import { SubmitLink } from "./SubmitLink";
 
@@ -14,7 +13,7 @@ import { SubmitLink } from "./SubmitLink";
  * The old header stacked a ticker, a centred lockup, a tagline, an owner line
  * and a second nav row. This version keeps the brand mark and the links, and
  * lets the page start sooner. The tagline, owner and Instagram move to the
- * footer/drawer, where they do not compete with the first screen.
+ * footer, where they do not compete with the first screen.
  */
 export function SiteHeader() {
   const pathname = usePathname();
@@ -72,7 +71,7 @@ export function SiteHeader() {
         hidden={!drawerOpen}
         className="space-y-3 border-b border-rule bg-paper px-4 py-4 text-sm font-bold uppercase tracking-wider xl:hidden"
       >
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+        <div className="flex flex-col gap-1">
           {PRIMARY_NAV.map((item, i) => (
             <Link
               key={item.href}
@@ -93,16 +92,6 @@ export function SiteHeader() {
         >
           {SUBMIT_NAV.label}
         </Link>
-        <a
-          href="https://www.instagram.com/melodi.alam/?hl=en"
-          target="_blank"
-          rel="noreferrer"
-          onClick={closeDrawer}
-          className="flex min-h-11 items-center gap-2 border-t border-rule pt-3 text-ink transition-colors hover:text-forest"
-        >
-          <InstagramIcon className="h-4 w-4" />
-          Instagram
-        </a>
       </div>
     </header>
   );

@@ -31,6 +31,8 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - **Tautan eksternal**: playlist Melodi Taman di footer dan tautan kanal YouTube
   di kepala halaman Videos kini membuka tab baru dengan `rel="noreferrer"`,
   konsisten dengan tautan eksternal lain.
+- **Drawer ponsel**: lima tautan utama ditumpuk vertikal (01–05); tautan Instagram
+  dihapus dari drawer karena kanal sosial sudah ada di footer.
 - Seluruh tombol, filter Discover, paginasi Stories, dialog video, drawer ponsel,
   dan formulir Submit diuji lewat Playwright; axe 0 violation di 12 halaman ×
   desktop/ponsel.
