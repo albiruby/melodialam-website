@@ -20,11 +20,11 @@
   },
   "dependencies": {
     "@portabletext/react": "^8.0.1",
-    "@sanity/client": "^8.11.0",
+    "@sanity/client": "^8.14.1",
     "@sanity/image-url": "^2.1.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.2",
-    "motion": "^14.6.0",
+    "motion": "^14.8.0",
     "next": "^16.4.3",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
