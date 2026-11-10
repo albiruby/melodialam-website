@@ -42,6 +42,11 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   memakai `Cache-Control: private, no-store, max-age=0, must-revalidate` dan
   `X-Robots-Tag: noindex, nofollow`; `components/SiteAnalytics.tsx`
   meng-exclude setiap event dengan path `/preview`.
+- **Rate limit gagal-tertutup saat Redis error.** Kalau `KV_REST_API_*` /
+  `UPSTASH_REDIS_REST_*` terpasang tetapi panggilan Redis gagal, `rateLimit()`
+  menolak permintaan (`429`, `Retry-After: 60`) alih-alih diam-diam pindah ke
+  penghitung per-instance. Tanpa Redis sama sekali (dev), fallback memori tetap
+  dipakai.
 - `docs/API-CONTRACTS.md` diperbarui ke `PublicDemoRow`; schema OpenAPI,
   contoh JSON, dan catatan field ikut berubah.
 

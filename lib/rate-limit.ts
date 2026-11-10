@@ -12,8 +12,12 @@
  *   `UPSTASH_REDIS_REST_URL`/`UPSTASH_REDIS_REST_TOKEN` are set. The counter is
  *   shared by every instance, so a burst spread over many functions is caught.
  * - **Memory** otherwise. Each instance keeps its own counter; good enough to
- *   blunt a script locally, but not a global limit. The fallback also runs when
- *   Redis is unreachable, so a cache outage cannot take the forms down.
+ *   blunt a script locally, but not a global limit. This is the degraded mode
+ *   for a deployment with no Redis configured (local development).
+ *
+ * When Redis IS configured but the call fails, the limiter fails closed: the
+ * request is refused for a minute instead of silently degrading to a
+ * per-instance counter that a distributed script can walk around.
  *
  * The Redis call is one atomic Lua script (INCR + PEXPIRE + PTTL), so two
  * concurrent requests cannot both create the window. No SDK: the REST API is
@@ -123,7 +127,10 @@ export async function rateLimit(
     try {
       return await redisRateLimit(config, key, limit, windowMs);
     } catch (error) {
-      console.warn("[rate-limit] Redis gagal, memakai memori:", error);
+      // Fail closed. A configured limiter that cannot count is not a reason to
+      // accept an unbounded burst on every instance; the caller can retry.
+      console.error("[rate-limit] Redis gagal; permintaan ditolak:", error);
+      return { ok: false, remaining: 0, retryAfter: 60 };
     }
   }
   return memoryRateLimit(key, limit, windowMs);

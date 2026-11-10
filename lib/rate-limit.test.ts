@@ -80,7 +80,7 @@ describe("rateLimit", () => {
     expect(body[3]).toBe("rl:redis-a");
   });
 
-  it("falls back to memory when Redis is unreachable", async () => {
+  it("fails closed when Redis is configured but unreachable", async () => {
     process.env.UPSTASH_REDIS_REST_URL = "https://kv.example";
     process.env.UPSTASH_REDIS_REST_TOKEN = "token";
     vi.stubGlobal(
@@ -89,8 +89,9 @@ describe("rateLimit", () => {
     );
 
     const result = await rateLimit("redis-down", 1, 60_000);
-    expect(result.ok).toBe(true);
+    expect(result.ok).toBe(false);
     expect(result.remaining).toBe(0);
+    expect(result.retryAfter).toBeGreaterThan(0);
   });
 });
 
