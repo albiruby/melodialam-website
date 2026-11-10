@@ -15,6 +15,22 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Audit P0 — proyeksi publik antrean demo (10 Nov 2026)**
+
+- **`GET /api/demos` tidak lagi memuat `link` dan `story`.** Kedua field itu
+  dilarang ADR-0005: `story` adalah teks bebas tanpa filter PII dan `link`
+  menerima host apa pun. Proyeksi dipindah ke `lib/demo-queue.ts`
+  (`toPublicDemoRow()`) dan dipakai kedua jalur — Sanity maupun fallback
+  in-memory. `title` ikut dihapus dari respons publik; `id` dan `submittedAt`
+  dipertahankan sebagai metadata struktural. Respons `POST /api/demos`
+  memakai proyeksi yang sama, jadi kiriman tidak lagi dipantulkan kembali.
+- **Halaman Privasi dikoreksi**: sebelumnya menjanjikan tautan EPK "dapat
+  tampil di halaman publik"; sekarang menyatakan kontak, audio, tautan EPK, dan
+  cerita lagu tidak pernah tampil, dan hanya nama band, kota, genre, serta
+  tujuan kurasi yang tampil setelah disetujui.
+- `docs/API-CONTRACTS.md` diperbarui ke `PublicDemoRow`; schema OpenAPI,
+  contoh JSON, dan catatan field ikut berubah.
+
 **Tipografi dua wajah + welcome modal (30 Okt 2026)**
 
 - **Hanya Inter + Red Hat Display**: JetBrains Mono dan Instrument Serif dihapus

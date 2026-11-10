@@ -7,11 +7,11 @@ import {
   DEMO_INITIAL_STATUS,
   DEMO_PROGRAMS,
   SEED_DEMOS,
-  type DemoStatus,
   type DemoSubmission,
 } from "@/lib/content-fallback";
 import { recall, remember } from "@/lib/idempotency";
 import { isDemoAudioUrl } from "@/lib/blob-audio";
+import { toPublicDemoRow, type DemoQueueSource } from "@/lib/demo-queue";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { submissionsClient } from "@/lib/sanity-server";
 
@@ -31,7 +31,6 @@ import { submissionsClient } from "@/lib/sanity-server";
 type QueuedDemo = DemoSubmission;
 
 const memoryQueue: QueuedDemo[] = [...SEED_DEMOS];
-
 /** Mirrors the target schema until the CMS owns it. */
 const memoryContacts = new Map<string, string>();
 
@@ -86,44 +85,15 @@ function id(): string {
   return `demo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-/** Shape returned by the queue query, before it is narrowed to `QueuedDemo`. */
-interface QueueRow {
-  id: string;
-  artist: string;
-  city: string;
-  title: string;
-  genre: string | null;
-  program: string | null;
-  link: string;
-  story: string;
-  status: string;
-  submittedAt: string;
-}
-
-function toPublicRow(doc: QueueRow): QueuedDemo {
-  return {
-    id: doc.id,
-    artist: doc.artist,
-    city: doc.city,
-    title: doc.title,
-    genre: doc.genre ?? "",
-    program: doc.program ?? "",
-    link: doc.link,
-    story: doc.story,
-    status: doc.status as DemoStatus,
-    submittedAt: doc.submittedAt,
-  };
-}
+/** Shape returned by the queue query, before it is projected for the public. */
+type QueueRow = DemoQueueSource;
 
 const APPROVED_QUERY = /* groq */ `*[_type == "demoSubmission" && status in $approved] | order(submittedAt desc)[0...100] {
   "id": _id,
   artist,
   city,
-  title,
   genre,
   program,
-  link,
-  story,
   status,
   submittedAt
 }`;
@@ -138,7 +108,7 @@ export async function GET() {
   const approved = (row: QueuedDemo) => approvedStatuses.includes(row.status);
 
   if (!submissionsClient) {
-    const queue = memoryQueue.filter(approved);
+    const queue = memoryQueue.filter(approved).map(toPublicDemoRow);
     return NextResponse.json({ queue, count: queue.length });
   }
 
@@ -149,10 +119,10 @@ export async function GET() {
       { cache: "no-store" },
     );
 
-    return NextResponse.json({ queue: rows.map(toPublicRow), count: rows.length });
+    return NextResponse.json({ queue: rows.map(toPublicDemoRow), count: rows.length });
   } catch {
     // The queue is a convenience, not a page: fall back rather than 500.
-    const queue = memoryQueue.filter(approved);
+    const queue = memoryQueue.filter(approved).map(toPublicDemoRow);
     return NextResponse.json({ queue, count: queue.length });
   }
 }
@@ -427,15 +397,12 @@ export async function POST(request: Request) {
     audioUrl,
   });
 
-  const entry = toPublicRow({
+  const entry = toPublicDemoRow({
     id: createdId,
     artist,
     city,
-    title,
     genre: genre || null,
     program: program || null,
-    link,
-    story,
     status: DEMO_INITIAL_STATUS,
     submittedAt,
   });

@@ -57,9 +57,9 @@ export default async function PrivacyPage() {
             </li>
           </ul>
           <p>
-            Kontak dan audio tidak ditampilkan di halaman publik. Nama band, kota,
-            genre, dan tautan EPK dapat tampil di halaman publik <em>hanya</em> jika
-            redaksi menyetujui karya itu untuk ditampilkan.
+            Kontak, audio, tautan EPK, dan cerita lagu tidak ditampilkan di
+            halaman publik. Nama band, kota, genre, dan tujuan kurasi baru
+            tampil setelah redaksi menyetujui karya itu.
           </p>
         </section>
 

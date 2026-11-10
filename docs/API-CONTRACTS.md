@@ -226,17 +226,19 @@ pengunggahan audio yang menerima `multipart/form-data`.
 | Efek samping | Tidak ada |
 | Cache | Tanpa header cache eksplisit; pembacaan Sanity memakai `cache: "no-store"` |
 
-**Dua jalur, satu kontrak** (`app/api/demos/route.ts:106-123`):
+**Dua jalur, satu kontrak** (`app/api/demos/route.ts`):
 
 1. **Sanity terhubung** (`SANITY_API_READ_TOKEN` ada): GROQ
    `*[_type == "demoSubmission" && status in $approved] | order(submittedAt desc)[0...100]`
    dengan `$approved = ["SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)"]`.
-   `cache: "no-store"`.
+   Proyeksi hanya mengambil `id`, `artist`, `city`, `genre`, `program`,
+   `status`, dan `submittedAt`. `cache: "no-store"`.
 2. **Sanity tidak terhubung**: array modul `memoryQueue` yang disemai dari
-   `SEED_DEMOS` (3 entri) — **tanpa** filter status.
+   `SEED_DEMOS`; hanya baris berstatus approved yang dikembalikan.
 
 Kalau pembacaan Sanity melempar error, route **jatuh ke antrean seed** dengan
-`200`, bukan `5xx` ("the queue is a convenience, not a page").
+`200`, bukan `5xx` ("the queue is a convenience, not a page"). Kedua jalur
+melewati proyeksi yang sama.
 
 **Respons sukses — `200`** (`application/json`):
 
@@ -247,11 +249,8 @@ Kalau pembacaan Sanity melempar error, route **jatuh ke antrean seed** dengan
       "id": "seed-shroomeater",
       "artist": "Shroomeater",
       "city": "Bogor",
-      "title": "Echoes in the Pine Forest",
       "genre": "Alternative Rock / Shoegaze",
       "program": "Live at Melodi Samsara",
-      "link": "https://www.instagram.com/melodi.alam/",
-      "story": "Direkam secara live di studio kecil kawasan Baranangsiang, terinspirasi kabut sore Kota Bogor.",
       "status": "SHORTLISTED (SAMSARA)",
       "submittedAt": "2026-10-12"
     }
@@ -260,28 +259,26 @@ Kalau pembacaan Sanity melempar error, route **jatuh ke antrean seed** dengan
 }
 ```
 
-- `queue`: array baris yang lolos filter status (jalur Sanity) atau seluruh
-  antrean seed (jalur fallback). Maksimal **100** baris.
+- `queue`: array baris approved, maksimal **100** baris.
 - `count`: `queue.length` — jumlah elemen, **bukan** jumlah dokumen Sanity
   seluruh.
-- Baris di-*narrow* ke `DemoSubmission` oleh `toPublicRow()`
-  (`route.ts:76-89`): `genre`/`program` yang `null` menjadi `""`.
+- Setiap baris melewati `toPublicDemoRow()` (`lib/demo-queue.ts`) yang
+  mempertahankan hanya field ADR-0005: nama band, kota, genre, tujuan kurasi,
+  dan status, ditambah `id` serta `submittedAt` sebagai metadata struktural.
+  **`link`, `story`, `title`, dan kontak tidak pernah ikut.**
 
 **Tidak ada status error.** Route ini tidak dapat mengembalikan `4xx`/`5xx`
 dari logikanya sendiri.
 
 **Celah `TERVERIFIKASI`:**
 
-1. **Fallback tidak memfilter status.** Tanpa `SANITY_API_READ_TOKEN`, jalur
-   seed mengembalikan `seed-pelabuhan-senja` yang berstatus `IN REVIEW` —
-  yakni status belum disetujui ikut terbaca. Jalur Sanity tidak punya masalah ini.
-2. **Tanpa paginasi.** Dibatasi 100 baris, tapi tidak ada cara meminta halaman
+1. **Tanpa paginasi.** Dibatasi 100 baris, tapi tidak ada cara meminta halaman
    berikutnya.
-3. **Tanpa autentikasi, dengan rate limit per IP.**
-4. **Tanpa filter/sortir/pencarian** selain urutan `submittedAt desc` yang
+2. **Tanpa autentikasi, dengan rate limit per IP.**
+3. **Tanpa filter/sortir/pencarian** selain urutan `submittedAt desc` yang
    dipatok server.
-5. **Tidak ada konsumen di repo** (§1.1) — mengubah bentuk respons tidak
-   Clinics klien yang sudah dikirim.
+4. **Tidak ada konsumen di repo** (§1.1) — mengubah bentuk respons tidak
+   memecahkan klien yang sudah dikirim.
 
 ### 4.2 `API-02` — `POST /api/demos`
 
@@ -406,11 +403,8 @@ Catatan validasi yang harus dibaca konsumen:
     "id": "a1b2c3d4e5f6",
     "artist": "Skyline",
     "city": "Bandung",
-    "title": "Senja di Jalan Braga",
     "genre": "Indie Pop / Folk",
     "program": "Review Artikel dan Rekomendasi IG",
-    "link": "https://open.spotify.com/example",
-    "story": "Single kedua dari EP mendatang.",
     "status": "IN REVIEW",
     "submittedAt": "2026-10-21"
   },
@@ -424,14 +418,15 @@ Field respons sukses:
 | Field | Tipe | Catatan |
 |---|---|---|
 | `ok` | `boolean` | Selalu `true` |
-| `entry` | `DemoSubmission` | `id` = `_id` Sanity, atau `demo-<base36>-<6>` pada jalur in-memory |
+| `entry` | `PublicDemoRow` | `id` = `_id` Sanity, atau `demo-<base36>-<6>` pada jalur in-memory. Proyeksi publik yang sama dengan `GET` |
 | `queueLength` | `number` | Jalur Sanity: jumlah submission **approved**. Jalur in-memory: `memoryQueue.length` |
 | `note` | `string` | Teks konstan. **Tidak** memuat nilai `contact` |
 
 `entry.status` **selalu** `"IN REVIEW"` (`DEMO_INITIAL_STATUS`) — submission
 publik tidak dapat dibuat dengan status lain. `entry.submittedAt` date-only.
-`entry` **tidak pernah** memuat `contact`, `audioName`, atau `audioUrl`, even
-though the last two are stored on the Sanity document.
+`entry` **tidak pernah** memuat `contact`, `title`, `link`, `story`,
+`audioName`, atau `audioUrl`; dua field audio terakhir tetap disimpan pada
+dokumen Sanity.
 
 **Celah `TERVERIFIKASI` (dibuktikan dari kode):**
 
@@ -906,7 +901,7 @@ paths:
                   queue:
                     type: array
                     items:
-                      $ref: '#/components/schemas/DemoSubmission'
+                      $ref: '#/components/schemas/PublicDemoRow'
                   count:
                     type: integer
                     minimum: 0
@@ -915,11 +910,8 @@ paths:
                   - id: "seed-shroomeater"
                     artist: "Shroomeater"
                     city: "Bogor"
-                    title: "Echoes in the Pine Forest"
                     genre: "Alternative Rock / Shoegaze"
                     program: "Live at Melodi Samsara"
-                    link: "https://www.instagram.com/melodi.alam/"
-                    story: "Direkam secara live di studio kecil kawasan Baranangsiang."
                     status: "SHORTLISTED (SAMSARA)"
                     submittedAt: "2026-10-12"
                 count: 1
@@ -959,7 +951,7 @@ paths:
                     type: boolean
                     const: true
                   entry:
-                    $ref: '#/components/schemas/DemoSubmission'
+                    $ref: '#/components/schemas/PublicDemoRow'
                   queueLength:
                     type: integer
                     minimum: 0
@@ -974,11 +966,8 @@ paths:
                   id: "a1b2c3d4e5f6"
                   artist: "Skyline"
                   city: "Bandung"
-                  title: "Senja di Jalan Braga"
                   genre: "Indie Pop / Folk"
                   program: "Review Artikel dan Rekomendasi IG"
-                  link: "https://open.spotify.com/example"
-                  story: "Single kedua dari EP mendatang."
                   status: "IN REVIEW"
                   submittedAt: "2026-10-21"
                 queueLength: 12
@@ -1188,9 +1177,12 @@ components:
       in: header
       name: x-webhook-secret
   schemas:
-    DemoSubmission:
+    PublicDemoRow:
       type: object
-      required: [id, artist, city, title, genre, program, link, story, status, submittedAt]
+      description: >
+        Proyeksi publik satu baris antrean (ADR-0005). Tanpa tautan EPK,
+        cerita lagu, judul, atau kontak.
+      required: [id, artist, city, genre, program, status, submittedAt]
       additionalProperties: false
       properties:
         id:
@@ -1201,22 +1193,12 @@ components:
         city:
           type: string
           maxLength: 80
-        title:
-          type: string
-          maxLength: 160
         genre:
           type: string
           maxLength: 60
         program:
           type: string
           maxLength: 80
-        link:
-          type: string
-          maxLength: 500
-          format: uri
-        story:
-          type: string
-          maxLength: 2000
         status:
           type: string
           enum: ["IN REVIEW", "SHORTLISTED (SAMSARA)", "APPROVED (ARTICLE)", "ARCHIVED"]
@@ -1357,7 +1339,7 @@ dihubungi, tidak ada endpoint yang dipanggil, tidak ada paket yang dipasang.
   yang menyimpan data. Diverifikasi: `memoryQueue` modul-level dari
   `SEED_DEMOS` + `memoryContacts`; `MAX_FIELD = 500`; `MAX_BODY_BYTES = 16*1024`;
   `str()` trim+slice; `id()` format `demo-<base36>-<6 char>`; `APPROVED_QUERY`
-  `[0...100]` + `status in $approved`; `toPublicRow()`; `GET` → `200 {queue, count}`
+  `[0...100]` + `status in $approved`; `toPublicDemoRow()`; `GET` → `200 {queue, count}`
   dengan fallback ke antrean seed saat query melempar; `POST` → `413` (body
   besar), `400` (JSON cacat), `422 {error, errors}`, `503` (gagal simpan),
   `201 {ok, entry, queueLength, note}`; `notifyNewSubmission()` (Resend, error
