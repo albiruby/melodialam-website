@@ -15,7 +15,7 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
-**Audit P0 — proyeksi publik antrean demo (10 Nov 2026)**
+**Audit P0 (10 Nov 2026)**
 
 - **`GET /api/demos` tidak lagi memuat `link` dan `story`.** Kedua field itu
   dilarang ADR-0005: `story` adalah teks bebas tanpa filter PII dan `link`
