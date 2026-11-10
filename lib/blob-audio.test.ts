@@ -37,8 +37,15 @@ describe("isDemoAudioUrl", () => {
     expect(isDemoAudioUrl(`https://${HOST}/demo-audio/manager-name.mp3`, STORE)).toBe(false);
   });
 
-  it("falls back to the Blob suffix only when no store ID is configured", () => {
-    expect(isDemoAudioUrl(`https://${HOST}/demo-audio/${UUID}.mp3`)).toBe(true);
+  it("fails closed when no store ID is configured", () => {
+    expect(isDemoAudioUrl(`https://${HOST}/demo-audio/${UUID}.mp3`)).toBe(false);
     expect(isDemoAudioUrl(`https://example.com/demo-audio/${UUID}.mp3`)).toBe(false);
+  });
+
+  it("accepts a store ID written with the store_ prefix or stray spaces", () => {
+    expect(isDemoAudioUrl(`https://${HOST}/demo-audio/${UUID}.mp3`, ` ${STORE} `)).toBe(true);
+    expect(isDemoAudioUrl(`https://${HOST}/demo-audio/${UUID}.mp3`, STORE.replace("store_", ""))).toBe(
+      true,
+    );
   });
 });

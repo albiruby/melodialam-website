@@ -28,6 +28,10 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   tampil di halaman publik"; sekarang menyatakan kontak, audio, tautan EPK, dan
   cerita lagu tidak pernah tampil, dan hanya nama band, kota, genre, serta
   tujuan kurasi yang tampil setelah disetujui.
+- **`isDemoAudioUrl()` gagal-tertutup tanpa `BLOB_STORE_ID`.** Sebelumnya host
+  apa pun berakhiran `.blob.vercel-storage.com` diterima bila store ID kosong;
+  sekarang tanpa store ID tidak ada URL audio yang lolos. `.env.example`
+  menandai `BLOB_STORE_ID` wajib saat upload audio aktif.
 - `docs/API-CONTRACTS.md` diperbarui ke `PublicDemoRow`; schema OpenAPI,
   contoh JSON, dan catatan field ikut berubah.
 

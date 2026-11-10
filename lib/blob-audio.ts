@@ -24,11 +24,10 @@ export function isDemoAudioPathname(pathname: string): boolean {
 /**
  * Whether a submitted `audioUrl` is one of our audio objects.
  *
- * When `BLOB_STORE_ID` is set (production), the host must be this store's
- * public/private Blob hostname — not merely any `*.blob.vercel-storage.com`
- * host. The pathname must also be our UUID namespace. Without a store ID the
- * host check falls back to the shared Blob suffix, but the namespace check
- * still applies.
+ * The host must be this store's Blob hostname — not merely any
+ * `*.blob.vercel-storage.com` host — and the pathname must be our UUID
+ * namespace. Without `BLOB_STORE_ID` there is no way to prove the host belongs
+ * to us, so the check fails closed rather than accepting a foreign store.
  */
 export function isDemoAudioUrl(value: string, storeId?: string | null): boolean {
   let url: URL;
@@ -41,14 +40,13 @@ export function isDemoAudioUrl(value: string, storeId?: string | null): boolean 
   if (!AUDIO_URL_PATH.test(url.pathname)) return false;
 
   const host = url.hostname.toLowerCase();
-  const normalized = storeId?.replace(/^store_/i, "").toLowerCase();
-  if (normalized) {
-    const allowed = new Set([
-      `${normalized}.public.blob.vercel-storage.com`,
-      `${normalized}.private.blob.vercel-storage.com`,
-      `${normalized}.blob.vercel-storage.com`,
-    ]);
-    return allowed.has(host);
-  }
-  return host.endsWith(".blob.vercel-storage.com");
+  const normalized = storeId?.trim().replace(/^store_/i, "").toLowerCase();
+  if (!normalized) return false;
+
+  const allowed = new Set([
+    `${normalized}.public.blob.vercel-storage.com`,
+    `${normalized}.private.blob.vercel-storage.com`,
+    `${normalized}.blob.vercel-storage.com`,
+  ]);
+  return allowed.has(host);
 }
