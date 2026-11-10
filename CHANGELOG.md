@@ -32,6 +32,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   apa pun berakhiran `.blob.vercel-storage.com` diterima bila store ID kosong;
   sekarang tanpa store ID tidak ada URL audio yang lolos. `.env.example`
   menandai `BLOB_STORE_ID` wajib saat upload audio aktif.
+- **Secret pratinjau tidak lagi menetap di URL.** `proxy.ts` memverifikasi
+  `?secret=`, menukarnya dengan cookie HttpOnly `melodi_preview` yang
+  ditandatangani HMAC dan berlaku 1 jam, lalu me-redirect ke URL tanpa secret.
+  Cookie hanya berlaku di `/preview`; halaman memeriksa secret query sendiri
+  dan menerima penanda `x-melodi-preview` yang dipasang proxy (nilai kiriman
+  klien dihapus lebih dulu).
+- **Pratinjau tidak di-cache dan tidak masuk analytics.** Respons `/preview`
+  memakai `Cache-Control: private, no-store, max-age=0, must-revalidate` dan
+  `X-Robots-Tag: noindex, nofollow`; `components/SiteAnalytics.tsx`
+  meng-exclude setiap event dengan path `/preview`.
 - `docs/API-CONTRACTS.md` diperbarui ke `PublicDemoRow`; schema OpenAPI,
   contoh JSON, dan catatan field ikut berubah.
 

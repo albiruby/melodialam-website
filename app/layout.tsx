@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { MotionRoot } from "@/components/motion/MotionRoot";
 import { WelcomeModal } from "@/components/WelcomeModal";
-import { Analytics } from "@vercel/analytics/next";
+import { SiteAnalytics } from "@/components/SiteAnalytics";
 import { EXTERNAL_LINKS, SITE } from "@/lib/site";
 import { jsonLdScript } from "@/lib/json-ld";
 import { getSiteSettings } from "@/lib/site-settings";
@@ -149,8 +149,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <WelcomeModal />
         </MotionRoot>
         {/* Cookieless page views, from Vercel. Nothing is shown until Web
-            Analytics is switched on for the project in the dashboard. */}
-        <Analytics />
+            Analytics is switched on for the project in the dashboard. Preview
+            pages are filtered out. */}
+        <SiteAnalytics />
       </body>
     </html>
   );

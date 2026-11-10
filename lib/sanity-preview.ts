@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { createClient } from "@sanity/client";
 import { SANITY_API_VERSION } from "./sanity";
 import { SANITY_DATASET, SANITY_PROJECT_ID } from "./sanity-project";
@@ -50,4 +51,42 @@ export function secretMatches(provided: string | null, expected: string | null):
   let diff = 0;
   for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
   return diff === 0;
+}
+
+/* --- Preview session cookie ---------------------------------------------- */
+
+/**
+ * The preview secret is accepted once from the query string, then exchanged for
+ * an HttpOnly cookie and stripped from the URL. That keeps the secret out of
+ * the address bar, browser history, Referer headers and analytics page views.
+ *
+ * The cookie does not carry the secret itself: it carries an expiry and an
+ * HMAC over it, so a stolen cookie expires an hour after it was issued and
+ * cannot be edited into a longer session.
+ */
+export const PREVIEW_COOKIE = "melodi_preview";
+export const PREVIEW_TTL_SECONDS = 60 * 60;
+
+function previewSignature(secret: string, expiresAt: number): string {
+  return createHmac("sha256", secret).update(`preview:${expiresAt}`).digest("base64url");
+}
+
+/** A short-lived token for the preview cookie. */
+export function previewToken(secret: string, now = Date.now()): string {
+  const expiresAt = Math.floor(now / 1000) + PREVIEW_TTL_SECONDS;
+  return `${expiresAt}.${previewSignature(secret, expiresAt)}`;
+}
+
+/** Whether a cookie token was issued by us and has not expired yet. */
+export function previewTokenMatches(
+  token: string | null | undefined,
+  secret: string | null,
+  now = Date.now(),
+): boolean {
+  if (!token || !secret) return false;
+  const [rawExpires, signature] = token.split(".");
+  if (!rawExpires || !signature) return false;
+  const expiresAt = Number(rawExpires);
+  if (!Number.isSafeInteger(expiresAt) || expiresAt * 1000 <= now) return false;
+  return secretMatches(signature, previewSignature(secret, expiresAt));
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { ArticleBody } from "@/components/ArticleBody";
 import { CATEGORY_LABELS } from "@/lib/content-fallback";
@@ -103,8 +104,15 @@ export default async function PreviewPage(props: PageProps<"/preview/[type]/[slu
   const { type, slug } = await props.params;
   const search = await props.searchParams;
   const provided = typeof search.secret === "string" ? search.secret : null;
+  // The proxy exchanges a valid secret for a cookie and marks the downstream
+  // request; validating that cookie here would read the clock during
+  // prerender, which Next rejects. The query secret is still checked here, so
+  // the page remains guarded if the proxy is ever removed.
+  const viaProxy = (await headers()).get("x-melodi-preview") === "1";
 
-  if (!draftClient || !secretMatches(provided, previewSecret())) notFound();
+  if (!draftClient || !(secretMatches(provided, previewSecret()) || viaProxy)) {
+    notFound();
+  }
 
   if (type === "journal") {
     const doc = await draftClient.fetch<Record<string, unknown> | null>(ARTICLE_QUERY, { slug });

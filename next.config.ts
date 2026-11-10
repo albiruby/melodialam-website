@@ -87,6 +87,17 @@ const nextConfig: NextConfig = {
           { key: "Content-Security-Policy", value: CSP },
         ],
       },
+      {
+        /** Draft previews are per-editor responses and must never be cached. */
+        source: "/preview/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "private, no-store, max-age=0, must-revalidate",
+          },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
     ];
   },
 

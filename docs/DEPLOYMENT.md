@@ -167,7 +167,7 @@ Tabel ini adalah **tabel rute resmi** untuk smoke test dan Environ.
 | `/ketentuan` | `●` Static | Ketentuan pengiriman karya | `siteSettings` | — |
 | `/api/health` | `ƒ` Dynamic | 200 bila Sanity terjangkau, 503 bila tidak — titik untuk uptime monitor | `lib/sanity.ts` | — |
 | `/submit` | `○` Static | Formulir demo 9 bagian (termasuk unggah audio opsional) | `POST /api/demos` |
-| `/preview/<type>/<slug>?secret=…` | `◐` Partial Prerender | Pratinjau draf (`journal` atau `kurasi`), `noindex`, 404 bila secret salah | Sanity `perspective: "drafts"` |
+| `/preview/<type>/<slug>?secret=…` | `◐` Partial Prerender | Pratinjau draf (`journal` atau `kurasi`), `noindex`, 404 bila secret salah. Secret di URL ditukar dengan cookie HttpOnly berumur 1 jam lalu dihapus lewat redirect; respons `private, no-store` | Sanity `perspective: "drafts"` |
 | `/journal` | `ƒ` **Dynamic** | **308 permanen** → `/stories` | route handler |
 | `/journal/<slug>` | `ƒ` **Dynamic** | **308 permanen** → `/stories/<slug>` | route handler |
 | `/api/demos` | `ƒ` **Dynamic** | `GET` antrean approved + `POST` submission | Sanity dataset `submissions` |
@@ -590,9 +590,13 @@ Route membuang **enam** tag cache sekaligus: `articles`, `pillar-posts`,
 ### 7.3 Pratinjau draf (`TERVERIFIKASI`)
 
 Rute `/preview/<type>/<slug>?secret=…` membaca perspektif `drafts` dengan
-token. **`SANITY_PREVIEW_SECRET` sudah di-set** (22 Okt 2026) dan **terpisah** dari
-secret revalidasi (`lib/sanity-preview.ts:38-40`) — satu
-nilai melindungi dua kapabilitas. Lihat §11 butir 5.
+token. **`SANITY_PREVIEW_SECRET` sudah di-set** (22 Okt 2026) dan **terpisah**
+dari secret revalidasi (`lib/sanity-preview.ts`) — satu nilai hanya melindungi
+satu kapabilitas. Tautan membawa secret sekali: `proxy.ts` memverifikasinya,
+menukarnya dengan cookie HttpOnly `melodi_preview` yang ditandatangani HMAC dan
+berlaku 1 jam, lalu mengalihkan ke URL tanpa `secret`. Respons pratinjau memakai
+`Cache-Control: private, no-store` dan `X-Robots-Tag: noindex, nofollow`, serta
+tidak dikirim ke Vercel Web Analytics. Lihat §11 butir 5.
 
 ---
 
