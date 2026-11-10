@@ -47,6 +47,9 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   menolak permintaan (`429`, `Retry-After: 60`) alih-alih diam-diam pindah ke
   penghitung per-instance. Tanpa Redis sama sekali (dev), fallback memori tetap
   dipakai.
+- **CI dipatok**: `actions/checkout` dan `actions/setup-node` memakai commit
+  SHA, bukan tag yang bisa dipindahkan; workflow hanya meminta
+  `permissions: contents: read`.
 - `docs/API-CONTRACTS.md` diperbarui ke `PublicDemoRow`; schema OpenAPI,
   contoh JSON, dan catatan field ikut berubah.
 
