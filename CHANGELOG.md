@@ -15,6 +15,14 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-12
+
+**Presentasi repositori.** Tidak ada perubahan kode aplikasi pada rilis ini.
+Yang ditambahkan: `SECURITY.md`, `CODE_OF_CONDUCT.md`, `.editorconfig`, template
+issue dan pull request, badge CI/produksi di README, serta penyegaran fakta
+README dan `docs/README.md` (versi stack, jumlah tes, status CI/E2E/domain).
+Repositori juga mendapat deskripsi, topics, dan perlindungan branch `main`.
+
 **Audit P0 (10 Nov 2026)**
 
 - **`GET /api/demos` tidak lagi memuat `link` dan `story`.** Kedua field itu
