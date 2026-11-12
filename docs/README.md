@@ -69,7 +69,7 @@ Semua tercakup di bawah ini.
 | [`DATA-MODEL.md`](DATA-MODEL.md) | Engineer backend | Dua dataset Sanity (`production` publik, `submissions` privat) + katalog JSON cadangan; tanpa tabel/RLS/migrasi | `TERVERIFIKASI` |
 | [`API-CONTRACTS.md`](API-CONTRACTS.md) | Engineer, integrator | Kontrak endpoint HTTP yang benar-benar ada di repo, dibaca dari kodenya | `TERVERIFIKASI` |
 | [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) | Engineer, pemilik produk | Tinjauan defensif: inventaris PII, kontrol anti-penyalahgunaan, dan status temuan audit F01–F10 | `TERVERIFIKASI` |
-| [`audit-2026-10-21.md`](audit-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026; 10 temuan, semuanya `needs_validation` | `TERVERIFIKASI` (source-level; tanpa sandbox OS) |
+| [`audit-2026-10-21.md`](audit-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026; 10 temuan dengan langkah validasi | `TERVERIFIKASI` (source-level; tanpa sandbox OS) |
 | [`audit-responsif-2026-10-26.md`](audit-responsif-2026-10-26.md) | Engineer frontend, desainer | Audit responsif 26 Okt 2026 — temuan per breakpoint, perbaikan, dan bukti screenshot | `TERVERIFIKASI` |
 
 ### Implementasi

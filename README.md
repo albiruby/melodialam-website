@@ -237,9 +237,9 @@ Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md).
 | Uji otomatis | Vitest — 9 berkas, 53 kasus; Playwright — 3 spec |
 | Keamanan | `main` dilindungi status check CI; private vulnerability reporting aktif (lihat [`SECURITY.md`](SECURITY.md)) |
 
-Temuan audit yang masih terbuka (F01–F10, semuanya `needs_validation`) ada di
-[`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md) dan
-[`docs/SECURITY-PRIVACY.md`](docs/SECURITY-PRIVACY.md).
+Status tindak lanjut temuan audit F01–F10 — beberapa sudah ditutup, sebagian masih
+terbuka — ada di [`docs/SECURITY-PRIVACY.md`](docs/SECURITY-PRIVACY.md); catatan
+awalnya di [`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md).
 
 Kontribusi: baca [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) dan
 [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) lebih dulu.
