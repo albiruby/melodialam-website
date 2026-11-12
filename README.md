@@ -140,7 +140,7 @@ Jumlah halaman statis berubah setiap kali rute ditambah atau dihapus; keluaran
 | `/stories/<slug>` | Satu artikel + blok "More {rubrik}" (3 kartu) + kartu sosial 1200×630 |
 | `/bicara-melodi` | Indeks wawancara Season 3 (9 episode) |
 | `/videos` | **Melodi Samsara** — 9 sesi + 5 playlist |
-| `/discover` | **Discover** — grid 5 kolom urut tanggal, 55 post feed |
+| `/discover` | **Discover** — 7 section pillar, grid 4 kolom, 55 post feed; pencarian + filter |
 | `/tentang` | Profil, ekosistem, kontak & partnership (statis) |
 | `/submit` | Formulir demo musisi (9 bagian) |
 | `/preview/<type>/<slug>?secret=…` | Pratinjau draf (`journal` / `kurasi`), `noindex`, 404 bila secret salah |

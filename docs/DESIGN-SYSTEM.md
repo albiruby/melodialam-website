@@ -260,7 +260,7 @@ gambar tidak melakukan apa-apa, dan itu dilaporkan pembaca.
 |---|---|---|---|
 | `TopNews` (`components/home/TopNews.tsx`) | lead `<Link>` (h1 + deck + image), sidebar `<Link>`, `NewsCard` `<Link>` | Lead 3:2 (foto editorial landscape); sidebar lead 4:5; NewsCard 4:5 | Beranda — Top News |
 | `ArticleCard` (`components/ArticleCards.tsx`) | satu `<Link href={/stories/<slug>}>` | Sampul 4:5, judul, ringkasan; kaki: rubrik + badge **Reel** bila `mediaType === "reel"`, tanggal. `titleFirst` menukar urutan gambar/judul pada kolom ganjil | `/stories` — 8 kartu; blok "More" pada detail artikel — 3 kartu |
-| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 5 Discover; `/discover` — semua pilar, foto dan reel, sebagai grid |
+| `PillarCard` (`components/PillarCards.tsx`) | satu `<a href={post.igUrl} target="_blank" rel="noreferrer">` | Gambar 4:5 (`object-cover`), label pillar bila `showPillar`, judul; kaki `mt-auto` — tanggal dan "Buka di IG" satu baris, sejajar bawah walau judul panjang/pendek | Beranda — strip 5 Discover |
 | `VideoRow` (`components/VideoRow.tsx`) | **bukan** satu link | Nomor, thumbnail (`WatchButton`), judul (`WatchLink`), durasi, Featuring, gugus aksi `[ ▶ ] — [ WATCH ]` (WATCH = `<a>` tautan langsung ke video YouTube, tanpa badge logo). Di bawah `md` gugus selalu tampil dan membungkus ke baris sendiri | `/videos` — 9 baris sesi |
 
 Aturan yang menyertainya:
@@ -391,7 +391,7 @@ pola yang bisa dipasang kembali.
 | Grid beranda | Top News: lead 8 kolom + sidebar 4; More Top News 3 kolom |
 | Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:6: 1 feature + 4 kartu 2×2 |
 | Grid `/stories` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-4`: 8 kartu `ArticleCard` |
-| Grid Discover `/discover` | `grid-cols-2` → `sm:grid-cols-3` → `md:grid-cols-4` → `lg:grid-cols-5` |
+| Grid Discover `/discover` | Per section pillar: `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-4` |
 | Blok "More" pada detail artikel | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-3`: 3 kartu |
 | Grid playlist `/videos` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-5` |
 | Sampul artikel | `aspect-[4/5]`, pada detail dibatasi `w-full max-w-md` dan dipusatkan |

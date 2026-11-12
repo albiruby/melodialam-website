@@ -82,7 +82,7 @@ boleh berada di sana.
 |---|---|---|---|
 | **siteSettings** | Konten | identitas footer (`name`), catatan kurasi, label panel hijau kartu, `contactEmail` + `partnerEmail` | ✅ tersambung |
 | **videosPage** | Konten | judul "MELODI SAMSARA" + label tautan bagian Melodi Samsara / Playlists di `/videos` | ✅ tersambung |
-| **pillarPost** | Konten | `/discover` — grid datar urut tanggal; lima post foto pertama juga tampil di Discover beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
+| **pillarPost** | Konten | `/discover` — 7 section pillar (grid 4 kolom); lima post foto pertama juga tampil di Discover beranda sesuai `order` | ✅ tersambung (55 post ter-seed) |
 | **article** | Konten | `/stories`, `/stories/<slug>`, Top News (lead + sidebar + More) | ✅ tersambung |
 | **pahlawanRow** | Arsip | — (tipe sudah dihapus dari Studio; 3 dokumen tetap di dataset) | ⚪ tidak dirender |
 | **demoSubmission** | Submit Karya | antrean publik di `/submit` (hanya status disetujui) | ✅ tersambung |
@@ -216,7 +216,7 @@ cache habis (1 menit). Jadi ini peningkatan kecepatan, bukan syarat agar berfung
 | Berkas | Membaca lewat | Catatan |
 |---|---|---|
 | `app/(site)/stories/page.tsx` | `latestStories(8)` | grid 4 kolom, 8 kartu; kolom ganjil gambar dulu / genap judul dulu; tautan kecil "Discover" |
-| `app/(site)/discover/page.tsx` | `allPillarPosts()` | **Discover**: grid datar urut tanggal (2–5 kolom), kotak cari + chip pillar (total 55 post) |
+| `app/(site)/discover/page.tsx` | `allPillarPosts()` | **Discover**: 7 section pillar (2–4 kolom), kotak cari + indeks pillar (total 55 post) |
 | `app/(site)/stories/[slug]/page.tsx` | `articleBySlug(slug)` + `latestStories(8)` | yang kedua untuk blok "More …"; kartu sosial 1200×630 dari `opengraph-image.tsx` |
 | `app/(site)/page.tsx` | `latestStories(8)` + `allPillarPosts()` + `allVideos()` + `allInterviews()` | Top News (1 lead + 3 sidebar + 3 More), Originals, Discover (5 post), Submit |
 | `app/(site)/bicara-melodi/page.tsx` | `allInterviews()` + `allVideos()` | 9 episode Season 3 |

@@ -17,10 +17,12 @@ test.describe("Discover", () => {
 
     const tiles = page.locator("main section a[href*='instagram.com']");
     await expect(tiles).toHaveCount(55);
+    await expect(page.locator("main section h2")).toHaveCount(7);
 
     await page.getByRole("button", { name: /^Lirik/ }).click();
     await expect(tiles).toHaveCount(3);
     await expect(page).toHaveURL(/pillar=lirik/);
+    await expect(page.locator("main section h2")).toHaveCount(1);
 
     await page.getByRole("searchbox").fill("sheila");
     await expect(tiles).toHaveCount(1);
@@ -28,6 +30,24 @@ test.describe("Discover", () => {
 
     await page.getByRole("searchbox").fill("zzzzzz");
     await expect(page.getByText("Belum ada post yang cocok.")).toBeVisible();
+  });
+
+  test("narrows the page to one pillar from the section head", async ({ page }) => {
+    await page.goto("/discover");
+
+    await page
+      .getByRole("button", { name: "Tampilkan hanya Fakta Musik" })
+      .click();
+
+    await expect(page).toHaveURL(/pillar=fakta-musik/);
+    await expect(page.locator("main section h2")).toHaveCount(1);
+    await expect(
+      page.locator("main section a[href*='instagram.com']"),
+    ).toHaveCount(16);
+
+    await page.getByRole("button", { name: "Tampilkan semua pillar" }).click();
+    await expect(page).toHaveURL(/\/discover$/);
+    await expect(page.locator("main section h2")).toHaveCount(7);
   });
 
   test("keeps /kurasi as a redirect", async ({ page }) => {

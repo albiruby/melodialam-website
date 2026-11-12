@@ -15,6 +15,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Discover bergaya halaman koran (12 Nov 2026)**
+
+- `/discover` kini dikelompokkan per pillar: judul section terpusat, satu garis
+  di bawah judul, dan grid 4 kolom. Masthead "Discover", pencarian, indeks
+  pillar, serta seluruh 55 post tetap ada.
+- Tombol "Lihat semua" di tiap section menyaring halaman ke pillar itu;
+  "Semua pillar" mengembalikannya. URL tetap menjadi sumber kebenaran filter.
+- `Reveal` memakai `threshold: 0`, jadi section yang lebih tinggi dari viewport
+  tidak lagi tertahan pada opacity 0.
+
 ## [0.2.1] - 2026-11-12
 
 **Presentasi repositori.** Tidak ada perubahan kode aplikasi pada rilis ini.

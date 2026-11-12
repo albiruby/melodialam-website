@@ -148,10 +148,10 @@ Piramida saat ini sangat kecil: hanya lapisan unit yang ada.
 | Level | Peran | Tooling | Status | Contoh nyata |
 |---|---|---|---|---|
 | Static | Tipe, lint, konvensi | `npx tsc --noEmit`, `npm run lint` | **`TERVERIFIKASI`** | `npm run build`; larangan `aspect-[${...}]`; `@source not` lengkap |
-| Unit | Logika murni, invarian data | **Vitest 3.2** (`npm test`) | **`TERVERIFIKASI`** | `pillarDate`, `isArticleCategory`, `coverFit`, rate limit (44 kasus) |
+| Unit | Logika murni, invarian data | **Vitest 5.0.5** (`npm test`) | **`TERVERIFIKASI`** | `pillarDate`, `isArticleCategory`, `coverFit`, rate limit (53 kasus) |
 | Integration | Route handler dengan `Request`/`Response` nyata | Vitest (impor `POST`/`GET` langsung) | **`RENCANA`** | Matriks `POST /api/demos` (§4.4) |
 | Component | Interaksi komponen klien terisolasi | Vitest + jsdom + React Testing Library | **`RENCANA`** | `KurasiBrowser` (cari + chip), `SiteHeader` (drawer), `DemoPortal` (validasi klien) |
-| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`TERVERIFIKASI`** | Discover filter/search/empty state, redirect `/kurasi`, dua kolom di ponsel |
+| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`TERVERIFIKASI`** | Discover filter/search/empty state, isolasi section pillar, redirect `/kurasi`, dua kolom di ponsel |
 | Non-fungsional | Aksesibilitas, performa | Playwright (emulasi) + axe | **`RENCANA`** | `ACC-001`…`ACC-003`, `P-01` |
 | Manual/eksploratif | Kualitas visual, rasa editorial | — | Manual | Estetika, copy, hierarki editorial |
 
@@ -202,7 +202,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 5 Discover + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 4 curated rest, 4 interview |
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
-| `U-23` | `/discover` = 55 tile dalam satu grid urut tanggal | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, tanpa cap per pillar |
+| `U-23` | `/discover` = 55 tile dalam 7 section pillar (grid 2–4 kolom) | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, mengelompokkan per pillar, tanpa cap per pillar |
 | `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17 |
 | `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content-fallback.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
 | `U-26` | `coverFit()` | 4:5/near → `cover`; landscape/square → `contain`; dimensi kosong → `cover` |
@@ -298,7 +298,7 @@ Playwright belum terpasang. `baseURL` yang dipakai kalau nanti dipasang:
 | `E-06` | Di `/bicara-melodi`, klik `WatchButton` | Dialog tampil dengan id video yang sesuai; 9 baris episode |
 | `E-07` | Di `/videos`, hitung baris sesi | 9 baris `VideoRow` (grup `Melodi Samsara`) + blok playlist |
 | `E-14` | Paksa `maxresdefault.jpg` gagal (404) | Komponen turun ke `sddefault`, lalu `hqdefault`; tidak ada ikon gambar rusak |
-| `E-16` | Buka `/discover`, ketik di kotak cari | Hasil terfilter; chip per pilar bekerja; grid menampilkan semua post yang cocok |
+| `E-16` | Buka `/discover`, ketik di kotak cari | Hasil terfilter; indeks pillar dan tombol section ("Lihat semua") bekerja; semua post yang cocok tampil |
 | `E-17` | Buka `/discover`, klik chip pillar | Hanya post pillar itu yang tampil; chip aktif `aria-pressed=true` |
 
 ### 5.3 Submit demo (`FR-005`, `FR-006`, `ADR-0005`)

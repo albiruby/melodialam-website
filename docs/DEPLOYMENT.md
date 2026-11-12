@@ -160,7 +160,7 @@ Tabel ini adalah **tabel rute resmi** untuk smoke test dan Environ.
 | `/stories` | `○` Static | "Stories" — grid 4 kolom, 8 kartu (foto lalu reel), badge "Reel" | `latestStories(8)` |
 | `/stories/<slug>` | `○` Static + `◐` Partial Prerender | Detail artikel; 12 slug statis di-prerender, slug dari CMS dirender saat diminta | `articleBySlug` + `latestStories(8)` |
 | `/tentang` | `○` Static | Profil, ekosistem (Samsara Bogor, SVVARA, INFIA), kontak & partnership | statis |
-| `/discover` | `○` Static | "Discover" — grid 5 kolom urut tanggal, kotak cari + chip per pillar | `allPillarPosts()` |
+| `/discover` | `○` Static | "Discover" — 7 section pillar, grid 4 kolom, kotak cari + indeks pillar | `allPillarPosts()` |
 | `/bicara-melodi` | `○` Static | 9 episode wawancara Season 3 | `allInterviews()` + `lib/catalogue.json` |
 | `/videos` | `○` Static | **Melodi Samsara** — 9 baris sesi + 5 playlist | `allVideos()` + `allPlaylists()` + `getVideosPageCopy()` |
 | `/privasi` | `●` Static | Kebijakan privasi (data form demo, penyimpanan, hak penghapusan) | `siteSettings` | — |

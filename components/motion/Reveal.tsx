@@ -42,7 +42,10 @@ export function Reveal({
             }
           }
         },
-        { threshold: 0.08 },
+        // Any sliver is enough. A ratio threshold breaks on long pages: a
+        // section taller than ~12 viewports can never reach 8% visibility, so
+        // the whole page would stay at opacity 0.
+        { threshold: 0 },
       );
       observer.observe(node);
     });

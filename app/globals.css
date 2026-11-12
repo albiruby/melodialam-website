@@ -147,6 +147,16 @@
   background-color: var(--color-paper);
 }
 
+/* A horizontally scrolling row (the Discover pillar index) without the
+   platform scrollbar cutting across the rule beneath it. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* --- Outline typography ------------------------------------------------ */
 
 @utility text-outline-ink {

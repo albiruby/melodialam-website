@@ -47,9 +47,7 @@ export default async function DiscoverPage() {
   };
 
   return (
-    <Reveal>
-      <h1 className="pb-4 text-4xl tracking-tight sm:text-5xl">Discover</h1>
-
+    <Reveal as="div">
       <DiscoverBrowser posts={feed} />
 
       <script
