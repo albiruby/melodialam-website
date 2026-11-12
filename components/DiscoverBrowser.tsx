@@ -115,13 +115,7 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
     <>
       {/* Nameplate */}
       <header className="border-b-2 border-ink py-3">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 font-sans text-[9px] font-bold uppercase tracking-[0.18em] text-neutral-600">
-          <span>Feed @melodi.alam</span>
-          <span>
-            {posts.length} post · {new Set(posts.map((post) => post.pillar)).size} pillar
-          </span>
-        </div>
-        <h1 className="mt-2 text-center font-display text-5xl font-black uppercase leading-none tracking-tight text-ink sm:text-7xl">
+        <h1 className="text-center font-display text-5xl font-black uppercase leading-none tracking-tight text-ink sm:text-7xl">
           Discover
         </h1>
         <p className="mx-auto mt-3 max-w-xl text-center font-sans text-[10px] uppercase leading-relaxed tracking-[0.12em] text-neutral-600">
@@ -142,12 +136,6 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
           placeholder="Cari judul atau pillar…"
           className="w-full max-w-xs border-b border-ink bg-transparent py-2 text-xs outline-none transition-colors placeholder:text-neutral-600 focus:border-forest focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
         />
-        <span
-          aria-live="polite"
-          className="font-sans text-[10px] uppercase tracking-[0.12em] text-neutral-600"
-        >
-          {matched.length} dari {posts.length} post
-        </span>
       </div>
 
       <nav
@@ -178,10 +166,7 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
             return (
               <section key={group.key} aria-labelledby={`pillar-${group.key}`}>
                 <div className="border-b-2 border-ink pb-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-neutral-600">
-                      {group.posts.length} post
-                    </span>
+                  <div className="flex items-center justify-end gap-3">
                     <button
                       type="button"
                       onClick={() => setUrl(query, isolated ? "all" : group.key)}
@@ -263,7 +248,6 @@ function DiscoverCard({ post, eager = false }: { post: PillarPost; eager?: boole
       <div className="mt-auto pt-3">
         <div className="flex items-baseline justify-between gap-2 pt-2 font-sans text-[9px] uppercase tracking-[0.12em] text-neutral-600">
           <span>{pillarDate(post.date)}</span>
-          <span>{post.mediaType === "reel" ? "Reel" : "Foto"}</span>
         </div>
       </div>
     </a>

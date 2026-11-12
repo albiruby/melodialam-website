@@ -22,6 +22,8 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   pillar, serta seluruh 55 post tetap ada.
 - Tombol "Lihat semua" di tiap section menyaring halaman ke pillar itu;
   "Semua pillar" mengembalikannya. URL tetap menjadi sumber kebenaran filter.
+- Metatext angka di masthead, baris pencarian, dan kepala section dihapus; kaki
+  kartu kini hanya menampilkan tanggal.
 - `Reveal` memakai `threshold: 0`, jadi section yang lebih tinggi dari viewport
   tidak lagi tertahan pada opacity 0.
 
