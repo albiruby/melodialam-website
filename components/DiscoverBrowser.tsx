@@ -166,7 +166,13 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
             return (
               <section key={group.key} aria-labelledby={`pillar-${group.key}`}>
                 <div className="border-b-2 border-ink pb-3">
-                  <div className="flex items-center justify-end gap-3">
+                  <h2
+                    id={`pillar-${group.key}`}
+                    className="text-balance text-center font-display text-3xl font-black uppercase leading-none tracking-tight text-ink sm:text-4xl md:text-5xl"
+                  >
+                    {group.label}
+                  </h2>
+                  <div className="mt-1 flex justify-end">
                     <button
                       type="button"
                       onClick={() => setUrl(query, isolated ? "all" : group.key)}
@@ -181,12 +187,6 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
                       <span aria-hidden className="ml-1">→</span>
                     </button>
                   </div>
-                  <h2
-                    id={`pillar-${group.key}`}
-                    className="mt-1 text-balance text-center font-display text-3xl font-black uppercase leading-none tracking-tight text-ink sm:text-4xl md:text-5xl"
-                  >
-                    {group.label}
-                  </h2>
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-10 pt-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
