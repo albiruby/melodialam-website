@@ -1,0 +1,49 @@
+name: Usulan fitur
+description: Usulkan perbaikan atau fitur baru.
+title: "[Fitur] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Masalah yang ingin diselesaikan
+      description: Jelaskan kebutuhan, bukan hanya solusinya.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Usulan
+      description: Bagaimana sebaiknya perilakunya?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatif yang sudah dipertimbangkan
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Beranda / berita
+        - Stories
+        - Discover
+        - Videos / Melodi Samsara
+        - Bicara Melodi
+        - Submit / antrean demo
+        - Aksesibilitas
+        - Performa
+        - Dokumentasi
+        - Lainnya
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Konfirmasi
+      options:
+        - label: Saya sudah mencari issue atau usulan yang serupa.
+          required: true

@@ -1,5 +1,10 @@
 # Melodi Alam
 
+[![CI](https://github.com/albiruby/melodialam-website/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/albiruby/melodialam-website/actions/workflows/ci.yml)
+[![Production](https://img.shields.io/badge/production-live-2ea44f?logo=vercel&logoColor=white)](https://melodialam-website.vercel.app)
+[![Node](https://img.shields.io/badge/node-24.22.1-339933?logo=node.js&logoColor=white)](.nvmrc)
+[![License](https://img.shields.io/badge/license-all%20rights%20reserved-lightgrey)](#hak-cipta)
+
 Platform web media musik Indonesia — **Stories & Watch**.
 
 Situs ini menyatukan jurnalisme musik (*Stories* / Discover), katalog video
@@ -8,12 +13,6 @@ pengiriman demo musisi (*Submit Karya*).
 
 Bagian dari ekosistem *Intellectual Property* PT Infia Pariwara Nusantara
 (INFIA Corp).
-
-> Direktori `/pahlawan-kota` dan `/spaces` sudah dihapus; tipe `pahlawanRow`
-> sudah dihapus dari Studio, dan 3 dokumennya disimpan sebagai arsip di Sanity.
-> `GENRE_ROWS`/`SPACE_ITEMS` diarsipkan di `lib/content-fallback.ts`. Halaman
-> `/videos/arsip` (katalog 292 video) juga dihapus — `/videos` kini hanya
-> merender seleksi sesi yang hidup sebagai dokumen `video`.
 
 ---
 
@@ -54,15 +53,18 @@ publik) dan `lib/content-fallback.ts` dipakai sebagai jaring pengaman bila Sanit
 terjangkau. Hanya antrean demo dan pratinjau draf yang butuh kredensial.
 
 ```bash
-cp .env.example .env      # isi SANITY_API_READ_TOKEN dan SANITY_REVALIDATE_SECRET
+cp .env.example .env      # isi SANITY_API_READ_TOKEN, SANITY_REVALIDATE_SECRET,
+                          # dan SANITY_PREVIEW_SECRET
 ```
 
 | Variabel | Wajib untuk | Catatan |
 |---|---|---|
 | `SANITY_API_READ_TOKEN` | antrean demo + pratinjau draf | **server-only**; baca dataset privat `submissions` + tulis antrean |
-| `SANITY_REVALIDATE_SECRET` | webhook revalidasi | dibagi dengan webhook Sanity; **belum dirotasi** (lihat `docs/SECURITY-PRIVACY.md`) |
-| `SANITY_PREVIEW_SECRET` | pratinjau draf | opsional; kalau kosong, pratinjau jatuh ke `SANITY_REVALIDATE_SECRET` |
+| `SANITY_REVALIDATE_SECRET` | webhook revalidasi | dibagi dengan webhook Sanity; **sudah dirotasi 22 Okt 2026** — `SANITY_REVALIDATE_SECRET_PREVIOUS` hanya jembatan sementara |
+| `SANITY_PREVIEW_SECRET` | pratinjau draf | wajib untuk membuka tautan pratinjau; tanpa nilai ini rute menjawab **404** (fallback ke secret revalidasi sudah dihapus) |
 | `BLOB_READ_WRITE_TOKEN` | unggah audio demo | opsional; Vercel memasangnya saat Blob store dibuat |
+| `BLOB_STORE_ID` | verifikasi audio demo | wajib bila unggah audio diaktifkan; tanpa ini pemeriksaan host gagal tertutup |
+| `KV_REST_API_URL` · `KV_REST_API_TOKEN` | pembatas laju lintas instans | opsional; pasangan Upstash dengan bentuk REST yang sama juga diterima |
 | `RESEND_API_KEY` | notifikasi email redaksi | opsional; tanpa ini notifikasi **inert** |
 | `DEMO_NOTIFY_TO` · `DEMO_NOTIFY_FROM` | tujuan & pengirim email | opsional; ada default di `app/api/demos/route.ts` |
 | `NEXT_PUBLIC_SITE_URL` | canonical, sitemap, JSON-LD, robots | default `https://melodialam.id` |
@@ -84,18 +86,20 @@ yang jatuh ke memori, karena `lib/sanity-server.ts` mengembalikan `null` tanpa t
 
 | Komponen | Versi |
 |---|---|
-| Next.js (App Router, Turbopack, Cache Components) | `16.4.2` |
-| React | `19.3.0` |
+| Next.js (App Router, Turbopack, Cache Components) | `^16.4.3` |
+| React | `^19.3.1` |
 | TypeScript | `^5` |
 | Tailwind CSS | `^4` |
-| Motion (penerus Framer Motion) | `^14.2.0` |
-| Sanity (`@sanity/client`) | `^8.9.0` |
+| Motion (penerus Framer Motion) | `^14.6.0` |
+| Sanity (`@sanity/client`) | `^8.11.0` |
 | Portable Text (`@portabletext/react`) | `^8.0.1` |
 | Vercel Blob (`@vercel/blob`) | `^2.8.2` |
 | Vercel Analytics (`@vercel/analytics`) | `^2.0.1` |
-| Vitest | `^3.2.7` |
+| Vitest | `^5.0.5` |
+| Playwright | `^1.64.1` |
 
-Build produksi menghasilkan **33 halaman statis**.
+Jumlah halaman statis berubah setiap kali rute ditambah atau dihapus; keluaran
+`npm run build` adalah sumber kebenarannya, bukan angka yang ditulis di sini.
 
 > Studio Sanity-nya **tidak** ada di repo ini. Ia berdiri sendiri di
 > [`albiruby/melodialam-sanity`](https://github.com/albiruby/melodialam-sanity) dan
@@ -111,12 +115,16 @@ Build produksi menghasilkan **33 halaman statis**.
 | `npm run build` | Build produksi |
 | `npm run start` | Menyajikan build produksi di port 3100 |
 | `npm run lint` | ESLint |
-| `npm test` | Unit test (Vitest) — `lib/content-fallback.test.ts`, 20 kasus |
+| `npm test` | Unit test Vitest — 9 berkas, 53 kasus |
+| `npm run test:e2e` | Uji browser Playwright — 3 spec (`e2e/`) |
+| `npm run smoke` | Smoke test terhadap situs yang sedang berjalan |
 | `npm run catalogue` | Menghasilkan ulang `lib/catalogue.json` dari hasil scrape |
 | `npm run brand` | Menghasilkan ulang aset merek dan ikon `app/` |
 | `npm run photos` | Menyalin set foto placeholder ke `public/photos` |
 | `npm run seed:sanity` | Menulis ulang konten statis ke Sanity |
 | `npm run seed:videos` | Menulis 9 sesi Melodi Samsara ke Sanity |
+| `npm run backup` | Mengekspor dataset Sanity ke `backups/` |
+| `npm run purge-demos` | Membersihkan antrean demo dari data uji |
 
 > Hentikan dev server sebelum menjalankan `npm run build`; keduanya memakai state
 > Turbopack yang sama dan menjalankannya bersamaan membuat halaman tampil kosong.
@@ -180,7 +188,7 @@ hilang pada regenerasi berikutnya.
 | Perintah | Menghasilkan | Membaca |
 |---|---|---|
 | `npm run catalogue` | `lib/catalogue.json` | `../melodi-alam-data.md` |
-| `npm run brand` | `public/brand/*`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` | `../logobulet.png`, `../logotext.png` |
+| `npm run brand` | `public/brand/*`, `public/og.png`, `app/icon.png`, `app/apple-icon.png`, `app/favicon.ico` | `../LOGO2/` — 3 PNG sumber |
 | `npm run photos` | `public/photos/*` | `../FOTO PLACEHOLDER MELODI ALAM/` |
 
 Hasilnya sudah ikut ter-commit, jadi situs tetap dapat dibangun tanpa berkas sumber itu.
@@ -213,45 +221,66 @@ Riwayat perubahan: [`CHANGELOG.md`](CHANGELOG.md).
 
 ---
 
-## Status produksi (21 Oktober 2026)
+## Status produksi (12 November 2026)
 
 | Area | Status |
 |---|---|
 | UI *Neo-Brutalist Editorial*, animasi, interaksi hover | Berjalan |
 | Artikel, pillar, video, playlist, wawancara | Sanity (dataset `production`, publik) + fallback `lib/content-fallback.ts` |
 | Antrean demo | Sanity dataset **privat** `submissions`, dimoderasi; fallback array proses-lokal tanpa token |
-| Pratinjau draf | Ada (`/preview/<type>/<slug>`), belum ada tombol "Buka pratinjau" di dalam Studio |
+| Pratinjau draf | Ada (`/preview/<type>/<slug>`); butuh `SANITY_PREVIEW_SECRET`. Tombol "Buka pratinjau" di Studio belum ada |
 | Unggah audio demo | Kodenya ada, **belum hidup** — Blob store belum dibuat di Vercel |
 | Notifikasi email | Kodenya ada, **inert** — `RESEND_API_KEY` belum diset |
 | Web Analytics | `@vercel/analytics` terpasang, **belum dinyalakan** di dashboard Vercel |
-| Domain | `melodialam.id` **belum resolve** → canonical, sitemap, OG, dan `robots.host` masih menunjuk ke `https://melodialam-website.vercel.app` |
-| CI/CD | **Belum ada** — repo tidak punya `.github/`, tidak ada workflow yang menjalankan build atau test |
-| Uji otomatis | Unit test Vitest saja (`npm test`, 20 kasus); belum ada uji end-to-end |
+| Domain | `melodialam.id` terdaftar dan terverifikasi di Vercel, tetapi **DNS global masih `NXDOMAIN`** → canonical, sitemap, OG, dan `robots.host` masih menunjuk ke `https://melodialam-website.vercel.app` |
+| CI/CD | GitHub Actions `CI`: lint, typecheck, unit test, build, smoke, dan 3 spec Playwright pada setiap push/PR ke `main` |
+| Uji otomatis | Vitest — 9 berkas, 53 kasus; Playwright — 3 spec |
+| Keamanan | `main` dilindungi status check CI; private vulnerability reporting aktif (lihat [`SECURITY.md`](SECURITY.md)) |
 
 Temuan audit yang masih terbuka (F01–F10, semuanya `needs_validation`) ada di
 [`docs/audit-2026-10-21.md`](docs/audit-2026-10-21.md) dan
 [`docs/SECURITY-PRIVACY.md`](docs/SECURITY-PRIVACY.md).
 
-Kontribusi: baca [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) lebih dulu.
+Kontribusi: baca [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) dan
+[`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md) lebih dulu.
 
 ---
 
 ## Catatan Verifikasi
 
-Isi README ini dicek terhadap repo `melodi-alam` pada **21 Oktober 2026**:
+Isi README ini dicek terhadap repo `melodi-alam` pada **12 November 2026**:
 
 - **Rute** — dibaca dari `app/` (halaman di `app/(site)/`, route handler di `app/api/`)
   dan diverifikasi terhadap tabel route hasil `npm run build`.
 - **Perintah** — dibaca dari `package.json` (`dev`, `build`, `start`, `lint`, `test`,
-  `catalogue`, `brand`, `photos`, `seed:sanity`, `seed:videos`).
+  `test:e2e`, `catalogue`, `brand`, `photos`, `seed:sanity`, `seed:videos`,
+  `backup`, `purge-demos`, `smoke`).
 - **Variabel lingkungan** — dibaca dari kode (`lib/site.ts`, `lib/sanity-server.ts`,
   `lib/sanity-preview.ts`, `app/api/revalidate/route.ts`, `app/api/demos/route.ts`)
   dan dari `.env.example`.
-- **Teknologi & versi** — dari `package.json` (`0.2.0`).
-- **Jumlah halaman statis** — `npm run build` → **33 halaman statis**.
-- **Unit test** — `npm test` → **20/20 lulus** (`lib/content-fallback.test.ts`, Vitest 3.2.7).
+- **Teknologi & versi** — dari `package.json` (`0.2.1`).
+- **Unit test** — `npm test` → **9 berkas, 53 kasus** (Vitest 5).
+- **E2E** — 3 spec Playwright di `e2e/`, dijalankan CI setelah build.
+- **Jumlah halaman statis** — sengaja tidak dicantumkan; angka itu berubah tiap
+  rute ditambah, dan `npm run build` adalah sumber kebenarannya.
 - **Tidak diverifikasi** — isi dashboard Vercel dan Sanity: status Blob store, Resend,
-  anggota project, "Trigger on" webhook, dan apakah `melodialam.id` sudah diarahkan.
-  Klaim soal domain memakai nilai `NEXT_PUBLIC_SITE_URL` di Vercel
-  (`https://melodialam-website.vercel.app`), bukan default `https://melodialam.id`
-  di `lib/site.ts:18`.
+  anggota project, "Trigger on" webhook, dan propagasi DNS `melodialam.id`. Klaim
+  soal domain memakai hasil resolusi DNS publik per 12 November 2026, bukan asumsi
+  dari dashboard Vercel.
+
+---
+
+## Keamanan
+
+Jangan membuka issue publik untuk kerentanan. Gunakan
+[GitHub Private Vulnerability Reporting](https://github.com/albiruby/melodialam-website/security/advisories/new);
+detail cakupan dan ekspektasi respons ada di [`SECURITY.md`](SECURITY.md).
+
+## Hak cipta
+
+© 2026 PT Infia Pariwara Nusantara (INFIA Corp). **Semua hak dilindungi.**
+
+Repositori ini publik untuk transparansi, bukan untuk distribusi ulang. Tidak ada
+lisensi open source yang diberikan: tanpa izin tertulis dari pemilik, kode tidak
+boleh disalin, dimodifikasi, atau dipakai ulang. Aset merek, foto, dan tulisan
+tetap milik pemiliknya masing-masing.

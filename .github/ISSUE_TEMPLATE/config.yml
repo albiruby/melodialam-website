@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Laporan keamanan (privat)
+    url: https://github.com/albiruby/melodialam-website/security/advisories/new
+    about: Jangan buka issue publik untuk kerentanan. Gunakan jalur privat ini.
+  - name: Panduan kontribusi
+    url: https://github.com/albiruby/melodialam-website/blob/main/docs/CONTRIBUTING.md
+    about: Alur kerja, konvensi kode, dan gerbang CI.
+  - name: Dokumentasi
+    url: https://github.com/albiruby/melodialam-website/blob/main/docs/README.md
+    about: Arsitektur, model data, API, deployment, dan desain.

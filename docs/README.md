@@ -7,7 +7,7 @@ Mulai dari sini.
 bawah menandai audiensnya supaya tidak ada yang membaca 50 KB dokumen yang tidak
 diperlukannya.
 
-**Status per 21 Oktober 2026.** Kolom **Status** pada setiap tabel berarti:
+**Status per 12 November 2026.** Kolom **Status** pada setiap tabel berarti:
 
 | Label | Arti |
 |---|---|
@@ -32,9 +32,9 @@ terpisah `melodialam-sanity`). Yang benar hari ini:
   `demoContact`, berkas audio di Vercel Blob.
 - **Katalog video** tetap artefak build-time di dalam repo (ADR-0004); `/videos` hanya
   merender seleksi yang hidup di Sanity.
-- **Unit test** sudah ada: tiga berkas, 20 kasus (`npm test`), dan **CI** GitHub
-  Actions sudah jalan pada setiap push ke `main` (lint + typecheck + test + build).
-  Playwright, uji end-to-end, dan coverage belum.
+- **Unit test** sudah ada: sembilan berkas, 53 kasus (`npm test`); **E2E** tiga spec
+  Playwright (`npm run test:e2e`). **CI** GitHub Actions berjalan pada setiap push/PR
+  ke `main`: lint, typecheck, unit test, build, smoke, dan uji browser.
 - Yang masih `RENCANA` di luar kode: Blob store di Vercel, `RESEND_API_KEY`, domain
   `melodialam.id`, dan pengaktifan Web Analytics.
 
@@ -49,7 +49,7 @@ terpisah `melodialam-sanity`). Yang benar hari ini:
 
 ## Daftar dokumen
 
-Folder `docs/` berisi **13 berkas** di root dan **8 catatan keputusan** di `adr/`.
+Folder `docs/` berisi **15 berkas** di root dan **8 catatan keputusan** di `adr/`.
 Semua tercakup di bawah ini.
 
 ### Orientasi
@@ -70,6 +70,7 @@ Semua tercakup di bawah ini.
 | [`API-CONTRACTS.md`](API-CONTRACTS.md) | Engineer, integrator | Kontrak endpoint HTTP yang benar-benar ada di repo, dibaca dari kodenya | `TERVERIFIKASI` |
 | [`SECURITY-PRIVACY.md`](SECURITY-PRIVACY.md) | Engineer, pemilik produk | Tinjauan defensif: inventaris PII, kontrol anti-penyalahgunaan, dan status temuan audit F01–F10 | `TERVERIFIKASI` |
 | [`audit-2026-10-21.md`](audit-2026-10-21.md) | Engineer, pemilik produk | Audit keamanan + codebase + integrasi Sanity/Vercel + SEO, 21 Okt 2026; 10 temuan, semuanya `needs_validation` | `TERVERIFIKASI` (source-level; tanpa sandbox OS) |
+| [`audit-responsif-2026-10-26.md`](audit-responsif-2026-10-26.md) | Engineer frontend, desainer | Audit responsif 26 Okt 2026 — temuan per breakpoint, perbaikan, dan bukti screenshot | `TERVERIFIKASI` |
 
 ### Implementasi
 
@@ -78,12 +79,13 @@ Semua tercakup di bawah ini.
 | [`SANITY-INTEGRATION.md`](SANITY-INTEGRATION.md) | Editor, engineer | **Panduan integrasi web ↔ CMS: apa yang ditulis di Studio render di halaman mana, satu daftar cerita bersama, dua dataset, webhook, alur Blob + Resend, dan jebakan yang sudah ditemukan** | `TERVERIFIKASI` |
 | [`FRONTEND-PLAN.md`](FRONTEND-PLAN.md) | Engineer frontend | Route, komponen, batas server/client, state, gap aksesibilitas | `TERVERIFIKASI` |
 | [`DESIGN-SYSTEM.md`](DESIGN-SYSTEM.md) | Engineer, desainer | Token, katalog utility, aturan interaksi yang dikunci, anti-pola | `TERVERIFIKASI` |
+| [`landing-page-2026-10-28.md`](landing-page-2026-10-28.md) | Engineer, desainer | Catatan desain homepage *news-first* 28 Okt 2026: lima modul, keputusan visual, bukti QA | `TERVERIFIKASI` |
 
 ### Mutu & rilis
 
 | Dokumen | Untuk | Isi | Status |
 |---|---|---|---|
-| [`TEST-STRATEGY.md`](TEST-STRATEGY.md) | Engineer, QA | Keadaan pengujian saat ini (tiga berkas unit test Vitest, 20 kasus) + lapisan yang belum ada | `TERVERIFIKASI` (unit test) · `RENCANA` (Playwright, E2E, coverage, CI) |
+| [`TEST-STRATEGY.md`](TEST-STRATEGY.md) | Engineer, QA | Keadaan pengujian saat ini (sembilan berkas unit test Vitest, 53 kasus; tiga spec Playwright) + lapisan yang belum ada | `TERVERIFIKASI` (unit + E2E + CI) · `RENCANA` (coverage) |
 | [`DEPLOYMENT.md`](DEPLOYMENT.md) | Engineer, operator | Build nyata, environment Vercel, deploy & rollback, hazard deploy | `TERVERIFIKASI` |
 
 ### Keputusan
@@ -97,7 +99,7 @@ Delapan catatan keputusan arsitektur, semuanya berstatus `DITERIMA`.
 | [`adr/0003-supabase-postgres-storage.md`](adr/0003-supabase-postgres-storage.md) | ~~Supabase sebagai Postgres dan object storage~~ — tidak lagi dipakai kode | `TERVERIFIKASI` — arsip |
 | [`adr/0004-katalog-video-build-time.md`](adr/0004-katalog-video-build-time.md) | Katalog video tetap di-*generate* saat build, tidak masuk CMS | `TERVERIFIKASI` — terimplementasikan |
 | [`adr/0005-moderated-demo-queue.md`](adr/0005-moderated-demo-queue.md) | Antrean demo dimoderasi sebelum tampil publik | `TERVERIFIKASI` — sebagian diimplementasikan (moderasi di sisi server sudah; UI kurator belum) |
-| [`adr/0006-vitest-playwright-vercel.md`](adr/0006-vitest-playwright-vercel.md) | Vitest + Playwright; deploy ke Vercel | `TERVERIFIKASI` — sebagian: Vitest dan Vercel sudah, Playwright belum |
+| [`adr/0006-vitest-playwright-vercel.md`](adr/0006-vitest-playwright-vercel.md) | Vitest + Playwright; deploy ke Vercel | `TERVERIFIKASI` — terimplementasi (unit, E2E, dan deploy berjalan) |
 | [`adr/0007-tipografi-inter-red-hat-display.md`](adr/0007-tipografi-inter-red-hat-display.md) | Tipografi Inter + Red Hat Display, menggantikan Plus Jakarta Sans | `TERVERIFIKASI` — terimplementasi |
 | [`adr/0008-sanity-studio-menggantikan-payload.md`](adr/0008-sanity-studio-menggantikan-payload.md) | **Sanity Studio menggantikan Payload CMS 3 + Supabase** | `TERVERIFIKASI` — diimplementasikan dan diuji |
 
@@ -167,28 +169,31 @@ Tiga hal berikut memengaruhi hampir semua dokumen, dan sengaja disebut di depan.
 
 1. **Berkas sumber berada di luar repo.** `scripts/build-catalogue.mjs`,
    `scripts/build-brand.mjs`, dan `scripts/copy-photos.mjs` membaca berkas dari folder
-   induk (`../melodi-alam-data.md`, `../logobulet.png`, `../logotext.png`,
-   `../FOTO PLACEHOLDER MELODI ALAM/`). **Checkout bersih tidak dapat membangun situs.**
-   Rincian dan pilihannya di [`DEPLOYMENT.md`](DEPLOYMENT.md).
+   induk (`../melodi-alam-data.md`, `../LOGO2/`,
+   `../FOTO PLACEHOLDER MELODI ALAM/`). Hasilnya sudah ter-commit, jadi checkout
+   bersih tetap bisa `npm run build`; yang tidak bisa adalah **regenerasi** aset
+   tanpa berkas sumber itu. Rincian dan pilihannya di [`DEPLOYMENT.md`](DEPLOYMENT.md).
 2. **PRD belum ada di repo.** `PRD-REFERENCE.md` merangkum isi mengikat setiap ID
    requirement, tetapi teks PRD aslinya sebaiknya disalin menjadi `docs/PRD.md` agar
    ketertelusuran dapat diverifikasi terhadap sumbernya.
-3. **Nama merek belum konsisten.** Header memakai wordmark gambar berbunyi
-   "MELODI SAMSARA", sementara metadata dan footer memakai "MELODI ALAM". Konsekuensinya
-   terhadap SEO dan pembaca layar dibahas di `PRD-REFERENCE.md` §11.
+3. **Dokumen audit dan catatan desain bersifat titik-waktu.** Angka dan status di
+   `audit-*.md`, `landing-page-*.md`, dan `TEST-STRATEGY.md` menggambarkan keadaan
+   pada tanggal masing-masing; README root dan `docs/README.md` yang memuat status
+   terkini.
 
 ---
 
 ## Catatan verifikasi
 
 Dokumen ini dicek terhadap isi folder `docs/` dan isi repo `melodi-alam` pada
-**21 Oktober 2026**.
+**12 November 2026**.
 
-- **Daftar file** — `docs/` berisi 13 berkas di root: `README.md`, `audit-2026-10-21.md`,
-  `API-CONTRACTS.md`, `ARCHITECTURE.md`, `CONTRIBUTING.md`, `DATA-MODEL.md`,
-  `DEPLOYMENT.md`, `DESIGN-SYSTEM.md`, `FRONTEND-PLAN.md`, `PRD-REFERENCE.md`,
+- **Daftar file** — `docs/` berisi 15 berkas di root: `README.md`, `audit-2026-10-21.md`,
+  `audit-responsif-2026-10-26.md`, `API-CONTRACTS.md`, `ARCHITECTURE.md`,
+  `CONTRIBUTING.md`, `DATA-MODEL.md`, `DEPLOYMENT.md`, `DESIGN-SYSTEM.md`,
+  `FRONTEND-PLAN.md`, `landing-page-2026-10-28.md`, `PRD-REFERENCE.md`,
   `SANITY-INTEGRATION.md`, `SECURITY-PRIVACY.md`, `TEST-STRATEGY.md`; plus
-  `docs/adr/` berisi 8 berkas (ADR-0001 s.d. ADR-0008). **Semua 21 tercakup** di tabel
+  `docs/adr/` berisi 8 berkas (ADR-0001 s.d. ADR-0008). **Semua 23 tercakup** di tabel
   di atas.
 - **Deskripsi tiap dokumen** — diambil dari banner dan paragraf pembuka berkas
   masing-masing (bukan dari isi repo lama), sehingga sudah menyesuaikan diri dengan
@@ -197,8 +202,7 @@ Dokumen ini dicek terhadap isi folder `docs/` dan isi repo `melodi-alam` pada
   (`DITERIMA`, sebagian digantikan, sebagian diimplementasikan).
 - **Rute dan perintah** — `../README.md` diverifikasi ke `app/` (daftar route handler dan
   halaman), `package.json` (daftar skrip), dan `next.config.ts`.
-- **Kondisi build** — `npm run build` → lulus, **33 halaman statis**; `npm test` →
-  20/20 lulus (`lib/content-fallback.test.ts`).
+- **Kondisi build** — `npm run build` lulus; `npm test` → 9 berkas, 53 kasus lulus;
+  `npm run test:e2e` → 3 spec Playwright.
 - **Tidak diperiksa** — isi dashboard Vercel/Sanity (status Blob store, Resend,
-  anggota project, "Trigger on" webhook), dan apakah domain `melodialam.id` sudah
-  diarahkan.
+  anggota project, "Trigger on" webhook), dan propagasi DNS `melodialam.id`.
