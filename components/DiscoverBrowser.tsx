@@ -177,26 +177,31 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
             const isolated = pillar === group.key;
             return (
               <section key={group.key} aria-labelledby={`pillar-${group.key}`}>
-                <div className="relative border-b-2 border-ink pb-3 text-center">
+                <div className="border-b-2 border-ink pb-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="font-sans text-[9px] font-bold uppercase tracking-[0.16em] text-neutral-600">
+                      {group.posts.length} post
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setUrl(query, isolated ? "all" : group.key)}
+                      aria-label={
+                        isolated
+                          ? "Tampilkan semua pillar"
+                          : `Tampilkan hanya ${group.label}`
+                      }
+                      className="inline-flex min-h-9 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-600 underline decoration-1 underline-offset-4 transition-colors hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest"
+                    >
+                      {isolated ? "Semua pillar" : "Lihat semua"}{" "}
+                      <span aria-hidden className="ml-1">→</span>
+                    </button>
+                  </div>
                   <h2
                     id={`pillar-${group.key}`}
-                    className="text-balance font-display text-3xl font-black uppercase leading-none tracking-tight text-ink sm:text-4xl md:text-5xl"
+                    className="mt-1 text-balance text-center font-display text-3xl font-black uppercase leading-none tracking-tight text-ink sm:text-4xl md:text-5xl"
                   >
                     {group.label}
                   </h2>
-                  <button
-                    type="button"
-                    onClick={() => setUrl(query, isolated ? "all" : group.key)}
-                    aria-label={
-                      isolated
-                        ? "Tampilkan semua pillar"
-                        : `Tampilkan hanya ${group.label}`
-                    }
-                    className="mt-2 inline-flex min-h-9 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-600 underline decoration-1 underline-offset-4 transition-colors hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest md:absolute md:bottom-3 md:right-0 md:mt-0"
-                  >
-                    {isolated ? "Semua pillar" : "Lihat semua"}{" "}
-                    <span aria-hidden className="ml-1">→</span>
-                  </button>
                 </div>
 
                 <div className="grid grid-cols-2 gap-x-4 gap-y-10 pt-6 sm:grid-cols-3 sm:gap-x-5 lg:grid-cols-4">
