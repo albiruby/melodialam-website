@@ -24,6 +24,9 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
   "Semua pillar" mengembalikannya. URL tetap menjadi sumber kebenaran filter.
 - Metatext angka di masthead, baris pencarian, dan kepala section dihapus; kaki
   kartu kini hanya menampilkan tanggal.
+- Tujuh pillar Studio ditampilkan sebagai empat grup: Fakta & Trivia,
+  Lirik & Kutipan, Rekomendasi & Ulas, Clipper. URL `?pillar=` lama tetap
+  diarahkan ke grup yang memuatnya.
 - `Reveal` memakai `threshold: 0`, jadi section yang lebih tinggi dari viewport
   tidak lagi tertahan pada opacity 0.
 

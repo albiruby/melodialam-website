@@ -391,7 +391,7 @@ pola yang bisa dipasang kembali.
 | Grid beranda | Top News: lead 8 kolom + sidebar 4; More Top News 3 kolom |
 | Strip kurasi beranda | `grid-cols-1` → `lg:grid-cols-12` 6:6: 1 feature + 4 kartu 2×2 |
 | Grid `/stories` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-4`: 8 kartu `ArticleCard` |
-| Grid Discover `/discover` | Per section pillar: `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-4` |
+| Grid Discover `/discover` | Per section grup: `grid-cols-2` → `sm:grid-cols-3` → `lg:grid-cols-4` |
 | Blok "More" pada detail artikel | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-3`: 3 kartu |
 | Grid playlist `/videos` | `grid-cols-1` → `sm:grid-cols-2` → `lg:grid-cols-5` |
 | Sampul artikel | `aspect-[4/5]`, pada detail dibatasi `w-full max-w-md` dan dipusatkan |

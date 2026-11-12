@@ -371,12 +371,15 @@ Pembagian set ada di `lib/pillars-shared.ts`:
 
 - Satu grid datar, **urut tanggal terbaru**; tidak ada blok BACA/TONTON atau
   kepala seksi per pillar.
-- Setiap tile: tanggal ringkas (`4.3.26`), cover 4:5, judul mono uppercase
-  (maks. 4 baris), lalu label pillar.
-- Kolom: 2 (ponsel) / 3 (`sm`) / 4 (`md`) / 5 (`lg`).
-- Pencarian mencocokkan `title` (lowercase, `includes`) **dan** label pillar.
-- Chip: "Semua" + satu chip per pillar yang punya post — 8 chip tampil
-  (Semua + 7 pillar); di ponsel chip digulir horizontal.
+- Setiap tile: tanggal (`3 Jun 2026`), cover 4:5, judul Red Hat Display
+  (maks. 4 baris), lalu meta tanggal saja.
+- Kolom: 2 (ponsel) / 3 (`sm`) / 4 (`lg`).
+- Pencarian mencocokkan `title`, label pillar Studio, dan label grup tampilan.
+- Chip: "Semua" + satu chip per grup yang punya post — 5 chip tampil
+  (Semua + 4 grup); di ponsel chip digulir horizontal.
+- Tujuh pillar Studio dipetakan ke empat grup tampilan: Fakta & Trivia,
+  Lirik & Kutipan, Rekomendasi & Ulas, Clipper. URL `?pillar=` lama tetap
+  diarahkan ke grup yang memuat pillar itu.
 - *Empty state*: "Belum ada post yang cocok. Coba kata kunci lain atau pilih
   'Semua'."
 

@@ -151,7 +151,7 @@ Piramida saat ini sangat kecil: hanya lapisan unit yang ada.
 | Unit | Logika murni, invarian data | **Vitest 5.0.5** (`npm test`) | **`TERVERIFIKASI`** | `pillarDate`, `isArticleCategory`, `coverFit`, rate limit (53 kasus) |
 | Integration | Route handler dengan `Request`/`Response` nyata | Vitest (impor `POST`/`GET` langsung) | **`RENCANA`** | Matriks `POST /api/demos` (§4.4) |
 | Component | Interaksi komponen klien terisolasi | Vitest + jsdom + React Testing Library | **`RENCANA`** | `KurasiBrowser` (cari + chip), `SiteHeader` (drawer), `DemoPortal` (validasi klien) |
-| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`TERVERIFIKASI`** | Discover filter/search/empty state, isolasi section pillar, redirect `/kurasi`, dua kolom di ponsel |
+| E2E | Sedikit journey kritis di browser nyata | **Playwright** (Chromium utama) | **`TERVERIFIKASI`** | Discover filter/search/empty state, isolasi grup section, redirect `/kurasi`, dua kolom di ponsel |
 | Non-fungsional | Aksesibilitas, performa | Playwright (emulasi) + axe | **`RENCANA`** | `ACC-001`…`ACC-003`, `P-01` |
 | Manual/eksploratif | Kualitas visual, rasa editorial | — | Manual | Estetika, copy, hierarki editorial |
 
@@ -202,7 +202,7 @@ Semuanya fungsi murni tanpa I/O, jadi murah dan deterministik.
 | `U-20` | `/` = Top News lead h1 + 3 sidebar + 3 More Top News + Originals + 5 Discover + Submit | `selectHomeContent` mengambil 7 artikel pertama, 2 setlist, 4 curated rest, 4 interview |
 | `U-21` | `/stories` = 8 kartu `ArticleCard` | `latestStories(8)` → grid 4 kolom × 2 baris |
 | `U-22` | Detail artikel = 3 kartu "More {rubrik}" | Desk sama dulu, dilengkapi dari desk lain |
-| `U-23` | `/discover` = 55 tile dalam 7 section pillar (grid 2–4 kolom) | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, mengelompokkan per pillar, tanpa cap per pillar |
+| `U-23` | `/discover` = 55 tile dalam 4 section grup (grid 2–4 kolom) | `DiscoverBrowser` memfilter `posts`, mengurutkan `date` desc, mengelompokkan 7 pillar Studio menjadi 4 grup, tanpa cap per grup |
 | `U-24` | Pool kurasi = 55 post aktif | Data CMS (`pillarPost`): fakta-musik 16 · lirik 3 · trivia 2 · kutipan 6 · rekomendasi 8 · ulas-melodi 3 · clipper 17 |
 | `U-25` | 12 artikel statis = 6 foto + 6 reel | `lib/content-fallback.ts`; CMS menyimpan 6 foto + 6 reel. Delapan yang tampil di `/stories` = 6 foto + 2 reel terbaru |
 | `U-26` | `coverFit()` | 4:5/near → `cover`; landscape/square → `contain`; dimensi kosong → `cover` |
