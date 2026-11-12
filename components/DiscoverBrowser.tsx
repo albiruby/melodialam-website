@@ -192,7 +192,7 @@ export function DiscoverBrowser({ posts }: { posts: PillarPost[] }) {
                         ? "Tampilkan semua pillar"
                         : `Tampilkan hanya ${group.label}`
                     }
-                    className="mt-2 inline-flex min-h-9 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-600 underline decoration-1 underline-offset-4 transition-colors hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest sm:absolute sm:bottom-3 sm:right-0 sm:mt-0"
+                    className="mt-2 inline-flex min-h-9 items-center font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-600 underline decoration-1 underline-offset-4 transition-colors hover:text-forest focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-forest md:absolute md:bottom-3 md:right-0 md:mt-0"
                   >
                     {isolated ? "Semua pillar" : "Lihat semua"}{" "}
                     <span aria-hidden className="ml-1">→</span>
