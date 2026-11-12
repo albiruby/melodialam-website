@@ -60,6 +60,13 @@ const nextConfig: NextConfig = {
   /** The framework version is not useful to attackers and is free to omit. */
   poweredByHeader: false,
 
+  /**
+   * `next dev` writes an `AGENTS.md` into the repo root by default. This
+   * project deliberately keeps no agent-instruction files, so stop the
+   * generator rather than leave an untracked file behind on every dev start.
+   */
+  agentRules: false,
+
   async redirects() {
     return [
       /** The section shipped as `/kurasi`; old links keep working. */
