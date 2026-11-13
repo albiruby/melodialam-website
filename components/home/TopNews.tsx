@@ -30,7 +30,7 @@ export function TopNews({
     <section aria-labelledby="top-news-title">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pb-2 font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-neutral-500">
         <span>Top News</span>
-        <time dateTime={lead.dateISO}>{lead.date}</time>
+        <time dateTime={lead.dateISO}>{lead.dateLabel}</time>
       </div>
 
       <div className="mt-6 grid gap-8 lg:grid-cols-12 lg:gap-10">
@@ -41,7 +41,7 @@ export function TopNews({
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
             <span className="font-bold text-ink">{CATEGORY_LABELS[lead.category]}</span>
             <span aria-hidden>·</span>
-            <time dateTime={lead.dateISO}>{lead.date}</time>
+            <time dateTime={lead.dateISO}>{lead.dateLabel}</time>
           </div>
 
           <h1
@@ -115,7 +115,7 @@ function SidebarLead({ article }: { article: SiteArticle }) {
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>·</span>
-          <time dateTime={article.dateISO}>{article.date}</time>
+          <time dateTime={article.dateISO}>{article.dateLabel}</time>
         </div>
         <h3 className="mt-2 line-clamp-3 text-xl font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
           {article.title}
@@ -134,7 +134,7 @@ function SidebarItem({ article }: { article: SiteArticle }) {
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
         <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
         <span aria-hidden>·</span>
-        <time dateTime={article.dateISO}>{article.date}</time>
+        <time dateTime={article.dateISO}>{article.dateLabel}</time>
       </div>
       <h3 className="mt-2 line-clamp-2 text-base font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest">
         {article.title}
@@ -162,7 +162,7 @@ function NewsCard({ article }: { article: SiteArticle }) {
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold text-ink">{CATEGORY_LABELS[article.category]}</span>
           <span aria-hidden>·</span>
-          <time dateTime={article.dateISO}>{article.date}</time>
+          <time dateTime={article.dateISO}>{article.dateLabel}</time>
         </div>
         <h3 className="mt-2 line-clamp-3 text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-forest md:text-xl">
           {article.title}

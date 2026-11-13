@@ -27,6 +27,10 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 - Tujuh pillar Studio ditampilkan sebagai empat grup: Fakta & Trivia,
   Lirik & Kutipan, Rekomendasi & Ulas, Clipper. URL `?pillar=` lama tetap
   diarahkan ke grup yang memuatnya.
+- Label umur hybrid: kartu konten < 30 hari membaca `Hari ini`, `Kemarin`,
+  `3 hari lalu`, `2 minggu lalu` — sisanya tetap tanggal absolut (`16 Jun 2026`).
+  Label dihitung di dalam scope cache (`lib/relative-time.ts`), halaman detail
+  artikel tetap memakai tanggal terbit.
 - `Reveal` memakai `threshold: 0`, jadi section yang lebih tinggi dari viewport
   tidak lagi tertahan pada opacity 0.
 

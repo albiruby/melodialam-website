@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { CATEGORY_LABELS, type Article } from "@/lib/content-fallback";
+import type { SiteArticle } from "@/lib/articles";
+import { CATEGORY_LABELS } from "@/lib/content-fallback";
 
 /**
  * Article cards.
@@ -34,7 +35,7 @@ export function ArticleCard({
   readLabel = "READ STORY",
   noteCta = "Buka Catatan Redaksi",
 }: {
-  article: Article;
+  article: SiteArticle;
   titleFirst?: boolean;
   index?: number;
   readLabel?: string;
@@ -78,7 +79,7 @@ export function ArticleCard({
           ) : null}
         </span>
         <span className="mt-1 flex items-center gap-1.5 whitespace-nowrap">
-          <time dateTime={article.dateISO}>{article.date}</time>
+          <time dateTime={article.dateISO}>{article.dateLabel}</time>
         </span>
       </div>
     </Link>
@@ -90,7 +91,7 @@ function CardImage({
   readLabel,
   noteCta,
 }: {
-  article: Article;
+  article: SiteArticle;
   readLabel: string;
   noteCta: string;
 }) {

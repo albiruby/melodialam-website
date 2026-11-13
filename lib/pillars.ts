@@ -1,6 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 import { contentClient, imageUrl } from "./sanity";
-import { type PillarPost } from "./pillars-shared";
+import { relativeDate } from "./relative-time";
+import { pillarDate, type PillarPost } from "./pillars-shared";
 
 /**
  * Instagram feed posts, grouped by content pillar.
@@ -62,17 +63,23 @@ export async function allPillarPosts(): Promise<PillarPost[]> {
       .filter((d): d is PillarDoc & { id: string; title: string; igUrl: string } =>
         Boolean(d.id && d.title && d.igUrl),
       )
-      .map((d) => ({
-        id: d.id,
-        pillar: d.pillar ?? "",
-        title: d.title,
-        mediaType: d.mediaType === "reel" ? ("reel" as const) : ("foto" as const),
-        date: typeof d.date === "string" && d.date ? d.date.slice(0, 10) : null,
-        igUrl: d.igUrl,
-        image: imageUrl(d.image, { width: 900 }),
-        imageWidth: typeof d.imageWidth === "number" ? d.imageWidth : null,
-        imageHeight: typeof d.imageHeight === "number" ? d.imageHeight : null,
-      }));
+      .map((d) => {
+        const iso = typeof d.date === "string" && d.date ? d.date.slice(0, 10) : null;
+        return {
+          id: d.id,
+          pillar: d.pillar ?? "",
+          title: d.title,
+          mediaType: d.mediaType === "reel" ? ("reel" as const) : ("foto" as const),
+          date: iso,
+          // Computed here, inside the cache scope: `new Date()` is a cache-fill
+          // input, not an unstable render value.
+          dateLabel: relativeDate(iso, pillarDate(iso)),
+          igUrl: d.igUrl,
+          image: imageUrl(d.image, { width: 900 }),
+          imageWidth: typeof d.imageWidth === "number" ? d.imageWidth : null,
+          imageHeight: typeof d.imageHeight === "number" ? d.imageHeight : null,
+        };
+      });
   } catch {
     // Sections simply do not render when the pool is unreachable.
     return [];

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { PILLAR_LABELS, coverFit, pillarDate, type PillarPost } from "@/lib/pillars-shared";
+import { PILLAR_LABELS, coverFit, type PillarPost } from "@/lib/pillars-shared";
 
 /**
  * Cards for the Discover feed.
@@ -88,7 +88,7 @@ export function PillarCard({
           {post.title}
         </h3>
         <div className="mt-auto flex items-center justify-between gap-2 pt-2 font-sans text-[10px] uppercase text-neutral-500">
-          <span>{pillarDate(post.date)}</span>
+          <span>{post.dateLabel}</span>
           {showCta ? (
             <span className="transition-colors group-hover:text-forest">Buka di IG</span>
           ) : null}
@@ -148,7 +148,7 @@ export function PillarFeature({
       <div className="flex min-w-0 flex-1 flex-col lg:mt-3 lg:flex-none">
         <div className="flex items-center justify-between gap-3 font-sans text-[10px] uppercase tracking-wider text-neutral-500">
           <span className="font-bold">{PILLAR_LABELS[post.pillar] ?? post.pillar}</span>
-          <span>{pillarDate(post.date)}</span>
+          <span>{post.dateLabel}</span>
         </div>
 
         <h3 className="mt-2 line-clamp-3 font-display text-xl font-black leading-[1.05] tracking-tight text-ink transition-colors group-hover:text-forest sm:text-2xl lg:text-3xl">

@@ -2,6 +2,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { ARTICLES, type Article } from "./content-fallback";
 import { contentClient, imageUrl } from "./sanity";
 import { isArticleCategory } from "./taxonomy";
+import { relativeDate } from "./relative-time";
 
 /**
  * Article data layer.
@@ -35,14 +36,22 @@ export interface SiteArticle extends Article {
    * Stories only carry feed photos, so a reel story is marked and held back.
    */
   mediaType: "foto" | "reel";
+  /**
+   * Age label computed inside the cached read ("Kemarin", "3 minggu lalu").
+   * Anything 30 days or older keeps the absolute `date` label — a curated
+   * archive reads better with real dates than with "2 tahun lalu".
+   */
+  dateLabel: string;
 }
+
+type BaseArticle = Omit<SiteArticle, "dateLabel">;
 
 /**
  * Newest first, matching the CMS query's `order(date desc)` — the home page
  * slices the head of this list for "Top News", so both sources keep the
- * same order.
+ * same order. Age labels are added later, inside the cached read.
  */
-const STATIC: SiteArticle[] = [...ARTICLES]
+const STATIC: BaseArticle[] = [...ARTICLES]
   .sort((a, b) => b.dateISO.localeCompare(a.dateISO))
   .map((a) => ({
     ...a,
@@ -140,7 +149,7 @@ function formatDate(iso: string): string {
 }
 
 /** A Sanity article document → the shape the site's UI already speaks. */
-function fromCms(doc: CmsArticleDoc): SiteArticle | null {
+function fromCms(doc: CmsArticleDoc): BaseArticle | null {
   const slug = typeof doc.slug === "string" ? doc.slug : null;
   const title = typeof doc.title === "string" ? doc.title : null;
   if (!slug || !title) return null;
@@ -170,6 +179,14 @@ function fromCms(doc: CmsArticleDoc): SiteArticle | null {
   };
 }
 
+/**
+ * Age labels are computed here — inside the cached read — because `new Date()`
+ * is a cache-fill input there, not an unstable value during prerendering.
+ */
+function withDateLabel(article: BaseArticle): SiteArticle {
+  return { ...article, dateLabel: relativeDate(article.dateISO, article.date) };
+}
+
 export async function allArticles(): Promise<SiteArticle[]> {
   "use cache";
   // A news site: fresh within minutes, and revalidated on publish anyway.
@@ -186,10 +203,10 @@ export async function allArticles(): Promise<SiteArticle[]> {
       if (article) bySlug.set(article.slug, article);
     }
 
-    return [...bySlug.values()].sort((a, b) => b.dateISO.localeCompare(a.dateISO));
+    return [...bySlug.values()].sort((a, b) => b.dateISO.localeCompare(a.dateISO)).map(withDateLabel);
   } catch {
     // Sanity unreachable mid-request: the site keeps working from the file.
-    return STATIC;
+    return STATIC.map(withDateLabel);
   }
 }
 
@@ -234,13 +251,14 @@ export async function articleBySlug(slug: string): Promise<SiteArticle | null> {
 
     if (doc) {
       const article = fromCms(doc);
-      if (article) return article;
+      if (article) return withDateLabel(article);
     }
   } catch {
     // fall through to the static file
   }
 
-  return STATIC.find((a) => a.slug === slug) ?? null;
+  const staticArticle = STATIC.find((a) => a.slug === slug);
+  return staticArticle ? withDateLabel(staticArticle) : null;
 }
 
 /** Slugs that exist as files, used to prerender them at build time. */

@@ -5,7 +5,6 @@ import { useMemo, useSyncExternalStore } from "react";
 import {
   PILLAR_LABELS,
   coverFit,
-  pillarDate,
   type PillarPost,
 } from "@/lib/pillars-shared";
 
@@ -291,7 +290,7 @@ function DiscoverCard({ post, eager = false }: { post: PillarPost; eager?: boole
 
       <div className="mt-auto pt-3">
         <div className="flex items-baseline justify-between gap-2 pt-2 font-sans text-[9px] uppercase tracking-[0.12em] text-neutral-600">
-          <span>{pillarDate(post.date)}</span>
+          <span>{post.dateLabel}</span>
         </div>
       </div>
     </a>

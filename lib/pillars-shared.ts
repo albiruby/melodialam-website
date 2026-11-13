@@ -27,6 +27,12 @@ export interface PillarPost {
   mediaType: "foto" | "reel";
   /** ISO yyyy-mm-dd, or null when the editor left it empty. */
   date: string | null;
+  /**
+   * Ready-to-print age label ("Kemarin", "3 minggu lalu"), computed inside the
+   * cached read. Anything 30 days or older keeps the absolute date instead, so
+   * a curated archive never reads as a wall of "2 tahun lalu".
+   */
+  dateLabel: string;
   igUrl: string;
   /** Sanity CDN URL, or null when no image was uploaded. */
   image: string | null;
