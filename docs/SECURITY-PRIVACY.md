@@ -345,7 +345,7 @@ masih terbuka|jadi temuan berjalan.**
 
 | ID | Temuan (versi lama) | Status 21 Okt 2026 |
 |---|---|---|
-| SEC-F01 | Membran keamanan HTTP tidak ada | ~~Terbuka~~ → **Ditutup sebagian.** `next.config.ts:56-78` kini mengirim `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS, CSP **enforced** + CSP **report-only**. Sisa: CSP enforced belum punya `script-src` (`next.config.ts:9-12`), jadi satu-satunya penjaga XSS masih React. `RENCANA` |
+| SEC-F01 | Membran keamanan HTTP tidak ada | ~~Terbuka~~ → **Ditutup.** `next.config.ts` kini mengirim `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`, HSTS, dan CSP **enforced** yang sudah menyertakan `script-src 'self' 'unsafe-inline'` (dievaluasi ulang 14 Nov 2026 — catatan lama "enforced belum punya script-src" sudah basi). *Serangan XSS tetap ditahan React; tidak ada skema pihak ketiga di situs* |
 | SEC-F02 | Permukaan penyalahgunaan tanpa kontrol | **Terbuka** — secara teknis bukan lagi "tanpa batas body" (16 KB, `route.ts:38`), tapi **tanpa rate limit/CAPTCHA/idempotensi** = temuan audit **F02** |
 | SEC-F03 | Batas audio 25 MB tidak ditegakkan | ~~Terbuka~~ → **Ditutup.** Tiga lapis: klien (`DemoPortal.tsx:81-84`), token server (`demo-audio/route.ts:28`), dan body's `audioSize` (`demos/route.ts:278-280`). Lapisan ketiga baru benar-benar menyala pada 21 Okt 2026: sebelumnya klien mengirim ukuran sebagai string, sehingga pemeriksaannya tidak pernah dijalankan. Diuji: 30 MB → `422` |
 | SEC-F04 | `link` menampilkan tujuan eksternal arbitrer | **Terbuka (Low)** — skema `http(s)` tetap ditegakkan (`demos/route.ts:262` → `422`); tidak ada allowlist host |
