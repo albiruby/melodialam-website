@@ -366,6 +366,10 @@ export async function POST(request: Request) {
     return NextResponse.json(responseBody, { status: 201 });
   }
 
+  // The audio name is only stored when an audio actually follows: a dangling
+  // name without a file would read like a lost upload at the curator's desk.
+  const storedAudioName = audioUrl || audioUpload ? audioName : "";
+
   let createdId = "";
   try {
     const created = await submissionsClient.create({
@@ -380,7 +384,7 @@ export async function POST(request: Request) {
       story,
       status: DEMO_INITIAL_STATUS,
       submittedAt,
-      ...(audioName ? { audioName } : {}),
+      ...(storedAudioName ? { audioName: storedAudioName } : {}),
       // The claimed URL — not a client-supplied one — is the only shape this
       // write accepts from the new flow; a body that still carries its own
       // audioUrl keeps the legacy validation above.
@@ -411,6 +415,8 @@ export async function POST(request: Request) {
   }
 
   // The row is stored; tell the desk. A failure here never changes the answer.
+  // The audio URL here is the server-claimed object (bytes may still be
+  // uploading), so the desk knows the link is the one this demo owns.
   await notifyNewSubmission({
     artist,
     city,
@@ -420,8 +426,8 @@ export async function POST(request: Request) {
     link,
     contact,
     story,
-    audioName,
-    audioUrl,
+    audioName: storedAudioName,
+    audioUrl: audioUrl || audioUpload?.url || "",
   });
 
   const entry = toPublicDemoRow({
