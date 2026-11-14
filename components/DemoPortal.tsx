@@ -10,9 +10,15 @@ import {
   DEMO_PROGRAMS,
 } from "@/lib/content-fallback";
 
-interface ApiError {
+interface DemoApiResponse {
   error?: string;
   errors?: Record<string, string>;
+  /**
+   * F04/F05: present only when the server claimed an audio object for this
+   * submission. `pathname` is the one key the upload token will ever be
+   * minted for — a key the server chose, not one the browser sent.
+   */
+  upload?: { pathname: string };
 }
 
 /**
@@ -131,31 +137,16 @@ export function DemoPortal() {
       [...form.entries()].filter(([, value]) => typeof value === "string"),
     ) as Record<string, string | number>;
 
-    try {
-      // The file goes straight to Vercel Blob, not through this request: a
-      // 25 MB body would never clear the function's limit. The submission then
-      // carries the URL, so the desk can play it from the Studio.
-      if (audioFile) {
-        try {
-          // The key is a UUID, not the original filename: a file called
-          // "manager-name.mp3" must not end up in a public URL. The server
-          // validates this exact shape before minting the token.
-          const extension = audioFile.name.split(".").pop()?.toLowerCase() ?? "mp3";
-          const pathname = `demo-audio/${crypto.randomUUID()}.${extension}`;
-          const blob = await upload(pathname, audioFile, {
-            access: "public",
-            handleUploadUrl: "/api/demo-audio",
-          });
-          payload.audioUrl = blob.url;
-          payload.audioName = audioFile.name;
-          payload.audioSize = audioFile.size;
-        } catch {
-          setBannerIsError(true);
-          setBanner("Audio gagal diunggah. Coba lagi, atau hapus berkasnya lalu kirim tanpa audio.");
-          return;
-        }
-      }
+    // F04/F05: the submission goes first. The server claims one audio object
+    // for this demo (a key it chose) and answers with its pathname; only then
+    // does the browser upload straight to Vercel Blob — a 25 MB body would
+    // never clear the function's limit.
+    if (audioFile) {
+      payload.audioName = audioFile.name;
+      payload.audioSize = audioFile.size;
+    }
 
+    try {
       const res = await fetch("/api/demos", {
         method: "POST",
         headers: {
@@ -167,7 +158,7 @@ export function DemoPortal() {
         },
         body: JSON.stringify(payload),
       });
-      const data = (await res.json()) as ApiError;
+      const data = (await res.json()) as DemoApiResponse;
 
       if (!res.ok) {
         const fieldErrors = data.errors ?? {};
@@ -183,15 +174,47 @@ export function DemoPortal() {
             ?.querySelector<HTMLElement>(`[name="${CSS.escape(first)}"]`)
             ?.focus();
         }
+        return;
+      }
+
+      // From here the row exists and cannot be un-sent. The claim survives a
+      // failed upload: pressing Kirim again replays the same idempotent
+      // submission and re-uploads to the same pathname, so a retry never
+      // becomes a second row.
+      const claimedPathname = data.upload?.pathname;
+
+      if (audioFile && claimedPathname) {
+        try {
+          await upload(claimedPathname, audioFile, {
+            access: "public",
+            handleUploadUrl: "/api/demo-audio",
+          });
+          setBannerIsError(false);
+          setBanner("Demo berhasil dikirim dan sudah masuk antrean tinjauan kurator.");
+        } catch {
+          setBannerIsError(true);
+          setBanner(
+            "Demo sudah terkirim, tetapi audio gagal diunggah. Tekan Kirim sekali lagi untuk mengunggah ulang berkasnya.",
+          );
+          return;
+        }
+      } else if (audioFile && !claimedPathname) {
+        // The demo is in; the audio service is not connected to this
+        // deployment. Told honestly instead of silently dropped.
+        setBannerIsError(true);
+        setBanner(
+          "Demo berhasil dikirim, tetapi layanan unggah audio belum tersedia — kiriman masuk tanpa berkas audio.",
+        );
       } else {
         setBannerIsError(false);
         setBanner("Demo berhasil dikirim dan sudah masuk antrean tinjauan kurator.");
-        formRef.current?.reset();
-        clearAudio();
-        // The submission went through, so the next one is a different one and
-        // needs a different key.
-        idempotencyKey.current = null;
       }
+
+      formRef.current?.reset();
+      clearAudio();
+      // The submission went through, so the next one is a different one and
+      // needs a different key.
+      idempotencyKey.current = null;
     } catch {
       setBannerIsError(true);
       setBanner("Tidak bisa menghubungi server. Periksa koneksi Anda lalu coba lagi.");

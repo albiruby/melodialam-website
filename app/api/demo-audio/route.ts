@@ -1,21 +1,30 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
-import { isDemoAudioPathname } from "@/lib/blob-audio";
+import {
+  DEMO_AUDIO_CLAIM_COUNT_QUERY,
+  demoAudioUrl,
+  isDemoAudioPathname,
+} from "@/lib/blob-audio";
 import { DEMO_AUDIO_MAX_BYTES, DEMO_AUDIO_TYPES } from "@/lib/taxonomy";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { submissionsClient } from "@/lib/sanity-server";
 
 /**
  * Signed uploads for a demo's audio file.
  *
- * The browser uploads straight to Vercel Blob; this route only mints the
- * token, so a 25 MB demo never passes through a serverless function (Vercel
- * caps request bodies well below that). The rules the form enforces in the
- * browser are enforced again here, because a crafted request does not have to
- * respect them.
+ * Two-phase since the F04/F05 remediation:
+ *
+ *  1. `POST /api/demos` validates the form, then CLAIMS one object key
+ *     (`demo-audio/<uuid>.<ext>`) by writing its canonical URL onto the demo
+ *     document in the private dataset. The response carries that pathname.
+ *  2. This route mints the Blob token — but only for a pathname a submission
+ *     claimed. `onBeforeGenerateToken` checks the exact URL against the
+ *     private dataset and refuses anything else, so an anonymous caller can
+ *     no longer mint tokens for arbitrary (or guessed) keys.
  *
  * The key is a UUID under `demo-audio/` — never the original filename, which
- * can carry a person's name. `isDemoAudioPathname` is the single place that
- * shape is defined, and the submission route re-checks the resulting URL.
+ * can carry a person's name. The browser uploads straight to Vercel Blob, so
+ * a 25 MB demo never passes through a serverless function.
  *
  * Needs `BLOB_READ_WRITE_TOKEN`, which Vercel adds when a Blob store is
  * connected to the project. Without it the route answers 400 and the form
@@ -44,14 +53,47 @@ export async function POST(request: Request): Promise<NextResponse> {
         if (!isDemoAudioPathname(pathname)) {
           throw new Error("Pathname audio tidak sesuai.");
         }
+
+        // F04/F05: the claim lives on the demo document in the private
+        // dataset. Without Sanity there are no claims at all, so minting
+        // fails closed rather than trusting the pathname's shape alone.
+        if (!submissionsClient) {
+          throw new Error("Antrean demo tidak tersedia.");
+        }
+
+        const url = demoAudioUrl(process.env.BLOB_STORE_ID, pathname);
+        if (!url) {
+          throw new Error("URL audio tidak dikenal.");
+        }
+
+        let claimed = 0;
+        try {
+          claimed = await submissionsClient.fetch<number>(
+            DEMO_AUDIO_CLAIM_COUNT_QUERY,
+            { url },
+            { cache: "no-store" },
+          );
+        } catch (error) {
+          const failure = error as { name?: string; statusCode?: number };
+          console.error("[api/demo-audio] klaim audio tidak bisa diverifikasi:", {
+            name: failure?.name ?? "Error",
+            status: failure?.statusCode ?? "tidak ada",
+          });
+          throw new Error("Klaim audio tidak bisa diverifikasi.");
+        }
+
+        if (!claimed) {
+          throw new Error("Pathname audio belum diklaim kiriman mana pun.");
+        }
+
         return {
           allowedContentTypes: [...DEMO_AUDIO_TYPES],
           maximumSizeInBytes: DEMO_AUDIO_MAX_BYTES,
         };
       },
       onUploadCompleted: async () => {
-        // The submission itself is written by /api/demos, which receives the
-        // file's URL; nothing to do once the bytes have landed.
+        // The submission itself is written by /api/demos, which claimed this
+        // object's URL before minting; nothing to do once the bytes land.
       },
     });
 

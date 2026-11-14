@@ -42,9 +42,11 @@ adalah: datanya disimpan, dan justru karena itu kontrol yang kita butuhkan.
 
 Empat hal yang paling penting:
 
-1. **Satu temuan sudah tertutup; sisanya masih terbuka.** Pada laporan audit
-   21 Okt 2026, kesepuluh temuan F01–F10 tercatat terbuka. **F01 ditutup** lewat
-   allow-list host Blob (lihat §4.1). F02 ditutup sebagian (rate limit per IP, `Idempotency-Key`, honeypot); **F06, F08, dan F10 ditutup** 24 Okt 2026; F03–F05 dan F07 belum disentuh.
+1. **Status per 14 Nov 2026: 8 dari 10 temuan tertutup, 2 tersisa sebagian.** Pada laporan audit
+   21 Okt 2026, kesepuluh temuan F01–F10 tercatat terbuka. Sejak itu **F01, F03, F06, F08, F09,
+   dan F10 ditutup** (21–25 Okt 2026); **F02 ditutup sebagian** (rate limit per IP, `Idempotency-Key`,
+   honeypot — sisa Turnstile butuh akun eksternal); **F04 dan F05 ditutup sebagian 14 Nov 2026**
+   (grant unggah sekali-pakai — sisa `access: "public"` dan retensi objek); **F07 masih terbuka**.
 2. **Audit berjalan tanpa sandbox OS**, jadi tidak ada satu pun kode target yang
    dieksekusi. Semua temuan berstatus `needs_validation` — **belum terkonfirmasi**,
    bukan "terbukti ada". Nilai severity di bawah adalah *severity bila
@@ -187,7 +189,10 @@ Resend / Sanity.
 > yang dieksekusi**. Konsekuensinya: **tidak ada temuan yang bisa dinyatakan
 > `confirmed`** — semuanya `needs_validation` dengan langkah validasi yang
 > jelas. Kolom "Severity" adalah *severity bila terkonfirmasi*, bukan vonis.
-> **Status pada laporan audit: seluruh temuan belum diperbaiki.**
+> **Status pada laporan audit: seluruh temuan belum diperbaiki.** *Diperbarui
+> 14 Nov 2026: delapan dari sepuluh kini tertutup; F02, F04, dan F05 tersisa
+> sebagian (masing-masing butuh konfigurasi eksternal atau keputusan produk);
+> F07 masih terbuka.*
 >
 > Catatan: **F01 sudah ditutup** setelah laporan audit itu dibuat — lihat §4.1.
 > Status lajur "per laporan audit" tetap mengikuti laporan aslinya; perubahan
@@ -198,8 +203,8 @@ Resend / Sanity.
 | F01 | `audioUrl` diterima dari host mana pun, lalu disimpan ke dokumen yang dikurasi **dan** dikirim ke email redaksi | **High** | `needs_validation` — **ditutup 21 Okt 2026** *(lihat §4.1: host kini dibatasi ke store Blob milik operator)* | bandingkan host dengan store Blob milik operator; tolak selain itu dengan `422` |
 | F02 | `POST /api/demos` tanpa rate limit/quota/CAPTCHA/idempotensi; tiap permintaan = 2 tulis Sanity + 1 email berbayar | **High** | **sebagian ditutup 24 Okt 2026** — rate limit per IP + `Idempotency-Key` + honeypot; Turnstile belum | rate limit per IP di edge + Turnstile + `Idempotency-Key` |
 | F03 | ~~satu secret (`SANITY_REVALIDATE_SECRET`) dipakai untuk **dua** kapabilitas: baca draf + invalidasi 6 tag cache, dan diterima lewat `?secret=` di URL | **Medium** | **ditutup 25 Okt 2026** — `SANITY_PREVIEW_SECRET` terpisah (22 Okt), `?secret=` dicabut, webhook memakai `sanity-webhook-signature` | `SANITY_PREVIEW_SECRET` terpisah; header saja; **rotasi nilai lama** |
-| F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | **sebagian ditutup 26 Okt 2026** — key UUID tervalidasi server, nama file tidak lagi di URL, host store dipatok; `access` masih publik dan grant belum sekali-pakai | server yang menentukan key + access; bucket privat + signed URL; nama file di-sanitasi |
-| F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | **sebagian ditutup** — rate limit 20/jam (22 Okt) + pathname UUID; grant sekali-pakai dan pembersihan objek belum | grant sekali-pakai dari `/api/demos` + job pembersihan |
+| F04 | token unggah Blob diterbitkan untuk siapa pun; key objek tidak diikat server; `access: "public"` dipilih peramban; nama file asli ikut ke URL publik | **Medium** | **sebagian ditutup 26 Okt + 14 Nov 2026** — key UUID tervalidasi server, nama file tidak lagi di URL, host store dipatok; **14 Nov: server yang menghasilkan key dan mengklaimnya pada kiriman, mint menolak pathname yang tidak diklaim**; sisa: `access` masih publik | server yang menentukan key + access (**key: selesai**); bucket privat + signed URL (`RENCANA`); nama file di-sanitasi (**selesai**) |
+| F05 | token unggah bisa dicetak tanpa batas → menulis objek ke storage milik operator yang tak pernah dibersihkan | **Medium** | **sebagian ditutup 22 Okt + 14 Nov 2026** — rate limit 20/jam + pathname UUID (22 Okt); **14 Nov: token hanya dicetak untuk pathname yang diklaim satu kiriman**; pembersihan objek belum | grant sekali-pakai dari `/api/demos` (**selesai 14 Nov 2026**) + job pembersihan (`RENCANA`) |
 | F06 | ~~tanpa token, antrean fallback dilayani **tanpa** filter status~~ — **DITUTUP 24 Okt 2026**: kedua cabang menyaring status disetujui | (`IN REVIEW` terbaca publik) dan submitten diberi janji "telah masuk antrean" padahal tidak tersimpan | **Low** | `needs_validation` — belum diperbaiki | filter status di kedua cabang fallback; tanpa store → `503` + log, bukan `201` |
 | F07 | hapus submission di Studio meninggalkan `demoContact` (PII) dan objek audio (publik) hidup selamanya | **Low** | `needs_validation` — belum diperbaiki | aksi hapus kurator yang ikut menghapus kontak + objek; tetapkan tanggal retensi |
 | F08 | ~~`visionTool()` aktif di workspace `submissions`~~ — **DITUTUP 24 Okt 2026**: `visionTool` dihapus dari workspace itu, Studio di-deploy ulang | workspace | **Low** | `needs_validation` — belum diperbaiki | matikan `visionTool` di workspace itu; periksa daftar anggota project |
@@ -361,7 +366,7 @@ masih terbuka|jadi temuan berjalan.**
 |---|---|---|---|
 | `artist`, `city`, `title`, `genre`, `program`, `link`, `story` | karya / quasi-publik | dokumen `demoSubmission` di dataset privat `submissions` | sampai dihapus manual di Studio |
 | **`contact`** | **PII** | dokumen `demoContact` di dataset privat `submissions` | sampai dihapus manual; **tidak** ikut terhapus bersama submission (F07) |
-| `audioName`, `audioUrl` | data karya | dokumen `demoSubmission` + objek di Vercel Blob (`access: "public"`) | tidak dihapus otomatis; retensi 90 hari masih `RENCANA` |
+| `audioName`, `audioUrl` | data karya | dokumen `demoSubmission` + objek di Vercel Blob (`access: "public"`); **sejak 14 Nov 2026** `audioUrl` ditulis server saat klaim unggahan, bukan dikirim klien | tidak dihapus otomatis; retensi 90 hari masih `RENCANA` |
 | IP pengirim, User-Agent | PII | tidak ditangani kode | `[PERLU VERIFIKASI]` — mungkin dicatat platform |
 | `submittedAt` | internal | dokumen `demoSubmission` | sampai dihapus manual |
 
@@ -422,8 +427,8 @@ sebagai klaim keadaan sekarang.
 | **Secret pratinjau tidak menetap di URL** | secret di URL masuk log, riwayat, Referer, analytics | **`TERVERIFIKASI`** 10 Nov 2026 — `proxy.ts` menukar `?secret=` dengan cookie HttpOnly bertanda HMAC (1 jam), lalu redirect ke URL bersih; respons `private, no-store` + `noindex`; `/preview` dikecualikan dari Web Analytics |
 | **Allow-list host `audioUrl`** | F01 | **`TERVERIFIKASI`** — `isOwnBlobUrl()` menolak host di luar `*.blob.vercel-storage.com`; diuji: host asing → `422` |
 | **Rate limit + `Idempotency-Key`** | F02 | **`TERVERIFIKASI`** 22 Okt 2026 — 5 kiriman/jam per IP di `POST /api/demos`, 20 token/jam di `POST /api/demo-audio`, `Idempotency-Key` + honeypot. **26 Okt 2026:** identitas hanya dibaca dari header platform (Vercel) atau `TRUST_PROXY=1`, dan IPv6 diringkas ke /64. Batas **global** lintas instance masih `RENCANA` (Vercel Firewall/Redis); Turnstile juga `RENCANA` |
-| **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | `RENCANA` |
-| **Server menentukan key + access object Blob**; nama file di-sanitasi | F04 | **sebagian** 26 Okt 2026 — key UUID tervalidasi server, nama file tidak lagi di URL, host store dipatok lewat `BLOB_STORE_ID` (tanpa store ID, URL audio ditolak); `access: "public"` masih dipilih klien dan grant belum sekali-pakai |
+| **Grant unggah sekali-pakai** dari `/api/demos` | F04/F05 | **`TERVERIFIKASI`** 14 Nov 2026 — kiriman mengklaim satu pathname (`demo-audio/<uuid>.<ext>`, key dari `crypto.randomUUID`, URL kanonik dari `BLOB_STORE_ID`) yang ditulis ke dokumen demo; `POST /api/demo-audio` memverifikasi `audioUrl == $url` lewat dataset privat dan menolak pathname yang tidak diklaim (gagal tertutup, `400`). Sisa: `access` publik + retensi/pembersihan objek masih `RENCANA` |
+| **Server menentukan key + access object Blob**; nama file di-sanitasi | F04 | **sebagian** 26 Okt + 14 Nov 2026 — key UUID tervalidasi server, nama file tidak lagi di URL, host store dipatok lewat `BLOB_STORE_ID` (tanpa store ID, URL audio ditolak); **14 Nov: key dibuat server (`demoAudioPathname`), bukan dikirim klien**; `access: "public"` masih dipilih klien — bucket privat + signed URL `RENCANA` |
 | **Filter status di jalur fallback**; tanpa store → `503` | F06 | `RENCANA` |
 | **Aksi hapus kurator berantai** (kiriman + kontak + objek) | F07 | `RENCANA` |
 | **Matikan `visionTool` di workspace `submissions`** | F08 | `RENCANA` |

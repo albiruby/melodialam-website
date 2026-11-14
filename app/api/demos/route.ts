@@ -10,7 +10,7 @@ import {
   type DemoSubmission,
 } from "@/lib/content-fallback";
 import { recall, remember } from "@/lib/idempotency";
-import { isDemoAudioUrl } from "@/lib/blob-audio";
+import { demoAudioPathname, demoAudioUrl, isDemoAudioUrl } from "@/lib/blob-audio";
 import { toPublicDemoRow, type DemoQueueSource } from "@/lib/demo-queue";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { submissionsClient } from "@/lib/sanity-server";
@@ -312,6 +312,30 @@ export async function POST(request: Request) {
 
   const submittedAt = new Date().toISOString().slice(0, 10);
 
+  /**
+   * F04/F05: the object key is decided here — before any upload token exists —
+   * and written onto the submission itself. One demo can therefore carry at
+   * most one audio object, and the mint route later refuses any pathname no
+   * submission claimed.
+   *
+   * A claim needs all three legs: the private dataset (the mint verifies the
+   * claim against the demo document), the Blob store ID (the canonical URL),
+   * and the Blob token (the upload). Missing any leg means the demo submits
+   * without audio and the response carries no upload block.
+   */
+  let audioUpload: { pathname: string; url: string } | null = null;
+  if (
+    audioName &&
+    !audioUrl &&
+    submissionsClient &&
+    process.env.BLOB_READ_WRITE_TOKEN &&
+    process.env.BLOB_STORE_ID
+  ) {
+    const pathname = demoAudioPathname(audioName);
+    const url = pathname ? demoAudioUrl(process.env.BLOB_STORE_ID, pathname) : null;
+    if (pathname && url) audioUpload = { pathname, url };
+  }
+
   // No CMS: the original in-memory path. The contact goes into its own map,
   // never into the row the public queue reads.
   if (!submissionsClient) {
@@ -357,7 +381,10 @@ export async function POST(request: Request) {
       status: DEMO_INITIAL_STATUS,
       submittedAt,
       ...(audioName ? { audioName } : {}),
-      ...(audioUrl ? { audioUrl } : {}),
+      // The claimed URL — not a client-supplied one — is the only shape this
+      // write accepts from the new flow; a body that still carries its own
+      // audioUrl keeps the legacy validation above.
+      ...(audioUrl ? { audioUrl } : audioUpload ? { audioUrl: audioUpload.url } : {}),
     });
 
     // The contact lives in its own document, in the same private dataset, so it
@@ -423,6 +450,9 @@ export async function POST(request: Request) {
     entry,
     queueLength: approvedCount,
     note: "Kontak manajer tersimpan terpisah dan tidak tampil di antrean publik.",
+    // F04/F05: present only when this submission claimed an audio object. The
+    // pathname is the one key the mint route will ever issue a token for.
+    ...(audioUpload ? { upload: { pathname: audioUpload.pathname } } : {}),
   };
   remember(idempotencyKey, 201, responseBody);
 

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { isDemoAudioPathname, isDemoAudioUrl } from "./blob-audio";
+import {
+  demoAudioPathname,
+  demoAudioUrl,
+  isDemoAudioPathname,
+  isDemoAudioUrl,
+} from "./blob-audio";
 
 const UUID = "3f2504e0-4f89-41d3-9a0c-0305e82c3301";
 const STORE = "store_5RKzQCxeKhkgmBSH";
@@ -47,5 +52,46 @@ describe("isDemoAudioUrl", () => {
     expect(isDemoAudioUrl(`https://${HOST}/demo-audio/${UUID}.mp3`, STORE.replace("store_", ""))).toBe(
       true,
     );
+  });
+});
+
+describe("demoAudioPathname", () => {
+  it("mints the server's own UUID key from the validated extension", () => {
+    const pathname = demoAudioPathname("Manager Band - lagu.MP3");
+    expect(pathname).toMatch(
+      /^demo-audio\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.mp3$/,
+    );
+    expect(isDemoAudioPathname(pathname ?? "")).toBe(true);
+  });
+
+  it("refuses to claim a file without an allowed extension", () => {
+    expect(demoAudioPathname("demo.txt")).toBeNull();
+    expect(demoAudioPathname("no-extension")).toBeNull();
+  });
+
+  it("never leaks the original filename into the key", () => {
+    const pathname = demoAudioPathname("manager-name-with-pii.mp3");
+    expect(pathname).not.toContain("manager");
+    expect(isDemoAudioPathname(pathname ?? "")).toBe(true);
+  });
+});
+
+describe("demoAudioUrl", () => {
+  it("builds the URL in the exact shape the submission route accepts", () => {
+    const url = demoAudioUrl(STORE, `demo-audio/${UUID}.mp3`);
+    expect(url).toBe(`https://${HOST}/demo-audio/${UUID}.mp3`);
+    expect(isDemoAudioUrl(url ?? "", STORE)).toBe(true);
+  });
+
+  it("normalizes the store_ prefix, case and stray spaces", () => {
+    expect(demoAudioUrl(` ${STORE} `, `demo-audio/${UUID}.mp3`)).toBe(
+      `https://${HOST}/demo-audio/${UUID}.mp3`,
+    );
+  });
+
+  it("fails closed without a store or with a foreign pathname", () => {
+    expect(demoAudioUrl(null, `demo-audio/${UUID}.mp3`)).toBeNull();
+    expect(demoAudioUrl(undefined, `demo-audio/${UUID}.mp3`)).toBeNull();
+    expect(demoAudioUrl(STORE, `elsewhere/${UUID}.mp3`)).toBeNull();
   });
 });

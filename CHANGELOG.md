@@ -15,6 +15,16 @@ mengikuti [Semantic Versioning](https://semver.org/lang/id/).
 
 ## [Unreleased]
 
+**Keamanan (14 Nov 2026)**
+
+- **F04/F05 — grant unggah audio sekali-pakai.** `POST /api/demos` kini
+  mengklaim satu pathname (`demo-audio/<uuid>.<ext>`, key dari server) untuk
+  kiriman yang menyertakan audio, dan `POST /api/demo-audio` memverifikasi
+  klaim itu di dataset privat sebelum mencetak token — pathname yang tidak
+  diklaim ditolak gagal-tertutup. Sisa temuan terdokumentasi di
+  `docs/SECURITY-PRIVACY.md`: Turnstile (F02), bucket privat + signed URL
+  (F04), retensi/pembersihan objek (F05), aksi hapus berantai (F07).
+
 **Discover bergaya halaman koran (12 Nov 2026)**
 
 - `/discover` kini dikelompokkan per pillar: judul section terpusat, satu garis
